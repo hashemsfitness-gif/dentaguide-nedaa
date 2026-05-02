@@ -1,0 +1,2244 @@
+export type Mall = {
+  id: string;
+  label: string;
+  behandlingTag: string;
+  followup: string;
+  text: string;
+};
+
+export type ExtraAtgard = {
+  id: string;
+  label: string;
+  text: string;
+};
+
+export type Scenario = {
+  id: string;
+  icd: string;
+  name: string;
+  cat: string;
+  scId: string;
+  symptom: string[];
+  behandling: string[];
+  varning: string | null;
+  mallar: Mall[];
+  extraAtgard: ExtraAtgard[];
+  lakemedel: string | null;
+  remissSpec: string | null;
+};
+
+export const journalScenarios: Scenario[] = [
+// ── ENDODONTI ──
+{id:'vark01',icd:'K04.0',name:'Reversibel Pulpit',cat:'Endodonti',scId:'VARK-01-REV',
+ symptom:['ilning','kyla','sött','kortvarig smärta','provocerad smärta'],
+ behandling:['fyllning','kariesexkavering','komposit','Ca(OH)₂'],varning:null,
+ mallar:[
+  {id:'m1',label:'Alt A — Permanent fyllning',behandlingTag:'fyllning',followup:'Kontroll vid symtomkvarstående eller försämring.',
+   text:`Diagnos: K04.0 Reversibel pulpit tand [nr].
+
+Anamnes: Ilningssymtom vid kyla och sötsaker sedan [tidsperiod].
+Smärtan är provocerad och kortvarig. Spontansmärta saknas.
+Senaste analgetika: [datum/tid].
+
+Status:
+- Tand [nr]: Karies synlig, [lokalisation]
+- Kyla-test: Kraftig positiv reaktion, snabb regression (<15 sek)
+- Perkussion: u.a.
+- Palpation: u.a.
+
+Rtg: Approximal kariesskada tand [nr], ca [mm] från pulpakavum.
+Periapikalt status u.a.
+
+Bedömning: Reversibel pulpit tand [nr].
+
+Åtgärd:
+- LA: Artikain 40 mg/ml + adrenalin, [ml]
+- Kofferdam applicerat
+- Kariesexcavering tand [nr]
+- Ca(OH)₂-liner applicerat mot pulpagolv
+- Adhesiv: [produkt] / Komposit: [produkt], nyans [A2/...]
+- Ocklusionskontroll genomförd
+
+Uppföljning: Kontroll vid symtomkvarstående eller försämring.`},
+  {id:'m2',label:'Alt B — Stegvis excavering',behandlingTag:'stegvis excavering',followup:'Återbesök om 6–12 månader.',
+   text:`Diagnos: K04.0 Reversibel pulpit tand [nr].
+
+Anamnes: Djupgående kariesskada med närhet till pulpakavum. Ilningar vid kyla.
+Ingen rapporterad spontansmärta.
+
+Bedömning: Reversibel pulpit — stegvis exkavering valt för att minimera risken för pulpaexponering.
+
+Åtgärd:
+- LA: Artikain 40 mg/ml + adrenalin, [ml]
+- Partiell exkavering av mjuk karies
+- Ca(OH)₂ placerat direkt mot pulpanärmaste dentin
+- Glasjonomer provisorium
+
+Uppföljning: Återbesök [6–12 månader] för definitiv restauration.`}],
+ extraAtgard:[{id:'kofferdam',label:'Kofferdam',text:'Kofferdam applicerat under hela behandlingen.'},{id:'okkontroll',label:'Ocklusionskontroll',text:'Ocklusion kontrollerad och justerad — u.a.'}],
+ lakemedel:'Ibuprofen 400 mg v.b.',remissSpec:null},
+
+{id:'vark02',icd:'K04.0 / K04.1',name:'Irreversibel Pulpit / Pulpanekros',cat:'Endodonti',scId:'VARK-02-IRR',
+ symptom:['spontansmärta','nattvärk','bultande','värk'],
+ behandling:['rotbehandling','RCT','akutrensning','trepanation','extraktion','exstirpation'],varning:null,
+ mallar:[
+  {id:'m1',label:'Alt A — Akutrensning / Pulpektomi',behandlingTag:'rotbehandling RCT',followup:'Återbesök om 1–2 veckor för definitiv rotfyllning.',
+   text:`Diagnos: K04.0 Irreversibel pulpit / K04.1 Pulpanekros tand [nr].
+
+Anamnes: Spontan, bultande smärta i tand [nr] sedan [tid].
+Nattvärk: [Ja/Nej]. Stör nattsömnen: [Ja/Nej].
+Tidigare endodonti i tanden: [Ja/Nej].
+
+Status:
+- Kyla-test: [Kraftig dröjande reaktion / Negativ respons]
+- Perkussion: Positiv / betöm
+- Palpation: [Apikalt öm / u.a.]
+- Klinisk inspektion: [Djup karies / Befintlig fyllning / Krona]
+
+Medicinsk anamnes: Antikoagulantia [Nej/Ja: ]. Bisfosfonater [Nej/Ja].
+
+Rtg: Djupgående karies / restauration nära pulpakavum.
+Rothinnespalt [normal/vidgad]. Periapikal radioluceens: [Nej / Ja, ca X mm].
+
+Behandling (Akutrensning):
+- LA: Artikain 40 mg/ml + adrenalin [ml]
+- Kofferdam
+- Trepanation tand [nr]
+- Exstirpation av pulpavävnad
+- Arbetslängd: [mm] (apex locator + rtg)
+- Rensning K-filar, riklig spolning NaOCl 3% (>20 ml)
+- Ca(OH)₂-inlägg till apex
+- Provisorisk tätning (Cavit/IRM)
+
+Information: Normal postoperativ ömhet i 2–3 dagar förväntas.
+Analgetika: Ibuprofen 400 mg vid behov.
+
+Uppföljning: Återbesök [1–2 veckor] för definitiv rotfyllning.
+Kontakt vid försämring (svullnad/feber).`},
+  {id:'m2',label:'Alt B — Extraktion',behandlingTag:'extraktion',followup:'Protetisk uppföljning vid behov.',
+   text:`Diagnos: K04.0/K04.1 Irreversibel pulpit/Pulpanekros tand [nr].
+Tanden bedömd ej restaureringsbar — extraktion valt.
+
+Medicinsk anamnes: Antikoagulantia [Nej/Ja]. Bisfosfonater [Nej/Ja].
+Allergi: Nej/Ja [specificera].
+
+Åtgärd (Extraktion):
+- LA: Artikain 40 mg/ml + adrenalin [ml]
+- Luxation med luxator/elevator
+- Extraktion tand [nr] u.a.
+- Hemostas: Bra koagel
+- Bettamponad 20 min
+- [Ev. sutur Vicryl 4-0]
+
+Information: Mjuk kost, ej röka, ej spola, ej NSAID om kontraindicerat.
+
+Uppföljning: Protetisk planering vid behov.`}],
+ extraAtgard:[{id:'antibiotika',label:'Antibiotika (feber/svullnad)',text:'Fenoximetylpenicillin (Kåvepenin) 1,6 g × 3 i 5–7 dagar. Kontraindikationer kontrollerade u.a.'},{id:'kofferdam',label:'Kofferdam',text:'Kofferdam applicerat under behandlingen.'}],
+ lakemedel:'Ibuprofen 400 mg v.b. Analgetika vid behov.',remissSpec:'Endodontist'},
+
+{id:'vark03',icd:'K04.4',name:'Akut Apikal Parodontit (AAP)',cat:'Endodonti',scId:'VARK-03-AAP',
+ symptom:['bitöm','perkussionsöm','förhöjd tand','tuggsmärta'],
+ behandling:['rotbehandling','trepanation','ocklusionsjustering','extraktion'],varning:null,
+ mallar:[
+  {id:'m1',label:'Alt A — Akutrensning (pulpanekros)',behandlingTag:'rotbehandling trepanation',followup:'Återbesök om 7–14 dagar för definitiv rotfyllning.',
+   text:`Diagnos: K04.4 Akut apikal parodontit tand [nr].
+
+Anamnes: Tuggsmärta tand [nr] sedan [tid]. Tanden upplevs som "förhöjd".
+Ingen spontansmärta. Ingen feber. Tidigare rotbehandling: [Ja/Nej].
+
+Status:
+- Kyla-test: Negativ
+- Perkussion: Tydlig positiv reaktion (betöm)
+- Palpation: Apikalt öm i omslagsvecket
+- Ingen synlig svullnad
+
+Rtg: Vidgad rothinnespalt tand [nr].
+Periapikal radioluceens: [Nej / Ja, ca X mm].
+
+Bedömning: Akut apikal parodontit sekundär till [pulpanekros / iatrogen orsak].
+
+Åtgärd:
+- LA: Artikain 40 mg/ml + adrenalin [ml]
+- Kofferdam
+- Trepanation tand [nr]
+- Exstirpation av nekrotisk pulpa
+- Varsam rensning [1/2/3] kanaler, UNDVIKER överinstrumentering
+- Arbetslängd: [mm]
+- Riklig spolning NaOCl 3%
+- Ca(OH)₂-inlägg
+- Provisorisk tätning (Cavit)
+
+Information: Ömhet ytterligare 2–3 dagar förväntas.
+Analgetika: Ibuprofen 400 mg + Paracetamol 1g vid behov.
+
+Uppföljning: Återbesök [7–14 dagar] för definitiv rotfyllning.
+Kontakt vid försämring (ökad svullnad/smärta).`},
+  {id:'m2',label:'Alt C — Ocklusionsjustering',behandlingTag:'ocklusionsjustering slipning',followup:'Telefonuppföljning om 3 dagar.',
+   text:`Diagnos: K04.4 Akut apikal parodontit tand [nr] — sannolikt iatrogen orsak.
+
+Bedömning: Betöm tand utan nekrostecken — prematur kontakt misstänkt.
+
+Åtgärd:
+- Identifiering av prematur kontakt med artikulationspapper
+- Selektiv slipning [tand nr], polering
+- Fluorlack applicerat
+
+Analgetika: Ibuprofen 400 mg + Paracetamol 1g vid behov.
+
+Uppföljning: Telefonuppföljning om 3 dagar. Åter vid försämring.`}],
+ extraAtgard:[{id:'antibiotika',label:'Antibiotika (systemisk påverkan)',text:'Fenoximetylpenicillin 1,6 g × 3 i 5–7 dagar vid systemisk påverkan.'},{id:'kofferdam',label:'Kofferdam',text:'Kofferdam applicerat.'}],
+ lakemedel:'Ibuprofen 400 mg + Paracetamol 1g v.b.',remissSpec:'Endodontist'},
+
+{id:'vark04',icd:'K04.6 / K04.7',name:'Odontogen Abscess',cat:'Endodonti',scId:'VARK-04-ABS',
+ symptom:['svullnad','abscess','feber','fluktuation','pus'],
+ behandling:['incision','dränage','I&D','extraktion','trepanation','antibiotika'],
+ varning:'⚠️ Kontakta AKUT vid: försämrad svullnad, andningssvårigheter, ökad feber → sjukhus.',
+ mallar:[
+  {id:'m1',label:'Alt A — I&D + Kausal behandling',behandlingTag:'incision dränage I&D',followup:'Återbesök om 2–3 dagar för dranborttagning.',
+   text:`Diagnos: K04.6/K04.7 Periapikal abscess tand [nr].
+
+Anamnes: Svullnad [lokalisation] sedan [tid]. Smärta, temp [°C].
+Tuggsvårigheter. Ingen dysfagi. Ingen andningspåverkan.
+Mediciner: [Antikoagulation? Immunosuppression?]
+Allergi: Nej / Ja [specificera]
+
+Extraoralt:
+- Svullnad [lokalisation], ca [cm]
+- Hud: [Rodnad / varm / fluktuation: ja/nej]
+- Lymfkörtlar: [Normala / Submandibulära förstorade och ömma]
+- Gapförmåga: [mm] mm (normalt >35 mm)
+- Temp: [°C], Puls: [/min]
+
+Intraoralt:
+- Svullnad vestibulär regio tand [nr]
+- Fluktuation: [Ja/Nej]
+- Kyla-test: Negativ
+- Perkussion: Kraftigt positiv
+- Fistel: [Nej / Ja, lokalisation]
+
+Rtg: Periapikal radioluceens tand [nr], ca [mm].
+
+Bedömning: Odontogen periapikal abscess tand [nr].
+
+Åtgärd:
+1. Ytbedövning Xylocain gel + Ledningsblockad [typ] artikain + adrenalin
+2. Incision & Dränage [lokalisation] — purulent dränage, spolning NaCl
+   Gummidrän inlagt och suturerat.
+3. Kausal åtgärd: [Extraktion tand [nr] / Trepanation + provisorium]
+
+Antibiotika: [Ej indicerat vid lokal svullnad utan systemisk påverkan]
+Alt: Fenoximetylpenicillin (Kåvepenin) 1,6 g × 3 i 5–7 dagar.
+
+Information: Drän avlägsnas om 2–3 dagar. Mjuk kost, god munhygien.
+Analgetika: Ibuprofen 400–600 mg × 3.
+Feber ska normaliseras inom 24–48 h.
+AKUT kontakt vid: försämrad svullnad, andningssvårigheter, ökad feber.
+
+Uppföljning: Återbesök om 2–3 dagar (dränborttagning, läkningskontroll).`}],
+ extraAtgard:[{id:'antibiotika',label:'Antibiotika (systemisk påverkan)',text:'Fenoximetylpenicillin (Kåvepenin) 1,6 g × 3 i 5–7 dagar. Vid pc-allergi: klindamycin 150 mg × 3.'},{id:'akutremiss',label:'Akutremiss sjukhus (spridning)',text:'AKUT remiss utfärdad till sjukhus — spridningstecken (trismus/ögon/svalg).'}],
+ lakemedel:'Ibuprofen 400–600 mg × 3. Kåvepenin 1,6 g × 3 vid systemisk påverkan.',remissSpec:'Käkkirurg'},
+
+{id:'vark08',icd:'K04.4',name:'Postendodontisk Flare-up',cat:'Endodonti',scId:'VARK-08-FLARE',
+ symptom:['flare-up','förhöjd tand','öm','träningsvärk','postop smärta'],
+ behandling:['ocklusionsjustering','information','analgetika'],varning:null,
+ mallar:[
+  {id:'m1',label:'Mall — Flare-up utan abscess',behandlingTag:'information ocklusionsjustering',followup:'Telefonuppföljning om 3 dagar.',
+   text:`Diagnos: K04.4 Akut apikal parodontit (Flare-up) tand [nr].
+
+Anamnes: Rotbehandling genomförd för [X] dagar sedan.
+Nu kraftig tuggömhet och upplevelse av "förhöjd" tand. Ingen feber. Ingen svullnad.
+
+Status:
+- Ingen synlig eller palperbar svullnad
+- Perkussion: Kraftigt öm (VAS [X]/10)
+- Provisoriet [sitter kvar / är högt i okklusion]
+
+Rtg (apikalbild [nr]): Rotfyllning/inlägg [adekvat / med överskott / kort].
+Rothinnespalt: [Normal / Vidgad].
+
+Bedömning: Flare-up, [mekanisk retning / ödem]. Inga abscesstecken.
+
+Åtgärd:
+- Information om normalt läkningsförlopp ("träningsvärk i benet"), avtar 2–5 dagar
+- Ocklusionsjustering (tanden tagen ur okklusion)
+- Ibuprofen 400 mg + Paracetamol 1 g vid behov
+
+Antibiotika: Ej indicerat (inga systemiska tecken).
+
+Uppföljning: Telefonuppföljning om 3 dagar. Åter vid försämring.`}],
+ extraAtgard:[{id:'antibiotika',label:'Antibiotika (om indikation)',text:'Fenoximetylpenicillin 1,6 g × 3 i 5–7 dagar vid systemisk påverkan.'}],
+ lakemedel:'Ibuprofen 400 mg + Paracetamol 1 g v.b.',remissSpec:null},
+// ── PARODONTOLOGI ──
+{id:'vark11p',icd:'K05.1 / K05.3',name:'Gingivit & Parodontit',cat:'Parodontologi',scId:'VARK-11-PAROD',
+ symptom:['blödande tandkött','röd gingiva','fickor','parodontit','gingivit'],
+ behandling:['depuration','scaling','munhygieninstruktion'],varning:null,
+ mallar:[
+  {id:'m1',label:'Mall — Gingivit / Parodontit',behandlingTag:'depuration scaling',followup:'Läkningskontroll om 2 veckor / 3–6 månader.',
+   text:`Diagnos: K05.1 Kronisk gingivit (alt. K05.3 Parodontit Stadium [I/II/III/IV] Grad [A/B/C]).
+
+Anamnes: Patienten söker för blödande tandkött vid borstning.
+Ingen akut smärta. Röker: [Ja/Nej]. Diabetes: [Ja/Nej].
+
+Status:
+- Gingiva: [Generellt rodnad och ödematös / Lokalt regio XX]
+- BoP: [>30% / Lokal blödning regio XX]
+- PPD: [Generellt 2–3 mm / Fickor ≥4 mm regio XX]
+- CAL: [Normal / Förlust noterad regio XX]
+- Rtg: [Intakt bennivå / Sänkt bennivå XX mm från ECG regio XX]
+
+Bedömning: Plackinducerad [gingivit / parodontit] till följd av bristfällig approximal rengöring.
+
+Åtgärd:
+- Patientundervisning om biofilm och sjukdomsförlopp
+- Borsttekniksinstruktion (Bass-teknik + mellanrumsborste storlek [X])
+- Depuration hela bett supragingivalt [/ subgingival scaling regio XX]
+
+Uppföljning: Läkningskontroll [2 veckor / 3–6 månader].`}],
+ extraAtgard:[{id:'klorhex',label:'Klorhexidinsköljning',text:'Klorhexidin 0,2% sköljning × 2 i 2 veckor ordinerat.'},{id:'remiss_par',label:'Remiss parodontist',text:'Remiss utfärdad till parodontist för fortsatt behandling.'}],
+ lakemedel:'Klorhexidin 0,2% sköljning.',remissSpec:'Parodontist'},
+
+{id:'vark05',icd:'K05.2',name:'Perikoronit',cat:'Parodontologi',scId:'VARK-05-PERI',
+ symptom:['perikoronit','operculum','visdomstand','svullnad','trismus'],
+ behandling:['spolning','rengöring','extraktion antagonist','antibiotika'],
+ varning:'Antibiotika EJ indicerat vid okomplicerad perikoronit utan systemisk påverkan (Strama).',
+ mallar:[
+  {id:'m1',label:'Mall — Perikoronit',behandlingTag:'spolning rengöring',followup:'Återbesök om 3–5 dagar för kontroll.',
+   text:`Diagnos: Akut perikoronit tand [38/48] (K05.2).
+Orsak: Partiell eruption [, antagonist tand [28/18] biter på operkulet].
+
+Anamnes: Smärta regio [38/48] sedan [tid]. Sväljning/gapning: [Nej].
+Feber: [Nej / Ja: °C]. Dålig smak: [Ja/Nej].
+
+Status:
+- Operculum [38/48]: Svullnad och rodnad [, pus vid palpation]
+- Gapförmåga: [mm] mm (normalt >35 mm)
+- Antagonist [28/18] biter på operkulet: [Ja/Nej]
+- Inga spridningstecken (lymfkörtlar, extraoral svullnad)
+
+Åtgärd:
+- Infiltrationsanestesi / Ledningsbedövning
+- Riklig spolning under operculum med NaCl + H₂O₂ 3%
+- Mekanisk rengöring
+[- Extraktion antagonist tand [28/18] för avlastning]
+
+Antibiotika: Ej indicerat (ingen systemisk påverkan).
+[Alt vid systemisk påverkan: PcV 1,6 g × 3 i 5–7 dagar]
+
+Ordination: Klorhexidin 0,2% sköljning × 2 i 5–7 dagar.
+Analgetika: Ibuprofen 400 mg + Paracetamol 1 g vid behov.
+
+Information: Extraktion av tand [38/48] planeras i kallt skede.
+
+Uppföljning: Återbesök [3–5 dagar] för kontroll.`}],
+ extraAtgard:[{id:'antagonist',label:'Antagonist extraherad',text:'Extraktion av antagonist [28/18] utförd för avlastning.'},{id:'antibiotika',label:'Antibiotika (systemisk)',text:'PcV 1,6 g × 3 i 5–7 dagar ordinerat.'}],
+ lakemedel:'Klorhexidin 0,2% sköljning. Ibuprofen 400 mg + Paracetamol 1 g v.b.',remissSpec:null},
+
+{id:'vark12',icd:'K05.20 / K05.21',name:'Parodontal Abscess',cat:'Parodontologi',scId:'VARK-12-PARAB',
+ symptom:['parodontal abscess','svullnad','hög tand','pus','ficka'],
+ behandling:['dränage','spolning','antibiotika'],varning:null,
+ mallar:[
+  {id:'m1',label:'Mall — Parodontal abscess',behandlingTag:'dränage spolning',followup:'Återbesök om 3–5 dagar. Parodontal sanering planeras.',
+   text:`Diagnos: K05.20 Akut parodontal abscess tand [nr].
+
+Anamnes: Svullnad och smärta tand [nr] sedan [tid].
+Tanden känns "förhöjd". Feber: [Nej / Ja: °C]. Dålig smak: [Ja/Nej].
+
+Status:
+- Kyla-test: Positiv (vital)
+- Svullnad: Lokal fluktuerande svullnad buckalt / lateralt på roten
+- Pus: Tömmer sig vid sondering [Ja/Nej]
+- Fickdjup: [X] mm buckalt / lateralt tand [nr]
+
+Rtg: Marginal benförlust ca [X]%. Ingen apikal destruktion.
+
+Bedömning: Parodontal abscess [lokaliserad / med systemisk påverkan].
+
+Åtgärd:
+- Dränage via fickan (kyrett / pincett)
+- Spolning koksalt
+[- Lätt ocklusionsjustering]
+
+[Antibiotika: PcV 1,6 g × 3 i 5–7 dagar — kontraindikationer kontrollerade u.a.]
+
+Analgetika: Ibuprofen 400 mg + Paracetamol 1 g vid behov.
+
+Uppföljning: Återbesök [3–5 dagar]. Parodontal sanering planeras.`}],
+ extraAtgard:[{id:'antibiotika',label:'Antibiotika',text:'PcV 1,6 g × 3 i 5–7 dagar. Vid allergi: klindamycin 150 mg × 3.'}],
+ lakemedel:'Ibuprofen 400 mg + Paracetamol 1 g v.b. PcV vid systemisk påverkan.',remissSpec:'Parodontist'},
+
+{id:'vark11g',icd:'A69.1 / K05.10',name:'Nekrotiserande Gingivit (ANUG/NG)',cat:'Parodontologi',scId:'VARK-11-GING',
+ symptom:['ANUG','nekrotiserad','spontanblödning','foetor','pseudomembran','papiller'],
+ behandling:['debridering','depuration','klorhexidin','metronidazol'],
+ varning:'Sällsynt — utred alltid immunbrist (leukemi, neutropeni, HIV) hos barn.',
+ mallar:[
+  {id:'m1',label:'Mall — ANUG / Nekrotiserande gingivit',behandlingTag:'debridering klorhexidin',followup:'Återbesök om 2–3 dagar. Parodontal sanering planeras.',
+   text:`Diagnos: K05.10 Akut nekrotiserande ulcerös gingivit (ANUG/NG).
+
+Anamnes: Intensiv gingival smärta och spontanblödning sedan [tid].
+Röker: [X] cig/dag. Stress: [Ja/Nej]. Feber: [Nej / Ja: °C].
+
+Status:
+- Gingiva: Nekrotiska, inverterade papiller regio [XX–YY]
+- Pseudomembran (gråvit hinna) synlig
+- Kraftig kontaktblödning
+- Tydlig foetor ex ore
+- Lymfkörtlar: [Normala / Ömma submandibulära]
+
+Åtgärd:
+- Ytanestesi (Xylocain gel)
+- Varsam rengöring med H₂O₂ 3% dränkta bomullspellets
+- Supragingival depuration (ej djup subgingival i akutskede)
+
+[Antibiotika: Metronidazol (Flagyl) 400 mg × 3 i 5–7 dagar — vid allmänpåverkan]
+
+Ordination: Klorhexidin 0,2% sköljning × 2 i 10–14 dagar. Mjuk tandborste.
+
+Information: Rökstopp starkt rekommenderat. Mjuk kost.
+
+Uppföljning: Återbesök [2–3 dagar]. Parodontal sanering planeras.`}],
+ extraAtgard:[{id:'metronidazol',label:'Metronidazol',text:'Metronidazol (Flagyl) 400 mg × 3 i 5–7 dagar ordinerat.'},{id:'remiss_barnmed',label:'Remiss barnmedicin (immunutredning)',text:'Akut remiss utfärdad till barnmedicin för blodstatus och immunutredning.'}],
+ lakemedel:'Klorhexidin 0,2%. Metronidazol 400 mg × 3 vid allmänpåverkan.',remissSpec:'Läkare/VC'},
+// ── BETTFYSIOLOGI ──
+{id:'kir26',icd:'S03.0',name:'Käkledsluxation',cat:'Bettfysiologi',scId:'KIR-26-LUX',
+ symptom:['käkledsluxation','öppen mun','kan inte stänga','käke låst'],
+ behandling:['reponering','Hippokrates','diazepam'],
+ varning:'Premedicinering Diazepam 5 mg — kontraindikationer (myasthenia, sömnapné, leversjukdom, graviditet) måste screeneras. Ledsagare måste ordnas.',
+ mallar:[
+  {id:'m1',label:'Mall — Manuell reponering (Hippokrates)',behandlingTag:'reponering Hippokrates',followup:'Återbesök vid recidiv. Remiss käkkirurg vid återkommande luxationer.',
+   text:`Diagnos: S03.0 Käkledsluxation (bilateral / unilateral [sin/dx]).
+
+Anamnes: Käken låste sig i öppet läge i samband med [gäspning / tandbehandling].
+Smärta föreligger. Patienten kan inte stänga munnen.
+
+Status:
+- Tomma ledskålar palperas framför tragus
+- Öppet bett. Hakan [central / devierar mot [sida]]
+- Gapförmåga fixerad i öppet läge
+
+[Premedicinering: Diazepam 5 mg p.o. — Kontraindikationer screenade u.a. Ledsagare ordnad.]
+[Lokalanestesi i m. masseter bilat. för ytterligare muskelrelaxation.]
+
+Åtgärd: Manuell reponering enligt Hippokrates utförd utan komplikationer.
+Ocklusionskontroll — normal ocklusion uppnådd.
+
+Information: Skonkost 1–2 veckor. Undvik stora gaprörelser.
+Håll emot hakan vid gäspning.
+Analgetika: Ibuprofen 400–600 mg / Paracetamol 1 g vid behov.
+[Kontraindikationer NSAID screenade u.a.]
+
+Uppföljning: Åter vid recidiv. Remiss käkkirurg vid återkommande luxationer för eminektomibedömning (Prio 3).`}],
+ extraAtgard:[{id:'diazepam',label:'Diazepam given (premedicinering)',text:'Diazepam 5 mg p.o. given preoperativt. Ledsagare ordnad.'},{id:'remiss_kak',label:'Remiss käkkirurg (recidiv)',text:'Remiss utfärdad till käkkirurg för eminektomi-bedömning.'}],
+ lakemedel:'Ibuprofen 400–600 mg v.b. Paracetamol 1g v.b.',remissSpec:'Käkkirurg'},
+
+{id:'bett28',icd:'M79.1 / M25.5 / K07.6',name:'Akut Myalgi & Artralgi',cat:'Bettfysiologi',scId:'BETT-28-MYALGI',
+ symptom:['käksmärta','myalgi','artralgi','tuggmuskel','tuggsmärta','TMD'],
+ behandling:['bettskena','NSAID','information','rörelseträning'],varning:null,
+ mallar:[
+  {id:'m1',label:'Mall — Akut myalgi / artralgi',behandlingTag:'NSAID bettskena information',followup:'Telefonuppföljning om 2 veckor. Återbesök för bettskena.',
+   text:`Diagnos: M79.1 Myalgi tuggmuskulatur + M25.5 Artralgi käkled [sin/dx].
+(Alternativt: K07.6 Käkledsbesvär)
+
+Anamnes: Smärta i [sida] käke sedan [tid], förvärras vid tuggning.
+Utlösande: [Stress / Bruxism / Långvarig gapning / Trauma].
+
+Status:
+- Maxgap aktivt: [XX] mm [smärtfritt / med smärta]
+- Palpation m. masseter [sida]: Kraftig ömhet med igenkänd smärta (familiar pain) [ja/nej]
+- Palpation m. temporalis [sida]: [Öm/u.a.]
+- Palpation laterala Polen käkled [sida]: [Öm/u.a.]
+- Tänder: Perkussion u.a. Kyla-test u.a.
+
+Bedömning: Akut käkfunktionsstörning (myalgi + artralgi) — icke-odontogen orsak.
+
+Åtgärd:
+- Patientundervisning om god prognos och vikten av belastningsreduktion
+- Rörelseträningsinstruktion (töjning och avslappning)
+- Råd: skonkost och käkvila
+- NSAID: [Ibuprofen 400 mg × 3 / Naproxen 500 mg × 2]
+  [Kontraindikationer (astma, ulcus, hjärtsvikt, blödningsrisk) screenade u.a.]
+
+Uppföljning: [Återbesök bettskena / Telefonuppföljning om 2 veckor].`}],
+ extraAtgard:[{id:'bettskena',label:'Bettskena planeras',text:'Michigan-bettskena planeras vid nästa besök.'}],
+ lakemedel:'Ibuprofen 400 mg × 3 eller Naproxen 500 mg × 2 i 7–10 dagar.',remissSpec:null},
+
+{id:'bett29',icd:'K07.6',name:'Akut Käkledslåsning (Closed Lock)',cat:'Bettfysiologi',scId:'BETT-29-CLOSED',
+ symptom:['closed lock','käklåsning','diskförskjutning','inskränkt gapförmåga','deflektion'],
+ behandling:['manuell distraktion','upplåsning','NSAID','rörelseträning'],varning:null,
+ mallar:[
+  {id:'m1',label:'Mall — Akut closed lock',behandlingTag:'manuell distraktion upplåsning',followup:'Återbesök om 2 veckor. Remiss vid kvarstående låsning.',
+   text:`Diagnos: K07.6 Käkledsbesvär (Diskförskjutning utan återgång [sin/dx]).
+
+Anamnes: [Vaknade med / Plötslig debut] inskränkt gapförmåga.
+Tidigare knäppningar som nu upphört. Smärta framför örat.
+
+Status:
+- Deflektion åt [hö/vä] vid gapning (mot den låsta sidan)
+- Maxgap: [XX] mm (hård end-feel) [normalt ≥40 mm]
+- Palpationsöm laterala Polen käkled [sida]
+- Tänder u.a. (perk. / kyla u.a.)
+
+Bedömning: Akut closed lock — diskförskjutning utan återgång.
+
+Åtgärd:
+- Manuell distraktion (upplåsning) prövad [med/utan] effekt
+- Patientutbildning om tillståndet och gynnsam långtidsprognos
+- NSAID [Preparat, Dos — kontraindikationer screenade u.a.]
+- Rörelseträningsinstruktion
+
+Uppföljning: Återbesök 2 veckor.
+Vid kvarstående låsning → Remiss Bettfysiolog / Käkkirurg för artrocentes.`}],
+ extraAtgard:[{id:'remiss_bett',label:'Remiss bettfysiolog/käkkirurg',text:'Remiss utfärdad till bettfysiolog/käkkirurg för artrocentes.'}],
+ lakemedel:'NSAID [Preparat, Dos] i 7–10 dagar.',remissSpec:'Käkkirurg'},
+
+{id:'bett34',icd:'K07.6 / M25.5',name:'Käkledsartrit & Artralgi',cat:'Bettfysiologi',scId:'BETT-34-ARTRIT',
+ symptom:['artrit','artralgi','tänder passar inte ihop','ökat bett','ödem'],
+ behandling:['NSAID','naproxen','information','bettskena'],
+ varning:'SLIPA ALDRIG på tänder vid reversibel bettförändring — bettet återgår spontant.',
+ mallar:[
+  {id:'m1',label:'Mall — Käkledsartrit / artralgi',behandlingTag:'NSAID information',followup:'Kontakt vid kvarstående symtom efter kur. Bettskena vid behov.',
+   text:`Diagnos: K07.6 Käkledsbesvär (Artrit/Artralgi [sin/dx]).
+
+Anamnes: Smärta framför örat [sida] uppstod efter [överbelastning/trauma].
+Upplever att "tänderna inte passar ihop".
+
+Status:
+- Gapförmåga: [XX] mm, smärtbegränsad
+- Palpationsöm lateralt/posteriort käkled [sida]
+- Bett: Ipsilateral molarprematurkontakt [sida] + kontralateralt öppet bett
+  (sekundärt till intraartikulärt ödem)
+- Tänder: u.a. (perk. / kyla u.a.)
+
+Bedömning: Akut käkledsartrit/-artralgi med ödem.
+
+Åtgärd:
+- Information: Bettförändringen är REVERSIBEL — normaliseras vid läkning
+- INGEN BETTSLIPNING — bettet återgår spontant
+- Skonkost och käkvila
+- Naproxen 500 mg × 2 i 10 dagar
+  [Medicinsk anamnes: astma, hjärtsvikt, ulcus, blödningsrisk screenad — U.A.]
+
+Uppföljning: Kontakt vid kvarstående symtom efter kur. Bettskena vid behov.`}],
+ extraAtgard:[{id:'bettskena',label:'Bettskena planeras',text:'Michigan-bettskena planeras.'}],
+ lakemedel:'Naproxen 500 mg × 2 i 10 dagar. Kontraindikationer screenade.',remissSpec:null},
+
+{id:'bett30',icd:'M26.6',name:'Traumatisk Artrit',cat:'Bettfysiologi',scId:'BETT-30-TRAUMA',
+ symptom:['traumatisk artrit','slag mot käken','tänder passar inte','kyla'],
+ behandling:['NSAID','naproxen','kyla','skonkost'],
+ varning:'SLIPA ALDRIG på tänder vid reversibel bettförändring.',
+ mallar:[
+  {id:'m1',label:'Mall — Traumatisk käkledsartrit',behandlingTag:'NSAID kyla skonkost',followup:'Uppföljning om 2 veckor.',
+   text:`Diagnos: M26.6 Traumatisk käkledsartrit [sin/dx].
+
+Anamnes: [Slag mot hakan / Extremt hårt bett] [igår/för X dagar sedan].
+Tänderna upplevs inte passa ihop.
+
+Status:
+- Gapförmåga: [XX] mm, smärtbegränsad
+- Palpationsöm lateralt/posteriort käkled [sida]
+- Bett: Ipsilateral molarprematurkontakt och kontralateralt öppet bett
+- Inga kliniska frakturindikationer
+
+Bedömning: Akut traumatisk artrit med intraartikulärt ödem.
+
+Åtgärd:
+- Information: Bettförändringen är reversibel — SLIPA EJ på tänderna
+- Kyla lokalt (ispack max 15 min)
+- Flytande/mosad kost strikt
+- Naproxen 500 mg × 2 i 10 dagar [Kontraindikationer screenade u.a.]
+
+Uppföljning: Kontroll om 2 veckor.`}],
+ extraAtgard:[],lakemedel:'Naproxen 500 mg × 2 i 10 dagar.',remissSpec:null},
+// ── KIRURGI ──
+{id:'vark07',icd:'K10.3',name:'Alveolit (Dry Socket)',cat:'Kirurgi',scId:'VARK-07-ALV',
+ symptom:['alveolit','dry socket','bultande smärta','dålig smak','post-extraktion'],
+ behandling:['spolning','tamponad','Terracortril'],
+ varning:'Aldrig skrapa alveolen — försiktig spolning ENDAST.',
+ mallar:[
+  {id:'m1',label:'Mall — Alveolit',behandlingTag:'tamponad spolning',followup:'Återbesök om 2–3 dagar för byte av tamponad.',
+   text:`Diagnos: K10.3 Alveolit (Dry socket) regio [XX].
+
+Anamnes: Extraktion utförd för [3] dagar sedan.
+Tilltagande bultande smärta sedan [igår]. Dålig smak i munnen.
+Ingen feber. Ingen svullnad. Ingen parestesi.
+
+Status:
+- Alveol [XX]: Koagel saknas. Blottat intraalveolärt ben synligt.
+- Rodnad gingivalkant. [Matrester i alveolen.]
+- Ingen svullnad, ingen pus — osteomyelit/infektion utesluts.
+
+Åtgärd:
+- Varsam spolning av alveolen med koksalt (EJ skrapat!)
+- Tamponad applicerad, indränkt i Terracortril + Xylocain-salva 5% (1:1)
+- Omedelbar smärtlindring bekräftad av patienten
+
+Information: Paracetamol + Ibuprofen vid behov.
+[Kontraindikationer NSAID screenade u.a.]
+
+Uppföljning: Återbesök om 2–3 dagar för byte av tamponad.`}],
+ extraAtgard:[{id:'antibiotika',label:'Antibiotika (vid infektion)',text:'Antibiotika ej indicerat vid ren alveolit utan infektion.'}],
+ lakemedel:'Paracetamol + Ibuprofen v.b. Kontraindikationer screenade.',remissSpec:null},
+
+{id:'kir21',icd:'T81.0',name:'Postoperativ Blödning',cat:'Kirurgi',scId:'KIR-21-BLOD',
+ symptom:['blödning','post-extraktion','leverkoagel','antikoagulantia'],
+ behandling:['hemostas','sutur','Surgicel','Spongostan','Cyklokapron','kryssutur'],
+ varning:'EJ NSAID/Ibuprofen till blödande patient. Mepivakain UTAN adrenalin.',
+ mallar:[
+  {id:'m1',label:'Mall — Postoperativ blödning',behandlingTag:'hemostas sutur',followup:'Kontakta omgående vid ny blödning.',
+   text:`Diagnos: T81.0 Postoperativ blödning regio [XX].
+
+Anamnes: Extraktion [datum]. Ihållande blödning sedan dess.
+Mediciner: [Waran (INR: [X.X]) / Eliquis / Xarelto / Ingen medicinering].
+Inte allmänpåverkad.
+
+Status:
+- Riklig blödning från [mjukvävnadskanten / alveolen] regio [XX]
+- Leverkoagel avlägsnat
+
+Åtgärd:
+- Sugning av blod och koagel
+- Infiltration Mepivakain (UTAN adrenalin)
+- [Surgicel / Spongostan] applicerat i alveol
+- [1] st Vicryl 4-0 kryssutur lagd
+- Kompression med kompress dränkt i Cyklokapron 20–30 min
+
+Resultat: Blödning stillad (torr) vid hemgång.
+
+Information (muntlig + skriftlig):
+- Hög huvudända i natt
+- Undvik fysisk ansträngning 24 h
+- Undvik NSAID/Ibuprofen
+- Kontakta vid ny blödning
+[- Recept Cyklokapron munskölj utfärdat]
+
+Uppföljning: Kontakta omgående vid ny blödning.`}],
+ extraAtgard:[{id:'cyklokapron',label:'Cyklokapron munskölj utfärdat',text:'Recept Cyklokapron munskölj utfärdat.'},{id:'remiss',label:'Remiss vid koagulationsrubbning',text:'Remiss utfärdad till koagulationscentrum.'}],
+ lakemedel:'Paracetamol v.b. EJ NSAID.',remissSpec:null},
+
+{id:'kir22',icd:'T81.8 / J34.8',name:'Sinuskommunikation',cat:'Kirurgi',scId:'KIR-22-SINUS',
+ symptom:['sinuskommunikation','sinus','Valsalva','luftpassage'],
+ behandling:['sutur','Rehrmann','plastik','antibiotika','Nezeril'],
+ varning:'⚠️ SNYTFÖRBUD 14 dagar. Nysning med ÖPPEN mun. Inga sugrör.',
+ mallar:[
+  {id:'m1',label:'Alt A — Liten (<2 mm) + sutur',behandlingTag:'sutur',followup:'Återbesök om 1–2 veckor för suturtagning.',
+   text:`Diagnos: T81.8 Sinuskommunikation regio [XX] (uppkommen vid extraktion av [tand]).
+
+Status:
+- Valsalvas test: Positivt (luftpassage bekräftad)
+- Kommunikation <2 mm
+- Rtg: Ingen rot kvarliggande i sinus (u.a. / [fynd])
+
+Åtgärd: Suturering av alveol med kryssutur Vicryl 4-0 + Spongostan
+
+Farmaka:
+- Fenoximetylpenicillin (Kåvepenin) 1,6 g × 3 i [5–7] dagar
+- Nezeril nässpray (slemhinneavsvällande) i 7 dagar
+
+Information: Patienten informerad om komplikationen.
+- SNYTFÖRBUD 14 dagar
+- Nysning med ÖPPEN mun
+- Inga sugrör, undvik övertryck
+
+Uppföljning: Återbesök [1–2 veckor] för suturtagning och kontroll.`},
+  {id:'m2',label:'Alt B — Stor (>2 mm) + Rehrmann/remiss',behandlingTag:'Rehrmann plastik',followup:'Suturtagning om 1–2 veckor. Läkningskontroll.',
+   text:`Diagnos: T81.8 Sinuskommunikation regio [XX] — stor kommunikation >2 mm.
+
+Status: Valsalvas test positivt. Stor kommunikation.
+
+Åtgärd: [Alt B: Rehrmann-plastik utförd. Buckal lambå mobiliserad via periostsnitt.
+Spänningsfri slutning mot palatinal vävnad.]
+[Alt C: Temporär tamponad + akut remiss till käkkirurg]
+
+Farmaka:
+- Fenoximetylpenicillin (Kåvepenin) 1,6 g × 3 i 5–7 dagar
+- Nezeril nässpray i 7 dagar
+
+Information: SNYTFÖRBUD 14 dagar. Nysning med öppen mun. Inga sugrör.
+
+Uppföljning: Suturtagning om 1–2 veckor.`}],
+ extraAtgard:[{id:'akutremiss_kak',label:'Akutremiss käkkirurg',text:'Akut remiss utfärdad till käkkirurg.'}],
+ lakemedel:'Kåvepenin 1,6 g × 3 i 5–7 dagar. Nezeril nässpray 7 dagar.',remissSpec:'Käkkirurg'},
+
+{id:'kir23',icd:'T81.4',name:'Postoperativ Infektion',cat:'Kirurgi',scId:'KIR-23-INFEK',
+ symptom:['postoperativ infektion','svullnad','feber','pus','abscess'],
+ behandling:['incision','dränage','antibiotika','gummidrän'],
+ varning:'LA: Mandibularblockad — EJ infiltration vid lågt pH i infekterad vävnad.',
+ mallar:[
+  {id:'m1',label:'Mall — Postoperativ sårinfektion',behandlingTag:'incision dränage',followup:'Återbesök om 2 dagar för dranborttagning.',
+   text:`Diagnos: T81.4 Postoperativ sårinfektion regio [XX].
+
+Anamnes: Extraktion för [4] dagar sedan. Tilltagande svullnad,
+feber ([38.X]°C) och allmänpåverkan.
+
+Status:
+- Svullnad och rodnad i omslagsveck regio [XX]
+- Fluktuerande abscess [Ja/Nej]. Pus [sipprar / tömmer sig] från alveolen.
+- Trismus: [Nej / Ja, gapförmåga X mm]
+- Lymfkörtlar: [u.a. / Submandibulära förstorade och ömma]
+
+Åtgärd:
+- LA: Mandibularblockad (ej infiltration pga sänkt pH i infekterad vävnad)
+- Incision i omslagsvecket
+- Riklig pus dränerad
+- Spolning koksalt
+- Gummidrän inlagt och suturerat
+
+Antibiotika: Fenoximetylpenicillin (Kåvepenin) 1,6 g × 3 i [5–7] dagar.
+[Kontraindikationer + allergi kontrollerade u.a.]
+
+Uppföljning: Återbesök om [2] dagar för dranborttagning och läkningskontroll.`}],
+ extraAtgard:[{id:'antibiotika',label:'Antibiotika (klindamycin vid allergi)',text:'Klindamycin 150 mg × 3 i 5–7 dagar vid pc-allergi.'}],
+ lakemedel:'Kåvepenin 1,6 g × 3 i 5–7 dagar. Vid allergi: klindamycin 150 mg × 3.',remissSpec:null},
+
+{id:'kir24',icd:'T81.8 / S03.2',name:'Dislocerad Tand / Rot',cat:'Kirurgi',scId:'KIR-24-DISLOC',
+ symptom:['dislocerad rot','rot i sinus','munbotten','Valsalva'],
+ behandling:['remiss','sutur','antibiotika','Nezeril'],
+ varning:'⚠️ STOPP — söker ALDRIG i blindo. SNYTFÖRBUD. Akut remiss vid sinusdislokation.',
+ mallar:[
+  {id:'m1',label:'Mall — Dislokation till sinus/munbotten',behandlingTag:'remiss',followup:'Akut/snar remiss käkkirurg.',
+   text:`Diagnos: T81.8 Dislokation av rot/tand [nr] till [Sinus maxillaris / Munbotten].
+
+Status:
+- Under extraktion dislocerades [palatinala / mesiala] roten av tand [XX].
+- Rot ej längre synlig i alveolen.
+- Rtg (OPG/periapikal) bekräftar rotfragment i [sinus / munbotten].
+- Valsalva: [Positivt / Negativt]
+
+Åtgärd:
+- Extraktionen avbröts omedelbart — sökte ej vidare i blindo
+- Alveolen suturerades med kryssutur
+
+Farmaka:
+- Fenoximetylpenicillin (Kåvepenin) 1,6 g × 3 i 5–7 dagar
+- Nezeril nässpray i 7 dagar
+
+Information: SNYTFÖRBUD 14 dagar. Nysning med öppen mun.
+Roten kan ej kvarstå i sinus (risk för kronisk sinuit / aspergillos).
+
+Remiss: Akut/snar remiss till Käkkirurgiska kliniken.`}],
+ extraAtgard:[],lakemedel:'Kåvepenin 1,6 g × 3 i 5–7 dagar. Nezeril 7 dagar.',remissSpec:'Käkkirurg'},
+
+{id:'kir25',icd:'T81.8 / G50.1',name:'Nervpåverkan (Parestesi)',cat:'Kirurgi',scId:'KIR-25-NERV',
+ symptom:['parestesi','hypestesi','känselbortfall','nervpåverkan','underläpp','haka'],
+ behandling:['information','uppföljning','remiss'],
+ varning:'Pat informeras om rätt till ersättning via Patientförsäkringen (LÖF). Invaliditetsbedömning sker 2 år efter.',
+ mallar:[
+  {id:'m1',label:'Mall — Postoperativ parestesi',behandlingTag:'information uppföljning',followup:'Telefonuppföljning om 1 vecka. Remiss käkkirurg vid utebliven bättring.',
+   text:`Diagnos: T81.8 Komplikation till ingrepp (Parestesi/Hypestesi n. alveolaris inf / n. lingualis).
+
+Anamnes: Sensibiliteten har inte återkommit i [höger underläpp/haka]
+efter op av [48] för [2 dagar] sedan. [Ingen smärta / Stickningar].
+
+Status:
+- Sensibilitetstest utfört (trubbig och vass sond):
+  [Hypestesi / Anestesi] i [hela höger underläpp och haka]
+- Tunga: [Normal känsel (n. lingualis intakt) / Påverkad]
+- Ingen infektion eller svullnad
+- Utbredning kartlagd och dokumenterad i journal
+
+Bedömning: Postoperativ parestesi, sannolikt pga [kärlkramp / hematom / mekaniskt trauma vid op].
+
+Åtgärd:
+- Patienten lugnad (ofta reversibelt på veckor–månader)
+- Varnad för bitskador och brännskador (varmt kaffe/mat)
+
+Uppföljning: Telefonuppföljning [1 vecka].
+Rtg / remiss käkkirurg vid utebliven förbättring.
+
+OBS: Patienten informerad om rätt till ersättning via Patientförsäkringen (LÖF).
+Invaliditetsbedömning sker 2 år efter skadetillfället.`}],
+ extraAtgard:[{id:'remiss_nerv',label:'Remiss käkkirurg (akut)',text:'Akutremiss utfärdad till käkkirurg för ev. mikrokirurgisk nervsutur.'},{id:'lof',label:'LÖF-info given',text:'Pat informerad om rätt till ersättning via Patientförsäkringen (LÖF). Skrift utlämnad.'}],
+ lakemedel:'Ingen medicinering.',remissSpec:'Käkkirurg'},
+
+{id:'kir27',icd:'S02.4',name:'Tuberfraktur',cat:'Kirurgi',scId:'KIR-27-TUBER',
+ symptom:['tuberfraktur','tuber maxillae','rörligt ben','benfragment'],
+ behandling:['sutur','reponering','splint','extraktion'],
+ varning:'Avbryt DIREKT extraktion vid misstanke. Remiss käkkirurg om kompetens saknas.',
+ mallar:[
+  {id:'m1',label:'Alt A — Liten fraktur: extraktion + sutur',behandlingTag:'extraktion sutur',followup:'Läkningskontroll om 2 veckor.',
+   text:`Diagnos: S02.4 Tuberfraktur vid extraktion av [28].
+
+Status: Rörligt ben (tuber maxillae) noterades vid luxation av [28].
+
+Åtgärd: Extraktionen avbröts DIREKT.
+
+Alt A — Liten fraktur:
+Tanden och fragmentet lossades varsamt via skalpell.
+Extraherades. Alveol suturerades med Vicryl 4-0.
+
+Information: Mycket mjuk kost 2–4 veckor. Undvik stora gaprörelser.
+
+Uppföljning: Läkningskontroll om 2 veckor.`},
+  {id:'m2',label:'Alt B — Stor fraktur: reponering + vänta',behandlingTag:'reponering splint',followup:'Läkningskontroll 2 veckor. Operativt avlägsnande om 4–6 veckor.',
+   text:`Diagnos: S02.4 Tuberfraktur vid extraktion av [28].
+
+Åtgärd: Extraktionen avbröts DIREKT.
+
+Alt B — Stor fraktur:
+Tand och benfragment reponerades på plats med digitalt tryck.
+Ocklusion kontrollerad u.a.
+Stabiliserad med kompositsplint mot tand [27].
+
+Uppföljning: Läkningskontroll 2 veckor.
+Operativt avlägsnande planerat om 4–6 veckor [eller remiss käkkirurg].`}],
+ extraAtgard:[{id:'remiss_kak',label:'Remiss käkkirurg',text:'Remiss utfärdad till käkkirurg.'}],
+ lakemedel:'Ibuprofen 400 mg v.b. Skonkost.',remissSpec:'Käkkirurg'},
+// ── ORALMEDICIN ──
+{id:'oral35a',icd:'B00.2',name:'Primär Herpetisk Gingivostomatit',cat:'Oralmedicin',scId:'ORAL-35A-HERPES',
+ symptom:['herpes','blåsor','vesiklar','gingivit','feber','smärta munnen'],
+ behandling:['Valaciklovir','antiviralt','Xylocain','Paracetamol'],
+ varning:'Dehydrering → sjukhusvård. Smittsam — hemstanning förskola under akut fas.',
+ mallar:[
+  {id:'m1',label:'Mall — Primär herpetisk gingivostomatit',behandlingTag:'antiviralt information',followup:'Kontakt vid dehydrering eller försämring. Läker spontant 10–14 dagar.',
+   text:`Diagnos: B00.2 Akut primär herpetisk gingivostomatit.
+
+Anamnes: Sår och blåsor i munnen sedan [X] dagar.
+Feber: [Ja: °C]. Svårt att äta/dricka: [Ja/Nej]. Tidigare episoder: [Nej].
+
+Extraoralt:
+- Lymfkörtlar: [Submandibulära svullna och ömma]
+- [Blåsor/krustor på läpparna]
+
+Intraoralt:
+- Multipla vesiklar/ulcerationer på BÅDE fast och rörlig slemhinna
+  (gingiva, gom, tunga, insida läppar)
+- Gingivan intensivt röd och svullen
+
+Bedömning: Primär herpetisk gingivostomatit (HSV-1).
+
+Åtgärd:
+- Information: Virussjukdom. Läker spontant på 10–14 dagar. Smittsam.
+- Kritiskt: Säkerställ adekvat vätskeintag. Svår dehydrering → sjukhusvård.
+- Smärtlindring: Paracetamol + Xylocain gel lokalt före måltid
+- Munhygien: Klorhexidin 0,2% sköljning × 2
+[- Antiviralt: Valaciklovir 1 g × 2 i 7–10 dagar (om debut <72 h)]
+
+Uppföljning: Kontakt vid försämring. [Barn: information om smittskydd.]`}],
+ extraAtgard:[{id:'valaciklovir',label:'Valaciklovir (<72h)',text:'Valaciklovir 1 g × 2 i 7–10 dagar ordinerat — debut <72h.'},{id:'remiss_sjukhus',label:'Remiss sjukhus (dehydrering)',text:'Remiss/transport till sjukhus pga dehydrering.'}],
+ lakemedel:'Paracetamol. Xylocain gel lokalt. Klorhexidin 0,2%. Valaciklovir vid tidig debut.',remissSpec:'Läkare/VC'},
+
+{id:'oral35b',icd:'K12.0',name:'Recidiverande Aftös Stomatit (RAS/Afte)',cat:'Oralmedicin',scId:'ORAL-35B-AFTE',
+ symptom:['afte','sår','aftöst','recidiverande','ulceration'],
+ behandling:['Xylocain','klobetasol','SLS-fri tandkräm','Andolex'],varning:null,
+ mallar:[
+  {id:'m1',label:'Mall — Recidiverande afte',behandlingTag:'symtomlindring',followup:'Kontakta vid utebliven läkning >2 veckor.',
+   text:`Diagnos: K12.0 Recidiverande aftös stomatit (afte typ [Minor/Major/Herpetiforma]).
+
+Anamnes: Återkommande munhålesår sedan [tid]. Debut [barndom/vuxen ålder].
+Ingen feber. Liknande episoder: Ja. Frekvens [X ggr/år].
+
+Status:
+- Sår uteslutande på rörlig, icke-keratiniserad slemhinna
+  ([insida läpp / kind / tungrygg]) regio [XX]
+- Utseende: Välavgränsat, "utstansat" sår med gulvit fibrinbeläggning och röd halo
+- Storlek: [<1 cm / >1 cm]
+
+Bedömning: Klinisk bild förenlig med afte. Ingen feber — utesluter herpes.
+
+Åtgärd:
+- Råd om SLS-fri tandkräm (t.ex. Zendium, Sensodyne)
+- Andolex munskölj / Xylocain gel vid behov
+[- Klobetasol 0,05% (Dermovat) gel × 3 i [5–7] dagar]
+
+[Remiss läkare för blodprover (järn, B12, folsyra, tarmsjukdom) vid behov]
+
+Uppföljning: Kontakta vid utebliven läkning >2 veckor.`}],
+ extraAtgard:[{id:'klobetasol',label:'Klobetasol (major afte)',text:'Klobetasol 0,05% (Dermovat) gel × 3 i 5–7 dagar ordinerat.'},{id:'remiss_utredning',label:'Remiss läkare (blodprover)',text:'Remiss läkare för blodprover: järn, B12, folsyra, tarmsjukdom.'}],
+ lakemedel:'Xylocain gel. Andolex munskölj. Klobetasol vid major afte. SLS-fri tandkräm.',remissSpec:'Läkare/VC'},
+
+{id:'oral35c',icd:'K12.1',name:'Traumatiskt Sår (Decubitus)',cat:'Oralmedicin',scId:'ORAL-35C-TRAUMA',
+ symptom:['decubitus','traumatiskt sår','protes','vass tand','slemhinnesår'],
+ behandling:['kausal','slipning','klorhexidin','Xylocain'],
+ varning:'Om såret ej läkt inom 2 veckor trots åtgärd → remiss för biopsi (utesluta malignitet).',
+ mallar:[
+  {id:'m1',label:'Mall — Traumatiskt sår / Decubitus',behandlingTag:'kausal slipning',followup:'Läkningskontroll om 10–14 dagar. Biopsi om ej läkt inom 2 veckor.',
+   text:`Diagnos: K12.1 Traumatiskt sår [lokalisation].
+
+Anamnes: Sår i munnen uppkommet [vid/efter] [bettning / vass tand / protes].
+Ingen feber. Duration: [X] dagar.
+
+Status:
+- Solitärt sår regio [XX], gulvit fibrinbotten och röd randzon
+- Tydlig relation till [vass kusp [nr] / defekt fyllning / proteskant]
+- [Utlösande trauma identifierat och åtgärdat]
+
+Bedömning: Traumatiskt sår sekundärt till [orsak].
+
+Åtgärd:
+- Kausal behandling: [Slipning av vass kusp/fyllning [nr] / Justering av protes]
+- Ytanestetika vid behov
+- Klorhexidin 0,2% sköljning
+
+OBS: Om ej läkt inom 2 veckor → Remiss för biopsi (utesluta malignitet).
+
+Uppföljning: Återbesök [10–14 dagar]. Kliniskt foto sparat.`}],
+ extraAtgard:[{id:'biopsi_remiss',label:'Remiss biopsi (>2 veckor)',text:'Remiss utfärdad till käkkirurg/oralmedicin för biopsi — sår >2 veckor utan läkning.'}],
+ lakemedel:'Klorhexidin 0,2%. Xylocain gel v.b.',remissSpec:'Oral medicin'},
+
+{id:'oral36',icd:'B37.0',name:'Akut Erytematös Candidos',cat:'Oralmedicin',scId:'ORAL-36-CANDIDA',
+ symptom:['candida','sveda','tunga','gom','rodnad','xerostomi'],
+ behandling:['Nystatin','Nystimex','Flukonazol'],
+ varning:'Flukonazol — interaktion med Warfarin, kontrollera ALLTID via Janusmed.',
+ mallar:[
+  {id:'m1',label:'Mall — Erytematös candidos',behandlingTag:'Nystatin',followup:'Uppföljning om läkning uteblir.',
+   text:`Diagnos: B37.0 Akut erytematös candidos.
+
+Anamnes: Sveda i [tunga/gom] sedan [tid].
+[Antibiotikakur avslutad X veckor sedan / Pulmicort utan munsköljning / Xerostomi / Annat].
+Diabetes: [Ja/Nej]. HIV: [Ej känt].
+
+Status:
+- Kraftig rodnad, oskarpt avgränsad i [hårda gommen / tungryggen]
+- Papillatrofi på tungryggen
+- Inga vita avskrapbara beläggningar (erytematös form)
+- Munvinklar: [Bilaterala ragader → behandlas med Daktacort]
+
+Bedömning: Erytematös candidos [antibiotika- / inhalationssteroid-]associerad.
+
+Åtgärd:
+- Kausal: Instruktion om munsköljning med vatten efter inhalation
+- Recept: Mixt Nystimex 100 000 IE/ml.
+  4 ml × 4 i 4 veckor (fortsätt 1–2 v efter symtomfrihet)
+[- Flukonazol 50 mg × 1 i 7–14 dagar vid behov
+  OBS: Warfarin-interaktion kontrollerad via Janusmed]
+
+Uppföljning: Kontroll om läkning uteblir.`}],
+ extraAtgard:[{id:'flukonazol',label:'Flukonazol (andrahandsval)',text:'Flukonazol 50 mg × 1 i 7–14 dagar. OBS: Warfarin-interaktion kontrollerad via Janusmed.'}],
+ lakemedel:'Nystimex 4 ml × 4 i 4 veckor. Flukonazol 50 mg andrahandsval.',remissSpec:'Läkare/VC'},
+
+{id:'oral37',icd:'Z03.1 / K13.7',name:'Malignitetssuspekt Förändring',cat:'Oralmedicin',scId:'ORAL-37-MALIGN',
+ symptom:['malignitet','cancer','ulceration','leukoplaki','erytroplaki','vallartade kanter'],
+ behandling:['SVF-remiss','fotodokumentation'],
+ varning:'⚠️ INGEN BIOPSI av allmäntandläkare. SVF-remiss OMGÅENDE. Ring mottagningen.',
+ mallar:[
+  {id:'m1',label:'Mall — Malignitetssuspekt förändring',behandlingTag:'SVF-remiss',followup:'AKUT SVF-remiss. Telefon till mottagning.',
+   text:`Diagnos: Z03.1 Observation för misstänkt malign tumör /K13.7 Förändring i munslemhinnan.
+
+Anamnes: [Sår / Knöl / Fläck] i [lokalisation] >2 veckor utan läkning.
+Riskfaktorer: [Rökning: Ja/Nej. Alkohol: Ja/Nej. Snus: Ja/Nej. HPV: okänt].
+
+Status:
+- [X] mm förändring regio [XX]
+  Utseende: [Ulceration med vallartade kanter / Erytroplaki / Leukoplaki]
+- Palpation: [Induration / Mjuk] [Fastvuxen / Rörlig]
+- Lymfkörtlar hals: [u.a. / Asymmetrisk hård oöm knöl]
+[- Känselbortfall i [läpp/haka/tunga]: Ja/Nej]
+
+Bedömning: Malignitetssuspekt förändring utan läkning på [X] veckor.
+
+Åtgärd:
+- INGEN BIOPSI av undertecknad
+- Kliniska foton bifogade remissen
+- Remiss OMGÅENDE till Käkkirurgiska / ÖNH för SVF-utredning
+  Märkt: "SVF — Huvud-hals cancer, malignitetsmisstanke"
+- Telefonkontakt med mottagning för prioriterad handläggning
+
+Uppföljning: AKUT SVF-remiss.`}],
+ extraAtgard:[],lakemedel:'Ingen medicinering.',remissSpec:'Käkkirurg'},
+
+{id:'oral38a',icd:'K06.1',name:'Läkemedelsinducerad Gingival Överväxt (DIGO)',cat:'Oralmedicin',scId:'ORAL-38A-DIGO',
+ symptom:['gingival hyperplasi','svullet tandkött','DIGO','Amlodipin','Sandimmun','Fenytoin'],
+ behandling:['depuration','munhygieninstruktion','gingivektomi'],
+ varning:'Sätt ALDRIG ut medicin på eget initiativ — kontakta patientens läkare.',
+ mallar:[
+  {id:'m1',label:'Mall — Läkemedelsinducerad gingival överväxt',behandlingTag:'depuration',followup:'Uppföljning om 4–6 veckor. Remiss gingivektomi vid kvarstående.',
+   text:`Diagnos: K06.1 Gingival överväxt (läkemedelsinducerad).
+
+Anamnes: Medicinerar med [Amlodipin / Sandimmun / Fenytoin] sedan [år].
+Svullet tandkött, svårt att rengöra approximalt.
+
+Status:
+- [Generell / Lokal] gingival hyperplasi, framförallt [front / hela bett]
+- Vävnaden fast och fibrös vid palpation
+- Pseudofickor: [X–X] mm. Bennivå: [Intakt / Sänkt]
+
+Bedömning: Klinisk bild förenlig med läkemedelsbiverkan.
+
+Åtgärd:
+- Professionell rengöring och polering
+- Instruktion i atraumatisk borstteknik + mellanrumsborste
+[- Behandlande läkare kontaktad ang. ev. preparatbyte]
+
+OBS: Sätt ALDRIG ut medicin på eget initiativ.
+
+Uppföljning: [4–6 veckor]. Vid kvarstående: remiss gingivektomi.`,followup:'Uppföljning om 4–6 veckor. Remiss gingivektomi vid kvarstående.'}
+ ],
+ extraAtgard:[
+  {id:'remiss_lak',label:'Kontakt patientens läkare',text:'Behandlande läkare kontaktad angående eventuellt preparatbyte.'},
+ ],
+ lakemedel:'Ingen medicinering.',remissSpec:'Oral medicin'
+},
+
+{id:'oral38b',icd:'M87.18',name:'MRONJ (Läkemedelsrelaterad Käkbensnekros)',cat:'Oralmedicin',scId:'ORAL-38B-MRONJ',
+ symptom:['MRONJ','käkbensnekros','antiresorptivt','bisfosfont','Prolia','blottat ben'],
+ behandling:['spolning','antibiotika','remiss käkkirurg'],
+ varning:'⚠️ Sätt INTE ut antiresorptivt läkemedel — ingen evidens för nytta. Remiss käkkirurg.',
+ mallar:[
+  {id:'m1',label:'Mall — MRONJ',behandlingTag:'spolning remiss',
+   text:`Diagnos: M87.18 Osteonekros i käkarna (läkemedelsrelaterad — MRONJ).
+
+Anamnes: Medicinerar med [Alendronat/Zometa/Prolia/annat antiresorptivt].
+Indikation: [Osteoporos / Cancerbehandling]. Duration: [X år].
+Kortikosteroider: [Ja/Nej]. Extraktion/ingrepp: [Ja, tand XX / Ingen känd orsak].
+
+Status:
+- Blottlagt gulvitt ben regio [XX], ca [X] mm
+- Gingivan runtom: [Rodnad / Svullen / Pus]
+- Lukt: [Foetor ex ore]
+[- Känselbortfall läpp (Vincents symtom): Ja/Nej]
+
+MRONJ-stadium: [0 / 1 / 2 / 3].
+
+Åtgärd:
+- Spolning koksalt / Klorhexidin 0,2%
+[- PcV 1,6 g × 3 i 5–7 dagar vid aktiv infektion]
+- Slipning vassa benkanter (undviker att blottlägga nytt ben)
+
+OBS: Läkemedlet SÄTTS INTE UT.
+
+Remiss: Käkkirurgiska kliniken för MRONJ-bedömning.
+
+Information: Patienten informerad om tillståndet och vikten av regelbunden tandvård.`,followup:'Remiss käkkirurg. Regelbunden uppföljning.'}
+ ],
+ extraAtgard:[
+  {id:'antibiotika',label:'Antibiotika (aktiv infektion)',text:'PcV 1,6 g × 3 i 5–7 dagar vid aktiv infektion.'},
+ ],
+ lakemedel:'Klorhexidin 0,2%. PcV vid infektion.',remissSpec:'Käkkirurg'
+},
+
+{id:'oral40a',icd:'G50.0',name:'Trigeminusneuralgi (Misstänkt)',cat:'Oralmedicin',scId:'ORAL-40A-TRIGEM',
+ symptom:['trigeminusneuralgi','blixtsmärta','attacker','elektrisk smärta','ansiktssmärta'],
+ behandling:['remiss neurolog','karbamazepin','ingen dental åtgärd'],
+ varning:'⚠️ INGEN dental åtgärd. Rotbehandling och extraktion av friska tänder botar INTE neuralgi.',
+ mallar:[
+  {id:'m1',label:'Mall — Trigeminusneuralgi (misstänkt)',behandlingTag:'remiss neurolog',
+   text:`Diagnos: G50.0 Trigeminusneuralgi (Misstänkt). Icke-odontogen smärta.
+
+Anamnes: Attacker av extrem blixtrande smärta [höger/vänster] sida ansikte.
+Duration: sekunder. Besvärsfri mellan attackerna.
+Utlöses av: [beröring / tvätt / rakning / tuggning / tal].
+
+Dentalt status:
+- Tänder [XX–YX]: u.a. kliniskt och radiologiskt
+- Kyla-test: Normal på alla tänder. Perkussion: u.a.
+
+Neurologiskt:
+- Ingen sensibilitetsnedsättning noterad
+  [OBS: Hypoestesi/anestesi → misstänk tumör/MS → skyndsam utredning]
+
+Bedömning: Klinisk bild talar för trigeminusneuralgi. Ingen dental orsak.
+
+Åtgärd:
+- Information till patienten
+- INGEN DENTAL ÅTGÄRD
+- Vanliga analgetika (Alvedon/NSAID) har ej effekt vid neuralgi
+
+Remiss: Läkare / Neurolog för utredning och ev. karbamazepin (Tegretol).`,followup:'Remiss neurolog/läkare. Ingen dental åtgärd.'}
+ ],
+ extraAtgard:[],
+ lakemedel:'Ingen dental medicinering. Karbamazepin via neurolog.',remissSpec:'Neurolog'
+},
+
+{id:'oral40b',icd:'K14.6',name:'Burning Mouth Syndrome (Munsveda)',cat:'Oralmedicin',scId:'ORAL-40B-BMS',
+ symptom:['munsveda','tungsveda','brännande','BMS','sveda','crescendo'],
+ behandling:['utredning','remiss läkare','blodprover','SLS-fri tandkräm'],
+ varning:null,
+ mallar:[
+  {id:'m1',label:'Mall — Burning Mouth Syndrome',behandlingTag:'utredning remiss',
+   text:`Diagnos: DA0F.0 Burning Mouth Syndrome (Munsveda/Tungsveda).
+
+Anamnes: Daglig sveda/brännande i [tunga / läppar / gom] sedan [tid].
+>2 h/dag. Värre på kvällen (crescendo-mönster). Stör sällan nattsömnen.
+Muntorrhet: [Ja/Nej]. Smakförändring: [Ja/Nej].
+
+Status:
+- Slemhinna: U.a. Normal färg och struktur. Ingen candida.
+  (OBS: Röd slemhinna → troligen candidos, inte BMS)
+
+Bedömning: Munsveda utan synliga kliniska fynd.
+
+Åtgärd:
+- Information: Godartad åkomma (lugnande besked). Ej malign.
+- SLS-fri tandkräm (t.ex. Zendium)
+- Salivstimulerande medel vid xerostomi
+
+Remiss: Läkare/VC för Hb, järn, ferritin, B12, folsyra, zink, HbA1c, TSH.
+
+Uppföljning: Återbesök [4–6 veckor] för provsvar.`,followup:'Återbesök om 4–6 veckor för provsvar.'}
+ ],
+ extraAtgard:[],
+ lakemedel:'SLS-fri tandkräm. Salivstimulerande medel v.b.',remissSpec:'Läkare/VC'
+},
+
+{id:'oral40c',icd:'B02.2',name:'Herpes Zoster (Bältros)',cat:'Oralmedicin',scId:'ORAL-40C-ZOSTER',
+ symptom:['herpes zoster','bältros','Ramsay Hunt','ansiktssmärta','blåsor enkelsidigt'],
+ behandling:['Valaciklovir','antiviralt','remiss läkare'],
+ varning:'⚠️ Antiviralt MÅSTE sättas in inom 72h. Vesiklar i ytterörat + perifer facialispares → Ramsay Hunt → Akut ÖNH.',
+ mallar:[
+  {id:'m1',label:'Mall — Herpes Zoster (Bältros)',behandlingTag:'antiviralt remiss',
+   text:`Diagnos: B02.2 Herpes Zoster (V2 / V3) — Bältros.
+
+Anamnes: Intensiv brännande smärta [höger/vänster] sida ök/uk sedan [X] dagar.
+Nu debut av blåsor/sår.
+
+Status:
+- Enkelsidiga sår/blåsor i [gommen/kinden] som EJ överskriver medellinjen
+  (följer V[2/3])
+- Tänder u.a.
+
+Bedömning: Klinisk bild förenlig med Herpes Zoster (Bältros).
+
+Åtgärd:
+- Information om diagnos, orsak och förlopp
+- INGEN DENTAL ÅTGÄRD
+- Smärtlindring: Paracetamol + Ibuprofen
+
+Remiss: Läkare/VC för Valaciklovir 1 g × 3 i 7 dagar — INOM 72 h.
+
+[OBS: Vesiklar i ytterörat + perifer facialispares → Ramsay Hunt →
+ Remiss AKUT ÖNH/neurolog]`,followup:'Akut remiss läkare för antiviralt inom 72h.'}
+ ],
+ extraAtgard:[{id:'ramsay_hunt',label:'Ramsay Hunt → AKUT ÖNH',text:'AKUT remiss utfärdad till ÖNH/neurolog pga misstanke Ramsay Hunt syndrom.'}],
+ lakemedel:'Valaciklovir 1 g × 3 i 7 dagar — via läkare. Paracetamol + Ibuprofen.',remissSpec:'Läkare/VC'},
+
+
+// ── TRAUMA MJÖLKTÄNDER ──
+{id:'pedo41',icd:'S03.2 / S02.5',name:'Luxationsskador mjölktand',cat:'Trauma — Mjölktänder',scId:'PEDO-41-LUX',
+ symptom:['luxation','subluxation','trauma mjölktand','rörlig tand','apex','bettstörning'],
+ behandling:['observation','extraktion','reponering'],varning:null,
+ mallar:[
+  {id:'m1',label:'A — Observation (subluxation / ingen bettstörning)',behandlingTag:'observation',followup:'Uppföljning om 1 vecka kliniskt.',
+   text:`Trauma-anamnes: Olycka idag. Slag mot munnen. Ingen medvetslöshet/kräkning. Stelkrampsvaccination: OK.
+
+Status:
+- Extraoralt: [Skrubbsår överläpp / Hematom haka / u.a.]
+- Intraoralt: Blödning gingivalrand regio [51/61]. [Sår frenulum / u.a.]
+- Dental: Tand [nr] subluxerad/lateralluxerad, mobilitet grad [I/II]. Ingen ocklusionsstörning.
+
+Rtg: Tand [nr] — [vidgad rothinnespalt / apex buckalt / inga rotfrakturer].
+Permanent tandanlag bedöms intakt.
+
+Bedömning: [Subluxation / Lateralluxation] tand [nr]. Ingen bettstörning. Apex buckalt — avvaktar.
+
+Åtgärd:
+- Lugnande besked och information till förälder
+- Skonkost 1–2 v, klorhexidinbaddning 0,12% × 2/dag
+- Försäkringsanmälan upprättad
+- Information om komplikationer (missfärgning, nekros, fistel)`},
+  {id:'m2',label:'B — Extraktion (bettstörning / apex mot anlag)',behandlingTag:'extraktion',followup:'Uppföljning om 1 vecka.',
+   text:`Trauma-anamnes: Olycka idag. [Traumabeskrivning].
+
+Status:
+- Tand [nr] [lateralluxerad/extruderad/intruderad]. Mobilitet grad [II/III].
+- Interfererar i bettet — normalt bett ej möjligt.
+
+Rtg: Apex displacerat [palatinalt mot anlaget / buckalt].
+
+Bedömning: [Luxationsskada] tand [nr] med [ocklusionsstörning / apex mot anlag].
+
+Medicinsk kontroll: Allergi: [Nej/Ja], Vikt: [kg]
+
+Åtgärd:
+- Ytanestesi + LA: Artikain [ml] (barnvikt [kg])
+- Varsam extraktion tand [nr], inget apikalt tryck
+- Alveol inspekterad, inga fragment
+- Hemostas. [Ev. sutur Vicryl 5-0]. Bettamponad 15 min.
+
+Information: Mjuk/kall kost. Paracetamol [dos] mg vid behov.
+Kontakta vid kraftig blödning/svullnad/feber.
+Försäkringsanmälan upprättad.`},
+  {id:'m3',label:'C — Intrusionsluxation (apex buckalt, avvaktar)',behandlingTag:'observation reeruption',followup:'Uppföljning om 1 v, sedan var 4:e v tills reeruption.',
+   text:`Status:
+- Tand [nr] intruderad, klinisk krona förkortad/ej synlig. Låst i ben. Metalliskt perkussionsljud.
+
+Rtg: Intruderad. Apex buckalt (bort från anlag). Inga rotfrakturer.
+
+Bedömning: Intrusionsluxation tand [nr]. Apex buckalt — avvaktar spontan reeruption.
+
+Åtgärd:
+- Information: tanden förväntas växa ner spontant
+- Reeruption inom 1–6 månader
+- Skonkost, klorhexidinbaddning
+- Försäkringsanmälan upprättad`}],
+ extraAtgard:[{id:'forsarkanm',label:'Försäkringsanmälan',text:'Försäkringsanmälan upprättad och utlämnad till förälder.'},{id:'klorhex',label:'Klorhexidinbaddning',text:'Klorhexidinbaddning 0,12% ordinerad 2 ggr/dag i 1–2 veckor.'}],
+ lakemedel:'Paracetamol barnform v.b. (viktsbaserat).',remissSpec:null},
+
+{id:'pedo42',icd:'S03.2',name:'Exartikulation mjölktand (ALDRIG replantation)',cat:'Trauma — Mjölktänder',scId:'PEDO-42-EXART',
+ symptom:['exartikulation','utslagen tand','mjölktand','tom alveol'],
+ behandling:['sårvård','hemostas','information'],
+ varning:'⚠️ REPLANTATION ABSOLUT KONTRAINDICERAT vid primär tand — risk för permanent tandanlag.',
+ mallar:[
+  {id:'m1',label:'Mall 1 — Tanden hittad',behandlingTag:'sårvård hemostas',followup:'Uppföljning om 1–4 veckor. Långtidskontroll permanent tandanlag.',
+   text:`Trauma-anamnes: Olycka idag. Tanden hittad på [platsen].
+Ingen medvetslöshet/kräkning. Stelkramp: OK.
+
+Status:
+- Extraoralt: [Skrubbsår / hematom / u.a.]
+- Intraoralt: Tom alveol regio [51/61]. Blödning.
+- Intilliggande tänder: [u.a. / luxerade / frakturerade]
+
+Rtg: Tom alveol, inga rotfragment. Permanent tandanlag bedöms intakt.
+
+Bedömning: Exartikulation tand [nr].
+
+Åtgärd:
+- Spolning koksalt
+- Kompression — hemostas uppnådd
+- Replantation EJ utförd (kontraindicerat vid primär tand)
+
+Information: Varför tanden ej replanteras (risk för permanent anlag).
+Skonkost 1–2 v, klorhexidinbaddning × 2. Paracetamol [dos] mg vid behov.
+Permanent anlag kontrolleras vid eruption (6–7 år).
+Försäkringsanmälan upprättad.`},
+  {id:'m2',label:'Mall 2 — Tanden EJ hittad',behandlingTag:'aspirationskontroll',followup:'Uppföljning om 1–4 veckor. Långtidskontroll permanent tandanlag.',
+   text:`Trauma-anamnes: [Traumabeskrivning]. Tanden ej hittad.
+Ingen hosta eller andningsbesvär. Ingen medvetslöshet/kräkning.
+
+Rtg: Tom alveol. Ingen totalintruserad tand. Aspiration bedömd som osannolik.
+
+Bedömning: Exartikulation tand [nr]. Replantation EJ utförd.`}],
+ extraAtgard:[{id:'forsarkanm',label:'Försäkringsanmälan',text:'Försäkringsanmälan upprättad och utlämnad till förälder.'}],
+ lakemedel:'Paracetamol barnform v.b.',remissSpec:null},
+
+{id:'pedo43',icd:'S02.5',name:'Kronfraktur mjölktand',cat:'Trauma — Mjölktänder',scId:'PEDO-43-KFRAK',
+ symptom:['kronfraktur','pulpablotta','mjölktand','fraktur'],
+ behandling:['slipning','GIC','extraktion','pulpotomi','Cvek'],varning:null,
+ mallar:[
+  {id:'m1',label:'A — Okomplicerad (ingen pulpablotta)',behandlingTag:'slipning GIC',followup:'Kontroll om 4 veckor.',
+   text:`Trauma-anamnes: [Traumabeskrivning]. Ingen medvetslöshet/kräkning. Stelkramp: OK.
+
+Status: Okomplicerad kronfraktur tand [nr]. Emalj/dentinfraktur, ingen pulpablotta.
+Läppar palperade — inga inbäddade fragment. Rörlighet: u.a.
+
+Rtg: Kroninfraktur synlig. Ingen rotfraktur. Permanent anlag intakt.
+
+Åtgärd:
+- Vassa kanter slipade/rundade
+- [GIC-förband på dentinsår / Fluorlack applicerat]
+- Försäkringsanmälan upprättad.`},
+  {id:'m2',label:'B — Komplicerad, extraktion',behandlingTag:'extraktion',followup:'Skonkost, klorhexidinbaddning 1 v. Kontroll om 1 vecka.',
+   text:`Status: Komplicerad kronfraktur tand [nr]. Pulpablotta synlig.
+Barnets kooperation: Bedömd otillräcklig för vitalbevarande åtgärd.
+
+Åtgärd:
+- Ytanestesi + LA: Artikain [ml] (barnvikt [kg])
+- Extraktion tand [nr]. Hemostas uppnådd.
+- Försäkringsanmälan upprättad.`},
+  {id:'m3',label:'C — Komplicerad, Cvek-pulpotomi',behandlingTag:'Cvek pulpotomi',followup:'Röntgenkontroll om 3–4 v, 3 mån, 1 år.',
+   text:`Status: Komplicerad kronfraktur tand [nr]. Punktformig pulpablotta. Kooperation: God. Tid sedan skada: [<24 h].
+
+Åtgärd:
+- LA: Artikain [ml]. [Kofferdam]
+- Partiell pulpotomi (Cvek) — ca 2 mm pulpa avlägsnad
+- Hemostas med steril bomullspellet
+- Täckning med [Ca(OH)₂ / MTA / Biodentine]
+- Tät förslutning med [GIC / komposit]
+- Försäkringsanmälan upprättad.`}],
+ extraAtgard:[{id:'forsarkanm',label:'Försäkringsanmälan',text:'Försäkringsanmälan upprättad.'}],
+ lakemedel:'Paracetamol barnform v.b.',remissSpec:null},
+
+// ── TRAUMA PERMANENTA ──
+{id:'pedo48',icd:'S03.2 + S02.8',name:'Exartikulation permanent tand (HYPERAKUT)',cat:'Trauma — Permanenta tänder',scId:'PEDO-48-EXALV',
+ symptom:['exartikulation permanent','utslagen tand','replantation','avulsion'],
+ behandling:['replantation','splint','PcV antibiotika'],
+ varning:'⚠️ HYPERAKUT — Replantation <60 min. Förvara i mjölk/koksalt/saliv. PcV 7 dagar.',
+ mallar:[
+  {id:'m1',label:'Mall — Replantation permanent tand',behandlingTag:'replantation splint',followup:'Splintborttagning om 2 v. RCT om slutet apex.',
+   text:`Trauma-anamnes: Tand [nr] exartikulerad idag. Förvarad i [mjölk/koksalt/saliv/torrt]
+sedan [tid]. Extraoral tid: [X] min. Stelkramp: OK.
+
+Status: Tom alveol regio [nr]. Rotutveckling: [Öppet/slutet apex].
+
+Åtgärd:
+- Tanden sköljd med koksalt (ej rotyta)
+- Alveolen sköljd med koksalt
+- LA: Artikain [ml]. Replantation med digitalt tryck.
+- Flexibel splint regio [nr–nr]. Kontrollröntgen u.a.
+- Kåvepenin [barndos] × 3 i 7 dagar
+
+Information: Mjuk kost 2 v. Klorhexidin × 2. Ej kontaktsport tills splint borttagen.
+Försäkringsanmälan upprättad.`}],
+ extraAtgard:[{id:'pcv',label:'PcV 7 dagar',text:'Kåvepenin [barndos] × 3 i 7 dagar ordinerat.'},{id:'forsarkanm',label:'Försäkringsanmälan',text:'Försäkringsanmälan upprättad och utlämnad.'}],
+ lakemedel:'Kåvepenin [barndos] × 3 i 7 dagar. Paracetamol v.b.',remissSpec:'Pedodontist'},
+
+{id:'pedo44',icd:'S02.5',name:'Rotfraktur mjölktand',cat:'Trauma — Permanenta tänder',scId:'PEDO-44-RFRAK',
+ symptom:['rotfraktur','mjölktand','mobilitet','apikalt fragment'],
+ behandling:['extraktion koronalt fragment'],
+ varning:'Apikalt fragment lämnas kvar om djupt beläget — spontan resorption.',
+ mallar:[{id:'m1',label:'Mall — Rotfraktur mjölktand',behandlingTag:'extraktion',followup:'Klinisk + rtg-kontroll om 1 mån. Ny kontroll om 1 år.',
+   text:`Trauma-anamnes: Pat. [ålder] år. [Traumabeskrivning]. Stelkramp: OK.
+
+Status: Tand [nr] kraftigt mobil (grad III). Blödning gingivalrand.
+
+Rtg: Horisontell rotfraktur i [cervikala/mellersta/apikala] tredjedelen.
+Apikalt fragment kvar. Permanent anlag bedöms intakt.
+
+Åtgärd:
+- LA: Artikain [ml] (barnvikt [kg])
+- Extraktion koronalt fragment tand [nr]
+- Apikalt fragment kvarlämnats (resorberas spontant)
+- Hemostas uppnådd. Försäkringsanmälan upprättad.`}],
+ extraAtgard:[{id:'forsarkanm',label:'Försäkringsanmälan',text:'Försäkringsanmälan upprättad och utlämnad till förälder.'}],
+ lakemedel:'Paracetamol barnform v.b.',remissSpec:null},
+
+{id:'pedo45',icd:'S02.8',name:'Alveolarutskottsfraktur (Specialistfall)',cat:'Trauma — Permanenta tänder',scId:'PEDO-45-ALVFRAK',
+ symptom:['alveolarfraktur','rörligt segment','bettstörning','krepitationer'],
+ behandling:['reponering','flexibel splint'],
+ varning:'Specialistfall — konsultation pedodontist/käkkirurg.',
+ mallar:[{id:'m1',label:'Mall — Alveolarutskottsfraktur',behandlingTag:'reponering splint',followup:'Splintborttagning om 4 v. Kontroller: 1 v, 4 v, 3 mån, 1 år.',
+   text:`Trauma-anamnes: Pat. [ålder] år. [Traumabeskrivning]. Stelkramp: OK.
+
+Status: Rörligt alveolarsegment regio [tand nr–tand nr]. Bettstörning. [Krepitationer: Ja/Nej]
+
+Rtg: Frakturlinje i alveolarutskottet regio [område]. Permanenta anlag bedöms [intakta / ev. påverkade].
+
+Åtgärd:
+- LA: Artikain [ml] [ev. sedering]
+- Reponering till ursprungsläge, okklusion kontrollerad
+- Flexibel splint (ortodontisk tråd + komposit) tand [nr]–[nr]
+- Kontrollröntgen efter fixering
+
+Information: Skonkost 4 veckor. Klorhexidinbaddning × 2. Paracetamol v.b.
+Konsultation [pedodontist/käkkirurg]: [Ja / Planerad].
+Försäkringsanmälan upprättad.`}],
+ extraAtgard:[{id:'konsultation',label:'Specialist kontaktad',text:'Konsultation med [pedodontist/käkkirurg] utförd.'}],
+ lakemedel:'Paracetamol v.b.',remissSpec:'Käkkirurg'},
+
+{id:'pedo46',icd:'S02.5',name:'Kronfraktur permanent tand',cat:'Trauma — Permanenta tänder',scId:'PEDO-46-KFRAKPERM',
+ symptom:['kronfraktur permanent','pulpablotta','infraktion','bonding'],
+ behandling:['bonding','GIC','komposit','Cvek-pulpotomi'],varning:null,
+ mallar:[
+  {id:'m1',label:'A — Okomplicerad kronfraktur permanent tand',behandlingTag:'bonding komposit',followup:'Kontroll om 3–4 v, 3 mån, 1 år.',
+   text:`Trauma-anamnes: Pat. [ålder] år. [Traumabeskrivning]. Stelkramp: OK.
+[Fragment i koksalt/mjölk / Fragment saknas].
+
+Status: Okomplicerad kronfraktur tand [11/21]. Emalj/dentinfraktur.
+Kyla-test: Positiv. Perkussion: u.a. Rörlighet: u.a.
+
+Rtg: Avstånd till pulpa ca [X] mm. Ingen rotfraktur. Rotutveckling: [Öppet/slutet apex].
+
+Åtgärd:
+- [Bonding av fragment / Komposituppbyggnad / GIC-förband temporärt]
+- Ocklusion kontrollerad
+- Försäkringsanmälan upprättad.`},
+  {id:'m2',label:'C — Komplicerad, Cvek-pulpotomi (öppet apex)',behandlingTag:'Cvek-pulpotomi',followup:'Återbesök om 24–48 h för slutlig kompositfyllning.',
+   text:`Status: Komplicerad kronfraktur tand [11/21]. Pulpablotta, vital blödning. Öppet apex. Tid sedan skada: [<24 h].
+
+Åtgärd:
+- LA: Artikain + adrenalin [ml]. Kofferdam.
+- Partiell pulpotomi (Cvek) — ca 2 mm med roserande borr
+- Hemostas med steril koksaltpellet
+- [MTA / Biodentine]. Fuktad bomullspellet + temporär GIC.
+- Försäkringsanmälan upprättad.`}],
+ extraAtgard:[{id:'forsarkanm',label:'Försäkringsanmälan',text:'Försäkringsanmälan upprättad.'}],
+ lakemedel:'Ibuprofen + Paracetamol v.b. enligt vikt.',remissSpec:null},
+
+{id:'pedo47',icd:'S03.2',name:'Konkussion permanent tand',cat:'Trauma — Permanenta tänder',scId:'PEDO-47-KONK',
+ symptom:['konkussion','perkussionsöm','normal mobilitet','normal position'],
+ behandling:['expektans','skonkost','observation'],
+ varning:'Ingen operativ åtgärd. Skonkost 1–2 veckor.',
+ mallar:[{id:'m1',label:'Mall — Konkussion permanent tand',behandlingTag:'expektans',followup:'Kontroll om 1 v, 3 v, 3 mån, 6 mån.',
+   text:`Trauma-anamnes: Pat. [ålder] år. [Traumabeskrivning]. Stelkramp: OK.
+
+Status: Tand [nr] perkussionsöm. Normal rörlighet. Normal position. Ingen kronfraktur. Ocklusion normal.
+
+Rtg: Normalt utseende. Normal rothinnespalt. Ingen rotfraktur.
+
+Bedömning: Konkussion tand [nr].
+
+Åtgärd:
+- Ingen operativ åtgärd
+- Skonkost 1–2 v
+- Uppföljningsinformation till patient/förälder
+- Försäkringsanmälan upprättad.`}],
+ extraAtgard:[{id:'forsarkanm',label:'Försäkringsanmälan',text:'Försäkringsanmälan upprättad.'}],
+ lakemedel:'Paracetamol v.b.',remissSpec:null},
+// ── PROTETIK ──
+{id:'prot15',icd:'Z46.3 / K08.5',name:'Lossnat provisorium / Temporär krona',cat:'Protetik',scId:'PROT-15-PROV',
+ symptom:['provisorium','temporär krona','lossnat'],behandling:['recementering','TempBond'],varning:null,
+ mallar:[{id:'m1',label:'Mall — Lossnat provisorium',behandlingTag:'recementering',followup:'Ordinarie tid för slutlig restauration [Datum].',
+   text:`Diagnos: Z46.3 Lossnat provisorium regio [XX].
+
+Anamnes: Lossnade vid måltid. Inga isningar.
+
+Status: Prep u.a., inga frakturer. Provisoriet helt.
+
+Åtgärd: Prep och provisorium rengörda. Inprovning utan anmärkning.
+Recementering med TempBond NE (eugenolfritt). Ocklusion u.a.
+
+Information: Patienten uppmanas vara försiktig med seg/hård mat.
+Ordinarie tid för utlämning: [Datum].`}],
+ extraAtgard:[{id:'okkontroll',label:'Ocklusionskontroll',text:'Ocklusionskontroll utförd — u.a.'}],
+ lakemedel:'Ingen medicinering.',remissSpec:null},
+
+{id:'prot21',icd:'K08.5',name:'Lossnad krona eller bro',cat:'Protetik',scId:'PROT-21-LOSS',
+ symptom:['lossnad krona','lossnad bro','krona'],behandling:['recementering','rengöring'],
+ varning:'OBS Zirkonia: Ivoclean 20 sek → Monobond Plus 60 sek. EJ fosforsyra.',
+ mallar:[{id:'m1',label:'Mall — Lossnad krona/bro',behandlingTag:'recementering',followup:'Återbesök om 2 veckor.',
+   text:`Diagnos: K08.5 Ofullständig tandfunktion (Lossnad krona tand [XX]).
+
+Anamnes: Kronan lossnade vid [Tuggning/Flossning]. Ingen smärta/isningar.
+
+Status: Tand [XX] vital/rotfylld. Ingen karies. God retention. Kronan hel.
+
+Åtgärd: Rengöring (H₂O₂ + Tubulicid). Torrläggning.
+Recementering med [Zinkfosfat/Variolink]. Överskott avlägsnat. Ocklusion u.a.
+
+OBS Zirkonia: Ivoclean 20 sek → Monobond Plus 60 sek. EJ fosforsyra!`}],
+ extraAtgard:[{id:'karies',label:'Karies behandlad',text:'Karies exkaverad och behandlad innan recementering.'}],
+ lakemedel:'Ingen medicinering.',remissSpec:null},
+
+// ── PEDODONTI ──
+{id:'pedo53',icd:'K04.4 / K04.6',name:'Dentoalveolär abscess / Fistel mjölktand',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-53-ABSCESS',
+ symptom:['fistel','abscess','mjölktand','rörlig tand','pus'],behandling:['extraktion','dränage'],
+ varning:'Aldrig rotbehandling vid apikal parodontit primär tand. Antibiotika ENBART vid feber/allmänpåverkan.',
+ mallar:[{id:'m1',label:'Mall — Abscess mjölktand',behandlingTag:'extraktion',followup:'Kontakta vid feber/ökad svullnad.',
+   text:`Diagnos: K04.6 Periapikalabscess med fistel.
+
+Status: Fistel buckalt tand [nr]. Rörlig och öm tand. Ingen feber. Normal gapförmåga.
+
+Åtgärd: LA [preparat]. Extraktion tand [nr]. Pus dränerat.
+Ingen antibiotika (följer Strama).
+
+Information: Mjuk kost. Paracetamol vid behov.
+Kontakta vid feber eller ökad svullnad.`}],
+ extraAtgard:[{id:'antibiotika',label:'Antibiotika (feber/allmänpåverkan)',text:'PcV barndos: 12,5 mg/kg × 3 (max 1g × 3) i 7 dagar.'}],
+ lakemedel:'Paracetamol barnform v.b. Antibiotika vid feber/allmänpåverkan.',remissSpec:null},
+
+{id:'pedo54',icd:'L03.2 / K04.6',name:'Cellulit / Spridd odontogen infektion (LIVSHOTANDE)',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-54-CELLULIT',
+ symptom:['cellulit','spridd infektion','trismus','svullnad ansikte','feber'],
+ behandling:['extraktion','akutremiss','IV-antibiotika','PcV'],
+ varning:'⚠️ LIVSHOTANDE — AKUT remiss sjukhus vid trismus/ögon/svalgpåverkan.',
+ mallar:[{id:'m1',label:'Mall — Cellulit / Spridd infektion',behandlingTag:'akutremiss extraktion',followup:'AKUT remiss sjukhus.',
+   text:`Diagnos: L03.2 Cellulit ansikte (utgående från tand [XX]).
+
+Status: Kraftig extraoral svullnad mot [ögat/halsen]. Trismus [X] mm.
+Feber [XX]°C. Allmänpåverkat barn.
+
+Åtgärd: [Akut extraktion tand [XX] för dränage].
+Telefonkontakt Käkkirurgen/Barnakuten kl [Tid].
+Barnet remitterat akut till sjukhus för IV-antibiotika.
+
+PcV barndos: 12,5 mg/kg × 3 (max 1g × 3) i 7 dagar.
+Vid pc-allergi: Klindamycin 5–6 mg/kg × 3 (max 300 mg × 3).`}],
+ extraAtgard:[{id:'akutremiss',label:'AKUT remiss sjukhus',text:'AKUT remiss utfärdad till sjukhus/Barnakut. Patient omedelbart transporterad.'}],
+ lakemedel:'PcV barndos: 12,5 mg/kg × 3. Vid pc-allergi: Klindamycin 5–6 mg/kg × 3.',remissSpec:'Sjukhus akut'},
+
+{id:'pedo50',icd:'K02.1 / K04.00',name:'Djup karies mjölktand (reversibel pulpit)',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-50-KARIESPULP',
+ symptom:['djup karies','reversibel pulpit','mjölktand','selektiv exkavering'],
+ behandling:['selektiv exkavering','GIC','stålkrona'],
+ varning:'Selektiv exkavering enligt Socialstyrelsen — förstahandsval.',
+ mallar:[{id:'m1',label:'Mall — Djup karies mjölktand (selektiv exkavering)',behandlingTag:'selektiv exkavering',followup:'Kontroll om 3 månader.',
+   text:`Diagnos: K02.1 Karies i dentin, K04.00 Reversibel pulpit.
+
+Anamnes: Tuggsvårigheter, men ingen spontansmärta eller nattsmärta.
+
+Status: Djup karies tand [nr]. Ingen fistel/svullnad.
+
+Åtgärd: LA [preparat]. Selektiv exkavering för att undvika pulpaexponering.
+Tätslutande fyllning [GIC/Komposit/Stålkrona].
+
+Uppföljning: Kontroll om 3 mån. Kontakta omedelbart vid feber, svullnad eller spontansmärta.`}],
+ extraAtgard:[{id:'stalkreuna',label:'Stålkrona cementerad',text:'Prefabricerad stålkrona (SSC) cementerad tand [nr].'},{id:'fluorlack',label:'Fluorlackning',text:'Fluorlack (Duraphat) applicerat.'}],
+ lakemedel:'Paracetamol barnform v.b.',remissSpec:null},
+
+{id:'pedo51',icd:'K04.01',name:'Akut irreversibel pulpit mjölktand',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-51-PULPITMJOLK',
+ symptom:['irreversibel pulpit','nattsmärta','mjölktand','spontansmärta'],behandling:['extraktion'],
+ varning:'ALDRIG tvångsingrepp. Extraktion = enda alternativ.',
+ mallar:[{id:'m1',label:'Mall — Akut pulpit mjölktand',behandlingTag:'extraktion',followup:'Återbesök vid behov.',
+   text:`Diagnos: K04.01 Irreversibel pulpit.
+
+Status: Nattlig spontansmärta tand [nr]. Djup karies i pulpa.
+
+Åtgärd: LA [preparat]. Extraktion tand [nr].
+Hemostas kontrollerad. Patienten smärtfri efter behandling.
+
+Information: Mjuk/kall kost. Paracetamol vid behov.`}],
+ extraAtgard:[{id:'hemostas',label:'Hemostas kontrollerad',text:'Hemostas kontrollerad — kompression 10 min.'}],
+ lakemedel:'Paracetamol barnform v.b.',remissSpec:null},
+
+{id:'pedo52',icd:'K04.01',name:'Irreversibel pulpit ung permanent tand (Apexogenes)',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-52-APEXOGENES',
+ symptom:['apexogenes','öppet apex','pulpotomi','ung permanent','MTA'],
+ behandling:['pulpotomi','MTA','Biodentine','kofferdam'],
+ varning:'Kofferdam OBLIGATORISK. Öppet apex — bevara vitalitet för rotutveckling.',
+ mallar:[{id:'m1',label:'Mall — Pulpotomi / Apexogenes permanent tand',behandlingTag:'pulpotomi MTA',followup:'Återbesök om 24–48 h för slutlig kompositfyllning.',
+   text:`Diagnos: K04.01 Irreversibel pulpit.
+
+Status: Spontansmärta tand [nr]. Öppet apex radiologiskt.
+
+Åtgärd: LA [Artikain]. Kofferdam applicerad. Trepanation.
+Kronpulpa avlägsnad till kanalmynning.
+Hemostas med steril koksaltpellet (vital blödning bekräftad).
+MTA/Biodentine mot rotpulpan. Fuktad bomullspellet + temporär GIC.
+
+Uppföljning: Återbesök [24–48 h] för slutlig kompositfyllning.`}],
+ extraAtgard:[{id:'kofferdam',label:'Kofferdam applicerad',text:'Kofferdam applicerat och kontrollerat.'}],
+ lakemedel:'Paracetamol + Ibuprofen v.b. enligt vikt.',remissSpec:'Endodontist'},
+
+{id:'pedo55',icd:'K05.2',name:'Perikoronit hos barn (6:a eller 7:a erupterar)',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-55-PERIKO',
+ symptom:['perikoronit barn','operculum','6-årstanden','7-årstanden'],behandling:['spolning','klorhexidin','antagonist slipning'],
+ varning:'Antibiotika EJ vid okomplicerad perikoronit utan systemisk påverkan (Strama).',
+ mallar:[{id:'m1',label:'Mall — Perikoronit',behandlingTag:'spolning',followup:'Kontakta vid försämring.',
+   text:`Diagnos: K05.2 Akut perikoronit.
+
+Status: Svullet, rodnat operculum regio [nr]. Debris under fliken.
+Antagonist [biter / biter ej] på fliken. Gapförmåga u.a. Ingen feber.
+
+Åtgärd: Spolning under operculum med klorhexidin. Debris avlägsnat.
+[Antagonist slipad ur okklusion].
+
+Ordination: Skonkost. Paracetamol v.b. Xylocain gel. Klorhexidin × 2.`}],
+ extraAtgard:[{id:'antagonist',label:'Antagonist slipad',text:'Antagonist slipad ur okklusion.'},{id:'antibiotika',label:'Antibiotika (systemisk)',text:'PcV barndos ordinerat pga systemisk påverkan.'}],
+ lakemedel:'Paracetamol v.b. Xylocain gel lokalt.',remissSpec:null},
+
+{id:'pedo56',icd:'T81.0',name:'Postextraktionsblödning hos barn',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-56-POSTEXBLOD',
+ symptom:['blödning','post-extraktion barn','leverkoagel'],behandling:['hemostas','Cyklokapron','sutur','Mepivakain'],
+ varning:'EJ NSAID — ge Paracetamol. LA utan adrenalin (Mepivakain).',
+ mallar:[{id:'m1',label:'Mall — Postextraktionsblödning',behandlingTag:'hemostas sutur',followup:'Kontakta omgående vid ny blödning.',
+   text:`Diagnos: T81.0 Blödning som komplikation till ingrepp.
+
+Anamnes: Tand [nr] extraherad kl [tid]. Kvarstående blödning.
+Koagulationsanamnes: Inga kända blödningssjukdomar.
+
+Status: Sivande blödning / Leverkoagel alveol tand [nr].
+
+Åtgärd: LA Mepivakain utan adrenalin. Koagel utsugit.
+Spongostan + Cyklokapron i alveol. Vicryl 4-0 kryssutur.
+Kompression 20 min. Blödning stillad.
+
+Information: Hög huvudända. Kall mat. Paracetamol (EJ Ipren!).`}],
+ extraAtgard:[{id:'sutur',label:'Sutur lagd',text:'Vicryl 4-0 kryssutur lagd. Suturtagning om 1 vecka.'},{id:'cyklokapron',label:'Cyklokapron',text:'Cyklokapron applicerat lokalt i alveol.'}],
+ lakemedel:'Paracetamol v.b. EJ NSAID.',remissSpec:null},
+
+{id:'pedo57blod',icd:'Spontan blödning UNS',name:'Spontan gingival blödning (misstanke hematologi)',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-57-SPONTANBLOD',
+ symptom:['spontanblödning','hematologi','oproportionerlig blödning'],behandling:['INGA ingrepp','Cyklokapron lokalt','akutremiss barnmedicin'],
+ varning:'⚠️ INGA INGREPP — Akut remiss Barnmedicin för blodstatus (B-status, TPK, LPK).',
+ mallar:[{id:'m1',label:'Mall — Spontan gingival blödning',behandlingTag:'akutremiss',followup:'AKUT remiss Barnmedicin.',
+   text:`Diagnos: Spontan blödning UNS (misstanke hematologi).
+
+Status: Spontan gingival blödning, oproportionerlig till plackförekomst.
+
+Åtgärd: INGA orala ingrepp utförda.
+Lokalt tryck med Cyklokapron-kompress. Blödning minskad.
+
+Remiss: Barnmedicin för blodprovstagning (B-status, TPK, LPK diff).`}],
+ extraAtgard:[],lakemedel:'Inga ingrepp. Cyklokapron lokalt.',remissSpec:'Barnmedicin'},
+
+{id:'pedo58',icd:'Gingivahyperplasi + Petekier',name:'Systemisk risk / Leukemimisstanke',cat:'Pedodonti — Smärta & Infektion',scId:'PEDO-58-LEUKEMI',
+ symptom:['leukemi','petekier','gingivahyperplasi','blek','trött'],behandling:['INGA ingrepp','akutremiss barnakut'],
+ varning:'⚠️ INGA INGREPP. AKUT telefonkontakt Barnmedicin/Barnakut.',
+ mallar:[{id:'m1',label:'Mall — Leukemimisstanke',behandlingTag:'akutremiss',followup:'AKUT remiss. Tandvård avvaktas.',
+   text:`Diagnos: Gingival hyperplasi + Petekier (Misstanke hematologi/Leukemi).
+
+Status: Spontan gingival blödning och uttalad gingivahyperplasi.
+Patienten trött och blek. Petekier synliga i [slemhinna/hud].
+
+Åtgärd: INGA orala ingrepp.
+Akut telefonkontakt Barnakut/Barnmedicin kl [tid].
+Patient remitterad akut för blodstatus (TPK/LPK).
+
+Uppföljning: Tandvård avvaktas till medicinsk diagnos klar.`}],
+ extraAtgard:[],lakemedel:'INGA ingrepp. Cyklokapron lokalt vid aktiv blödning.',remissSpec:'Barnakut'},
+// ── PEDODONTI BETEENDE & SEDERING ──
+{id:'pedo62',icd:'Z76.8',name:'Akut tandvårdsrädsla / Behandlingsvägran',cat:'Pedodonti — Beteende & Sedering',scId:'PEDO-62-RADSLA',
+ symptom:['tandvårdsrädsla','vägrar','oroligt barn','TSD','behandlingsomognad'],behandling:['TSD','ZOE-förband','sedering','lustgas'],
+ varning:'ALDRIG tvång. Livshotande infektion = undantag → sjukhus.',
+ mallar:[{id:'m1',label:'Mall — Akut tandvårdsrädsla',behandlingTag:'TSD ZOE-förband',followup:'Nytt besök under sedering/lustgas / Remiss pedodontist/narkos.',
+   text:`Diagnos: Z76.8 Tandvårdsrädsla + [Aktuell dental diagnos].
+
+Anamnes: Akut tandvärk tand [nr]. Barnet uttalat oroligt/rädd.
+
+Status: Barnet gråter, värjer sig, vägrar gapa.
+
+Åtgärd: TSD prövades utan framgång.
+Behandlingen avbröts för att undvika tvång och smärta.
+[Fluorlackning / ZOE-förband som temporärt skydd.]
+
+Hemsmärtlindring: Paracetamol [dos] + ev. Ibuprofen [dos].
+Information om fasteprogram inför sedering.`}],
+ extraAtgard:[{id:'zoe',label:'ZOE-förband inlagt',text:'ZOE-förband inlagt som temporärt smärtstillande skydd.'},{id:'remiss_pedo',label:'Remiss pedodontist',text:'Remiss utfärdad till pedodontist/narkos.'}],
+ lakemedel:'Paracetamol [dos] + ev. Ibuprofen [dos] hemma.',remissSpec:'Pedodontist'},
+
+{id:'pedo63',icd:'K04.01',name:'Bedövningssvikt vid inflammerad tand',cat:'Pedodonti — Beteende & Sedering',scId:'PEDO-63-BEDSVIKT',
+ symptom:['bedövningssvikt','lågt pH','smärtgenombrott','intraligamentär'],behandling:['intraligamentär injektion','ZOE-förband','preoperativ NSAID'],
+ varning:'Lågt pH i inflammerad vävnad → LA penetrerar ej nerven.',
+ mallar:[{id:'m1',label:'Mall — Bedövningssvikt',behandlingTag:'intraligamentär ZOE',followup:'Åter om 2–3 dagar. Sedering/lustgas/narkos.',
+   text:`Diagnos: [Aktuell diagnos].
+
+Preoperativ smärtlindring: [Paracetamol X mg + Ibuprofen X mg, given kl [tid]].
+
+Åtgärd: Ytanestesi applicerad 3 min.
+Injektion: [Mandibularblockad / Infiltration] [preparat] [antal] amp. Väntetid [X] min.
+Effekt: [Full / Ofullständig].
+
+Vid inledande rensning: Smärtgenombrott.
+[Kompletterande intraligamentär injektion]
+Fortsatt smärtgenombrott trots adekvat anestesi.
+
+Beslut: Etiskt oförsvarbart att fortsätta. Kaviteten förseglad med eugenol + IRM.
+
+Uppföljning: Åter om [2–3] dagar med preoperativ Paracetamol + NSAID.
+[lustgas / sedering / remiss narkos].`}],
+ extraAtgard:[{id:'intralig',label:'Intraligamentär inj. utförd',text:'Kompletterande intraligamentär injektion utförd.'},{id:'zoe_forband',label:'ZOE-förband (eugenol)',text:'Kaviteten förseglad med eugenol + IRM temporärt.'}],
+ lakemedel:'Paracetamol + NSAID preoperativt nästa besök.',remissSpec:null},
+
+{id:'pedo64',icd:'T88.5',name:'Akut komplikation under sedering / lustgas',cat:'Pedodonti — Beteende & Sedering',scId:'PEDO-64-SEDKOMP',
+ symptom:['sederingskomplikation','paradoxal reaktion','kräkning','desaturation','SpO2'],behandling:['avbryta','syrgas','sidoläge','112'],
+ varning:'⚠️ Desaturation SpO2<92% → haklyft + 100% O2 + Rubens ballong + 112.',
+ mallar:[{id:'m1',label:'Mall — Sederingskomplikation',behandlingTag:'avbryta syrgas',followup:'Behandling omplaneras till narkos.',
+   text:`Diagnos: T88.5 Komplikation till anestesi / Sedering.
+
+Anamnes: Sederad med Midazolam [Dos] mg kl [Tid]. (Alt: Lustgas kl [Tid]).
+
+Status: Under behandling uppstod [Paradoxal reaktion / Kräkning / Desaturation SpO2 X%].
+
+Åtgärd: Behandlingen avbröts omedelbart.
+[Syrgas 100% / Sidoläge / Sugning svalg]. [112 larmat kl [Tid]].
+Återhämtning på [X] min.
+
+Utskrivning: SpO2 [X]%, vaken, orienterad, stabil. Utskriven kl [tid].
+Skriftlig + muntlig info: vuxen tillsyn 4h. Paracetamol v.b.
+
+Uppföljning: Behandling omplaneras till narkos.`}],
+ extraAtgard:[{id:'larmad_112',label:'112 larmat',text:'112 larmat kl [tid]. Ambulans tillkallad.'}],
+ lakemedel:'Paracetamol v.b.',remissSpec:'Sjukhus akut'},
+
+// ── PEDODONTI SLEMHINNA & MEDICIN ──
+{id:'pedo67',icd:'K05.10',name:'ANUG hos barn',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-67-ANUG',
+ symptom:['ANUG barn','nekrotiserande gingivit','pseudomembran','papiller','foetor'],behandling:['debridering','Metronidazol','klorhexidin'],
+ varning:'⚠️ Extremt sällsynt hos nordiska barn — ALLTID utred immunbrist (Leukemi, Neutropeni, HIV).',
+ mallar:[{id:'m1',label:'Mall — ANUG hos barn',behandlingTag:'debridering Metronidazol',followup:'Återbesök om 2 dagar. AKUT remiss barnmedicin.',
+   text:`Diagnos: K05.10 Akut nekrotiserande gingivit (ANUG).
+
+Status: Nekrotiserade inverterade papiller. Gråvitt pseudomembran.
+Kraftig spontanblödning. Foetor ex ore.
+
+Bedömning: ANUG. Misstanke om underliggande systemsjukdom.
+
+Åtgärd: Ytanestesi. Varsam depuration. Klorhexidinsköljning.
+Metronidazol 10–12 mg/kg × 3 (max 400 mg × 3) i 5–7 dagar.
+Akut remiss barnmedicin för blodstatus och immunutredning.`}],
+ extraAtgard:[{id:'remiss_barnmed',label:'Remiss barnmedicin',text:'Akut remiss utfärdad till barnmedicin för blodstatus och immunutredning.'}],
+ lakemedel:'Metronidazol 10–12 mg/kg × 3 (max 400 mg × 3) i 5–7 dagar.',remissSpec:'Barnmedicin'},
+
+{id:'pedo72',icd:'Q21.3',name:'Medfött hjärtfel / Endokarditrisk',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-72-HJARTA',
+ symptom:['hjärtfel','endokardit','profylax','Amoxicillin'],behandling:['endokarditprofylax','Amoxicillin','Klindamycin'],
+ varning:'Profylax ENBART till högriskgrupp (barnkardiologs beslut).',
+ mallar:[{id:'m1',label:'Mall — Endokarditprofylax',behandlingTag:'Amoxicillin profylax',followup:'Kontakta vid feber de kommande 2–3 veckorna.',
+   text:`Diagnos: Aktuell dental diagnos + Medfött hjärtfel (högriskgrupp endokardit).
+
+Anamnes: Hjärtfel. Högriskgrupp endokardit enligt Barnkardiologen.
+
+Åtgärd: Endokarditprofylax Amoxicillin [Dos] mg po kl [Tid] (60 min före).
+Klorhexidinsköljning före ingrepp. LA [preparat]. Behandling utförd.
+Hemostas utan komplikationer.
+
+Information: Kontakta vid oförklarlig feber de närmaste 2–3 veckorna.`}],
+ extraAtgard:[{id:'klindamycin',label:'Klindamycin (pc-allergi)',text:'Klindamycin 15 mg/kg (max 600 mg) po vid pc-allergi.'}],
+ lakemedel:'Amoxicillin [Dos] mg po 60 min före. Vid pc-allergi: Klindamycin 15 mg/kg.',remissSpec:null},
+
+{id:'pedo65',icd:'B00.2',name:'Primär herpetisk gingivostomatit (barn)',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-65-HERPES',
+ symptom:['herpes barn','blåsor','feber','vesiklar','gingivit barn'],behandling:['Xylocain','Paracetamol','Ibuprofen','klorhexidin'],
+ varning:'EJ antibiotika (Strama). Dehydrering → barnakut (dropp).',
+ mallar:[{id:'m1',label:'Mall — Herpetisk gingivostomatit (barn)',behandlingTag:'symtomlindring',followup:'Kontakta vid dehydrering. Läker spontant 10–14 dagar.',
+   text:`Diagnos: B00.2 Herpetisk gingivostomatit.
+
+Anamnes: Feber 39°C, allmänpåverkan. Smärta, vägrar äta.
+
+Status: Rodnad svullen gingiva. Multipla brustna blåsor/sår. Foetor ex ore.
+
+Åtgärd: Xylocain salva 5% före mat. Paracetamol + Ibuprofen dygnet runt.
+Klorhexidinbaddning 0,12%. Kall vätska/glass.
+
+Information: Barnakut omedelbart om barnet slutar kissa.`}],
+ extraAtgard:[{id:'remiss_barnakut',label:'Remiss barnakut (dehydrering)',text:'Remiss utfärdad till barnakut pga dehydrering.'}],
+ lakemedel:'Xylocain salva 5% lokalt. Paracetamol + Ibuprofen dygnet runt.',remissSpec:'Barnakut'},
+
+{id:'pedo66',icd:'K12.0',name:'Aftös stomatit barn (Recidiverande afte)',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-66-AFTE',
+ symptom:['afte barn','recidiverande sår','ingen feber','aftöst'],behandling:['Xylocain gel','Andolex','SLS-fri tandkräm','Klobetasol'],varning:null,
+ mallar:[{id:'m1',label:'Mall — Aftös stomatit',behandlingTag:'symtomlindring',followup:'Kontakta vid major afte (>1 cm) eller om ej läkt inom 14 dagar.',
+   text:`Diagnos: K12.0 Recidiverande aftös stomatit.
+
+Anamnes: Återkommande sår. Ingen feber.
+
+Status: Ytligt sår, gulvit fibrin, röd halo, insida [läpp/kind]. Gingiva frisk.
+
+Åtgärd: Diagnos afte. Xylocain gel v.b. Zendium tandkräm.
+Läker spontant 7–14 dagar.`}],
+ extraAtgard:[{id:'kortison',label:'Klobetasol (major afte)',text:'Klobetasol lokalt ordinerat pga major afte (>1 cm).'}],
+ lakemedel:'Xylocain gel v.b. Zendium tandkräm. Vid major afte: Klobetasol lokalt.',remissSpec:null},
+
+{id:'pedo68',icd:'K11.6',name:'Mucocele / Slemcysta',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-68-MUCOCELE',
+ symptom:['mucocele','slemcysta','blåaktig kula','läpp'],behandling:['exspektans','extirpation remiss'],
+ varning:'Överläpp → remiss (uteslut tumör). EJ enkel incision (recidiverar).',
+ mallar:[{id:'m1',label:'Mall — Mucocele',behandlingTag:'exspektans',followup:'Om ej försvinner inom 1 mån → remiss till specialist.',
+   text:`Diagnos: K11.6 Mucocele.
+
+Anamnes: Kula i läppen sedan [tid]. Brustit och återkommit.
+
+Status: Mjuk, fluktuerande, blåskimrande bula ca [X] mm på insida underläppen.
+
+Åtgärd: Diagnos ställd. Godartad.
+[Exspektans 1 mån / Remiss käkkirurg för kirurgisk extirpation].`}],
+ extraAtgard:[{id:'remiss_kak',label:'Remiss käkkirurg',text:'Remiss utfärdad till käkkirurg för kirurgisk extirpation.'}],
+ lakemedel:'Ingen medicinering.',remissSpec:'Käkkirurg'},
+
+{id:'pedo69',icd:'S01.5 / T28.0',name:'Brännskada / Iatrogent bitsår (bedövad läpp)',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-69-BITSAR',
+ symptom:['bitsår','iatrogent','bedövad läpp','fibrin','förälder orolig'],behandling:['information','klorhexidin','Xylocain gel','Vaselin'],varning:null,
+ mallar:[{id:'m1',label:'Mall — Bitsår/Brännskada',behandlingTag:'information',followup:'Kontakta vid utebliven läkning >14 dagar eller infektionstecken.',
+   text:`Diagnos: S01.5 Bitsår läpp (iatrogent).
+
+Anamnes: LA underkäke [igår]. Bet sig i läppen innan bedövning släppte.
+
+Status: [X] mm, vitgult fibrinbeläggning. Mjukdelssvullnad. Ingen infektion.
+
+Åtgärd: Rengöring. Information om att fibrin är normalt läkningsstadium, inte pus.
+Klorhexidinbaddning, Xylocain gel före mat, Vaselin.
+Läker spontant 7–14 dagar.`}],
+ extraAtgard:[],lakemedel:'Klorhexidinbaddning. Xylocain gel. Vaselin.',remissSpec:null},
+
+{id:'pedo59',icd:'K09.8',name:'Eruptionscysta / Eruptionshematom',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-59-ERUPCYST',
+ symptom:['eruptionscysta','blåaktig bula','eruptionshematom'],behandling:['exspektans','incision'],
+ varning:'PUS = abscess → abscess-protokoll.',
+ mallar:[{id:'m1',label:'Mall — Eruptionscysta',behandlingTag:'exspektans',followup:'Kontakta vid infektion (feber, pus, svullnad).',
+   text:`Diagnos: K09.8 Eruptionscysta.
+
+Anamnes: Blåaktig bula. Barnet [opåverkat / gnälligt]. Ingen feber.
+
+Status: Blåskimrande, fluktuerande bula regio [tand nr]. Ingen rodnad. Inget pus.
+
+Åtgärd: Lugnande besked. Ofarligt tillstånd — förväntas spricka spontant.
+Kyld mjuk kost. Paracetamol v.b.`}],
+ extraAtgard:[{id:'incision',label:'Kirurgisk incision utförd',text:'Kirurgisk incision utförd under ytanestesi pga extrem smärta.'}],
+ lakemedel:'Paracetamol v.b.',remissSpec:null},
+
+{id:'pedo60',icd:'K00.6 + K03.3',name:'Ektopisk eruption av sexårsmolar',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-60-EKTOPISK',
+ symptom:['ektopisk eruption','6-årstanden','resorption','hakning','premolaranlag'],behandling:['exspektans','separering','extraktion'],
+ varning:'Kontrollera ALLTID premolaranlag — agenesi ändrar behandlingsplan.',
+ mallar:[{id:'m1',label:'Mall — Ektopisk eruption 6-årsmolar',behandlingTag:'exspektans separering',followup:'Rtg-kontroll / Borttagning sep-gummi / Ortodontisk konsultation.',
+   text:`Diagnos: K00.6 Ektopisk eruption + K03.3 Patologisk rotresorption.
+
+Rtg: Ektopisk eruption tand [16/26]. Resorption distal rot [55/65]: [lindrig/grav].
+Premolaranlag [15/25]: [Finns / Agenesi].
+
+Bedömning: Ektopisk eruption med [reversibel/irreversibel] hakning.
+
+Åtgärd:
+[Alt A: Avvaktar. Rtg-kontroll 6 mån.]
+[Alt B: Sep-gummi/mässingstråd mellan 55/16. Kontroll 2 v.]
+[Alt C: Extraktion 55 pga grav resorption/abscess.]`}],
+ extraAtgard:[{id:'remiss_ort',label:'Remiss ortodontist',text:'Remiss utfärdad till ortodontist för bedömning av luckhållare.'}],
+ lakemedel:'Ingen medicinering.',remissSpec:'Ortodontist'},
+
+{id:'pedo61',icd:'K00.6',name:'Natal / Neonatal tand',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-61-NATAL',
+ symptom:['natal tand','neonatal tand','nyfödd','Riga-Fede'],behandling:['konservativ','slipning','extraktion'],
+ varning:'K-vitamin kontroll hos neonati (0–10 dagar) OBLIGATORISK om extraktion.',
+ mallar:[{id:'m1',label:'Mall — Natal/Neonatal tand',behandlingTag:'konservativ extraktion',followup:'Kontroll vid behov.',
+   text:`Diagnos: K00.6 Natal/Neonatal tand.
+
+Status: Central underkäksincisiv erupterad. [Måttligt rörlig / Extremt lös].
+Riga-Fede-sår: [Ja/Nej]. Amningssvårigheter: [Ja/Nej].
+
+Åtgärd: [Putspolering på incisalkanten / Extraktion pga aspirationsrisk].
+[Föräldrar informerade om konsekvenser vid extraktion].`}],
+ extraAtgard:[],lakemedel:'Ingen medicinering.',remissSpec:null},
+
+{id:'pedo71',icd:'C91.0 / C92.0',name:'Onkologipatienten (barn under cancerbehandling)',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-71-ONKO',
+ symptom:['onkologi','ALL','leukemi','neutropeni','cytostatika','febril neutropeni'],behandling:['INGA ingrepp','akutremiss barnakut'],
+ varning:'⚠️ Neutrofila <0,5 + feber → Barnakut DIREKT. Inga invasiva ingrepp.',
+ mallar:[{id:'m1',label:'Mall — Onkologipatient',behandlingTag:'akutremiss',followup:'AKUT remiss sjukhustandvård/Barnakut.',
+   text:`Diagnos: C91.0 ALL + [Aktuell dental diagnos].
+
+Anamnes: Pågående cytostatikabehandling. Söker för [Tandvärk/Svullnad].
+
+Status: Dagsaktuellt blodstatus saknas. Feber: [Ja/Nej].
+
+Åtgärd: INGA invasiva ingrepp pga neutropenirisk.
+Akut telefonkontakt Barnonkolog dr [Namn] kl [Tid].
+Remitteras akut sjukhustandvård/Barnakut.`}],
+ extraAtgard:[],lakemedel:'Inga ingrepp. Flukonazol vid candida via läkare.',remissSpec:'Barnakut'},
+
+{id:'pedo73',icd:'E10 / E16.2',name:'Diabetespatienten (Typ 1 / Akut hypoglykemi)',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-73-DIAB',
+ symptom:['diabetes','hypoglykemi','kallsvett','frånvarande','blekhet'],behandling:['druvsocker','juice','avbryta','sidoläge','112'],
+ varning:'⚠️ Medvetslöshet/koma: EJ oralt → sidoläge → 112 → Glukagon i.m./s.c.',
+ mallar:[{id:'m1',label:'Mall — Akut hypoglykemi vid tandbehandling',behandlingTag:'druvsocker avbryta',followup:'Ny tid [Datum]. Bättre glukos-kontroll inför besök.',
+   text:`Diagnos: E10 Typ 1 Diabetes + Akut hypoglykemi.
+
+Anamnes: Fastat i morse. Tagit insulin.
+
+Status: Plötsligt blek, frånvarande och kallsvettig vid LA-insättning.
+
+Bedömning: Akut hypoglykemi.
+
+Åtgärd: Behandlingen avbröts omedelbart.
+Barnet gavs [juice/druvsocker]. Fullt återställd inom 10 min.
+Temporärt förband på tanden.
+
+Uppföljning: Ny tid [Datum]. Bättre glukoskontroll inför besöket.`}],
+ extraAtgard:[{id:'ambulans',label:'112 larmat',text:'112 larmat. Ambulans tillkallad pga medvetslöshet.'}],
+ lakemedel:'Druvsocker/juice oralt. Glukagon i.m. vid medvetslöshet (via 112).',remissSpec:null},
+
+{id:'pedo57lac',icd:'S01.5',name:'Traumatisk mjukdelsblödning / Laceration',cat:'Pedodonti — Slemhinna & Medicin',scId:'PEDO-57-LACERATION',
+ symptom:['laceration','läpp','tunga','slemhinna','sutur'],behandling:['sutur','Vicryl','Ethilon','rengöring'],
+ varning:'Sår vid vermillion border → remiss käkkirurg.',
+ mallar:[{id:'m1',label:'Mall — Laceration läpp/tunga',behandlingTag:'sutur',followup:'Suturtagning 5–7 dagar (vid extraoral sutur).',
+   text:`Diagnos: S01.5 Öppet sår i läpp och munhåla.
+
+Anamnes: Ramlat [var/hur]. Inga commotiotecken. Stelkramp: OK.
+
+Status: Laceration [X] mm i [underläpp/tunga]. Tänder u.a. Ingen förhårdnad (inga tandfragment).
+
+Åtgärd: Rengöring tvål+koksalt. LA [Preparat].
+[X] st Vicryl intraoralt. [Ev. Ethilon extraoralt]. Hemostas god.
+
+Information: Skonkost. Paracetamol v.b.`}],
+ extraAtgard:[{id:'suturtagning',label:'Suturtagning bokad',text:'Tid för suturtagning bokad om 5–7 dagar.'},{id:'remiss_kak',label:'Remiss käkkirurg (vermillion)',text:'Remiss utfärdad till käkkirurg — sår vid vermillion border.'}],
+ lakemedel:'Paracetamol v.b.',remissSpec:'Käkkirurg'},
+// ── ORTODONTI ──
+{id:'ort10',icd:'Z46.4',name:'Lossnad bracket / band / ring',cat:'Ortodonti',scId:'ORT-10-BRACKET',
+ symptom:['lossnad bracket','band','orthodontisk'],behandling:['avlägsnande','vax'],
+ varning:'ALDRIG fixera bracket med komposit.',
+ mallar:[{id:'m1',label:'Mall — Lossnad bracket/band',behandlingTag:'avlägsnande vax',followup:'Kontakta ortodontist för ny tid.',
+   text:`Diagnos: Z46.4 Anpassning ortodontisk apparatur.
+
+Status: Lossnad [bracket/band] tand [nr]. Slemhinna [u.a./irriterad].
+
+Åtgärd: [Bracket avlägsnad / vax applicerat som skydd].
+Patient hänvisad till ortodontist [namn/klinik].`}],
+ extraAtgard:[{id:'vax',label:'Vax applicerat',text:'Vax applicerat som temporärt skydd.'}],
+ lakemedel:'Ingen medicinering.',remissSpec:'Ortodontist'},
+
+{id:'ort12',icd:'Z46.4',name:'Lossnad bondad lingual retainer',cat:'Ortodonti',scId:'ORT-12-RETLOSS',
+ symptom:['retainer','lossnad retainer','recidiv'],behandling:['återlimning','bonding','avlägsnande'],
+ varning:'Risk för recidiv — snarast till ortodontist.',
+ mallar:[
+  {id:'m1',label:'Mall 1 — Retainer återlimmad',behandlingTag:'återlimning bonding',followup:'Kontakta ortodontist för uppföljning.',
+   text:`Diagnos: Z46.4 Lossnad retainer.
+
+Status: Bondad retainer UK 33–43 lossnad från tand [nr]. Tråd intakt.
+
+Åtgärd: Retainer återlimmad med komposit tand [nr].
+Lingualyta rengörd, etsad, bondad. Ljushärdad. Ocklusion u.a.`},
+  {id:'m2',label:'Mall 2 — Retainer avlägsnad',behandlingTag:'avlägsnande',followup:'Hänvisad ortodontist snarast (risk recidiv).',
+   text:`Diagnos: Z46.4. Retainer avlägsnad — ej möjlig att återlimma.
+
+Åtgärd: Retainer helt avlägsnad. Komposit borttaget. Ytor polerade.
+Patient har Essix-skena — instruerad att bära dygnet runt.`}],
+ extraAtgard:[{id:'essix',label:'Essix-skena',text:'Patient instruerad att bära Essix-skena dygnet runt till ny retainer.'}],
+ lakemedel:'Ingen medicinering.',remissSpec:'Ortodontist'},
+
+{id:'ort11',icd:'Z46.4 + S00.5',name:'Vass bågände sticker i kind/tunga',cat:'Ortodonti',scId:'ORT-11-BAGANDE',
+ symptom:['vass bågände','slemhinneskada','ulceration','ortodontisk'],behandling:['klippa bågände','vax','klorhexidin'],varning:null,
+ mallar:[{id:'m1',label:'Mall — Vass bågände / slemhinneskada',behandlingTag:'klippa bågände',followup:'Kontakta vid utebliven läkning >7 dagar.',
+   text:`Diagnos: Z46.4 + S00.5 Slemhinneskada pga ortodontisk apparatur.
+
+Status: Utskjutande bågände distalt om tand [nr].
+Ulceration ca [X] mm på [kindslemhinna/tunga].
+
+Åtgärd: Bågände avklippt. Inga vassa kanter kvarstår. Sår rengjort.
+Klorhexidin 0,12% × 2. Xylocain gel v.b.
+Hänvisad ortodontist.`}],
+ extraAtgard:[{id:'klorhex',label:'Klorhexidinsköljning',text:'Klorhexidin 0,12% sköljning 2 ggr/dag ordinerat.'}],
+ lakemedel:'Klorhexidin 0,12%. Xylocain gel v.b.',remissSpec:'Ortodontist'},
+
+{id:'ort13',icd:'Z46.4',name:'Trasig / Förlorad Essix-retainer',cat:'Ortodonti',scId:'ORT-13-ESSIX',
+ symptom:['Essix','retainer trasig','förlorad retainer','recidiv'],behandling:['avtryck','ny skena','remiss ortodontist'],
+ varning:'Utan bondad retainer = hög recidivrisk — snarast.',
+ mallar:[{id:'m1',label:'Mall — Trasig/förlorad Essix-skena',behandlingTag:'avtryck ny skena',followup:'Ny skena levereras [datum].',
+   text:`Diagnos: Z46.4. Retainer [ÖK/UK] [trasig/förlorad].
+Tänder [ej förflyttade / lätt recidiv UK-front].
+
+Åtgärd: [Avtryck för ny vakuumpressad skena / Hänvisad ortodontist].
+Instruktion: Bär dygnet runt tills ny skena är klar.`}],
+ extraAtgard:[{id:'avtryck',label:'Avtryck taget',text:'Avtryck taget för ny vakuumpressad retentionsskena.'}],
+ lakemedel:'Ingen medicinering.',remissSpec:'Ortodontist'},
+
+{id:'ort14',icd:'S00.5 + Z46.4',name:'Slemhinneskada orsakad av ortodontisk apparatur',cat:'Ortodonti',scId:'ORT-14-SLEMSKADA',
+ symptom:['slemhinneskada','ulceration','ortodontisk apparatur','bracket'],behandling:['kausal åtgärd','slipning','vax','klorhexidin'],
+ varning:'Sår >3 veckor utan läkning → biopsi.',
+ mallar:[{id:'m1',label:'Mall — Slemhinneskada ortodontisk',behandlingTag:'kausal åtgärd',followup:'Kontakta vid utebliven läkning >7 dagar. Sår >3 veckor → biopsi.',
+   text:`Diagnos: S00.5 + Z46.4.
+
+Status: Ulceration [X] mm [kindslemhinna/läpp/tunga] mittemot [bracket tand nr / bågände / band].
+Storlek: ca [X] mm.
+
+Åtgärd: [Orsak åtgärdad — kant slipad / bågände avklippt / vax].
+Klorhexidin 0,12% × 2. Xylocain gel (före mat). Paracetamol v.b.
+
+Information: Läkning 5–7 dagar. Sår >3 veckor → biopsi.`}],
+ extraAtgard:[{id:'biopsi_remiss',label:'Remiss biopsi (>3 veckor)',text:'Remiss utfärdad för biopsi — sår >3 veckor utan läkning.'}],
+ lakemedel:'Klorhexidin 0,12%. Xylocain gel. Paracetamol v.b.',remissSpec:'Ortodontist'},
+
+{id:'ort15',icd:'K02.0 / K02.1',name:'White spots / Karies kring brackets',cat:'Ortodonti',scId:'ORT-15-ORTKARIES',
+ symptom:['white spots','karies brackets','demineralisering','fluorlack'],behandling:['fluorlack','resininfiltration','komposit','munhygieninstruktion'],varning:null,
+ mallar:[{id:'m1',label:'Mall — White spots / karies vid brackets',behandlingTag:'fluorlack',followup:'Ny fluorlackning om 3–6 månader.',
+   text:`Diagnos: K02.0 Initialkaries / K02.1 Karies i dentin.
+
+Status: Demineralisering labialt [tand nr] — vita opaka fläckar runt bracket-bas.
+Munhygien: [God / Bristfällig].
+
+Åtgärd:
+[A. Fluorlack (Duraphat). MHI. MI Paste.]
+[B. Fluorlack upprepat. Resin infiltration planeras efter debonding.]
+[C. Exkavering + kompositfyllning tand nr. Bracket avlägsnad, återlimmas.]
+
+Kontakt ortodontist ang. [fortsatt behandling / avbrytanderisk].`}],
+ extraAtgard:[{id:'fluorlack',label:'Fluorlackning',text:'Fluorlack (Duraphat) applicerat.'},{id:'mhi',label:'Munhygieninstruktion',text:'Intensifierad munhygieninstruktion given. MI Paste rekommenderat.'}],
+ lakemedel:'Fluorlack lokalt.',remissSpec:'Ortodontist'},
+
+{id:'ort16',icd:'S02.5 / S03.2 + K07.2',name:'Akut trauma hos barn med stort överbett',cat:'Ortodonti',scId:'ORT-16-TRAUMAOVERB',
+ symptom:['överbett','trauma barn','overjet','traumarisk'],behandling:['traumabehandling','remiss ortodontist'],
+ varning:'Barn med överbett >6 mm: 2–3× traumarisk. Remiss ortodontist efter akutbehandling.',
+ mallar:[{id:'m1',label:'Mall — Akut trauma + stort överbett',behandlingTag:'traumabehandling',followup:'Remiss ortodontist efter att traumat stabiliserats.',
+   text:`Diagnos: [S02.5 Tandfraktur / S03.2 Luxation] + K07.2 Bettavvikelse.
+
+Status: Akut trauma tand [nr]: [Beskriv skada]. Overjet: [X] mm. Ansträngd läppslutning.
+
+Åtgärd: [Traumabehandling enligt protokoll].
+
+Information: Överbett ökar traumarisk 2–3×.
+Ortodontisk behandling kan minska framtida risk (NR Prio 4).
+
+Uppföljning: Remiss ortodontist efter traumastabilisering.`}],
+ extraAtgard:[{id:'remiss_ort',label:'Remiss ortodontist',text:'Remiss utfärdad till ortodontist för bedömning av bettavvikelse (NR Prio 4).'}],
+ lakemedel:'Paracetamol + Ibuprofen v.b. enligt vikt.',remissSpec:'Ortodontist'},
+
+{id:'ort01',icd:'K01.1',name:'Eruptionsstörning hörntänder ÖK (Retinerad/Ektopisk)',cat:'Ortodonti',scId:'ORT-01-HORNTAND',
+ symptom:['retinerad horntand','ektopisk eruption','palatinalt förskjuten','guldkedja'],behandling:['interceptiv extraktion','kirurgisk friläggning','bondning guldkedja'],varning:null,
+ mallar:[
+  {id:'m1',label:'Mall A — Interceptiv extraktion primär hörntand',behandlingTag:'extraktion interceptiv',followup:'Uppföljning om 6 månader. Remiss Ortodonti om utebliven lägesförbättring.',
+   text:`Diagnos: K01.1 Retinerad tand (53/63 ektopisk eruption).
+
+Status: Buckal utbuktning saknas vid palpation.
+Rtg: Palatinalt förskjuten permanent 3:a. Ingen lateral resorption.
+
+Åtgärd: Föräldrar informerade om interceptiv behandling.
+Ytanestesi. LA: [Preparat, Mängd]. Extraktion [53/63] utan komplikationer.
+Hemostas kontrollerad. Postop info given.`},
+  {id:'m2',label:'Mall B — Kirurgisk friläggning (Specialist)',behandlingTag:'kirurgisk friläggning guldkedja',followup:'Suturtagning om 7–10 dagar. Åter till ortodontist.',
+   text:`Diagnos: K01.1 Retinerad tand. (Ortodontisk indikation)
+
+Åtgärd: Ytanestesi. LA: [Preparat, Mängd].
+Incision, palatinal lambå uppfälld. Benskal avlägsnat under koksaltspolning.
+Krona frilagd till E-C-gränsen.
+Ets, bondning, guldkedja + bracket fastsatt.
+Lambå reponerad och suturerad [Trådtyp, antal].
+
+Farmaka: Paracetamol + Ibuprofen v.b. Ingen antibiotika (Strama).`}],
+ extraAtgard:[{id:'suturtagning',label:'Suturtagning bokad',text:'Tid för suturtagning bokad om 7–10 dagar.'}],
+ lakemedel:'Paracetamol + Ibuprofen v.b. Ingen antibiotika.',remissSpec:'Ortodontist'},
+
+// ── SNABBA KLINISKA SCENARIER ──
+{id:'isning01',icd:'K03.8',name:'Isning / Dentinöverkänslighet',cat:'Endodonti',scId:'ISNING-01-DENTHYP',
+ symptom:['isning','ilning','kyla','luft','beröring','borströrelser','sött','surt'],
+ behandling:['fluoridbehandling','fluorlack','desensitisering','dentin-bonding','komposit'],varning:null,
+ mallar:[
+  {id:'m1',label:'Alt A — Desensitiseringsbehandling',behandlingTag:'fluoridbehandling desensitisering',followup:'Kontroll om 4–6 veckor. Om fortsatta besvär: rtg + vitalitetsprövning.',
+   text:`Diagnos: K03.8 Dentinöverkänslighet (isning) tand [nr].
+
+Anamnes: Isningssymtom vid kyla, luft och/eller borströrelser sedan [tidsperiod].
+Provocerad, kortvarig isning. Spontansmärta saknas.
+Lokaliserat till: [lokalisation: cervikalt / approximalt / ocklusalt].
+
+Status:
+- Tand [nr]: [Gingivaltillbakagång / Abraderbart dentin / Erosionsskada / u.a.]
+- Kyla-test: Positiv reaktion, snabb regression (<10 sek)
+- Perkussion: u.a.
+- Palpation: u.a.
+- Röntgen: u.a. / Approximal kariesmisstanke kontrollerad — [utan karies / kariesmisstanke]
+
+Bedömning: Dentinöverkänslighet K03.8 — reversibel, ingen endodontisk åtgärd indicerad.
+
+Åtgärd:
+- Professionell applicering av fluorlack (Duraphat 22 600 ppm) tand [nr]
+- Patient informerad om desensitiserande tandkräm (Sensodyne/Elmex Sensitive)
+- Teknikinstruktion: mjuk borste, cirkelbörjan, ej sura drycker direkt post-brushing
+
+Uppföljning: Om symtom kvarstår >4–6 veckor: ny undersökning inkl. rtg och vitalitetsprövning.`},
+  {id:'m2',label:'Alt B — Fyllning (exponerat dentin/erosion)',behandlingTag:'komposit dentin-bonding',followup:'Kontroll om 6 månader.',
+   text:`Diagnos: K03.8 Dentinöverkänslighet — exponerat dentin tand [nr].
+
+Anamnes: Isning vid kyla och beröring. Lokaliserat till cervikala defekten tand [nr].
+Tidigare desensitiserande kräm utan tillräcklig effekt.
+
+Status:
+- Tand [nr]: Kileformad cervikal defekt / erosionsskada [mm × mm]
+- Dentin exponerat
+- Kyla-test: Positiv reaktion, kortvarig
+
+Åtgärd:
+- LA: [Artikain 40 mg/ml + adrenalin, 0,5–1,0 ml / Ytanestesi]
+- Tand [nr] torkad, etsad, adhesiv applicerat
+- Cervikal restauration komposit (Cervical fill / Filtek / [produkt])
+- Ocklusionskontroll genomförd
+
+Uppföljning: Kontroll om 6 månader.`}],
+ extraAtgard:[{id:'fluorlack',label:'Fluorlack applicerat',text:'Duraphat fluorlack (22 600 ppm) applicerat professionellt.'},{id:'munhygieninstr',label:'Munhygieninstruktion',text:'Munhygieninstruktion given: mjuk borste, cirkelteknik, Sensodyne/Elmex Sensitive.'}],
+ lakemedel:'Sensodyne/Elmex Sensitive dagligen. Ibuprofen 400 mg v.b. vid akut isning.',remissSpec:null},
+
+{id:'fraktur01',icd:'S02.5 / S02.52',name:'Tandfraktur (Kronfraktur permanent tand)',cat:'Trauma — Permanenta tänder',scId:'FRAKTUR-01-KRONF',
+ symptom:['trauma','fraktur','avsaknad av tandsubstans','skarp kant','isning','smärta','chockad patient'],
+ behandling:['kompositrestaurering','pulpaöverkapning','etreponering','RCT','provisorium','fragment-bonding'],
+ varning:'⚠️ Fraktur med pulpaexponering kräver akut pulpabehandling samma dag.',
+ mallar:[
+  {id:'m1',label:'Alt A — Enkel kronfraktur (emalj/dentin, ingen exp.)',behandlingTag:'kompositrestaurering',followup:'Vitalitetsprövning om 4 och 12 veckor. Rtg om 6–12 månader.',
+   text:`Diagnos: S02.5 Kronfraktur tand [nr] — emalj/dentin utan pulpaexponering.
+
+Traumaanamnese: Trauma [datum/tid]. Orsak: [cykelfall/slag/sport/annat].
+Smärta: [Ja/Nej]. Isning: [Ja/Nej]. Fraktur vid incidenttillfället: [Ja/Nej].
+Fragment bevarat: [Ja/Nej]. Medvetslöshet/amnesi: [Nej / Ja → remiss sjukhus].
+
+Status:
+- Tand [nr]: Kronfraktur, emalje- och dentinkomponent synlig
+- Pulpaexponering: Nej
+- Pulpabilden synlig vid rtg: [normal / lindrig kärlvidgning]
+- Perkussion: [u.a. / Lätt ömhet]
+- Luxation: [Nej / Ja: typ]
+- Kyla-test: [Normal positiv / Försvagad]
+- Slemhinna och läpp: [u.a. / Laceration noterad]
+
+Rtg periapikalt: u.a. Rotutveckling: [komplett / inkomplett — öppen apex].
+
+Åtgärd:
+- LA: [Artikain 40 mg/ml + adrenalin, ml] / [Ingen LA krävdes]
+- Skarp kant avjämnad
+- Dentinöverkänslighet skyddad: glasjonomer liner / Ca(OH)₂
+- Kompositrestaurering tand [nr] — adhesivteknik
+- Alternativt: Fragment-bonding [Ja/Nej]
+- Ocklusionskontroll
+
+Information: Mjuk kost 1–2 veckor. Skydda tanden vid sport (munskydd).
+Återbesök för vitalitetsprövning om 4 veckor och 12 veckor obligatoriskt.`},
+  {id:'m2',label:'Alt B — Fraktur med pulpaexponering',behandlingTag:'pulpaöverkapning RCT',followup:'Återbesök om 1–2 veckor för definitiv behandling. Rtg om 6 och 12 månader.',
+   text:`Diagnos: S02.5 Kronfraktur tand [nr] — med pulpaexponering.
+
+Traumaanamnes: Trauma [datum/tid]. Orsak: [fall/slag/sport/annan].
+Tid sedan trauma till behandling: [timmar/dagar].
+Fragment bevarat: [Ja/Nej]. Medvetslöshet: [Nej].
+
+Status:
+- Tand [nr]: Kronfraktur med klinisk pulpaexponering
+- Exponeringens storlek: ca [mm] diameter
+- Blödning från pulpa: [Ja — rodröd, livlig / Nej — nekrotisk]
+- Perkussion: [u.a. / Ömhet]
+- Kyla-test: [Positiv / Svag / Negativ]
+- Rotutveckling rtg: [komplett / inkomplett — öppen apex]
+
+Bedömning: [Direkt pulpaöverkapning — lämplig om <24h, ren blödning] / [Pulpektomi indicerad]
+
+Åtgärd:
+- LA: Artikain 40 mg/ml + adrenalin, [ml]
+- Kofferdam
+- Pulpaöverkapning: MTA (ProRoot / Biodentine) applicerat direkt mot pulpa
+- Glasjonomer provisorium som tätning
+ELLER:
+- Akut pulpektomi (exstirpation) — Ca(OH)₂ inlägg, Cavit provisorium
+
+Information: Tanden kräver definitiv rotfyllning och krona. Antibiotika ej indicerat (Strama).
+
+Uppföljning: Återbesök om 1–2 veckor för definitiv behandling.`}],
+ extraAtgard:[{id:'forsarkanm',label:'Försäkringsanmälan',text:'Försäkringsanmälan (Folksam/IF) upprättad och utlämnad.'},{id:'kofferdam',label:'Kofferdam',text:'Kofferdam applicerat under hela behandlingen.'},{id:'munskydd_info',label:'Munskydd ordinerat',text:'Munskydd ordinerat vid framtida kontaktsport.'}],
+ lakemedel:'Paracetamol 500–1000 mg v.b. Ibuprofen 400 mg v.b. Ingen antibiotika (Strama).',remissSpec:null},
+
+{id:'stegvisex01',icd:'K02.1 / K02.3',name:'Stegvis Excavering (Djup Karies)',cat:'Endodonti',scId:'STEGVIS-01-EXC',
+ symptom:['ilning','kyla','djup karies','asymtomatisk','nära pulpa','röntgenologisk karies'],
+ behandling:['stegvis excavering','Ca(OH)₂','glasjonomer','provisorium','kariesexcavering'],varning:null,
+ mallar:[
+  {id:'m1',label:'Steg 1 — Partiell excavering (1:a besöket)',behandlingTag:'stegvis excavering partiell Ca(OH)₂',followup:'Återbesök om 6–12 månader för steg 2 (definitiv restauration).',
+   text:`Diagnos: K02.1 / K02.3 Djupgående karies tand [nr] — stegvis exkavering, steg 1.
+
+Anamnes: Karies röntgenologiskt noterad, approximal/ocklusalt tand [nr].
+Symtom: [Ilning vid kyla / Asymtomatisk]. Spontansmärta: Nej.
+Behandlingsval: Stegvis exkavering för att undvika pulpaexponering.
+
+Status:
+- Tand [nr]: Djupgående karies, rtg-avstånd till pulpa <1 mm / omöjligt bedöma
+- Kyla-test: [Positiv, snabb regression / u.a.]
+- Perkussion: u.a.
+
+Rtg: Approximal/ocklusalt kariesskada nära pulpakavum. Periapikalt u.a.
+
+Bedömning: Stegvis exkavering — pulpaavsöndring bevaras med Ca(OH)₂-liner.
+
+Åtgärd (Steg 1):
+- LA: Artikain 40 mg/ml + adrenalin, [ml]
+- Kofferdam
+- Partiell excavering av mjuk karies — hård karies mot pulpagolv lämnas
+- Ca(OH)₂ (Life / Dycal) applicerat mot pulpanärmaste dentin
+- Glasjonomer provisorium (Fuji IX / Ketac Molar) — tätande förband
+- Ocklusionskontroll genomförd
+
+Information: Glasjonomer-provisoriet håller 6–12 månader. Kontakt vid symtom.
+Uppföljning steg 2: Rtg-kontroll + definitiv restauration om [6–12 månader].`},
+  {id:'m2',label:'Steg 2 — Definitiv restauration (uppföljning)',behandlingTag:'fyllning komposit definitiv',followup:'Kontroll om 6–12 månader (röntgen).',
+   text:`Diagnos: K02.1 Djup karies tand [nr] — stegvis exkavering steg 2 (definitiv restauration).
+
+Tidigare behandling: Steg 1 utfört [datum]. Ca(OH)₂ + glasjonomer provisorium placerat.
+
+Status vid detta besök:
+- Tand [nr]: Symtomfri sedan steg 1. Ingen spontansmärta. Ilning: [Ja/Nej].
+- Kyla-test: [Positiv, normal / Försvagad]. Perkussion: u.a.
+- Provisoriet intakt: [Ja/Nej]
+- Rtg-kontroll: Periapikalt u.a. Pulpakavum [oförändrat / reparativt dentin bildat].
+
+Bedömning: Gynnsam pulpareaktjon — definitiv restauration möjlig.
+
+Åtgärd (Steg 2):
+- LA: Artikain 40 mg/ml + adrenalin, [ml]
+- Kofferdam
+- Provisorium avlägsnat
+- Ca(OH)₂-liner bevarat som under-liner
+- Adhesiv: [produkt] applicerat
+- Kompositrestaurering tand [nr], nyans [A2/A3/annan]
+- Ocklusionskontroll genomförd
+
+Uppföljning: Rtg-kontroll om 12 månader för att verifiera periapikalt status.`}],
+ extraAtgard:[{id:'kofferdam',label:'Kofferdam',text:'Kofferdam applicerat under hela behandlingen.'},{id:'okkontroll',label:'Ocklusionskontroll',text:'Ocklusion kontrollerad och justerad — u.a.'}],
+ lakemedel:'Ibuprofen 400 mg v.b. (kortvarigt postoperativt).',remissSpec:null},
+]; // END DB
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let S={scenario:null,mall:null,atgard:[],followup:'Kontroll om 2 veckor.',remiss:false,remissTill:'',isFri:false,friDiag:'',friIcd:'',appended:[],remissPanelOpen:false};
+let searchMode='all';
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('scenCount').textContent=DB.length+' scenarier';
+  renderDrop(DB);updateProg();
+  document.addEventListener('click',e=>{if(!e.target.closest('.search-outer'))closeDrop();});
+  document.getElementById('friDiag').addEventListener('input',e=>{S.friDiag=e.target.value;updateOut();});
+  document.getElementById('friIcd').addEventListener('input',e=>{S.friIcd=e.target.value;updateOut();});
+  document.getElementById('remissSel').addEventListener('change',function(){S.remissTill=this.value;updateOut();buildRemiss();document.getElementById('remissToggleBtn').style.display=this.value?'flex':'none';});
+});
+
+function setMode(mode,btn){searchMode=mode;document.querySelectorAll('.smode').forEach(b=>b.classList.remove('active'));btn.classList.add('active');onSearch(document.getElementById('searchInput').value);}
+function quickSearch(term){document.getElementById('searchInput').value=term;document.querySelectorAll('.stag').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');onSearch(term);openDrop();}
+function onSearch(q){openDrop();if(!q.trim()){renderDrop(DB);return;}const lower=q.toLowerCase();const filtered=DB.filter(sc=>{if(searchMode==='diagnos')return sc.name.toLowerCase().includes(lower)||sc.icd.toLowerCase().includes(lower)||sc.scId.toLowerCase().includes(lower);if(searchMode==='behandling')return sc.behandling.some(b=>b.toLowerCase().includes(lower))||sc.mallar.some(m=>(m.behandlingTag||'').toLowerCase().includes(lower));if(searchMode==='symptom')return sc.symptom.some(s=>s.toLowerCase().includes(lower));return sc.name.toLowerCase().includes(lower)||sc.icd.toLowerCase().includes(lower)||sc.scId.toLowerCase().includes(lower)||sc.cat.toLowerCase().includes(lower)||sc.symptom.some(s=>s.toLowerCase().includes(lower))||sc.behandling.some(b=>b.toLowerCase().includes(lower))||sc.mallar.some(m=>m.label.toLowerCase().includes(lower)||(m.behandlingTag||'').toLowerCase().includes(lower));});renderDrop(filtered);}
+function openDrop(){document.getElementById('dropWrap').classList.add('open');}
+function closeDrop(){document.getElementById('dropWrap').classList.remove('open');}
+
+function renderDrop(list){
+  const dw=document.getElementById('dropWrap');
+  if(!list.length){dw.innerHTML=`<div class="no-results">Ingen matchning hittades<br/><small>Prova ett annat sökord eller <a onclick="showFri()" style="color:var(--clay);cursor:pointer">skriv fritext</a></small></div>`;return;}
+  const cats={};list.forEach(sc=>{if(!cats[sc.cat])cats[sc.cat]=[];cats[sc.cat].push(sc);});
+  let html='';
+  const catColors={'Endodonti':'clay','Parodontologi':'moss','Bettfysiologi':'moss','Kirurgi':'gold','Oralmedicin':'clay','Trauma — Mjölktänder':'clay','Trauma — Permanenta tänder':'clay','Protetik':'gold','Pedodonti — Smärta & Infektion':'clay','Pedodonti — Beteende & Sedering':'moss','Pedodonti — Slemhinna & Medicin':'clay','Ortodonti':'gold'};
+  Object.keys(cats).forEach(cat=>{
+    html+=`<div class="drop-group">${cat}</div>`;
+    cats[cat].forEach(sc=>{
+      const col=catColors[sc.cat]||'clay';
+      const mallTags=sc.mallar.slice(0,3).map(m=>`<span class="drop-mall-tag">${m.label.split('—')[0].trim()}</span>`).join('');
+      html+=`<div class="drop-item ${S.scenario?.id===sc.id?'selected':''}" onclick="pickScenario('${sc.id}')">
+        <span class="icd-pill ${col}">${sc.icd.split('/')[0].trim()}</span>
+        <div class="drop-meta">
+          <span class="drop-name">${sc.name}</span>
+          <span class="drop-sub">${sc.scId} • ${sc.mallar.length} mall${sc.mallar.length>1?'ar':''}</span>
+          <div class="drop-mall-tags">${mallTags}</div>
+        </div>
+      </div>`;
+    });
+  });
+  dw.innerHTML=html;
+}
+
+function pickScenario(id){
+  const sc=DB.find(x=>x.id===id);if(!sc)return;
+  S={...S,scenario:sc,mall:null,atgard:[],appended:[],isFri:false};
+  closeDrop();document.getElementById('searchInput').value='';
+  document.getElementById('selTag').classList.add('on');
+  document.getElementById('selIcd').textContent=sc.icd.split('/')[0].trim();
+  document.getElementById('selName').textContent=sc.name;
+  const wb=document.getElementById('warnBox');
+  if(sc.varning){wb.textContent=sc.varning;wb.style.display='block';}else wb.style.display='none';
+  document.getElementById('friBox').classList.remove('on');
+  buildMallPills(sc);
+  if(sc.mallar.length>0)pickMall(sc.mallar[0].id);
+  updateProg();
+}
+
+function clearScenario(){
+  S={scenario:null,mall:null,atgard:[],followup:'Kontroll om 2 veckor.',remiss:false,remissTill:'',isFri:false,friDiag:'',friIcd:'',appended:[],remissPanelOpen:false};
+  document.getElementById('selTag').classList.remove('on');
+  document.getElementById('warnBox').style.display='none';
+  document.getElementById('mallPills').classList.remove('on');
+  document.getElementById('mallEmpty').style.display='block';
+  document.getElementById('friBox').classList.remove('on');
+  renderAtgGrid([]);
+  document.getElementById('remissChk').checked=false;
+  document.getElementById('remissSel').classList.remove('on');
+  document.getElementById('remissToggleBtn').style.display='none';
+  if(S.remissPanelOpen)toggleRemissPanel();
+  updateOut();updateProg();
+}
+
+function showFri(){S.isFri=true;closeDrop();document.getElementById('friBox').classList.add('on');document.getElementById('mallPills').classList.remove('on');document.getElementById('mallEmpty').style.display='none';renderAtgGrid([{id:'utford',label:'Behandling utförd',text:'Behandling utförd utan komplikationer.'},{id:'rtg',label:'Röntgen tagen',text:'Röntgen tagen.'},{id:'anestesi',label:'LA given',text:'Lokalbedövning given.'},{id:'remiss_doc',label:'Remiss utfärdad',text:'Remiss utfärdad.'}]);updateProg();}
+
+function buildMallPills(sc){const mp=document.getElementById('mallPills');mp.classList.add('on');mp.innerHTML=sc.mallar.map(m=>`<button class="mall-pill" onclick="pickMall('${m.id}',this)">${m.label}</button>`).join('');document.getElementById('mallEmpty').style.display='none';}
+
+function pickMall(id,btn){
+  if(!S.scenario)return;const m=S.scenario.mallar.find(x=>x.id===id);if(!m)return;
+  // Clear previous placeholder values when switching mall
+  if (S.mall && (S.mall.id !== id || S.scenario)) {
+    const oldKey = `${S.scenario.id}_${S.mall ? S.mall.id : ''}`;
+    Object.keys(PH_VALS).forEach(k=>{ if(k.startsWith(oldKey)) delete PH_VALS[k]; });
+  }
+  S.mall=m;S.atgard=[];S.appended=[];
+  document.querySelectorAll('.mall-pill').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');else{const pills=document.querySelectorAll('.mall-pill');if(pills[0])pills[0].classList.add('active');}
+  if(m.followup)S.followup=m.followup;
+  renderAtgGrid(S.scenario.extraAtgard||[]);
+  updateOut();updateProg();
+}
+
+function renderAtgGrid(opts){
+  const g=document.getElementById('atgGrid');
+  if(!opts.length){g.innerHTML='<div style="grid-column:1/-1;font-family:\'IBM Plex Mono\',monospace;font-size:.68rem;color:rgba(26,26,26,.28);">Inga extra åtgärder för detta scenario</div>';return;}
+  // FIX: Använd div istf label för att undvika dubbelklick-konflikt med checkbox
+  g.innerHTML=opts.map(o=>`<div class="atg-item ${S.atgard.includes(o.id)?'on':''}" onclick="toggleAtgById('${o.id}','${o.text.replace(/'/g,"&#39;")}')"><div class="atg-box"></div><span class="atg-label">${o.label}</span></div>`).join('');
+}
+
+function toggleAtgById(id, text) {
+  const items = document.querySelectorAll('.atg-item');
+  if(S.atgard.includes(id)){
+    S.atgard=S.atgard.filter(x=>x!==id);
+    S.appended=S.appended.filter(x=>x.id!==id);
+  } else {
+    S.atgard.push(id);
+    S.appended.push({id, text});
+  }
+  // Re-render to show correct state
+  if(S.scenario) renderAtgGrid(S.scenario.extraAtgard||[]);
+  else renderAtgGrid([{id:'utford',label:'Behandling utförd',text:'Behandling utförd utan komplikationer.'},{id:'rtg',label:'Röntgen tagen',text:'Röntgen tagen.'},{id:'anestesi',label:'LA given',text:'Lokalbedövning given.'},{id:'remiss_doc',label:'Remiss utfärdad',text:'Remiss utfärdad.'}]);
+  updateOut();updateProg();
+}
+
+// toggleAtg replaced by toggleAtgById
+
+function setFu(btn,text){document.querySelectorAll('.fu-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');S.followup=text;updateOut();}
+
+function toggleRemiss(cb){S.remiss=cb.checked;document.getElementById('remissSel').classList.toggle('on',cb.checked);if(!cb.checked){S.remissTill='';document.getElementById('remissToggleBtn').style.display='none';if(S.remissPanelOpen)toggleRemissPanel();}updateOut();}
+
+function onRemissSel(){
+  S.remissTill=document.getElementById('remissSel').value;
+  updateOut();
+  if(S.remissTill){
+    buildRemiss();
+    document.getElementById('remissToggleBtn').style.display='flex';
+    // Auto-öppna remiss-panelen direkt
+    if(!S.remissPanelOpen) toggleRemissPanel();
+  } else {
+    document.getElementById('remissToggleBtn').style.display='none';
+    if(S.remissPanelOpen) toggleRemissPanel();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INTERACTIVE PLACEHOLDER ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+// Store for resolved placeholder values keyed by mallId+index
+const PH_VALS = {};
+let currentMallKey = '';
+
+// Tooth numbers in FDI notation
+const TEETH_UPPER = [[18,17,16,15,14,13,12,11],[21,22,23,24,25,26,27,28]];

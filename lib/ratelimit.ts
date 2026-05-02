@@ -25,17 +25,17 @@ export const apiLimiter = new Ratelimit({
   analytics: true,
 });
 
-export const aiLimiterFree = new Ratelimit({
+export const aiJournalRatelimitKliniker = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(5, "1 d"),
-  prefix: "ratelimit:ai:free",
+  limiter: Ratelimit.slidingWindow(5, "24 h"),
+  prefix: "ratelimit:ai:kliniker",
   analytics: true,
 });
 
-export const aiLimiterPremium = new Ratelimit({
+export const aiJournalRatelimitKlinik = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(100, "1 d"),
-  prefix: "ratelimit:ai:premium",
+  limiter: Ratelimit.slidingWindow(100, "24 h"),
+  prefix: "ratelimit:ai:klinik",
   analytics: true,
 });
 
@@ -66,8 +66,9 @@ export async function checkRateLimit(
   };
 }
 
-export function getAiLimiter(tier: "free" | "kliniker" | "klinik"): Ratelimit {
-  return tier === "free" ? aiLimiterFree : aiLimiterPremium;
+export function getAiLimiter(tier: "free" | "kliniker" | "klinik"): Ratelimit | null {
+  if (tier === "free") return null;
+  return tier === "kliniker" ? aiJournalRatelimitKliniker : aiJournalRatelimitKlinik;
 }
 
 export function rateLimitHeaders(result: RateLimitResult): HeadersInit {
