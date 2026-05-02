@@ -1,26 +1,406 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ═══════════════════════════════════════════════════════════════
+   DentaGuide-Pro — Design Tokens & Accessibility CSS
+   Nocturne Clinical (Tech Blue #0E3B52) + Warm Pediatric (Cream)
+   ═══════════════════════════════════════════════════════════════ */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* ── Nocturne Clinical Palette ─────────────────────────────── */
+  --color-nocturne-900: #061E2B;
+  --color-nocturne-800: #0A2D3F;
+  --color-nocturne-700: #0E3B52;
+  --color-nocturne-600: #145A7A;
+  --color-nocturne-500: #1A7AA3;
+  --color-nocturne-400: #38A1D4;
+  --color-nocturne-300: #6BBDE3;
+  --color-nocturne-200: #A3D6EF;
+  --color-nocturne-100: #D1EBF7;
+  --color-nocturne-50: #EBF5FB;
+
+  /* ── Clinical Accent Colors ────────────────────────────────── */
+  --color-clinical-success: #10B981;
+  --color-clinical-warning: #F59E0B;
+  --color-clinical-danger: #EF4444;
+  --color-clinical-info: #3B82F6;
+  --color-clinical-purple: #8B5CF6;
+
+  /* ── Warm Pediatric Palette ────────────────────────────────── */
+  --color-pediatric-cream: #FDF6EC;
+  --color-pediatric-beige: #F5E6D3;
+  --color-pediatric-warm: #E8D0B3;
+  --color-pediatric-caramel: #C4956A;
+  --color-pediatric-brown: #8B6B4A;
+  --color-pediatric-text: #4A3728;
+  --color-pediatric-accent: #D4956B;
+  --color-pediatric-soft-pink: #F2D4D0;
+  --color-pediatric-soft-green: #D4E8D0;
+  --color-pediatric-soft-blue: #D0DEE8;
+
+  /* ── Premium Gold ──────────────────────────────────────────── */
+  --color-premium-gold: #D4A745;
+  --color-premium-gold-light: #F0D78E;
+  --color-premium-gold-dark: #A68320;
+
+  /* ── Red Flag (always visible, critical safety) ────────────── */
+  --color-red-flag-bg: #FEF2F2;
+  --color-red-flag-border: #FCA5A5;
+  --color-red-flag-text: #991B1B;
+  --color-red-flag-icon: #DC2626;
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
+  .theme {
+    --font-heading: var(--font-sans);
+    --font-sans: var(--font-sans);
+  }
+
+  /* ── Nocturne Clinical (default dark theme) ────────────────── */
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: oklch(0.08 0.02 220);
+    --foreground: oklch(0.95 0.01 220);
+    --card: oklch(0.12 0.02 220);
+    --card-foreground: oklch(0.95 0.01 220);
+    --popover: oklch(0.12 0.02 220);
+    --popover-foreground: oklch(0.95 0.01 220);
+    --primary: oklch(0.55 0.12 220);
+    --primary-foreground: oklch(0.98 0 0);
+    --secondary: oklch(0.18 0.02 220);
+    --secondary-foreground: oklch(0.88 0.02 220);
+    --muted: oklch(0.15 0.015 220);
+    --muted-foreground: oklch(0.65 0.02 220);
+    --accent: oklch(0.22 0.03 220);
+    --accent-foreground: oklch(0.92 0.01 220);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.25 0.02 220);
+    --input: oklch(0.2 0.02 220);
+    --ring: oklch(0.55 0.12 220);
+    --chart-1: oklch(0.55 0.12 220);
+    --chart-2: oklch(0.60 0.15 160);
+    --chart-3: oklch(0.65 0.13 80);
+    --chart-4: oklch(0.55 0.15 300);
+    --chart-5: oklch(0.70 0.10 40);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.10 0.02 220);
+    --sidebar-foreground: oklch(0.92 0.01 220);
+    --sidebar-primary: oklch(0.55 0.12 220);
+    --sidebar-primary-foreground: oklch(0.98 0 0);
+    --sidebar-accent: oklch(0.18 0.02 220);
+    --sidebar-accent-foreground: oklch(0.92 0.01 220);
+    --sidebar-border: oklch(0.22 0.02 220);
+    --sidebar-ring: oklch(0.55 0.12 220);
+  }
+
+  /* ── Warm Pediatric Theme ──────────────────────────────────── */
+  .theme-pediatric {
+    --background: oklch(0.97 0.02 80);
+    --foreground: oklch(0.25 0.04 60);
+    --card: oklch(0.99 0.01 80);
+    --card-foreground: oklch(0.25 0.04 60);
+    --popover: oklch(0.99 0.01 80);
+    --popover-foreground: oklch(0.25 0.04 60);
+    --primary: oklch(0.60 0.12 55);
+    --primary-foreground: oklch(0.99 0 0);
+    --secondary: oklch(0.92 0.03 80);
+    --secondary-foreground: oklch(0.30 0.04 60);
+    --muted: oklch(0.94 0.02 80);
+    --muted-foreground: oklch(0.45 0.04 60);
+    --accent: oklch(0.88 0.04 80);
+    --accent-foreground: oklch(0.30 0.04 60);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.88 0.03 80);
+    --input: oklch(0.92 0.02 80);
+    --ring: oklch(0.60 0.12 55);
+    --sidebar: oklch(0.96 0.02 80);
+    --sidebar-foreground: oklch(0.25 0.04 60);
+    --sidebar-primary: oklch(0.60 0.12 55);
+    --sidebar-primary-foreground: oklch(0.99 0 0);
+    --sidebar-accent: oklch(0.92 0.03 80);
+    --sidebar-accent-foreground: oklch(0.30 0.04 60);
+    --sidebar-border: oklch(0.88 0.03 80);
+    --sidebar-ring: oklch(0.60 0.12 55);
+  }
+
+  /* ── Claymorphism for Pediatric cards ──────────────────────── */
+  .clay-card {
+    background: linear-gradient(145deg, #FDF6EC, #F5E6D3);
+    box-shadow:
+      8px 8px 16px rgba(197, 174, 148, 0.3),
+      -8px -8px 16px rgba(255, 255, 255, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border-radius: 1rem;
+    border: 1px solid rgba(228, 210, 186, 0.4);
+  }
+
+  .clay-card:hover {
+    box-shadow:
+      6px 6px 12px rgba(197, 174, 148, 0.35),
+      -6px -6px 12px rgba(255, 255, 255, 0.85),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+
+  /* ── Base resets ────────────────────────────────────────────── */
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ═══════════════════════════════════════════════════════════════
+   ACCESSIBILITY — WCAG 2.1 AA Compliance
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Skip to content link ────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 9999;
+  padding: 12px 24px;
+  background-color: var(--color-nocturne-700);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 0 0 8px 8px;
+  text-decoration: none;
+  transition: top 0.2s ease;
+  outline: 2px solid transparent;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--color-nocturne-400);
+  outline-offset: 2px;
+}
+
+/* ── Focus visible (keyboard navigation indicator) ───────────── */
+:focus-visible {
+  outline: 3px solid var(--color-nocturne-400);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Reduce motion (respect system preferences) ──────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ── High contrast mode support ──────────────────────────────── */
+@media (forced-colors: active) {
+  .skip-link {
+    border: 2px solid ButtonText;
+  }
+
+  :focus-visible {
+    outline: 3px solid Highlight;
+  }
+}
+
+/* ── Minimum touch target (44×44px for mobile) ───────────────── */
+@media (pointer: coarse) {
+  button,
+  a,
+  [role="button"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENT TOKENS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Red Flags Panel (ALWAYS visible — never behind accordion) ─ */
+.red-flag-panel {
+  background-color: var(--color-red-flag-bg);
+  border: 2px solid var(--color-red-flag-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  position: relative;
+}
+
+.red-flag-panel::before {
+  content: "⚠️";
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  font-size: 1.25rem;
+  background: var(--color-red-flag-bg);
+  padding: 0 4px;
+}
+
+.theme-pediatric .red-flag-panel {
+  background-color: #FFF5F5;
+  border-color: #FEB2B2;
+}
+
+/* ── Premium lock overlay ────────────────────────────────────── */
+.premium-lock-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-lock-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  background: rgba(6, 30, 43, 0.6);
+  z-index: 10;
+  border-radius: inherit;
+}
+
+/* ── PSL Disclaimer footer ───────────────────────────────────── */
+.psl-disclaimer {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.psl-disclaimer strong {
+  color: var(--color-clinical-warning);
+}
+
+/* ── Glassmorphism cards (Nocturne) ──────────────────────────── */
+.glass-card {
+  background: rgba(14, 59, 82, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(106, 189, 227, 0.15);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Sticky search bar ───────────────────────────────────────── */
+.sticky-search {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(6, 30, 43, 0.85);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Scenario card ───────────────────────────────────────────── */
+.scenario-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scenario-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Smooth loading skeleton ─────────────────────────────────── */
+@keyframes skeleton-pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
+
+.skeleton {
+  animation: skeleton-pulse 1.8s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    var(--muted) 25%,
+    var(--accent) 37%,
+    var(--muted) 63%
+  );
+  background-size: 200% 100%;
+  border-radius: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* ── Command palette overlay ─────────────────────────────────── */
+[cmdk-overlay] {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+[cmdk-dialog] {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(640px, calc(100vw - 2rem));
+  z-index: 51;
+}
+
+/* ── Three-column dashboard layout ───────────────────────────── */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+  min-height: 100vh;
+  gap: 0;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .dashboard-layout {
+    grid-template-columns: 220px 1fr 260px;
+  }
+}
+
+/* ── Vaul bottom sheet adjustments ───────────────────────────── */
+[vaul-drawer] {
+  border-radius: 1.5rem 1.5rem 0 0;
+}
+
+[vaul-drawer-overlay] {
+  background: rgba(0, 0, 0, 0.4);
 }
