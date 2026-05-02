@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akut Diagnostik: Parodontit</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Sources Modal */
+        .sources-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #2e7d32, #43a047);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 22px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(46,125,50,0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .sources-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46,125,50,0.5); }
+        .sources-modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 2000; align-items: center; justify-content: center;
+        }
+        .sources-modal-overlay.active { display: flex; }
+        .sources-modal {
+            background: white; border-radius: 16px; padding: 30px;
+            max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .sources-modal h2 { color: #2e7d32; margin-bottom: 15px; }
+        .sources-modal ul { padding-left: 20px; }
+        .sources-modal li { margin-bottom: 10px; line-height: 1.6; }
+        .sources-modal .close-modal {
+            float: right; background: #eee; border: none; border-radius: 8px;
+            padding: 8px 16px; cursor: pointer; font-weight: bold;
+        }
+        .correction-badge {
+            display: inline-block; background: #fff3e0; color: #e65100;
+            border: 1px solid #ffcc80; border-radius: 6px; font-size: 0.75rem;
+            font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle;
+        }
+        .addition-badge {
+            display: inline-block; background: #e8f5e9; color: #2e7d32;
+            border: 1px solid #a5d6a7; border-radius: 6px; font-size: 0.75rem;
+            font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Akut Diagnostik: Parodontit & Slemhinna</h1>
+            <p class="hero-subtitle">Kliniskt beslutsstöd för tandläkare</p>
+        </div>
+
+        <div class="search-wrapper">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="mainSearch" placeholder="Sök parodontala tillstånd..." onkeyup="searchCards()">
+            </div>
+        </div>
+
+        <div class="dashboard-layout">
+            
+            <div class="scenario-nav">
+                <div class="scenario-trigger-card" id="trigger-VARK-11-PAROD" onclick="selectScenario('VARK-11-PAROD')">
+                    <span class="trigger-tag">VARK-11-PAROD</span>
+                    <div class="trigger-avatar-container">
+                        <img src="parod_bleeding.png" alt="Gingivit/Parodontit" class="trigger-avatar-img" id="img-btn-11" onerror="this.src='https://placehold.co/100x100/e8f5e9/2e7d32?text=PAROD'">
+                    </div>
+                    <h2 class="trigger-title">"Det blöder när jag borstar och tandköttet ömmar"</h2>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Gingivit, Parodontit, Blödning & Svullnad.</div>
+                </div>
+
+                <div class="scenario-trigger-card" id="trigger-VARK-05-PERI" onclick="selectScenario('VARK-05-PERI')">
+                    <span class="trigger-tag">VARK-05-PERI</span>
+                    <div class="trigger-avatar-container">
+                        <img src="perikoronit.png" alt="Perikoronit" class="trigger-avatar-img" id="img-btn-5">
+                    </div>
+                    <h2 class="trigger-title">"Ont längst bak i käken / svårt att gapa"</h2>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Perikoronit, visdomstand & trismus.</div>
+                </div>
+
+                <div class="scenario-trigger-card" id="trigger-VARK-12-PARAB" onclick="selectScenario('VARK-12-PARAB')">
+                    <span class="trigger-tag">VARK-12-PARAB</span>
+                    <div class="trigger-avatar-container">
+                        <img src="parod_abscess.png" alt="Parodontal Abscess" class="trigger-avatar-img" id="img-btn-12">
+                    </div>
+                    <h2 class="trigger-title">"Det bultar i tandköttet, tanden känns lös/hög"</h2>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Parodontal abscess, vitalitetstest, dränage & spolning.</div>
+                </div>
+
+                <div class="scenario-trigger-card" id="trigger-VARK-11-GING" onclick="selectScenario('VARK-11-GING')">
+                    <span class="trigger-tag">VARK-11-GING</span>
+                    <div class="trigger-avatar-container">
+                        <img src="ging_pain.png" alt="Akut Gingivit" class="trigger-avatar-img" id="img-btn-11-ging" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=GING'">
+                    </div>
+                    <h2 class="trigger-title">"Det svider, blöder och luktar illa i munnen"</h2>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">ANUG/NG, Herpes, intensiva mjukvävnadssmärtor.</div>
+                </div>
+
+                <div class="scenario-trigger-card" id="trigger-VARK-13-IMPL" onclick="selectScenario('VARK-13-IMPL')">
+                    <span class="trigger-tag">VARK-13-IMPL</span>
+                    <div class="trigger-avatar-container">
+                        <img src="implant_issues.png" alt="Periimplantit" class="trigger-avatar-img" id="img-btn-13" onerror="this.src='https://placehold.co/100x100/eceff1/455a64?text=IMPL'">
+                    </div>
+                    <h2 class="trigger-title">"Det blöder och varar runt implantatet"</h2>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Periimplantit, mukosit, benförlust & mekanisk rengöring.</div>
+                </div>
+
+                <div class="scenario-trigger-card" id="trigger-PARO-26-FK" onclick="selectScenario('PARO-26-FK')">
+                    <span class="trigger-tag">PARO-26-FK</span>
+                    <div class="trigger-avatar-container">
+                        <img src="foreign_body.png" alt="Främmande kropp" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e8f5e9/2e7d32?text=FK'">
+                    </div>
+                    <h2 class="trigger-title">"Något sitter fast mellan tänderna / Det gör ont"</h2>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Gingivit pga matfibrer, tandsticksbitar eller sekvester.</div>
+                </div>
+            </div>
+
+            <div class="main-content-panel">
+
+                <div id="dynamic-header" class="header-container centered">
+                    <div class="avatar-wrapper">
+                        <img id="story-avatar" class="character-img" src="start.png" alt="Start">
+                    </div>
+                    <div class="header-text-block">
+                        <h2 id="dynamic-header-title">Välkommen!</h2>
+                        <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario till vänster för att starta guiden.</p>
+                    </div>
+                </div>
+
+
+
+                <!-- ==================== SCENARIO VARK-11-PAROD ==================== -->
+                <div id="VARK-11-PAROD-display" class="scenario-display-wrapper">
+                    <div class="inner-sidebar">
+                        <button class="tab-btn active" onclick="openInnerTab('VARK-11-PAROD', 'snabb', this)">⚡ Snabböversikt</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-PAROD', 'anamnes', this)">❓ Anamnes</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-PAROD', 'status', this)">🔬 Status</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-PAROD', 'diagnos', this)">📋 Diagnostik</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-PAROD', 'behandling', this)">🔧 Behandling</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-PAROD', 'diff', this)">🔍 Diff</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-PAROD', 'flaggor', this)">🚨 Röda Flaggor</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-PAROD', 'uppfoljning', this)">📊 Uppföljning</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-PAROD', 'journal', this)">📝 Journal</button>
+                    </div>
+
+                    <div class="inner-display">
+                        
+                        <div id="VARK-11-PAROD-snabb" class="content-panel active">
+                            <h3>⚡ Scenario: Tandköttssmärta & Blödning</h3>
+                            <div class="patient-symptom-box scroll-animate">
+                                <div class="symptom-list">
+                                    <div class="symptom-item">🆔 <strong>ID:</strong> VARK-11-PAROD</div>
+                                    <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det blöder när jag borstar och tandköttet ömmar"</div>
+                                    <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Blödning vid tandborstning eller spontant, ömt/svullet tandkött, dålig andedräkt, eventuellt rörliga tänder. Smärtan är ofta molande eller "kliande".</div>
+                                    <!-- JUSTERAT: Separerade ICD-10 från det kliniska klassifikationssystemet -->
+                                    <div class="symptom-item">📖 <strong>ICD-10-koder:</strong> K05.0 (Akut gingivit), K05.1 (Kronisk gingivit), K05.3 (Kronisk parodontit). <span class="correction-badge">JUSTERAT</span></div>
+                                    <div class="symptom-item">📖 <strong>Klinisk klassifikation (EFP/AAP 2018):</strong> Parodontit Stadium I–IV, Grad A–C. <em>OBS: ICD-10 och EFP/AAP-systemet är två separata klassifikationssystem — blanda dem ej.</em></div>
+                                </div>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>Prevalens</h5>
+                                <p>Gingivit förekommer hos majoriteten av befolkningen. Parodontit drabbar ca 40 % av vuxna, varav ca 10 % har grav parodontit.</p>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-PAROD-anamnes" class="content-panel">
+                            <h3>❓ Anamnes – Differentierande frågor</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>Symtomkaraktär</h5>
+                                <ul>
+                                    <li><strong>Blöder det vid tandborstning eller spontant?</strong>
+                                        <ul>
+                                            <li><em>Vid borstning:</em> Tyder på klassisk plackinducerad inflammation.</li>
+                                            <li><em>Spontant/vid beröring:</em> Tyder på kraftigare inflammation, nekros eller systempåverkan.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Känns tänderna lösa eller har de flyttat på sig?</strong>
+                                        <ul><li><em>Ja:</em> Stark indikator för parodontit (stödjevävnadsförlust).</li></ul>
+                                    </li>
+                                    <li><strong>Var gör det ont?</strong>
+                                        <ul>
+                                            <li><em>Diffust/kliande/ömt:</em> Vanligt vid gingivit/kronisk parodontit.</li>
+                                            <li><em>Intensiv smärta:</em> Tänk på parodontal abscess eller nekrotiserande gingivit (NG).</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="warning-box scroll-animate">
+                                <h5>Riskfaktorer (Avgörande för prognos)</h5>
+                                <ul>
+                                    <li>🚬 <strong>Röker du?</strong> (Döljer blödning pga. vasokonstriktion, ökar risk för parodontit, sämre läkningsprognos — Grad C-faktor).</li>
+                                    <li>🩸 <strong>Har du diabetes?</strong> (Ökar risk för parodontit och abscesser — bidirektionellt samband, Grad C-modifierare).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-PAROD-status" class="content-panel">
+                            <h3>🔬 Klinisk status – Undersökningsgång</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>1. Inspektion (Visuella tecken)</h5>
+                                <ul>
+                                    <li>🔍 <strong>Färg & Form:</strong> Gingivan röd/blåröd och svullen (ödematös). (Frisk är blekrosa/stram).</li>
+                                    <li>🔍 <strong>Plack/Tandsten:</strong> Supragingival biofilm bekräftar bakteriell etiologi.</li>
+                                    <li>🔍 <strong>Pus:</strong> Indikerar abscess eller aktiv parodontit vid tryck på gingivan.</li>
+                                </ul>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>2. Parodontalundersökning (Avgörande)</h5>
+                                <ul>
+                                    <!-- JUSTERAT: BoP-formulering förtydligad -->
+                                    <li>✅ <strong>BoP (Bleeding on Probing):</strong> Viktigaste tecknet på pågående inflammation. Frånvaro av BoP är ett starkt tecken på parodontal stabilitet — men utesluter inte sjukdom hos rökare (falsk-negativt pga. vasokonstriktion). <span class="correction-badge">JUSTERAT</span></li>
+                                    <li>✅ <strong>PPD (Fickdjup):</strong> ≤ 3 mm (Normalt/Gingivit), ≥ 4 mm (Patologiskt om BoP finns).</li>
+                                    <li>✅ <strong>CAL (Fästenivå):</strong> Sondering förbi emaljcementgränsen (ECG). Primärt mått för parodontal destruktion enligt EFP/AAP 2018.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-PAROD-diagnos" class="content-panel">
+                            <h3>📋 Diagnostik & Röntgen</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>3. Röntgen (Bennivå)</h5>
+                                <p>Vid fickor ≥ 4 mm krävs röntgen:</p>
+                                <ul>
+                                    <li>📸 <strong>Sänkt bennivå (&gt;2 mm från ECG):</strong> Bekräftar Parodontit.</li>
+                                    <li>📸 <strong>Intakt bennivå:</strong> Bekräftar Gingivit (om inflammation finns).</li>
+                                </ul>
+                            </div>
+                            <div class="treatment-box scroll-animate">
+                                <h5>Klassificering EFP/AAP 2018 (Stadium & Grad)</h5>
+                                <table style="width:100%; border-collapse: collapse;">
+                                    <tr style="background: #f2f2f2; border-bottom: 1px solid #ddd;">
+                                        <th style="padding: 10px; text-align: left;">Stadium (Svårighetsgrad)</th>
+                                        <th style="padding: 10px; text-align: left;">Grad (Progression)</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px; border-bottom: 1px solid #eee;">I: Initial parodontit</td>
+                                        <td style="padding: 10px; border-bottom: 1px solid #eee;">A: Låg risk / Långsam progression</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px; border-bottom: 1px solid #eee;">II: Måttlig parodontit</td>
+                                        <td style="padding: 10px; border-bottom: 1px solid #eee;">B: Måttlig risk</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px; border-bottom: 1px solid #eee;">III/IV: Grav/Komplicerad</td>
+                                        <td style="padding: 10px; border-bottom: 1px solid #eee;">C: Hög risk / Snabb progression</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-PAROD-behandling" class="content-panel">
+                            <h3>🔧 Diagnostisk bedömning & Åtgärd</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>ALTERNATIV A: Gingivit (K05.0/K05.1)</h5>
+                                <ul>
+                                    <li><strong>Info & Instr (Prio 5):</strong> Borstteknik och approximal rengöring.</li>
+                                    <li><strong>Depuration:</strong> Avlägsna plack och tandsten supragingivalt.</li>
+                                    <li><strong>Prognos:</strong> Reversibelt. Utläkning inom 1–2 veckor vid god munhygien.</li>
+                                    <li><strong>Farmaka:</strong> Klorhexidin kortvarigt (Prio 8), mekanisk rengöring är överlägsen.</li>
+                                </ul>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>ALTERNATIV B: Parodontit (K05.3)</h5>
+                                <ul>
+                                    <li><strong>Munhygien (Prio 3):</strong> Kritiskt moment. Mellanrumsborstar nödvändigt.</li>
+                                    <li><strong>Mekanisk infektionsbehandling (Prio 3):</strong> Scaling/depuration för subgingival biofilm.</li>
+                                    <!-- JUSTERAT: Antibiotika-formulering korrigerad -->
+                                    <li><strong>Systemisk antibiotika (Prio 10):</strong> Rangordnad till prioritet 10 (lägst) — ges inte rutinmässigt. Skall ej förväxlas med kategorin "Icke-göra". Kan övervägas som tillägg vid specifik indikation efter specialistkonsult. <span class="correction-badge">JUSTERAT</span></li>
+                                </ul>
+                            </div>
+                            <div class="warning-box scroll-animate">
+                                <h5>ALTERNATIV C: Parodontal Abscess (Akut exacerbation)</h5>
+                                <ul>
+                                    <li><strong>Dränage (Prio 2):</strong> Dränera via fickan, spola med koksalt/vatten.</li>
+                                    <li><strong>Antibiotika:</strong> Endast vid feber eller allmänpåverkan.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-PAROD-diff" class="content-panel">
+                            <h3>🔍 Differentialdiagnos</h3>
+                            <div class="info-card scroll-animate">
+                                <ul>
+                                    <li><strong>Parodontal Abscess:</strong> Lokaliserad svullnad, intensiv smärta, pus.</li>
+                                    <li><strong>Nekrotiserande Gingivit (NG):</strong> Intensiv smärta, nekrotiserade papiller, spontan blödning, foetor ex ore.</li>
+                                    <li><strong>Systempåverkan:</strong> Vid atypiskt kraftig blödning eller nekros, överväg bakomliggande blodsjukdom.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-PAROD-flaggor" class="content-panel">
+                            <h3>🚨 Nationella Riktlinjer & Prioritering</h3>
+                            <div class="warning-box scroll-animate">
+                                <ul>
+                                    <li><strong>Förbättrad munhygien vid parodontit:</strong> Prio 3 (Hög).</li>
+                                    <li><strong>Mekanisk infektionsbehandling (Scaling):</strong> Prio 3 (Hög).</li>
+                                    <li><strong>Stödbehandling:</strong> Prio 3 (Hög).</li>
+                                    <!-- JUSTERAT: Korrigerad terminologi Prio 10 ≠ Icke-göra -->
+                                    <li><strong>Systemisk antibiotika vid parodontit stadium I–IV:</strong> Prio 10 (lägst prioritet — ej "Icke-göra"). <span class="correction-badge">JUSTERAT</span></li>
+                                    <li><strong>"Icke-göra":</strong> En separat rekommendationskategori i Socialstyrelsens system — ska ej sammanblandas med Prio 10.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-PAROD-uppfoljning" class="content-panel">
+                            <h3>📊 Uppföljning</h3>
+                            <div class="info-card scroll-animate">
+                                <ul>
+                                    <li><strong>Gingivit:</strong> Utvärdera BoP och plackindex efter 2–4 veckor. Mål: &lt;10–20 % blödning.</li>
+                                    <li><strong>Parodontit:</strong> Utvärdering av fickdjup och blödning 3–6 månader efter avslutad scaling.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-PAROD-journal" class="content-panel">
+                            <h3>📝 Dokumentationsstöd & TLV</h3>
+                            <div class="journal-box scroll-animate">
+                                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                                <pre>Diagnos: K05.1 Kronisk gingivit (alt. K05.3 Kronisk parodontit Stadium II Grad B).
+Anamnes: Söker för blödande tandkött vid borstning. Ingen akut smärta. Röker ej.
+Status:
+Gingiva: Generellt rodnad och ödematös.
+BoP: Generell blödning (>30%).
+PPD: Generellt 2-3 mm, enstaka 4 mm (pseudofickor).
+Röntgen: Intakt bennivå.
+Bedömning: Plackinducerad gingivit orsakad av bristande approximal rengöring.
+Behandling: Info om biofilm. Instr munhygien (Bass + mellanrumsborste). Depuration helkäke supragingivalt.
+Plan: Återbesök för läkningkontroll 2 veckor.</pre>
+                            </div>
+                            <div class="info-card scroll-animate" style="margin-top:15px;">
+                                <h5>Debiteringskoder (TLV — verifiera mot kusp.tlv.se)</h5>
+                                <ul>
+                                    <li><strong>101/111:</strong> Basundersökning.</li>
+                                    <li><strong>114:</strong> Fullständig parodontal undersökning.</li>
+                                    <li><strong>201:</strong> Rådgivande samtal (Gingivit).</li>
+                                    <li><strong>341/342:</strong> Behandling av parodontal sjukdom.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SCENARIO VARK-05-PERI ==================== -->
+                <div id="VARK-05-PERI-display" class="scenario-display-wrapper">
+                    <div class="inner-sidebar">
+                        <button class="tab-btn active" onclick="openInnerTab('VARK-05-PERI', 'snabb', this)">⚡ Snabböversikt</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-05-PERI', 'anamnes', this)">❓ Anamnes</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-05-PERI', 'status', this)">🔬 Status</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-05-PERI', 'diagnos', this)">📖 Diagnostik</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-05-PERI', 'behandling', this)">🔧 Behandling</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-05-PERI', 'farmakologi', this)">💊 Farmakologi</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-05-PERI', 'flaggor', this)">🚨 Röda Flaggor</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-05-PERI', 'uppfoljning', this)">📊 Uppföljning</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-05-PERI', 'journal', this)">📝 Journal</button>
+                    </div>
+
+                    <div class="inner-display">
+
+                        <div id="VARK-05-PERI-snabb" class="content-panel active">
+                            <h3>⚡ Scenario 05: Perikoronit</h3>
+                            <div class="patient-symptom-box scroll-animate">
+                                <p><strong>Citat:</strong> "Ont längst bak i käken / svårt att gapa / svullet tandkött över tanden"</p>
+                                <ul>
+                                    <li><strong>Scenario-ID:</strong> VARK-05-PERI</li>
+                                    <li><strong>Symtomprofil:</strong> Smärta, rodnad, svullnad i operculum runt delvis frambruten tand (oftast UK). Dålig smak/lukt. Eventuellt trismus.</li>
+                                    <!-- JUSTERAT: Korrekt ICD-10-kod. K05.3 avser kronisk parodontit, ej perikoronit -->
+                                    <li><strong>Diagnos (ICD-10):</strong> K05.2 (Perikoronit). <em>OBS: Det saknas en separat ICD-10-kod för "kronisk perikoronit" — K05.3 avser kronisk parodontit och ska ej användas för perikoronit.</em> <span class="correction-badge">JUSTERAT</span></li>
+                                    <li><strong>Prevalens:</strong> Vanligt hos unga vuxna (20–25 år).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-05-PERI-anamnes" class="content-panel">
+                            <h3>❓ Anamnes – Obligatoriska frågor</h3>
+                            <div class="info-card scroll-animate">
+                                <ul>
+                                    <li><strong>Har du svårt att gapa?</strong> (Trismus indikerar spridning mot tuggmuskulatur — Varningssignal!).</li>
+                                    <li><strong>Har du svårt att svälja (dysfagi)?</strong> (Allvarligt tecken på spridning mot svalget).</li>
+                                    <li><strong>Har du feber?</strong> (Indikerar systemisk påverkan).</li>
+                                    <li><strong>Känns det som att du biter på tandköttet?</strong> (Indikerar antagonisttrauma).</li>
+                                    <li><strong>Har du haft besvär här tidigare?</strong> (Indikation för extraktion i lugnt skede).</li>
+                                    <li><strong>Smakar det illa i munnen?</strong> (Pus/varbildning).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-05-PERI-status" class="content-panel">
+                            <h3>🔬 Klinisk status – Obligatoriska undersökningar</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>Inspektion:</h5>
+                                <ul>
+                                    <li><strong>Operculum:</strong> Rött, svullet tandkött över tanden?</li>
+                                    <li><strong>Antagonist:</strong> Biter ÖK-tand ner i det svullna tandköttet? (Traumatisk ocklusion).</li>
+                                    <li><strong>Pus:</strong> Varbildning vid tryck på fliken?</li>
+                                    <li><strong>Svullnad:</strong> Ansiktsasymmetri eller svullnad vid käkvinkeln?</li>
+                                </ul>
+                                <h5>Mätning:</h5>
+                                <ul>
+                                    <li><strong>Gapförmåga:</strong> Mät i mm. Normalt &gt;35–40 mm.</li>
+                                    <li><strong>Röd flagga:</strong> Kraftigt nedsatt gapförmåga (&lt; 20 mm).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-05-PERI-diagnos" class="content-panel">
+                            <h3>📖 Radiologi & Bedömning</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>Radiologiska kriterier (Apikal/OPG):</h5>
+                                <ul>
+                                    <li>Bedöm tandens läge (vertikal, mesioangulär, horisontell).</li>
+                                    <li>Finns plats för eruption? (Oftast inte vid perikoronit).</li>
+                                    <li>Benkanten distalt om 7:an.</li>
+                                    <li>Relation till mandibularkanalen.</li>
+                                </ul>
+                                <h5>Uteslutningskriterier:</h5>
+                                <ul>
+                                    <li><strong>Karies/Pulpit:</strong> Uteslut smärta från djupt hål i 8:an eller 7:an.</li>
+                                    <li><strong>Fullt erupterad tand:</strong> Om helt framme är det ej perikoronit.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-05-PERI-behandling" class="content-panel">
+                            <h3>🔧 Behandlingsalternativ</h3>
+                            <p><em>Antibiotika ska inte ges rutinmässigt utan enbart vid tecken på spridning (feber, trismus, svulna lymfkörtar, svullnad mot svalget).</em></p>
+                            
+                            <div class="treatment-box scroll-animate">
+                                <h5>ALT A: Akut rengöring & Spolning (Standard)</h5>
+                                <ul>
+                                    <li><strong>Anestesi:</strong> Ofta nödvändigt (Xylocain/Citanest).</li>
+                                    <li><strong>Rengöring:</strong> Lyft försiktigt på operculum.</li>
+                                    <li><strong>Spolning:</strong> Rikligt med NaCl eller 3 % Väteperoxid.</li>
+                                    <li><strong>Instruktion:</strong> Skölj med Klorhexidin 0,1–0,2 % i 5–7 dagar.</li>
+                                </ul>
+                            </div>
+
+                            <div class="treatment-box scroll-animate">
+                                <h5>ALT B: Extraktion av antagonist (Överkäkstand)</h5>
+                                <ul>
+                                    <li><strong>Indikation:</strong> ÖK-tand biter på infekterat område.</li>
+                                    <li><strong>Åtgärd:</strong> Extrahera ÖK-tanden för omedelbar avlastning.</li>
+                                </ul>
+                            </div>
+
+                            <div class="warning-box scroll-animate">
+                                <h5>ALT C: Extraktion av visdomstand (Akut skede)</h5>
+                                <ul>
+                                    <li><strong>Varning:</strong> Rekommenderas ej av allmäntandläkare vid akut infektion (risk för spridning och anestesisvårigheter).</li>
+                                    <li><strong>Planering:</strong> Görs i lugnt/kallt skede (2–6 veckor efter akut episod).</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="info-card scroll-animate">
+                                <h5>ALT D: Operkulektomi/Gingivektomi (Icke-rekommenderat)</h5>
+                                <p>Görs sällan då vävnaden ofta växer tillbaka (recidiv). Ej standardbehandling vid perikoronit.</p>
+                            </div>
+                        </div>
+
+                        <div id="VARK-05-PERI-farmakologi" class="content-panel">
+                            <h3>💊 Farmakologisk behandling</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>Analgetika:</h5>
+                                <p>NSAID (Ibuprofen 400 mg) + Paracetamol (1 g).</p>
+                            </div>
+                            <div class="warning-box scroll-animate">
+                                <h5>Antibiotika:</h5>
+                                <ul>
+                                    <li><strong>Ej indicerat:</strong> Vid enbart lokal smärta och svullnad.</li>
+                                    <li><strong>Indicerat vid:</strong> Feber, allmänpåverkan, trismus eller spridning (svulna ömma lymfkörtar, svullnad mot svalget).</li>
+                                    <li><strong>Förstahandsval:</strong> PcV 1,6 g x 3 i 5–7 dagar.</li>
+                                    <!-- JUSTERAT: Klindamycin-dos korrigerad till VGR-riktlinjens rekommendation -->
+                                    <li><strong>Vid penicillinallergi:</strong> Klindamycin 600 mg x 3 i 5–7 dagar (VGR-riktlinje). <em>OBS: Regionala riktlinjer varierar — verifiera alltid mot aktuell regional riktlinje.</em> <span class="correction-badge">JUSTERAT</span></li>
+                                    <li><strong>Vid terapisvikt:</strong> Tillägg av Metronidazol 400 mg x 3.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-05-PERI-flaggor" class="content-panel">
+                            <h3>🚨 Akuta Varningssignaler (Spridning)</h3>
+                            <div class="warning-box scroll-animate">
+                                <h5>Funktionella tecken:</h5>
+                                <ul>
+                                    <li><strong>Trismus:</strong> Gapförmåga &lt; 20 mm (Allvarlig spridning).</li>
+                                    <li><strong>Dysfagi:</strong> Sväljningssvårigheter (Hotade luftvägar).</li>
+                                    <li><strong>Talpåverkan:</strong> "Grötigt tal".</li>
+                                </ul>
+                                <h5>Systemiska & Lokala tecken:</h5>
+                                <ul>
+                                    <li><strong>Feber:</strong> &gt; 38°C + sjukdomskänsla.</li>
+                                    <li><strong>Extraoral svullnad:</strong> Synlig utanpå kinden eller ner mot halsen.</li>
+                                    <li><strong>Ludwig's Angina:</strong> Bilateral munbottensvullnad (Livshotande).</li>
+                                    <li><strong>Dyspné:</strong> Andningssvårigheter/stridor.</li>
+                                </ul>
+                                <p><strong>Åtgärd:</strong> Akut remiss till käkkirurg/sjukhus.</p>
+                            </div>
+                        </div>
+
+                        <div id="VARK-05-PERI-uppfoljning" class="content-panel">
+                            <h3>📊 Uppföljning & Extraktionskriterier</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>När ska tanden extraheras?</h5>
+                                <ul>
+                                    <li><strong>Huvudregel:</strong> Undvik extraktion under akut infektion (spridningsrisk).</li>
+                                    <li><strong>Extraktion i kallt skede:</strong> När symtomfri i 2–6 veckor.</li>
+                                    <!-- JUSTERAT: ">4/år" togs bort som ej evidensbaserat tröskelvärde -->
+                                    <li><strong>Indikationer:</strong> Återkommande episoder (ingen fastställd frekvens i svenska riktlinjer), karies (8:an el distalt 7:an), parodontal benförlust, cystor (&gt;1 cm) eller resorption. <span class="correction-badge">JUSTERAT</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-05-PERI-journal" class="content-panel">
+                            <h3>📝 Dokumentation & TLV</h3>
+                            <div class="journal-box scroll-animate">
+                                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                                <pre>Diagnos: Akut perikoronit tand 38 (K05.2). Orsak: Partiell eruption, trauma från 28.
+Status: Svullnad/rodnad operculum 38. Pus vid palpation. Gapförmåga 30 mm. Ingen feber. 28 biter på operculum.
+Behandling: Infiltrationsanestesi. Riklig spolning NaCl + väteperoxid. Mekanisk rengöring. Extraktion 28.
+Info: Sköljning Klorhexidin. Extraktion 38 planeras i kallt skede. Analgetika rek. Avstår antibiotika pga saknad systemisk påverkan.</pre>
+                            </div>
+                            <div class="info-card scroll-animate" style="margin-top: 15px;">
+                                <h5>Debiteringskoder (TLV — verifiera mot kusp.tlv.se):</h5>
+                                <ul>
+                                    <li>3043: Tillståndskod Perikoronit</li>
+                                    <li>103: Akut undersökning</li>
+                                    <li>301: Sjukdomsbehandling, mindre</li>
+                                    <li>401: Tandextraktion (Antagonist)</li>
+                                    <li>121: Röntgen</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SCENARIO VARK-11-GING ==================== -->
+                <div id="VARK-11-GING-display" class="scenario-display-wrapper">
+                    <div class="inner-sidebar">
+                        <button class="tab-btn active" onclick="openInnerTab('VARK-11-GING', 'snabb', this)">⚡ Snabböversikt</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-GING', 'anamnes', this)">❓ Anamnes</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-GING', 'status', this)">🔬 Status</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-GING', 'diagnos', this)">📋 Diagnostik</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-GING', 'behandling', this)">🔧 Behandling</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-GING', 'flaggor', this)">🚨 Röda Flaggor</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-GING', 'uppfoljning', this)">📊 Uppföljning</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-11-GING', 'journal', this)">📝 Journal</button>
+                    </div>
+
+                    <div class="inner-display">
+                        
+                        <div id="VARK-11-GING-snabb" class="content-panel active">
+                            <h3>⚡ Scenario 11: Akut tandköttssmärta & Blödning</h3>
+                            <div class="patient-symptom-box scroll-animate">
+                                <div class="symptom-list">
+                                    <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-11-GING</div>
+                                    <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det svider, blöder och luktar illa i munnen"</div>
+                                    <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Intensiv ytlig smärta i tandköttet, spontan blödning eller blödning vid minsta beröring, dålig andedräkt (foetor ex ore).</div>
+                                    <div class="symptom-item">📖 <strong>Huvuddiagnoser:</strong> A69.1 (ANUG/NG), B00.2 (Herpetisk gingivostomatit).</div>
+                                </div>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>Prevalens</h5>
+                                <ul>
+                                    <li>NG är sällsynt (ca 0,001–0,01 %) men vanligare hos rökare och stressade unga vuxna.</li>
+                                    <li>Herpes är vanligt hos barn och unga vuxna.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-GING-anamnes" class="content-panel">
+                            <h3>❓ Anamnes – Obligatoriska frågor</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>Symtom</h5>
+                                <ul>
+                                    <li><strong>Blöder tandköttet spontant (utan att du borstar)?</strong> Ja: Starkt tecken på nekrotiserande gingivit.</li>
+                                    <li><strong>Har du blåsor eller sår i munnen?</strong>
+                                        <ul>
+                                            <li><em>Ja, blåsor:</em> Tyder på Herpes eller annan virusinfektion.</li>
+                                            <li><em>Nej, "gropar" mellan tänderna:</em> Tyder på NG (utstansade papiller).</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Känner du en metallisk eller dålig smak/lukt?</strong> (Foetor ex ore).</li>
+                                </ul>
+                            </div>
+                            <div class="warning-box scroll-animate">
+                                <h5>Riskfaktorer (Kritiskt för NG)</h5>
+                                <ul>
+                                    <li>🚬 <strong>Röker du?</strong> (Stark riskfaktor).</li>
+                                    <li>🧠 <strong>Har du varit mycket stressad eller sovit dåligt på sistone?</strong></li>
+                                    <li>🌡️ <strong>Har du feber eller känner dig sjuk?</strong> (Allmänpåverkan).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-GING-status" class="content-panel">
+                            <h3>🔬 Klinisk status – Undersökningsgång</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>1. Inspektion (Avgörande)</h5>
+                                <ul>
+                                    <li>🔍 <strong>Papiller:</strong> Är de "utstansade" (toppen borta, kraterformade)? Täcks de av en gråvit hinna (pseudomembran)? → NG.</li>
+                                    <li>🔍 <strong>Slemhinna:</strong> Finns spridda blåsor eller sår på både fast och rörlig slemhinna? → Herpes (engagemang av fast slemhinna är diagnostiskt viktigt).</li>
+                                    <li>🔍 <strong>Blödning:</strong> Blöder det vid lätt beröring/sondering?</li>
+                                </ul>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>2. Palpation & Temperatur</h5>
+                                <ul>
+                                    <li>✅ <strong>Lymfkörtlar:</strong> Lymfadenit (svullnad) submandibulärt/hals är vanligt vid både NG och primär herpes.</li>
+                                    <li>✅ <strong>Feber:</strong> Mät temp vid allmänpåverkan (&gt;38°C är indikation för systemisk behandling).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-GING-diagnos" class="content-panel">
+                            <h3>📋 Diagnostisk bedömning</h3>
+                            <table style="width:100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background-color: var(--primary-color); color: white;">
+                                        <th style="padding: 10px; border: 1px solid #ddd;">Diagnos</th>
+                                        <th style="padding: 10px; border: 1px solid #ddd;">Etiologi & Karaktäristika</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Nekrotiserande Gingivit (NG)</td>
+                                        <td style="padding: 10px; border: 1px solid #ddd;">Bakteriell opportunistisk infektion (Spirocheter, Fusobakterier, Prevotella intermedia). Stress/rökning. Utstansade papiller + foetor ex ore.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Herpetisk Gingivostomatit</td>
+                                        <td style="padding: 10px; border: 1px solid #ddd;">Virus (HSV-1). Blåsor/sår på fast OCH rörlig slemhinna (engagemang av fast slemhinna skiljer herpes från afte). Vanligast hos barn/unga.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="VARK-11-GING-behandling" class="content-panel">
+                            <h3>🔧 Åtgärd per Diagnos</h3>
+                            
+                            <div class="treatment-box scroll-animate">
+                                <h5>ALTERNATIV A: Nekrotiserande Gingivit (NG)</h5>
+                                <ul>
+                                    <li><strong>Akut rengöring (Prio 1):</strong> Vävnaden är extremt öm. Ytbedövning (Xylocain gel) krävs.</li>
+                                    <li><strong>Debridering:</strong> Avlägsna nekros, plack och den gråvita hinnan (pseudomembran) varsamt med ultraljud/handinstrument.</li>
+                                    <li><strong>Kemisk rengöring:</strong> Spola med Väteperoxid 3% (syresätter och hämmar anaerober) eller Klorhexidin.</li>
+                                    <!-- JUSTERAT: PcV-alternativet förtydligat -->
+                                    <li><strong>Antibiotika:</strong> Endast vid feber/lymfadenit. Förstahandsval: <strong>Metronidazol (Flagyl) 400 mg x 3</strong> i 5–7 dagar (bäst täckning mot anaerober). <em>OBS: PcV har sämre täckning mot anaerober vid NG och är inte förstahandsalternativ — väljs vid kontraindikation mot metronidazol.</em> <span class="correction-badge">JUSTERAT</span></li>
+                                    <li><strong>Hemvård:</strong> Klorhexidin 0,12–0,2 % 2 ggr/dag i 10–14 dagar. Mjuk tandborste.</li>
+                                </ul>
+                            </div>
+
+                            <div class="info-card scroll-animate">
+                                <h5>ALTERNATIV B: Herpetisk Gingivostomatit</h5>
+                                <ul>
+                                    <li><strong>Symtomatisk behandling:</strong> Läker ut spontant på 10–14 dagar.</li>
+                                    <li><strong>Smärtlindring:</strong> Lidokain gel eller bensydamin (Andolex) för att underlätta intag av vätska/mat.</li>
+                                    <li><strong>Hydrering:</strong> Kritiskt (särskilt barn).</li>
+                                    <li><strong>⛔ Antibiotika:</strong> "Icke-göra" (det är ett virus).</li>
+                                    <!-- JUSTERAT: Aciklovir-indikation utvidgad -->
+                                    <li><strong>Antiviraler (Aciklovir/Valaciklovir):</strong> Indicerat vid immunosuppression, men kan även övervägas vid svår primär infektion hos vuxna om insatt tidigt (inom 72 timmar). Handläggning via läkare. <span class="correction-badge">JUSTERAT</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="info-card scroll-animate">
+                                <h5>Nationella Riktlinjer & Prioritering</h5>
+                                <ul>
+                                    <li><strong>Infektionskontroll vid NG:</strong> Prioritet 2. God effekt på smärta/läkning.</li>
+                                    <li><strong>Systemisk antibiotika vid parodontal sjukdom:</strong> Generellt Prio 10, men vid NG med allmänpåverkan motiverat.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-GING-flaggor" class="content-panel">
+                            <h3>🚨 Röda Flaggor</h3>
+                            <div class="warning-box scroll-animate">
+                                <ul>
+                                    <li>🚨 <strong>Ingen läkning:</strong> Om sår/nekroser ej läker trots behandling → Misstänk bakomliggande systemsjukdom (leukemi, HIV) eller malignitet. Remiss krävs.</li>
+                                    <li>🚨 <strong>Noma (Cancrum oris):</strong> Mycket sällsynt. Om nekros sprider sig i mjukvävnad/kind hos immunsupprimerade → Akutremiss sjukhus.</li>
+                                    <li>🚨 <strong>Dehydrering (Barn):</strong> Om barnet ej dricker p.g.a. smärta → Remiss barnmedicin.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-GING-uppfoljning" class="content-panel">
+                            <h3>📊 Uppföljning</h3>
+                            <div class="info-card scroll-animate">
+                                <ul>
+                                    <li><strong>NG:</strong> Återbesök efter 2–5 dagar. Ny rengöring behövs ofta. Kontrollera läkning.</li>
+                                    <li><strong>Senare:</strong> Fullständig parodontal sanering när akutfasen lagt sig.</li>
+                                    <li><strong>Herpes:</strong> Vid behov, annars exspektans.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-11-GING-journal" class="content-panel">
+                            <h3>📝 Dokumentationsstöd & TLV</h3>
+                            <div class="journal-box scroll-animate">
+                                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                                <pre>Diagnos: K05.10 Akut nekrotiserande ulcerös gingivit (alt. B00.2 Herpes).
+Anamnes: Söker akut för smärta i tandköttet och spontanblödning sedan 3 dagar. Röker 10 cig/dag. Ingen feber.
+Status:
+- Gingiva: Generellt rodnad. Nekrotiska papiller (utstansade) i regio 33-43. Pseudomembran synligt.
+- Lukt: Tydlig foetor ex ore.
+- Lymfkörtlar: Palpöm submandibulärt.
+Behandling: Ytbedövning Xylocain gel. Varsam depuration av nekroser med ultraljud och H2O2-spolning.
+Ordination: Klorhexidin 0,12% 2 ggr/dag i 10 dagar.
+Plan: Återbesök om 3 dagar för kontroll. Rökstopp rekommenderas starkt.</pre>
+                            </div>
+                            <div class="info-card scroll-animate" style="margin-top:15px;">
+                                <h5>Debiteringskoder (TLV — verifiera mot kusp.tlv.se)</h5>
+                                <ul>
+                                    <li><strong>103:</strong> Kompletterande/akut undersökning.</li>
+                                    <li><strong>301:</strong> Sjukdomsbehandling mindre omfattande (rengöring/debridering).</li>
+                                    <li><strong>311/312:</strong> Information/Instruktion (hemvård/klorhexidin).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SCENARIO VARK-12-PARAB ==================== -->
+                <div id="VARK-12-PARAB-display" class="scenario-display-wrapper">
+                    <div class="inner-sidebar">
+                        <button class="tab-btn active" onclick="openInnerTab('VARK-12-PARAB', 'snabb', this)">⚡ Snabböversikt</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-12-PARAB', 'anamnes', this)">❓ Anamnes</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-12-PARAB', 'status', this)">🔬 Status</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-12-PARAB', 'diagnos', this)">📋 Diagnostik</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-12-PARAB', 'behandling', this)">🔧 Behandling</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-12-PARAB', 'flaggor', this)">🚨 Röda Flaggor</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-12-PARAB', 'uppfoljning', this)">📊 Uppföljning</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-12-PARAB', 'journal', this)">📝 Journal</button>
+                    </div>
+
+                    <div class="inner-display">
+                        
+                        <div id="VARK-12-PARAB-snabb" class="content-panel active">
+                            <h3>⚡ Scenario 12: Parodontal Abscess</h3>
+                            <div class="patient-symptom-box scroll-animate">
+                                <div class="symptom-list">
+                                    <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-12-PARAB</div>
+                                    <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det bultar i tandköttet, tanden känns lös/hög och det smakar illa"</div>
+                                    <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Lokaliserad svullnad i tandköttet (ofta lateralt längs roten), molande smärta, ömhet vid beröring, tanden kan kännas "för lång" eller rörlig. Ofta pus vid sondering/tryck.</div>
+                                    <!-- JUSTERAT: ICD-10-koden korrigerad. K05.2 är perikoronit, ej parodontal abscess -->
+                                    <div class="symptom-item">📖 <strong>Diagnos (ICD-10):</strong> K05.20 (Parodontal abscess utan fistelgång) eller K05.21 (med fistelgång). <em>OBS: K05.2 utan subkod används primärt för perikoronit i ICD-10-SE — använd K05.20/K05.21 för parodontal abscess.</em> <span class="correction-badge">JUSTERAT</span></div>
+                                </div>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>Prevalens</h5>
+                                <p>Vanlig orsak till akutbesök (7–14 %), särskilt hos patienter med obehandlad parodontit eller efter parodontal behandling där fickmynningen läkt ihop för tidigt.</p>
+                            </div>
+                        </div>
+
+                        <div id="VARK-12-PARAB-anamnes" class="content-panel">
+                            <h3>❓ Anamnes – Obligatoriska frågor</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>Differentiering (Endo vs. Paro)</h5>
+                                <ul>
+                                    <li><strong>Har tanden lagats djupt eller rotfyllts nyligen?</strong> (Talar mer för endodontiskt ursprung).</li>
+                                    <li><strong>Har du tandlossning sedan tidigare?</strong> (Stark riskfaktor, 60 % av abscesser sker hos obehandlade parodpatienter).</li>
+                                    <li><strong>Har något fastnat mellan tänderna?</strong> (T.ex. popcornskal, fiskben — "Foreign body abscess").</li>
+                                </ul>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>Symtomkaraktär & Allmäntillstånd</h5>
+                                <ul>
+                                    <li><strong>Känns tanden "hög" eller lös?</strong> (Vanligt vid abscess då ödem lyfter tanden).</li>
+                                    <li><strong>Smakar det illa i munnen?</strong> (Pus-tömning, dålig andedräkt).</li>
+                                    <li><strong>Har du feber (&gt;38°C) eller känner dig sjuk?</strong> (Indikation för antibiotika).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-12-PARAB-status" class="content-panel">
+                            <h3>🔬 Klinisk status – Undersökningsgång</h3>
+                            
+                            <div class="warning-box scroll-animate">
+                                <h5>1. Sensibilitetstest (Avgörande steg)</h5>
+                                <ul>
+                                    <li>✅ <strong>Vitalitet:</strong> Testa med kyla/el.
+                                        <ul>
+                                            <li><em>Positivt svar (tanden lever):</em> Indikerar Parodontal abscess.</li>
+                                            <li><em>Negativt svar (tanden död):</em> Indikerar sannolikt Apikal abscess (Endo) eller kombinerad endo-parod-lesion.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="info-card scroll-animate">
+                                <h5>2. Inspektion & Palpation</h5>
+                                <ul>
+                                    <li>🔍 <strong>Svullnad:</strong> Ofta lokaliserad mer coronalt/lateralt på tandköttet jämfört med apikala abscesser.</li>
+                                    <li>🔍 <strong>Pus:</strong> Kommer det var ur fickan vid tryck på svullnaden?</li>
+                                </ul>
+                            </div>
+
+                            <div class="info-card scroll-animate">
+                                <h5>3. Sondering</h5>
+                                <ul>
+                                    <li>✅ <strong>Fickdjup:</strong> Sondera försiktigt. En djup, smal ficka (&gt;6 mm) mot abscessen bekräftar diagnosen.</li>
+                                    <li>✅ <strong>Främmande kropp:</strong> Känn efter nerskilat objekt (t.ex. popcornskal).</li>
+                                </ul>
+                            </div>
+
+                            <div class="info-card scroll-animate">
+                                <h5>4. Röntgen</h5>
+                                <ul>
+                                    <li>📸 <strong>Bennivå:</strong> Visar oftast marginal benförlust (vertikal/angulär defekt).</li>
+                                    <li>📸 <strong>Roten:</strong> Uteslut rotfraktur eller periapikal destruktion (som skulle tyda på endo-orsak).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-12-PARAB-diagnos" class="content-panel">
+                            <h3>📋 Diagnostisk bedömning</h3>
+                            <div class="info-card scroll-animate">
+                                <p>Syftet är att differentiera tillståndet från en endodontisk (apikal) abscess och etablera dränage för att häva infektionen.</p>
+                            </div>
+                            <table style="width:100%; border-collapse: collapse; margin-top: 20px;">
+                                <thead>
+                                    <tr style="background-color: var(--primary-color); color: white;">
+                                        <th style="padding: 12px; border: 1px solid #ddd;">Kategori</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd;">Kriterier / Beskrivning</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Alternativ A</td>
+                                        <td style="padding: 10px; border: 1px solid #ddd;">Lokaliserad abscess. Blockering av fickmynning eller främmande kropp. Vital tand.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Alternativ B</td>
+                                        <td style="padding: 10px; border: 1px solid #ddd;">Abscess med Systemisk Påverkan: Feber (&gt;38°C), lymfadenit, utbredd svullnad.</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Alternativ C</td>
+                                        <td style="padding: 10px; border: 1px solid #ddd;">Endo-Parodontal Lesion: Djup ficka till apex + Negativ vitalitet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="VARK-12-PARAB-behandling" class="content-panel">
+                            <h3>🔧 Åtgärder per Alternativ</h3>
+                            
+                            <div class="treatment-box scroll-animate">
+                                <h5>ALTERNATIV A: Parodontal Abscess (Lokaliserad)</h5>
+                                <ul>
+                                    <li><strong>Dränage (Prio 1):</strong>
+                                        <ul>
+                                            <li>Försök dränera abscessen via tandköttsfickan med en sond eller kyrett.</li>
+                                            <li>Om abscessen är fluktuerande (mjuk) och inte tömmer sig via fickan: Lägg ett snitt (incision) i svullnaden.</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Rengöring:</strong> Avlägsna försiktigt tandsten eller främmande kropp i fickmynningen. <em>Undvik aggressiv djupscaling i det akuta skedet.</em></li>
+                                    <li><strong>Spolning:</strong> Spola fickan rikligt med fysiologisk koksaltlösning eller 3 % väteperoxid.</li>
+                                    <li><strong>Ocklusal justering:</strong> Om tanden känns hög och smärtar vid bitning, slipa den ur ocklusion.</li>
+                                    <li><strong>Antibiotika:</strong> EJ INDICERAT vid enbart lokal svullnad/smärta.</li>
+                                </ul>
+                            </div>
+
+                            <div class="treatment-box scroll-animate">
+                                <h5>ALTERNATIV B: Systemisk Påverkan</h5>
+                                <ul>
+                                    <li><strong>Dränage & Rengöring:</strong> Utförs enligt Alternativ A.</li>
+                                    <li><strong>Antibiotika (tillägg):</strong>
+                                        <ul>
+                                            <li><em>Förstahandsval:</em> PcV 1,6 g x 3 i 5–7 dagar.</li>
+                                            <!-- JUSTERAT: Klindamycin-dos anpassad till VGR-riktlinje -->
+                                            <li><em>Vid penicillinallergi:</em> Klindamycin 600 mg x 3 i 5–7 dagar (VGR-riktlinje). <em>Verifiera mot aktuell regional riktlinje.</em> <span class="correction-badge">JUSTERAT</span></li>
+                                            <li><em>Vid terapisvikt:</em> Metronidazol 400 mg x 3.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="info-card scroll-animate">
+                                <h5>ALTERNATIV C: Endo-Parodontal Lesion</h5>
+                                <p><strong>Åtgärd:</strong> Kräver både endodontisk behandling (rensning) och parodontal behandling. Endodontin prioriteras ofta först.</p>
+                            </div>
+
+                            <div class="warning-box scroll-animate">
+                                <h5>Nationella Riktlinjer</h5>
+                                <ul>
+                                    <li><strong>Dränage + antibiotika vid systemisk påverkan:</strong> Prio 2 (Hög).</li>
+                                    <li><strong>Enbart systemisk antibiotika:</strong> "Icke-göra" om dränage är möjligt.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-12-PARAB-flaggor" class="content-panel">
+                            <h3>🚨 Röda Flaggor – Akuta Varningssignaler</h3>
+                            <div class="warning-box scroll-animate">
+                                <ul>
+                                    <li>🚨 <strong>Spridning:</strong> Om svullnaden sprider sig mot munbotten (risk för andningsvägar) eller hals → <strong>Akutremiss/Sjukhus</strong>.</li>
+                                    <li>🚨 <strong>Trismus:</strong> Svårigheter att gapa tyder på spridning till musklerloger → Antibiotika och ev. remiss.</li>
+                                    <li>🚨 <strong>Terapisvikt:</strong> Om ingen förbättring sker inom 48 timmar trots behandling → Ompröva diagnos (Rotfraktur? Cyste? Malignitet?).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-12-PARAB-uppfoljning" class="content-panel">
+                            <h3>📊 Uppföljning</h3>
+                            <div class="info-card scroll-animate">
+                                <ul>
+                                    <li><strong>Kort sikt:</strong> Återbesök efter 3–5 dagar för att kontrollera att svullnaden lagt sig.</li>
+                                    <li><strong>Lång sikt:</strong> Parodontal sanering av tanden när akutfasen lagt sig.</li>
+                                    <li><strong>Prognos:</strong> En tand med upprepade abscesser har tveksam prognos; extraktion kan behöva övervägas.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-12-PARAB-journal" class="content-panel">
+                            <h3>📝 Dokumentationsstöd & TLV</h3>
+                            <div class="journal-box scroll-animate">
+                                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                                <!-- JUSTERAT: Korrekt ICD-10-kod i journalmallen -->
+                                <pre>Diagnos: K05.20 Akut parodontal abscess utan fistelgång, tand [XX]. (JUSTERAT från K05.2)
+Anamnes: Söker för svullnad och värk tand [XX] sedan 2 dagar. Tanden känns hög. Ingen feber.
+Status:
+- Sensibilitet: Positiv (vital).
+- Svullnad: Lokal fluktuerande svullnad buckalt, pus tömmer sig vid sondering.
+- Fickdjup: 8 mm ficka buckalt.
+Röntgen: Marginal benförlust ca 50 %. Ingen apikal destruktion.
+Behandling: Dränage via fickan med kyrett. Spolning med koksalt. Lätt ocklusal justering.
+Info: Rekommenderar Alvedon/Ibuprofen. Återbesök för uppföljning om 1 vecka.</pre>
+                            </div>
+                            <div class="info-card scroll-animate" style="margin-top:15px;">
+                                <h5>Debiteringskoder (TLV — verifiera mot kusp.tlv.se)</h5>
+                                <ul>
+                                    <li><strong>103:</strong> Akut undersökning.</li>
+                                    <li><strong>301:</strong> Sjukdomsbehandling (dränage via ficka, spolning).</li>
+                                    <li><strong>404:</strong> Incision av abscess (om kirurgiskt snitt krävs).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SCENARIO VARK-13-IMPL ==================== -->
+                <div id="VARK-13-IMPL-display" class="scenario-display-wrapper">
+                    <div class="inner-sidebar">
+                        <button class="tab-btn active" onclick="openInnerTab('VARK-13-IMPL', 'snabb', this)">⚡ Snabböversikt</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-13-IMPL', 'anamnes', this)">❓ Anamnes</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-13-IMPL', 'status', this)">🔬 Status</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-13-IMPL', 'diff', this)">📋 Differentialdiagnostik</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-13-IMPL', 'behandling', this)">🔧 Behandling</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-13-IMPL', 'antibiotika', this)">💊 Antibiotikastöd</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-13-IMPL', 'flaggor', this)">🚨 Röda Flaggor</button>
+                        <button class="tab-btn" onclick="openInnerTab('VARK-13-IMPL', 'journal', this)">📝 Journal</button>
+                    </div>
+
+                    <div class="inner-display">
+                        
+                        <div id="VARK-13-IMPL-snabb" class="content-panel active">
+                            <h3>⚡ Scenario 13: Akut Periimplantit & Mukosit</h3>
+                            <div class="patient-symptom-box scroll-animate">
+                                <div class="symptom-list">
+                                    <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-13-IMPL</div>
+                                    <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det blöder och varar runt implantatet"</div>
+                                    <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Blödning vid borstning/sondering (BoP), rodnad, svullnad och ibland varbildning (pus) runt ett tandimplantat. Smärta är ovanligt i tidiga skeden men kan förekomma vid akut abscessbildning.</div>
+                                    <div class="symptom-item">📖 <strong>Huvuddiagnoser:</strong> Periimplantär mukosit (inflammation utan benförlust), Periimplantit (inflammation med benförlust).</div>
+                                </div>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>Prevalens</h5>
+                                <ul>
+                                    <li>Mukosit drabbar ca 40–50 % av patienter med implantat.</li>
+                                    <li>Periimplantit drabbar ca 15–20 %.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-13-IMPL-anamnes" class="content-panel">
+                            <h3>❓ Anamnes – Differentierande frågor</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>Symtom</h5>
+                                <ul>
+                                    <li><strong>Blöder det eller kommer det var?</strong> (Pus är vanligare vid periimplantit än vid parodontit).</li>
+                                    <li><strong>Känns implantatet löst?</strong> 
+                                        <ul>
+                                            <li><em>Nej:</em> Normalt vid både mukosit och periimplantit.</li>
+                                            <li><em>Ja:</em> 🚨 Alarmerande. Tyder på totalförlust av osseointegrering eller teknisk komplikation (lossnad skruv).</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Har du haft tandlossning tidigare?</strong> (Patienter med parodontithistorik har högre risk för periimplantit).</li>
+                                </ul>
+                            </div>
+                            <div class="warning-box scroll-animate">
+                                <h5>Riskfaktorer</h5>
+                                <ul>
+                                    <li>🚬 <strong>Röker du?</strong> (Stark riskfaktor för benförlust).</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-13-IMPL-status" class="content-panel">
+                            <h3>🔬 Klinisk status – Undersökningsgång</h3>
+                            <div class="info-card scroll-animate">
+                                <h5>1. Inspektion</h5>
+                                <ul>
+                                    <li>🔍 <strong>Mjukvävnad:</strong> Rodnad, svullnad?</li>
+                                    <li>🔍 <strong>Pus:</strong> Tryck på vävnaden — tömmer sig var?</li>
+                                    <li>🔍 <strong>Suprakonstruktion:</strong> Sitter kronan/bron fast? Går det att göra rent? (Dålig utformning är en riskfaktor).</li>
+                                </ul>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>2. Sondering (Avgörande)</h5>
+                                <ul>
+                                    <li>✅ <strong>Sondera:</strong> Mät runt hela implantatet (4–6 ytor). Använd lätt tryck (0,25 N). 
+                                        <br><em>Obs: Sonden går ofta djupare vid implantat än vid tänder även vid hälsa.</em>
+                                    </li>
+                                    <li>✅ <strong>BoP/Pus:</strong> Notera blödning och var.</li>
+                                </ul>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>3. Röntgen</h5>
+                                <ul>
+                                    <li>📸 <strong>Jämförelse:</strong> Jämför aktuell bild med referensbild (helst från 1-årskontrollen eller installationen).</li>
+                                    <li><strong>Ingen benförlust:</strong> Periimplantär mukosit.</li>
+                                    <!-- JUSTERAT: Benförlust-tröskel förtydligad enligt EFP/AAP 2017 -->
+                                    <li><strong>Benförlust &gt;2 mm jämfört med referensbild:</strong> Periimplantit (EFP/AAP 2017-konsensus). <span class="correction-badge">JUSTERAT</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-13-IMPL-diff" class="content-panel">
+                            <h3>📋 Tabell: Skillnad mellan Mukosit och Periimplantit</h3>
+                            <div class="treatment-box scroll-animate">
+                                <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+                                    <thead>
+                                        <tr style="background-color: var(--primary-color); color: white; border-bottom: 2px solid #ddd;">
+                                            <th style="padding: 10px; border: 1px solid #ddd;">Kriterium</th>
+                                            <th style="padding: 10px; border: 1px solid #ddd;">Periimplantär Mukosit</th>
+                                            <th style="padding: 10px; border: 1px solid #ddd;">Periimplantit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Benförlust</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Ingen (endast mjukvävnad).</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Ja, &gt;2 mm (progressiv förlust).</td>
+                                        </tr>
+                                        <tr style="background-color: #f9f9f9;">
+                                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Blödning (BoP)</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Ja (obligatoriskt fynd).</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Ja (obligatoriskt fynd).</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Pus (Var)</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Mindre vanligt.</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Vanligt (aktiv lesion).</td>
+                                        </tr>
+                                        <tr style="background-color: #f9f9f9;">
+                                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Fickdjup (PPD)</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Normalt/Pseudofickor.</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Ofta fördjupade (≥6 mm).</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Reversibilitet</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Ja, läker ut vid behandling.</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Nej (kräver ofta kirurgi).</td>
+                                        </tr>
+                                        <tr style="background-color: #f9f9f9;">
+                                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Mobilitet</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Nej.</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">Nej (endast i slutstadiet).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="VARK-13-IMPL-behandling" class="content-panel">
+                            <h3>🔧 Behandlingsstrategi: Akut omhändertagande</h3>
+                            <div class="treatment-box scroll-animate">
+                                <h5>ALTERNATIV A: Akut Periimplantit (Infektion/Pus)</h5>
+                                <p>Mål: Minska bakteriebördan och häva den akuta inflammationen.</p>
+                                <ul>
+                                    <li><strong>Mekanisk rengöring:</strong> Rengör ytan med titan-, kolfiber- eller plastinstrument. <em>Obs: Icke-kirurgisk behandling har begränsad effekt vid djup periimplantit men behövs i akutskedet.</em></li>
+                                    <li><strong>Spolning:</strong> Spola fickan med NaCl eller Väteperoxid (3%). (Antiseptisk spolning som enda behandling har låg prioritet — är ett komplement, ej primär behandling).</li>
+                                    <li><strong>Uppföljning:</strong> Om inflammation kvarstår efter akutbehandling krävs kirurgi (lambå).</li>
+                                </ul>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>ALTERNATIV B: Mukosit (Inflammation utan benförlust)</h5>
+                                <p>Mål: Återställa hälsan genom plackkontroll.</p>
+                                <ul>
+                                    <li><strong>Munhygien (Prio 1):</strong> Patientens egenvård är avgörande. Anpassa mellanrumsborstar.</li>
+                                    <li><strong>Professionell rengöring:</strong> Avlägsna plack, tandsten och cementöverskott.</li>
+                                    <li><strong>Farmaka:</strong> Klorhexidin kortvarigt (sköljning/gel)(Antiseptisk spolning som enda behandling har låg prioritet — är ett komplement, ej primär behandling)..</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-13-IMPL-antibiotika" class="content-panel">
+                            <h3>💊 Beslutsstöd för Antibiotika</h3>
+                            <div class="treatment-box scroll-animate">
+                                <table style="width:100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background-color: #f2f2f2;">
+                                            <th style="padding: 10px; border: 1px solid #ddd;">Indikation för Antibiotika</th>
+                                            <th style="padding: 10px; border: 1px solid #ddd;">"Icke-göra" (Ej indicerat)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">✅ <strong>Systemisk påverkan:</strong> Feber, sjukdomskänsla.</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">⛔ <strong>Mukosit:</strong> Endast lokal rengöring krävs.</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">✅ <strong>Spridning:</strong> Svullnad mot munbotten/hals.</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">⛔ <strong>Lokal Periimplantit:</strong> Utan allmänpåverkan.</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 10px; border: 1px solid #ddd;">✅ <strong>Inför kirurgi:</strong> Kan övervägas vid kirurgisk behandling om pus föreligger.</td>
+                                            <td style="padding: 10px; border: 1px solid #ddd;"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="VARK-13-IMPL-flaggor" class="content-panel">
+                            <h3>🚨 Röda Flaggor</h3>
+                            <div class="warning-box scroll-animate">
+                                <ul>
+                                    <li>🚨 <strong>Implantatmobilitet:</strong> Om rörligt har osseointegreringen förlorats. <strong>Åtgärd:</strong> Implantatet måste avlägsnas (explanteras). Kan ej räddas.</li>
+                                    <li>🚨 <strong>Cementöverskott:</strong> Vanlig orsak till akut mukosit efter installation. Måste avlägsnas.</li>
+                                    <li>🚨 <strong>Snabb benförlust:</strong> Periimplantit progredierar ofta snabbare än parodontit pga saknad bindvävskapsel.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="VARK-13-IMPL-journal" class="content-panel">
+                            <h3>📝 Dokumentationsstöd & TLV</h3>
+                            <div class="journal-box scroll-animate">
+                                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                                <!-- JUSTERAT: ICD-10-koder förtydligade -->
+                                <pre>Diagnos: T85.7 Periimplantit vid implantat [XX]. (OBS: K05.1 avser kronisk gingivit — ej specifikt för mukosit)
+Alt. för periimplantär mukosit: Använd T85.7 eller regionalt vedertagen kod.
+Status:
+- Mjukvävnad: Rodnad, svullen.
+- BoP/Pus: Kraftig blödning och pus vid sondering.
+- PPD: [X] mm.
+- Mobilitet: Ingen.
+- Röntgen: Jmf med bild från [ÅÅ-MM-DD] ses benförlust ca [X] mm.
+Åtgärd: Ytbedövning. Mekanisk rengöring med titankyrett/ultraljud. Spolning med väteperoxid och koksalt.
+Info: Noggrann instr. med mellanrumsborste. Info om att kirurgisk åtgärd troligen krävs om ej utläkning sker.
+Plan: Återbesök 2 veckor.</pre>
+                            </div>
+                            <div class="info-card scroll-animate" style="margin-top:15px;">
+                                <h5>Debiteringskoder (TLV — verifiera mot kusp.tlv.se)</h5>
+                                <ul>
+                                    <li><strong>103:</strong> Akut undersökning.</li>
+                                    <li><strong>301:</strong> Sjukdomsbehandling mindre omfattande.</li>
+                                    <li><strong>341/342:</strong> Behandling av periimplantit.</li>
+                                    <li><strong>429:</strong> Kirurgiskt avlägsnande av implantat (om mobilt — verifiera kod).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== SCENARIO PARO-26-FK ==================== -->
+                <div id="PARO-26-FK-display" class="scenario-display-wrapper">
+                    <div class="inner-sidebar">
+                        <button class="tab-btn active" onclick="openInnerTab('PARO-26-FK', 'snabb', this)">⚡ Snabböversikt</button>
+                        <button class="tab-btn" onclick="openInnerTab('PARO-26-FK', 'anamnes', this)">❓ Anamnes</button>
+                        <button class="tab-btn" onclick="openInnerTab('PARO-26-FK', 'status', this)">🔬 Status</button>
+                        <button class="tab-btn" onclick="openInnerTab('PARO-26-FK', 'diagnos', this)">📋 Diagnostik</button>
+                        <button class="tab-btn" onclick="openInnerTab('PARO-26-FK', 'behandling', this)">🔧 Behandling</button>
+                        <button class="tab-btn" onclick="openInnerTab('PARO-26-FK', 'diff', this)">🔍 Differentialdiagnos</button>
+                        <button class="tab-btn" onclick="openInnerTab('PARO-26-FK', 'flaggor', this)">🚨 Röda Flaggor</button>
+                        <button class="tab-btn" onclick="openInnerTab('PARO-26-FK', 'journal', this)">📝 Journal</button>
+                    </div>
+
+                    <div class="inner-display">
+                        <div id="PARO-26-FK-snabb" class="content-panel active">
+                            <h3>⚡ Scenario 26: Gingivit pga Främmande Kropp</h3>
+                            <div class="scroll-animate" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <p>🆔 <strong>Scenario-ID:</strong> PARO-26-FK</p>
+                                </div>
+                                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <p>🗣️ <strong>Citat:</strong> "Det gör ont i tandköttet / Något sitter fast mellan tänderna"</p>
+                                </div>
+                                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <p>🤕 <strong>Symtom:</strong> Lokaliserad inflammation, plötslig debut, smärta vid tuggning/borstning, ofta efter måltid (t.ex. popcorn).</p>
+                                </div>
+                                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <p>📖 <strong>Huvuddiagnoser:</strong> K05.0 (Akut gingivit) eller K05.1 (Kronisk gingivit).</p>
+                                </div>
+                            </div>
+                            <div class="info-card scroll-animate">
+                                <h5>Vanliga föremål</h5>
+                                <p>Matfibrer (popcorn, kött), tandsticksbitar, flossrester, fyllningsöverskott eller sekvester efter extraktion.</p>
+                            </div>
+                        </div>
+
+                        <div id="PARO-26-FK-anamnes" class="content-panel">
+                            <h3>❓ Anamnes – Diagnostiska frågor</h3>
+                            <div class="info-card scroll-animate">
+                                <p><strong>Fokus:</strong> Identifiera utlösande händelse och exakt lokalisation.</p>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;">
+                                    <div style="background: white; padding: 15px; border-radius: 10px; border-left: 4px solid var(--accent-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                        <p><strong>Var exakt gör det ont?</strong> Patienten pekar ofta ut ett specifikt mellanrum.</p>
+                                    </div>
+                                    <div style="background: white; padding: 15px; border-radius: 10px; border-left: 4px solid var(--accent-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                        <p><strong>Vad åt du innan det började?</strong> Ledtrådar: Popcorn, majs, segt kött, nötter.</p>
+                                    </div>
+                                    <div style="background: white; padding: 15px; border-radius: 10px; border-left: 4px solid var(--accent-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                        <p><strong>Har du petat själv?</strong> Varning för avbrutna tandpetare djupt i fickan.</p>
+                                    </div>
+                                    <div style="background: white; padding: 15px; border-radius: 10px; border-left: 4px solid var(--accent-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                        <p><strong>Behandling nyligen?</strong> Risk för fyllningsöverskott, cementrester eller suturer.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="PARO-26-FK-status" class="content-panel">
+                            <h3>🔬 Klinisk status – Undersökningsgång</h3>
+                            <div class="scroll-animate" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <h5>🔍 Inspektion & Palpation</h5>
+                                    <p>Lokaliserad rodnad och ödem (svullnad). Palpera försiktigt — känns något vasst under slemhinnan?</p>
+                                </div>
+                                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <h5>🔍 Sondering (Försiktigt!)</h5>
+                                    <p>För sonden i sulcus. Finns motstånd eller hårt objekt? BOP (blödning) är nästan alltid positivt.</p>
+                                </div>
+                                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <h5>🔍 Tandtrådstest</h5>
+                                    <p>Går tråden igenom? Revor i tråden tyder på skarpa kanter (överskott/fragment). Kontrollera lukt.</p>
+                                </div>
+                                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <h5>🔍 Sensibilitet & Perkussion</h5>
+                                    <p>Uteslut endodontiskt ursprung (pulpit/apikal parodontit) vid tveksamhet.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="PARO-26-FK-diagnos" class="content-panel">
+                            <h3>📋 Diagnostik & Radiologi</h3>
+                            <div class="info-card scroll-animate">
+                                <p>Oftast en klinisk diagnos. Röntgen (BW/Apikal) krävs främst vid misstanke om:</p>
+                                <ul>
+                                    <li>Subgingival tandsten eller radiopaka fragment (metall/sekvester).</li>
+                                    <li>Djupt liggande fyllningsöverskott.</li>
+                                    <li><strong>Varning:</strong> Organiska material (popcorn, trä, tråd) syns <strong>inte</strong> på röntgen!</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="PARO-26-FK-behandling" class="content-panel">
+                            <h3>🔧 Akut Åtgärd & Behandling</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                                <div class="symptom-box scroll-animate" style="border-top: 4px solid #4caf50;">
+                                    <h5>⛏️ Avlägsnande</h5>
+                                    <p>Använd tandtråd (ovaxad), interdentalborste eller pincett. Vid djupa fragment kan LA krävas för varsam mobilisering.</p>
+                                </div>
+                                <div class="symptom-box scroll-animate" style="border-top: 4px solid #4caf50;">
+                                    <h5>🛠️ Korrektion (Iatrogen)</h5>
+                                    <p>Polera bort fyllningsöverskott med diamant/polerskiva. Vid cementrester — varsam scaling.</p>
+                                </div>
+                                <div class="symptom-box scroll-animate" style="border-top: 4px solid #4caf50;">
+                                    <h5>💊 Farmakologi</h5>
+                                    <p>Klorhexidin 0,2 % sköljning 2 ggr/dag i 5–7 dagar. Ibuprofen 400 mg vid behov. Antibiotika endast vid abscess/feber.</p>
+                                </div>
+                                <div class="symptom-box scroll-animate" style="border-top: 4px solid #4caf50;">
+                                    <h5>🔄 Eftervård</h5>
+                                    <p>Spola rent med NaCl eller Klorhexidin. Instruera patienten i korrekt "C-formad" tandtrådsteknik.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="PARO-26-FK-diff" class="content-panel">
+                            <h3>🔍 Differentialdiagnoser</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <div class="symptom-box scroll-animate">
+                                    <h5>Matimpaktation</h5>
+                                    <p>Ingen FK kvar, men defekt kontakt (öppet mellanrum). Återkommande problem efter varje måltid.</p>
+                                </div>
+                                <div class="symptom-box scroll-animate">
+                                    <h5>Parodontal Abscess</h5>
+                                    <p>Fluktuerande svullnad, pus, djupa fickor (&gt;6mm) och eventuell feber.</p>
+                                </div>
+                                <div class="symptom-box scroll-animate">
+                                    <h5>NUG / ANUG</h5>
+                                    <p>Nekrotiska papiller (kraterformade), pseudomembran och kraftig fetor ex ore.</p>
+                                </div>
+                                <div class="symptom-box scroll-animate">
+                                    <h5>Läkemedelsgingivit</h5>
+                                    <p>Generaliserad hyperplasi (t.ex. vid Nifedipin). Fast konsistens, ej lokaliserad.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="PARO-26-FK-flaggor" class="content-panel">
+                            <h3>🚨 Röda Flaggor (Varningssignaler)</h3>
+                            <div class="warning-box scroll-animate">
+                                <ul>
+                                    <li>🚨 <strong>Feber &gt;38,5°C:</strong> Misstänk systemisk spridning eller sepsis.</li>
+                                    <li>🚨 <strong>Extraoral svullnad:</strong> Risk för abscessspridning i loger.</li>
+                                    <li>🚨 <strong>Dysfagi:</strong> Svårighet att svälja/andas kräver omedelbar remiss.</li>
+                                    <li>🚨 <strong>Nekros:</strong> Gråsvarta papiller indikerar nekrotiserande sjukdom.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="PARO-26-FK-journal" class="content-panel">
+                            <h3>📝 Journalmall (Matfiber)</h3>
+                            <div class="journal-box scroll-animate">
+                                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                                <pre>Diagnos: K05.0 Akut lokaliserad gingivit (FK-orsakad).
+Anamnes: Smärta och blödning regio [14-15] sedan igår efter popcornintag.
+Status: Papill 14-15 rodnad, ödematös, BOP+. Synlig matfiber interdentalt.
+Behandling: FK avlägsnad med tandtråd/pincett. Spolning NaCl.
+Ordination: Klorhexidin 0,2 % 10ml x 2 i 5 dagar. Information om läkning 48h.</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end main-content-panel -->
+        </div><!-- end dashboard-layout -->
+    </div><!-- end container -->
+
+    <!-- ==================== SOURCES BUTTON & MODAL ==================== -->
+    <button class="sources-btn" onclick="document.getElementById('sourcesModal').classList.add('active')">
+        📚 Källor
+    </button>
+
+    <div class="sources-modal-overlay" id="sourcesModal" onclick="if(event.target===this)this.classList.remove('active')">
+        <div class="sources-modal">
+            <button class="close-modal" onclick="document.getElementById('sourcesModal').classList.remove('active')">✕ Stäng</button>
+            <h2>📚 Källförteckning</h2>
+            <p style="color:#555; margin-bottom:15px;">Alla påståenden i detta beslutsstöd baseras på följande vetenskapliga och kliniska källor:</p>
+            <ul>
+                <li><strong>Socialstyrelsen.</strong> Nationella riktlinjer för tandvård 2022. Inkl. ROI-databasen (rangordning av åtgärder). <a href="https://www.socialstyrelsen.se/kunskapsstod-och-regler/regler-och-riktlinjer/nationella-riktlinjer/riktlinjer-och-utvarderingar/tandvard/" target="_blank">socialstyrelsen.se</a></li>
+                <li><strong>Socialstyrelsen.</strong> ICD-10-SE (Internationell statistisk klassifikation av sjukdomar och relaterade hälsoproblem, svensk version). <a href="https://www.socialstyrelsen.se/statistik-och-data/klassifikationer-och-koder/icd-10-se/" target="_blank">socialstyrelsen.se</a></li>
+                <li><strong>Internetodontologi.</strong> Parodontitklassifikation 2018 (EFP/AAP). <a href="https://www.internetodontologi.se" target="_blank">internetodontologi.se</a></li>
+                <li><strong>Internetodontologi.</strong> Parodontal undersökning och diagnostik. <a href="https://www.internetodontologi.se" target="_blank">internetodontologi.se</a></li>
+                <li><strong>Internetodontologi.</strong> Antibiotikabehandling av odontogena infektioner (uppdaterad 25 april 2025). <a href="https://www.internetodontologi.se" target="_blank">internetodontologi.se</a></li>
+                <li><strong>Internetodontologi.</strong> Perikoronit — handläggning och extraktionsindikationer.</li>
+                <li><strong>Internetodontologi.</strong> ANUG/Nekrotiserande gingivit — diagnostik och behandling.</li>
+                <li><strong>Internetodontologi.</strong> Parodontal abscess — differentialdiagnostik och behandling.</li>
+                <li><strong>Internetodontologi.</strong> Periimplantit och periimplantär mukosit.</li>
+                <li><strong>VGR (Västra Götalandsregionen).</strong> Regional medicinsk riktlinje — Antibiotikabehandling i tandvården (aktuell version). <a href="https://alfresco.vgregion.se" target="_blank">vgregion.se</a></li>
+                <li><strong>EFP/AAP 2017-konsensus.</strong> Definition och klassifikation av periimplantit (benförlust &gt;2 mm som diagnostiskt kriterium).</li>
+                <li><strong>EFP/AAP 2018-klassifikationssystem.</strong> Parodontit Stadium I–IV, Grad A–C. Papapanou et al., Journal of Clinical Periodontology 2018.</li>
+                <li><strong>FASS.</strong> Produktinformation: Metronidazol (Flagyl), Klindamycin, Penicillin V (Kåvepenin), Valaciklovir, Aciklovir. <a href="https://www.fass.se" target="_blank">fass.se</a></li>
+                <li><strong>TLV (Tandvårds- och läkemedelsförmånsverket).</strong> Aktuell tandvårdstaxa. <a href="https://kusp.tlv.se" target="_blank">kusp.tlv.se</a> — <em>OBS: Debiteringskoder i detta dokument bör alltid verifieras mot aktuell taxa.</em></li>
+                <li><strong>SBU.</strong> Kunskapsunderlag — Tema Tandvård. <a href="https://www.sbu.se" target="_blank">sbu.se</a></li>
+            </ul>
+            <p style="color:#888; font-size:0.85rem; margin-top:20px;">Senast granskad: Mars 2026. Ansvarig granskare: Nedaa Abujazar.</p>
+        </div>
+    </div>
+
+    <script>
+        const imgStart = 'start.png'; 
+        const scenarioData = {
+            'VARK-11-PAROD': 'parod_bleeding.png'
+        };
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

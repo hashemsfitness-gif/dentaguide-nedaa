@@ -1,0 +1,2660 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Akut Endo</title>
+    <link rel="stylesheet" href="style.css"> 
+
+    <style>
+        .sources-btn { position: fixed; bottom: 24px; right: 24px; z-index: 1000; background: linear-gradient(135deg, #b71c1c, #c62828); color: white; border: none; border-radius: 50px; padding: 12px 22px; font-size: 0.95rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(183,28,28,0.4); display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .sources-btn:hover { transform: translateY(-2px); }
+        .sources-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .sources-modal-overlay.active { display: flex; }
+        .sources-modal { background: white; border-radius: 16px; padding: 30px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .sources-modal h2 { color: #b71c1c; margin-bottom: 15px; }
+        .sources-modal ul { padding-left: 20px; }
+        .sources-modal li { margin-bottom: 10px; line-height: 1.6; }
+        .sources-modal .close-modal { float: right; background: #eee; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: bold; }
+        .correction-badge { display: inline-block; background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; border-radius: 6px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+        .addition-badge { display: inline-block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 6px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<button class="back-btn" onclick="history.back()">← TILLBAKA</button>
+
+<div class="container">
+    <div class="hero">
+        <h1>Akut Diagnostik: Värk & Smärta</h1>
+        <p class="hero-subtitle">Kliniskt beslutsstöd för tandläkare</p>
+    </div>
+
+
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="mainSearch" placeholder="Sök diagnos eller symtom..." onkeyup="searchCards()">
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+        
+        <div class="scenario-nav">
+            
+            <div class="scenario-trigger-card" id="trigger-sc1" onclick="selectScenario('sc1')">
+                <span class="trigger-tag">SCENARIO 01</span>
+                <div class="trigger-avatar-container">
+                    <img src="cold.png" alt="Kyla" class="trigger-avatar-img" id="img-btn-1" onerror="this.src='https://placehold.co/100x100/e0f7fa/006064?text=COLD'">
+                </div>
+                <h2 class="trigger-title">"Det ilar/hugger vid kyla & sött"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Kortvarig smärta, provocerad av stimuli. symptomatisk pulpit.</div>
+            </div>
+
+
+
+            <div class="scenario-trigger-card" id="trigger-sc2" onclick="selectScenario('sc2')">
+                <span class="trigger-tag red">SCENARIO 02</span>
+                <div class="trigger-avatar-container">
+                    <img src="pain.png" alt="Värk" class="trigger-avatar-img" id="img-btn-2" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=PAIN'">
+                </div>
+                <h2 class="trigger-title">"Bultande spontanvärk / Nattsmärta"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Spontan, pulserande smärta som stör nattsömnen.  Symtomatisk pulpit/pulpanekros.</div>
+            </div>
+
+
+
+            <div class="scenario-trigger-card" id="trigger-sc3" onclick="selectScenario('sc3')">
+                <span class="trigger-tag red">SCENARIO 03</span>
+                <div class="trigger-avatar-container">
+                    <img src="bite.png" alt="Bita ihop" class="trigger-avatar-img" id="img-btn-3" onerror="this.src='https://placehold.co/100x100/fff8e1/ff6f00?text=BITE'">
+                </div>
+                <h2 class="trigger-title">"Det gör ont att bita ihop / Tanden känns hög"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Perkussionssmärta, bitömhet, ej spontansmärta. Akut apikal parodontit.</div>
+            </div>
+
+
+
+            <div class="scenario-trigger-card" id="trigger-sc4" onclick="selectScenario('sc4')">
+                <span class="trigger-tag red">SCENARIO 04</span>
+                <div class="trigger-avatar-container">
+                    <img src="abscess.png" alt="Abscess" class="trigger-avatar-img" id="img-btn-4" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=ABS'">
+                </div>
+                <h2 class="trigger-title">"Svullnad, ömt och varmt"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Svullnad, smärta, eventuell fluktuation och feber. Odontogen abscess.</div>
+            </div>
+
+
+
+            <div class="scenario-trigger-card" id="trigger-sc5" onclick="selectScenario('sc5')">
+                <span class="trigger-tag">SCENARIO 05</span>
+                <div class="trigger-avatar-container">
+                    <img src="crack.png" alt="Spricka" class="trigger-avatar-img" id="img-btn-5" onerror="this.src='https://placehold.co/100x100/fff3e0/e65100?text=CRACK'">
+                </div>
+                <h2 class="trigger-title">"Det ilar till när jag biter"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Skarp smärta vid belastning/när bitkraft släpps. Cracked tooth.</div>
+            </div>
+
+
+
+            <div class="scenario-trigger-card" id="trigger-sc6" onclick="selectScenario('sc6')">
+                <span class="trigger-tag">SCENARIO 06</span>
+                <div class="trigger-avatar-container">
+                    <img src="occlusion.png" alt="Ocklusion" class="trigger-avatar-img" id="img-btn-6" onerror="this.src='https://placehold.co/100x100/e8f5e9/00695c?text=OCCL'">
+                </div>
+                <h2 class="trigger-title">"Tanden känns för hög"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Öm att bita på, ilar vid kyla, fremitus. Traumatisk ocklusion.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc7" onclick="selectScenario('sc7')">
+                <span class="trigger-tag">SCENARIO 07</span>
+                <div class="trigger-avatar-container">
+                    <img src="sens.png" alt="Hypersensitivitet" class="trigger-avatar-img" id="img-btn-7" onerror="this.src='https://placehold.co/100x100/e0f2f1/004d40?text=SENS'">
+                </div>
+                <h2 class="trigger-title">"Ilar vid kyla & borstning"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Kortvarig skarp smärta. Hypersensitivitet, erosion/abrasion.</div>
+            </div>
+
+<div class="scenario-trigger-card" id="trigger-sc8" onclick="selectScenario('sc8')">
+    <span class="trigger-tag red">SCENARIO 08</span>
+    <div class="trigger-avatar-container">
+        <img src="flareup.png" alt="Flare-up" class="trigger-avatar-img" id="img-btn-8" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=FLARE'">
+    </div>
+    <h2 class="trigger-title">"Det gör ondare nu än innan ni rotfyllde!"</h2>
+    <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Postendodontisk smärta, svullnad, flare-up.</div>
+</div>
+
+        </div>
+
+        <div class="main-content-panel">
+            
+            <div id="dynamic-header" class="header-container centered">
+                <div class="avatar-wrapper">
+                    <img id="story-avatar" class="character-img" src="start.png" alt="Story Character" onerror="this.src='https://placehold.co/300x300/fff3e0/e65100?text=START'">
+                </div>
+                <div class="header-text-block">
+                    <h2 id="dynamic-header-title">Välkommen!</h2>
+                    <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario i menyn till vänster för att starta guiden.</p>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="sc1-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc1', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc1', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc1', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc1', 'diagnos', this)">📋 Diagnostik</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc1', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc1', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc1', 'uppf', this)">📊 Uppföljning</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc1', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc1', 'diff', this)">🔍 Diff. Diagnoser</button>
+                </div>
+
+                <div class="inner-display">
+                    <div id="sc1-snabb" class="content-panel active">
+                        <h3>⚡ Patient-symptom (Snabböversikt)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">💧 <strong>Smärta:</strong> Kortvarig, kyla-utlöst (&lt;15 sek)</div>
+                                <div class="symptom-item">⏱️ <strong>Duration:</strong> Sekunder, snabbt övergående</div>
+                                <div class="symptom-item">🔨 <strong>Perkussion:</strong> Utan anmärkning (u.a.)</div>
+                                <div class="symptom-item">🌡️ <strong>Sensibilitet:</strong> Positiv kyla, kraftig reaktion</div>
+                                <div class="symptom-item">📊 <strong>Prognos:</strong> 90-95% lyckat vid korrekt behandling</div>
+                                <div class="symptom-item">✅ <strong>Primär behandling:</strong> Permanent fyllning</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sc1-anamnes" class="content-panel">
+                        <h3>❓ Anamnes</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🔴 Obligatoriska frågor (Primära)</h5>
+                            <ul>
+                                <li><strong>❓ Hur länge har besvären funnits?</strong><br><em>Förväntat svar: Dagar till veckor</em></li>
+                                <li><strong>❓ Vad utlöser smärtan?</strong><br><em>Förväntat svar: Kyla, sött, surt – INTE spontan</em></li>
+                                <li><strong>❓ Hur länge varar smärtan efter stimulus?</strong><br><em>Förväntat svar: Sekunder, max 10-15 sekunder</em></li>
+                                <li><strong>❓ Förekommer spontansmärta (särskilt nattetid)?</strong><br><em>Korrekt svar för  Symtomatisk pulpit: NEJ</em></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>🔵 Kompletterande frågor (Sekundära)</h5>
+                            <ul>
+                                <li>📋 Tidigare fyllning i tanden?</li>
+                                <li>📋 Känd traumahistoria?</li>
+                                <li>📋 Senaste värktablett? (tidpunkt och effekt)</li>
+                                <li>📋 Tidigare rotfyllning i tanden?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc1-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🧪 Sensibilitetstest</h5>
+                            <p><strong>Kyla (CO₂ / kylspray):</strong></p>
+                            <ul><li>✅ Positiv reaktion</li><li>✅ Kraftig/skarp smärta</li><li>✅ AVGÅR SNABBT (inom 10-15 sek)</li></ul>
+                            <p style="margin-top: 10px;"><strong>Värme:</strong> Kan ge reaktion men mindre specifik</p>
+                        </div>
+                        <div class="info-card scroll-animate"><h5>🔨 Perkussion</h5><ul><li>✅ Utan anmärkning (u.a.) eller lätt obehag</li><li>⚠️ Om tydlig perkussionsömhet → INTE pulpit</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>👆 Palpation</h5><ul><li>✅ Utan anmärkning (u.a.)</li><li>⚠️ Ömhet apikalt → misstänk pulpanekros/apikal påverkan</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>🔍 Inspektion</h5><ul><li>🔍 Synlig karies?</li><li>🔍 Fraktur eller spricka?</li><li>🔍 Defekt fyllning/läckage?</li><li>🔍 Blottad tandhals?</li></ul></div>
+                    </div>
+
+                    <div id="sc1-diagnos" class="content-panel">
+                        <h3>📋 Diagnostik</h3>
+                        <div class="info-card scroll-animate"><h5>🎯 Scenarioidentifiering</h5><p><strong>Scenario-ID:</strong> VARK-01-REV</p><p><strong>Symtomprofil:</strong> Stimulusutlöst, kortvarig smärta</p><p><strong>ICD-10:</strong> K04.0 (Pulpit)</p><p><strong>Prevalens:</strong> Mycket vanligt (~40% av akuta fall)</p></div>
+                        <div class="info-card scroll-animate"><h5>🎯 Klinisk indikation</h5><p>Scenario används vid misstanke om <strong>pulpal inflammation</strong> utan tecken på pulpanekros eller apikal patologi. Prognos för bevarande av vital pulpa är god vid adekvat behandling.</p></div>
+                        <div class="info-card scroll-animate"><h5>📷 Radiologiska kriterier</h5><p><strong>Obligatorisk bilddiagnostik:</strong> Ja (helst periapikal rtg)</p><ul><li>✅ Karies närmar sig pulpa men ej exponering</li><li>✅ Normal periapikal vävnad (ingen radioluceens)</li><li>✅ Normal rotspalt (jämn tjocklek)</li><li>✅ Eventuell sekundär karies vid gammal fyllning</li></ul><p style="margin-top: 15px;"><strong>❌ Utesluter diagnos:</strong></p><ul><li>Synlig pulpaexponering</li><li>Periapikal radioluceens</li><li>Feber eller allmänpåverkan</li></ul></div>
+                        <div class="warning-box scroll-animate"><strong>⛔ Uteslutningskriterier (KRITISKT)</strong><p>Om något av följande föreligger → <strong>INTE  Symtomatisk pulpit:</strong></p><ul style="margin-top: 10px;"><li>Spontansmärta (särskilt nattetid)</li><li>Smärta kvarstår >15 sekunder efter stimulus</li><li>Smärtan förvärras av värme</li><li>Perkussionsömhet</li><li>Apikal palpationsömhet</li><li>Periapikal radioluceens</li></ul><p style="margin-top: 15px;"><strong>Patofysiologi:</strong> Begränsad inflammation i pulpavävnad, ofta sekundärt till karies eller mekanisk irritation. Inflammationen är reversibel om irritanten avlägsnas.</p></div>
+                    </div>
+
+                    <div id="sc1-behandling" class="content-panel">
+                        <h3>🔧 Behandling</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">🔧 Alternativ A: Permanent Fyllning (Primärt val)</div>
+                            <p><strong>Indikation:</strong> Karies >2 mm från pulpa, Stabil pulpastatus, Patient samtycker.</p>
+                            <h5>📦 Material:</h5><ul><li>🔹 Adhesiv: Universal Bond (t.ex. Scotchbond Universal)</li><li>🔹 Bas: SDR eller Essentia Posterior (bulk-fill komposit)</li><li>🔹 Liner: Ca(OH)₂ vid djup kavitet (nära pulpa)</li><li>🔹 Täckning: Nanohybridkomposit</li></ul>
+                            <h5>🛠️ Metod:</h5><ul><li>1. Lokalbedövning (artikain 40 mg/ml + adrenalin)</li><li>2. Kofferdam (rekommenderas starkt)</li><li>3. Kariesexcavering (roserande borre → excavator)</li><li>4. Ca(OH)₂-liner lokalt vid behov (0.5-1 mm)</li><li>5. Adhesiv enligt tillverkarens instruktion</li><li>6. Bulk-fill bas (SDR)</li><li>7. Täckskikt komposit</li><li>8. Justering av ocklusion</li></ul>
+                            <p><strong>⏱️ Förväntad behandlingstid:</strong> 45-60 minuter</p>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">401 – Fyllning 1 yta | 402 – Fyllning 2 ytor | 403 – Fyllning 3+ ytor | 001 – Undersökning | 011 – Röntgen (periapical)</div></div>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">🔧 Alternativ B: Stegvis Excavering</div>
+                            <p><strong>Indikation:</strong> Mycket djup karies (>75% dentintjocklek), Risk för pulpaexponering, Patient vill undvika endodonti.</p>
+                            <h5>📦 Material:</h5><ul><li>🔹 Ca(OH)₂-pasta (Dycal, Life)</li><li>🔹 Glasjonomer: Fuji IX (provisorisk tätning)</li></ul>
+                            <h5>🛠️ Metod:</h5><ul><li>1. Lokalbedövning</li><li>2. Delvis kariesexcavering (lämna karies vid pulpagolv)</li><li>3. Desinficera kavitet (Klorhexidin 0,2–2 % — 2% vid direkt pulpakontakt är vanligast kliniskt; 1% är ovanlig koncentration) <span class="correction-badge">JUSTERAT — 1% är ej standardkoncentration</span></li><li>4. Ca(OH)₂-inlägg</li><li>5. Täta med glasjonomer (Fuji IX)</li><li>6. Återbesök om 6-12 månader för definitiv fyllning</li></ul>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">704 – Provisorisk fyllning | 401-403 – Definitiv fyllning (vid återbesök)</div></div>
+                        </div>
+                        <div class="warning-box scroll-animate"><strong>✋ Viktigt före behandling (Checklist)</strong><ul style="margin-top: 10px;"><li>☑️ Kontrollera approximala kontakter</li><li>☑️ Bedöm bitförhållanden (parafunktion?)</li><li>☑️ Uteslut sprickor/frakturer (transilluminering)</li><li>☑️ Informera patient om prognos (90-95% lyckat)</li><li>☑️ Informera om risk för förändrad status → endodonti</li><li>☑️ Dokumentera preoperativ sensibilitet</li></ul></div>
+                    </div>
+
+                    <div id="sc1-journal" class="content-panel">
+                        <h3>📝 Journalmallar</h3>
+                        <h5 class="scroll-animate">Mall 1: Permanent fyllning</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Anamnes: Pat. anger ilningar vid kyla och sött sedan [tidsperiod]. 
+Smärtan är kortvarig och provocerad. Ingen spontansmärta. 
+Senaste analgetika: [datum/tid].
+
+Status: 
+- Tand [nr]: Synlig karies [lokalisation]
+- Sensibilitet kyla: Positiv, kraftig, snabbt övergående
+- Perkussion: u.a.
+- Palpation: u.a.
+
+Rtg: Approximal karies tand [nr], ca [mm] från pulpa. 
+Periapikal status u.a.
+
+Bedömning: pulpit tand [nr].
+
+Behandling: 
+- LA: Artikain 40 mg/ml + adrenalin, [ml]
+- Kofferdam
+- Kariesexcavering tand [nr]
+- Ca(OH)₂-liner lokalt vid pulpagolv
+- Adhesiv: [produkt]
+- Komposit: [produkt], färg [A2/...]
+- Ocklusion justerad
+- Kontroll: Perkussion u.a., sensibilitet kvarstår
+
+Planering: Kontroll om behov. Kontakta vid kvarstående/försämrade symtom.</pre>
+                        </div>
+                        <h5 class="scroll-animate" style="margin-top: 30px;">Mall 2: Stegvis excavering</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Anamnes: [Som ovan]
+Status: [Som ovan] + mycket djup karies.
+Bedömning: symptomatisk pulpit, mycket djup karies. Risk för pulpaexponering.
+Behandling: LA, Delvis kariesexcavering,Ca(OH)₂, försegling med temporär fyllning.
+Planering: Återbesök om 6-12 månader för definitiv fyllning. Kontakta vid symtomförändring.</pre>
+                        </div>
+                    </div>
+
+                    <div id="sc1-uppf" class="content-panel">
+                        <h3>📊 Uppföljning</h3>
+                        <div class="info-card scroll-animate"><h5>⏰ Tidpunkt</h5><ul><li><strong>Rutinuppföljning:</strong> 2-4 veckor (telefonkontakt eller kliniskt)</li><li><strong>Akut kontakt:</strong> Vid symtomförändring</li></ul></div>
+                        <div class="treatment-box scroll-animate"><div class="treatment-title">✅ Lyckat resultat (2-4 veckor)</div><ul><li>Symtomfrihet eller avtagande ilningar</li><li>Perkussion u.a.</li><li>Normal sensibilitet</li><li>Ingen spontansmärta</li></ul></div>
+                        <div class="warning-box scroll-animate"><strong>⚠️ Kräver omvärdering</strong><ul style="margin-top: 10px;"><li>Kvarstående eller ökad smärta</li><li>Perkussionsömhet utvecklas</li><li>Spontansmärta uppkommer</li><li>→ Överväg Symtomatisk pulpit eller apikalparodontit</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>📅 Långtidsuppföljning</h5><ul><li><strong>Klinisk kontroll:</strong> 1 år (vid årskontroll)</li><li><strong>Röntgen:</strong> Vid behov (2-5 år)</li></ul></div>
+                    </div>
+
+                    <div id="sc1-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate"><strong>🚨 Systemiska tecken</strong><ul style="margin-top: 10px;"><li>Feber >38.5°C</li><li>Trismus (begränsad gapförmåga &lt;25 mm)</li><li>Svullnad som påverkar andning/sväljning</li><li>Allmänpåverkan (takykardi, konfusion)</li><li>Svullnad över mandibula/orbital region</li></ul></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Lokala tecken</strong><ul style="margin-top: 10px;"><li>Snabbt progredierande smärta (timmar, ej dagar)</li><li>Spontan blödning från gingiva</li><li>Uttalad perkussionsömhet utvecklas akut</li><li>Fluktuation (varbildning)</li></ul></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Patientspecifika riskfaktorer</strong><ul style="margin-top: 10px;"><li>Immunosuppression (diabetes okontrollerad, kemoterapi, HIV)</li><li>Antikoagulantia (Warfarin, NOAK) vid planerad extraktion</li><li>Graviditet (begränsade analgetika/antibiotika)</li><li>Bisfosfonatbehandling (risk för osteonekros)</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>➡️ Åtgärd vid röda flaggor</h5><p>Följ lokala akutrutiner / remiss till sjukhustandvård</p></div>
+                    </div>
+
+                    <div id="sc1-diff" class="content-panel">
+                        <h3>🔍 Differentialdiagnoser</h3>
+                        <div id="diag-tandhals" class="diff-diagnosis-item scroll-animate">
+                            <h5>🪥 Blottade tandhalsar / Dentinhypersensitivitet</h5>
+                            <p><strong>Diagnoskod:</strong> K03.1</p>
+                            <p><strong>Typiska skillnader:</strong></p><ul><li>Smärta mer ytlig, snabbt övergående</li><li>Synlig gingivarecession</li><li>Normal röntgenbild</li><li>Perkussion u.a.</li></ul>
+                            <p><strong>Behandling:</strong> Desensibilisering, fluorlack, eventuell täckning</p>
+                        </div>
+                        <div id="diag-spricka" class="diff-diagnosis-item scroll-animate">
+                            <h5>⚡ Infraktion / Spricka (Cracked tooth syndrome)</h5>
+                            <p><strong>Diagnoskod:</strong> S02.5</p>
+                            <p><strong>Typiska skillnader:</strong></p><ul><li>Smärta vid bitning/frigörande av bett</li><li>Intermittent smärta</li><li>Svår att lokalisera för patient</li><li>Kan visualiseras med metylenblått</li></ul>
+                            <p><strong>Behandling:</strong> Kusptäckning (onlay/krona)</p>
+                        </div>
+                        <div id="diag-pulpit" class="diff-diagnosis-item scroll-animate">
+                            <h5>💢  Symtomatisk pulpit (tidig fas)</h5>
+                            <p><strong>Diagnoskod:</strong> K04.0</p>
+                            <p><strong>Typiska skillnader:</strong></p><ul><li>Dröjande smärta (&gt;15 sek)</li><li>Kan ha sporadisk spontansmärta</li><li>Värre på natten</li><li>Perkussion kan vara lätt öm</li></ul>
+                            <p><strong>Behandling:</strong> Endodonti eller extraktion</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc2-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc2', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc2', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc2', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc2', 'diagnos', this)">📋 Diagnostik</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc2', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc2', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc2', 'uppf', this)">📊 Uppföljning</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc2', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc2', 'diff', this)">🔍 Diff. Diagnoser</button>
+                </div>
+
+                <div class="inner-display">
+                    <div id="sc2-snabb" class="content-panel active">
+                        <h3>⚡ Patient-symptom (Snabböversikt)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">💥 <strong>Smärta:</strong> Spontan, bultande/pulserande</div>
+                                <div class="symptom-item">🌙 <strong>Nattetid:</strong> Ofta värre, väcker patienten</div>
+                                <div class="symptom-item">🔨 <strong>Perkussion:</strong> Dunköm eller bitöm (apikal påverkan)</div>
+                                <div class="symptom-item">❄️ <strong>Sensibilitet:</strong> Dröjande/kraftig ELLER negativ (pulpanekros)</div>
+                                <div class="symptom-item">⚠️ <strong>Prognos:</strong> Kräver endodonti eller extraktion</div>
+                                <div class="symptom-item">🚨 <strong>Primär åtgärd:</strong> Akutrensning eller extraktion</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sc2-anamnes" class="content-panel">
+                        <h3>❓ Anamnes</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🔴 Obligatoriska frågor (Primära)</h5>
+                            <ul>
+                                <li><strong>❓ Beskriver du smärtan som bultande/pulserande?</strong><br><em>Förväntat svar: Ja</em></li>
+                                <li><strong>❓ Förekommer smärtan spontant (utan stimuli)?</strong><br><em>Förväntat svar: Ja, särskilt nattetid</em></li>
+                                <li><strong>❓ Håller smärtan i sig flera minuter till timmar?</strong><br><em>Förväntat svar: Ja</em></li>
+                                <li><strong>❓ Försämras smärtan av värme eller lindras av kyla?</strong><br><em>Förväntat svar: Ofta ja vid pulpanekros</em></li>
+                                <li><strong>❓ Strålar smärtan ut (öra, tinning, käke)?</strong><br><em>Förväntat svar: Vanligt</em></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>🔵 Kompletterande frågor (Sekundära)</h5>
+                            <ul>
+                                <li>📋 Smärtan väckt dig nattetid? (klassiskt för senare fas Symtomatisk pulpit)</li>
+                                <li>📋 Vilka analgetika har du tagit? Effekt?</li>
+                                <li>📋 Tidigare rotfyllning i tanden?</li>
+                                <li>📋 Trauma mot tanden?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc2-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🧪 Sensibilitetstest</h5>
+                            <p><strong> Symtomatisk pulpit (tidig):</strong></p><ul><li><strong>Kyla:</strong> Positiv, KRAFTIG reaktion, dröjer &gt;15-30 sekunder</li><li><strong>Värme:</strong> Kan provocera smärta</li></ul>
+                            <p style="margin-top: 15px;"><strong>pulpanekros (sen fas):</strong></p><ul><li><strong>Kyla:</strong> Negativ eller mycket försvagad</li><li><strong>Värme:</strong> Negativ</li></ul>
+                        </div>
+                        <div class="info-card scroll-animate"><h5>🔨 Perkussion</h5><ul><li>⚠️ <strong>Positiv (dunköm eller bitöm)</strong></li><li>Tyder på apikal påverkan (parodontit apikalis)</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>👆 Palpation</h5><ul><li>⚠️ Ofta <strong>ömt apikalt</strong> (tryckömhet i omslagsveck)</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>🔍 Inspektion</h5><ul><li>🔍 Djup karies (ofta)</li><li>🔍 Stor fyllning eller kronkaraktär</li><li>🔍 Missfärgning (grå/brun vid pulpanekros)</li><li>🔍 Eventuell fistel/svullnad</li></ul></div>
+                    </div>
+
+                    <div id="sc2-diagnos" class="content-panel">
+                        <h3>📋 Diagnostik</h3>
+                        <div class="info-card scroll-animate"><h5>🎯 Scenarioidentifiering</h5><p><strong>Scenario-ID:</strong> VARK-02-IRR</p><p><strong>Symtomprofil:</strong> Spontan, ofta pulserande/bultande smärta</p><p><strong>ICD-10:</strong> K04.0 (Symtomatisk pulpit), K04.1 (pulpanekros)</p><p><strong>Prevalens:</strong> Vanligt akutfall (~35% av akuta fall)</p></div>
+                        <div class="info-card scroll-animate"><h5>🎯 Klinisk indikation</h5><p>Scenario används vid misstanke om <strong> Symtomatisk pulpal inflammation</strong> eller <strong>pulpanekros</strong>, ofta med påbörjad apikal påverkan. Prognosen för vitalbevarande är dålig – endodontisk behandling eller extraktion är indicerad.</p></div>
+                        <div class="info-card scroll-animate"><h5>📷 Radiologiska kriterier</h5><p><strong>Obligatorisk bilddiagnostik:</strong> Ja (periapical rtg)</p><ul><li>✅ Djup karies/fyllning med pulpanära kontakt</li><li>✅ Vidgad rothinnespalt (tidigt tecken på apikal parodontit)</li><li>✅ Periapikal radioluceens (vid etablerad apikalparodontit)</li><li>✅ Tidigare rotfyllning (eventuellt otillräcklig)</li></ul><p style="margin-top: 15px;"><strong>⚠️ Avvikande fynd:</strong></p><ul><li>Extern resorption</li><li>Parodontal abscess (fickdjup, radioluceens lateralt)</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>⛔ Uteslutningskriterier</h5><p>Om följande föreligger → <strong>INTE  Symtomatisk pulpit, överväg alternativ:</strong></p><ul style="margin-top: 10px;"><li>Smärta endast vid kyla, &lt;10 sek → pulpit</li><li>Smärta endast vid bitning utan spontansmärta → spricka/apikalparodontit</li><li>Svullnad + feber + trismus → abscess</li><li>Smärta i flera tänder bilateral → sinuit</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>🎯 Diagnostisk bedömning</h5><p><strong>Trolig diagnos:</strong></p><ul><li><strong> Symtomatisk pulpit</strong> (om sensibilitet kvarstår, kraftig)</li><li><strong>Pulpanekros</strong> (om sensibilitet negativ)</li><li><strong>Apikalparodontit</strong> (om tydlig perkussionsömhet + rtg-fynd)</li></ul></div>
+                    </div>
+
+                    <div id="sc2-behandling" class="content-panel">
+                        <h3>🔧 Behandling</h3>
+                        <div class="warning-box scroll-animate"><strong>⚠️ VIKTIGT FÖRE BEHANDLING - Kontrollera medicinlista (KRITISKT):</strong><ul style="margin-top: 10px;"><li>☑️ <strong>Antikoagulantia</strong> (Warfarin, NOAK, ASA) → blödningsrisk vid extraktion</li><li>☑️ <strong>Bisfosfonater</strong> (alendronat, risedronat) → risk för osteonekros vid extraktion</li><li>☑️ <strong>Immunosuppression</strong> (kortison, kemoterapi) → infektionsrisk</li><li>☑️ <strong>Graviditet</strong> → begränsade läkemedel</li><li>☑️ <strong>Allergi</strong> (lokalanestesi, latex)</li></ul></div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">🔧 Alternativ A: Akutrensning / Pulpektomi</div>
+                            <p><em>(Primärt om tanden är restaurerbar)</em></p>
+                            <p style="margin-top: 15px;"><strong>Indikation:</strong></p><ul><li>Tanden har strategiskt värde</li><li>Tillräcklig tandsubstans kvar</li><li>Patient samtycker till endodonti</li></ul>
+                            <h5>📦 Material:</h5><ul><li>🔹 Kofferdam (obligatorisk)</li><li>🔹 NaOCl 3% (natriumhypoklorit för spolning)</li><li>🔹 Ca(OH)₂-pasta (Calasept, Metapex)</li><li>🔹 Provisorisk tätning: Cavit, IRM</li></ul>
+                            <h5>🛠️ Metod:</h5><ul><li>1. Lokalbedövning (artikain 40 mg/ml + adrenalin)</li><li>2. Kofferdam (absolut krav för endodonti)</li><li>3. Trepanation (access cavity)</li><li>4. Exstirpation av pulpavävnad (barbed broaches)</li><li>5. Arbetslängdsbestämning (apex locator/rtg)</li><li>6. Rensning med K-filar till apex</li><li>7. Riklig spolning NaOCl 3% (minst 20 ml)</li><li>8. Torkning med paperspetsar</li><li>9. Ca(OH)₂-inlägg (till apex)</li><li>10. Provisorisk tätning (Cavit/IRM)</li></ul>
+                            <p><strong>⏱️ Tid:</strong> 60-90 minuter (beroende på antalet kanaler)</p>
+                            <p><strong>OBS:</strong> Definitiv rotfyllning utförs senare (nästa besök eller remiss endodontist)</p>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">501 – Rotfyllning 1 kanal | 502 – Rotfyllning 2 kanaler | 503 – Rotfyllning 3+ kanaler | 011 – Röntgen (flera under behandling) | 704 – Provisorisk tätning</div></div>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">🔧 Alternativ B: Extraktion</div>
+                            <p><strong>Indikation:</strong></p><ul><li>Tanden ej restaurerbar (omfattande karies/fraktur)</li><li>Patient avböjer endodonti</li><li>Ekonomiska skäl</li><li>Akut smärtlindring när endodonti ej kan utföras omgående</li></ul>
+                            <div class="warning-box" style="margin-top: 15px;"><strong>⚠️ Kontraindikationer (VIKTIGA):</strong><ul style="margin-top: 10px;"><li>Okontrollerad antikoagulation (INR &gt;3.5)</li><li>Bisfosfonater IV (hög risk för osteonekros)</li><li>Akut cellulitinfektion med trismus</li><li>Lokalanestetika fungerar ej (inflammation → sänkt pH)</li></ul></div>
+                            <h5>📦 Material:</h5><ul><li>🔹 Hävlar (raka, vinkelade)</li><li>🔹 Extraktionstång (anpassad till tand)</li><li>🔹 Sutur: Vicryl 4-0 (resorberbar)</li><li>🔹 Kompresser (gasbinda)</li></ul>
+                            <h5>🛠️ Metod:</h5><ul><li>1. Lokalbedövning (dubbel dos om inflammation)</li><li>2. Kontrollera anestesi (perkussion, palpation)</li><li>3. Lossa gingivaattachment (periotom)</li><li>4. Lyftning med hävlar (försiktig)</li><li>5. Extraktion med tång (rotation/traktion)</li><li>6. Kontrollera alveol (granulomstyning?)</li><li>7. Bettamponad (gasbinda, 30 min)</li><li>8. Eventuell sutur vid stor alveol</li><li>9. Postoperativa instruktioner (muntligt + skriftligt)</li></ul>
+                            <p><strong>⏱️ Tid:</strong> 20-40 minuter</p>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">701 – Enkel extraktion | 702 – Komplicerad extraktion | 703 – Kirurgisk extraktion | 011 – Röntgen | 706 – Sutur</div></div>
+                            <h5 style="margin-top: 20px;">💊 Postoperativa ordinationer:</h5><ul><li><strong>Analgetika:</strong> Ibuprofen 400-600 mg x 3 (eller paracetamol)</li><li><strong>Antibiotika:</strong> Endast vid indikation (se Röda Flaggor)</li></ul>
+                        </div>
+                        <div class="info-card scroll-animate"><h5>💊 Antibiotikaindikationer (STRIKT)</h5><p><strong>Antibiotika ska INTE ges rutinmässigt vid pulpit/nekros.</strong></p><p style="margin-top: 15px;"><strong>✅ Indikationer för antibiotika:</strong></p><ul><li>Systemisk påverkan (feber &gt;38°C, allmänpåverkan)</li><li>Svullnad med spridningstendens</li><li>Immunosupprimerad patient</li><li>Svår parodontal abscess</li><li>Postoperativt vid komplicerad kirurgi</li></ul><p style="margin-top: 15px;"><strong>❌ EJ indikation:</strong></p><ul><li>Enkel pulpit/nekros utan svullnad</li><li>Profylaktiskt efter enkel extraktion</li><li>Som substitut för korrekt behandling</li></ul><p style="margin-top: 15px;"><strong>Val av antibiotika (Sverige, vuxna):</strong></p><ul><li><strong>1. Förstahandsval:</strong> Fenoximetylpenicillin (Kåvepenin) 1g x 3 i 5-7 dagar</li><li><strong>2. Vid penicillinallergi:</strong> Klindamycin (Dalacin) 150-300 mg x 3 i 5-7 dagar</li><li><strong>3. Vid terapisvikt:</strong> Amoxicillin + klavulansyra (Spektramox) 500/125 mg x 3</li></ul><p style="margin-top: 10px;"><em>Källa: Strama – Swedish Strategic Programme Against Antibiotic Resistance</em></p></div>
+                    </div>
+
+                    <div id="sc2-journal" class="content-panel">
+                        <h3>📝 Journalmallar</h3>
+                        <h5 class="scroll-animate">Mall 1: Akutrensning</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Anamnes: Pat. anger spontan, bultande smärta tand [nr] sedan [tid]. 
+Smärtan värst nattetid, strålar till [lokalisation]. 
+Analgetika: Ibuprofen 400 mg x 3, måttlig effekt.
+
+Status:
+- Tand [nr]: Djup karies/stor fyllning
+- Sensibilitet kyla: Dröjande/kraftig ELLER negativ
+- Perkussion: Positiv (dunköm/bitöm)
+- Palpation: Öm apikalt
+- Ingen svullnad synlig
+
+Rtg: Djup karies tand [nr], vidgad rothinnespalt/periapikal radioluceens.
+
+Bedömning: symptomatisk pulpit / Pulpanekros tand [nr].
+
+Behandling:
+- LA: Artikain 40 mg/ml + adrenalin [ml]
+- Kofferdam
+- Trepanation tand [nr]
+- Exstirpation av pulpa
+- Rensning till apex, kanaler [1/2/3/4]
+- Arbetsläng: [mm] från referenspunkt
+- Spolning NaOCl 3%, riklig
+- Torkning
+- Ca(OH)₂-inlägg till apex
+- Provisorisk tätning (Cavit)
+
+Planering: 
+Återbesök för definitiv rotfyllning om [1-2 veckor]. 
+Kontakta vid försämring. Analgetika: Ibuprofen 400 mg vid behov.</pre>
+                        </div>
+                        <h5 class="scroll-animate" style="margin-top: 30px;">Mall 2: Extraktion</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Anamnes: [Som ovan]
+
+Status: [Som ovan] + Tand [nr] omfattande destruktion, ej restaurerbar.
+
+Bedömning: symptomatisk pulpit/nekros tand [nr]. Tanden ej restaurerbar.
+
+Medicinsk kontroll:
+- Antikoagulantia: Nej / Ja [specificera, INR-värde]
+- Bisfosfonater: Nej / Ja [specificera]
+- Allergi: Nej
+
+Behandling:
+- LA: Artikain 40 mg/ml + adrenalin [ml]
+- Extraktion tand [nr] med hävlar och tång
+- Alveol inspekterad, inga retinerade fragment
+- Hemostas uppnådd
+- [Eventuell sutur: Vicryl 4-0]
+- Bettamponad 30 min
+
+Information given:
+- Undvik spolning/sugning i såret 24 h
+- Mjuk kost 2-3 dagar
+- Kontakta vid kraftig blödning/svullnad/feber
+- Analgetika: Ibuprofen 400-600 mg x 3 i 2-3 dagar
+
+Planering: Kontroll vid behov. Protetisk planering senare.</pre>
+                        </div>
+                    </div>
+
+                    <div id="sc2-uppf" class="content-panel">
+                        <h3>📊 Uppföljning</h3>
+                        <div class="info-card scroll-animate"><h5>⏰ Efter akutrensning</h5><ul><li><strong>Återbesök:</strong> 7-14 dagar för definitiv rotfyllning</li><li><strong>Symtomkontroll:</strong> 24-48 timmar (telefonkontakt)</li></ul><p style="margin-top: 15px;"><strong>Kriterier för lyckat resultat:</strong></p><ul><li>Smärtfrihet eller kraftigt reducerad smärta</li><li>Ingen svullnad</li><li>Perkussion förbättrad</li></ul></div>
+                        <div class="warning-box scroll-animate"><strong>⚠️ Vid försämring:</strong><ul style="margin-top: 10px;"><li>Ökad smärta/svullnad → akut återbesök</li><li>Feber → överväg antibiotika</li><li>Provisorium loss → nytt provisorium omgående</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>⏰ Efter extraktion</h5><ul><li><strong>Kontroll:</strong> 7 dagar (endast vid komplikationer annars vid behov)</li><li><strong>Symtomkontroll:</strong> 24 timmar (telefonkontakt)</li></ul><p style="margin-top: 15px;"><strong>Normal läkning:</strong></p><ul><li>Måttlig smärta dag 1-2, sedan avtagande</li><li>Liten svullnad (peak dag 2-3)</li><li>Koagel i alveol</li></ul></div>
+                        <div class="warning-box scroll-animate"><strong>⚠️ Komplikationer att uppmärksamma:</strong><ul style="margin-top: 10px;"><li><strong>Alveolit (dry socket):</strong> Kraftig smärta dag 3-5, ingen koagel</li><li><strong>Blödning:</strong> Mer än 2 timmar</li><li><strong>Infektion:</strong> Ökad smärta + svullnad + feber efter dag 3</li></ul></div>
+                    </div>
+
+                    <div id="sc2-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate"><strong>🚨 Systemiska tecken</strong><ul style="margin-top: 10px;"><li>Feber >38.5°C + frossa</li><li>Trismus (begränsad gapförmåga &lt;20 mm)</li><li>Dysfagi (svårt att svälja saliv)</li><li>Dyspné (andningssvårigheter)</li><li>Svullnad över mandibelvinkeln eller orbital region</li><li>Allmänpåverkan (konfusion, takykardi, hypotension)</li></ul></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Lokala tecken</strong><ul style="margin-top: 10px;"><li>Snabbt progredierande svullnad (timmar)</li><li>Fluktuation + cellulitförändringar (röd, varm hud)</li><li>Svullnad i golvet/tungan (Ludwig's angina-risk)</li><li>Ensidig trismus + svullnad (pterygomandibulär abscess)</li></ul></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Patientspecifika riskfaktorer</strong><ul style="margin-top: 10px;"><li>Okontrollerad diabetes (blodsocker &gt;15 mmol/L)</li><li>Neutropeni (kemoterapi, immunosuppression)</li><li>IV-bisfosfonater (zoledronsyra) vid extraktion</li><li>Warfarin med INR &gt;4.0</li></ul></div>
+                        <div class="info-card scroll-animate"><h5>➡️ Åtgärd vid röda flaggor:</h5><ol><li>Akut remiss till sjukhustandvård/käkkirurg</li><li>Ring före remiss (förvarna mottagande enhet)</li><li>Dokumentera tydligt i remiss: symtom, vitalparametrar, mediciner</li><li>Ge inte antibiotika "för säkerhets skull" – låt sjukhuset ordinera</li></ol></div>
+                    </div>
+
+                    <div id="sc2-diff" class="content-panel">
+                        <h3>🔍 Differentialdiagnoser</h3>
+                        <div id="diag-sinuit" class="diff-diagnosis-item scroll-animate"><h5>🤧 Sinuit (maxillär)</h5><p><strong>Diagnoskod:</strong> J32.0</p><p><strong>Typiska skillnader:</strong></p><ul><li>Smärta i flera tänder (ofta premolar/molar överkäke)</li><li>Förvärras vid framåtlutning</li><li>Näskorrelat (täppt näsa, sekretion)</li><li>Perkussion kan ge smärta i flera tänder</li><li>Sensibilitet ofta normal</li></ul><p><strong>Behandling:</strong> Remiss ÖNH, avsvällande, eventuellt antibiotika</p></div>
+                        <div id="diag-abscess" class="diff-diagnosis-item scroll-animate"><h5>🦷 Parodontal abscess</h5><p><strong>Diagnoskod:</strong> K05.2</p><p><strong>Typiska skillnader:</strong></p><ul><li>Djup parodontal ficka (>6 mm)</li><li>Svullnad i laterala omslagsvecket (ej apikalt)</li><li>Röntgen: vertikal benförlust eller lateral radioluceens</li><li>Sensibilitet ofta normal</li></ul><p><strong>Behandling:</strong> Dränage via ficka, antibiotika, parodontal terapi</p></div>
+                        <div id="diag-cracked" class="diff-diagnosis-item scroll-animate"><h5>⚡ Cracked tooth (med pulpaengagemang)</h5><p><strong>Diagnoskod:</strong> S02.5</p><p><strong>Typiska skillnader:</strong></p><ul><li>Smärta vid bitning/frigörande</li><li>Kan ha intermittent spontansmärta</li><li>Svår att lokalisera för patient</li><li>Spricka kan vara djup → pulpaengagemang</li></ul><p><strong>Behandling:</strong> Ofta endodonti + krona</p></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div id="sc3-display" class="scenario-display-wrapper">
+                
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc3', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc3', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc3', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc3', 'diagnos', this)">📋 Diagnostik</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc3', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc3', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc3', 'uppf', this)">📊 Uppföljning</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc3', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc3', 'diff', this)">🔍 Diff. Diagnoser</button>
+                </div>
+
+                <div class="inner-display">
+                    
+                    <div id="sc3-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-03-AAP</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Ont vid bitning / kan inte tugga"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Perkussionssmärta, bitömhet, ej spontansmärta</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K04.4 (Akut apikal parodontit)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Vanligt (~20% av akuta fall)</div>
+                            </div>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Scenario används vid misstanke om akut inflammation i periapikala vävnaderna utan primär pulpal smärta.</p>
+                            <p>Ofta sekundärt till pulpanekros eller iatrogen orsak (överinstrumentering vid endodonti).</p>
+                        </div>
+                    </div>
+
+                    <div id="sc3-anamnes" class="content-panel">
+                        <h3>❓ Anamnes – Obligatoriska frågor</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>Primära frågor:</h5>
+                            <ul>
+                                <li><strong>❓ Är smärtan värst vid bitning/tuggning?</strong><br><em>Förväntat svar: Ja, smärta vid occlusion</em></li>
+                                <li><strong>❓ Känns tanden "förhöjd" eller "längre" än andra tänder?</strong><br><em>Förväntat svar: Ja, klassiskt symtom</em></li>
+                                <li><strong>❓ Förekommer spontansmärta (utan bitning)?</strong><br><em>Förväntat svar: Nej eller mycket mild</em></li>
+                                <li><strong>❓ Reagerar tanden på kyla/värme?</strong><br><em>Förväntat svar: Nej (nekrotisk pulpa)</em></li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Sekundära frågor:</h5>
+                            <ul>
+                                <li>📋 Tidigare rotfyllning i tanden?</li>
+                                <li>📋 Nyligen genomförd tandbehandling? (inom 1-7 dagar)</li>
+                                <li>📋 Trauma mot tanden?</li>
+                                <li>📋 Tagit analgetika? Effekt?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc3-status" class="content-panel">
+                        <h3>🔬 Klinisk status – Obligatoriska undersökningar</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>Sensibilitetstest:</h5>
+                            <p><strong>Kyla/Värme:</strong> Negativ (nekrotisk pulpa)</p>
+                            <p>⚠️ Om positiv → överväg pulpit</p>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Perkussion:</h5>
+                            <p>✅ <strong>Tydligt positiv</strong> (dunköm och bitöm)</p>
+                            <p><em>Detta är det mest tillförlitliga tecknet</em></p>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Palpation:</h5>
+                            <p>✅ Ofta ömt apikalt i omslagsveck</p>
+                            <p>Ingen eller mycket liten svullnad (om stor svullnad → abscess)</p>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Inspektion:</h5>
+                            <ul>
+                                <li>🔍 Ofta tidigare fyllning eller krona</li>
+                                <li>🔍 Kan vara intakt yttre</li>
+                                <li>🔍 Ingen synlig svullnad (vid ren apikal parodontit)</li>
+                                <li>🔍 Kan ha missfärgning (grå/brun)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc3-diagnos" class="content-panel">
+                        <h3>📋 Diagnostik & Röntgen</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>5. Radiologiska kriterier</h5>
+                            <p><strong>Obligatorisk bilddiagnostik:</strong> Ja</p>
+                            <p style="margin-top:10px;"><strong>✅ Förväntat fynd:</strong></p>
+                            <ul>
+                                <li>Vidgad rothinnespalt (karakteristiskt tidigt tecken)</li>
+                                <li>Periapikal radioluceens (vid kronisk komponent)</li>
+                                <li>Ofta tidigare rotfyllning (otillräcklig eller frakturerad)</li>
+                                <li>Djup karies eller restauration nära pulpa</li>
+                            </ul>
+                            <p style="margin-top:10px;"><strong>❌ Utesluter diagnos:</strong></p>
+                            <ul>
+                                <li>Normal rothinnespalt OCH normal sensibilitet → annan orsak</li>
+                                <li>Omfattande radiolucens + svullnad → abscess</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>6. Uteslutningskriterier</h5>
+                            <ul>
+                                <li>⛔ Spontan pulserande smärta →  Symtomatisk pulpit</li>
+                                <li>⛔ Positiv sensibilitet → pulpit, ej ren apikal parodontit</li>
+                                <li>⛔ Synlig svullnad + fluktuation → abscess (VARK-04)</li>
+                                <li>⛔ Feber + allmänpåverkan → spridd infektion</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>7. Diagnostisk bedömning</h5>
+                            <p><strong>Trolig diagnos:</strong> Akut apikal parodontit (AAP)</p>
+                            <p style="margin-top:10px;"><strong>Etiologi:</strong></p>
+                            <ul>
+                                <li>Sekundärt till pulpanekros (vanligast)</li>
+                                <li>Iatrogent (överinstrumentering vid endodonti, överfyllt rotfyllningsmaterial)</li>
+                                <li>Trauma (luxation, kontusion)</li>
+                                <li>Ocklusal överbelastning (sällsynt som primär orsak)</li>
+                            </ul>
+                            <p><strong>Patofysiologi:</strong> Inflammation i periodontalligamentet → ödem → tanden "lyfts" ur alveolen → perkussionsömhet.</p>
+                            <p><strong>Prognos:</strong> God vid korrekt behandling (endodonti eller extraktion).</p>
+                        </div>
+                    </div>
+
+                    <div id="sc3-behandling" class="content-panel">
+                        <h3>9. Behandlingsalternativ</h3>
+                        
+                        <div class="warning-box scroll-animate">
+                            <strong>10. Viktigt före behandling (Riskkontroll)</strong>
+                            <p>✋ <strong>Checklist:</strong></p>
+                            <ul>
+                                <li>Bekräfta diagnos (sensibilitet negativ + perkussion positiv)</li>
+                                <li>Uteslut vertikal rotfraktur (kliniskt + rtg)</li>
+                                <li>Bedöm restaurerbarhet (kronsubstans, ferrule-effekt)</li>
+                                <li>Informera om prognos (85-90% lyckat vid AAP utan abscess)</li>
+                                <li>Vid revision: bedöm komplexitet → remiss specialist?</li>
+                                <li>Dokumentera preoperativ perkussion och palpation</li>
+                            </ul>
+                            <p style="margin-top:10px;">⚠️ <strong>Kontraindikationer för försök till bevarande:</strong></p>
+                            <ul>
+                                <li>Vertikal rotfraktur</li>
+                                <li>Omfattande extern resorption</li>
+                                <li>Perforering som ej kan åtgärdas</li>
+                            </ul>
+                        </div>
+
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">ALTERNATIV A: Akutrensning (om pulpanekros)</div>
+                            <p><strong>Indikation:</strong> Tanden har inte tidigare rotfyllning, Pulpanekros bekräftad (negativ sensibilitet), Tanden är restaurerbar.</p>
+                            
+                            <h5>Material:</h5>
+                            <ul>
+                                <li>🔹 Kofferdam (obligatorisk)</li>
+                                <li>🔹 NaOCl 3%</li>
+                                <li>🔹 Ca(OH)₂-pasta</li>
+                                <li>🔹 Provisorium (Cavit/IRM)</li>
+                            </ul>
+
+                            <h5>Metod:</h5>
+                            <ol>
+                                <li>LA (kan behövas trots nekros för komfort)</li>
+                                <li>Kofferdam</li>
+                                <li>Trepanation</li>
+                                <li>Exstirpation av nekrotisk pulpa</li>
+                                <li>Försiktig rensning (undvik överinstrumentering!)</li>
+                                <li>Riklig spolning NaOCl 3%</li>
+                                <li>Ca(OH)₂-inlägg</li>
+                                <li>Provisorisk tätning</li>
+                            </ol>
+
+                            <div class="warning-box" style="margin-top:15px; background:rgba(255,245,245,0.7); border-left:4px solid #f44336;">
+                                <strong>Särskild försiktighet:</strong>
+                                <ul>
+                                    <li>⚠️ Vid AAP: Undvik att instrumentera förbi apex (försämrar inflammation)</li>
+                                    <li>⚠️ Arbeta försiktigt i apikala tredjedelen</li>
+                                    <li>⚠️ Använd riklig spolning (minskar tryck)</li>
+                                </ul>
+                            </div>
+
+                            <p style="margin-top:15px;"><strong>Tid:</strong> 60-90 minuter</p>
+                            <div class="billing-codes">
+                                <div class="billing-codes-title">Debiteringskoder:</div>
+                                <div class="billing-codes-list">
+                                    💳 501-503 – Rotfyllning (kanaler)<br>
+                                    💳 704 – Provisorisk tätning<br>
+                                    💳 011 – Röntgen
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALTERNATIV B: Revision av rotfyllning</div>
+                            <p><strong>Indikation:</strong> Tanden har tidigare otillräcklig rotfyllning, Periapikalt besvär kvarstår efter primär endodonti, Ingen fraktur/perforering.</p>
+                            
+                            <h5>Material:</h5>
+                            <ul>
+                                <li>🔹 Kofferdam</li>
+                                <li>🔹 Lösningsmedel (Endosolv, kloroform)</li>
+                                <li>🔹 NaOCl 3%</li>
+                                <li>🔹 Nya filer</li>
+                                <li>🔹 Ca(OH)₂</li>
+                            </ul>
+
+                            <h5>Metod:</h5>
+                            <ol>
+                                <li>LA + kofferdam</li>
+                                <li>Avlägsna tidigare fyllning/krona</li>
+                                <li>Lokalisera kanaler</li>
+                                <li>Ta bort gammalt rotfyllningsmaterial (lösningsmedel + filer)</li>
+                                <li>Rensa kanalsystem</li>
+                                <li>Spolning</li>
+                                <li>Ca(OH)₂-inlägg</li>
+                                <li>Provisorium</li>
+                            </ol>
+
+                            <p><strong>OBS:</strong> Vid komplex kanalannatomi → remiss endodontist</p>
+                            <p><strong>Tid:</strong> 90-120 minuter</p>
+                            
+                            <div class="billing-codes">
+                                <div class="billing-codes-title">Debiteringskoder:</div>
+                                <div class="billing-codes-list">
+                                    💳 511-513 – Omrotfyllning (kanaler)<br>
+                                    💳 011 – Röntgen (flera)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALTERNATIV C: Ocklusionsjustering (vid traumatisk ocklusionsetiologi)</div>
+                            <p><strong>Indikation:</strong> Tydlig traumatisk ocklusion (facetter, kontaktyta för hög), Nyligen genomförd fyllning/krona, Symtom &lt;48 timmar, Ingen nekros (sensibilitet positiv).</p>
+                            
+                            <h5>Metod:</h5>
+                            <ol>
+                                <li>Identifiera prematur kontakt (artikuleringspapper)</li>
+                                <li>Slipa försiktigt bort kontakt</li>
+                                <li>Polera</li>
+                                <li>Instruera patient: mjuk kost 2-3 dagar</li>
+                                <li>Analgetika vid behov (Ibuprofen 400 mg)</li>
+                            </ol>
+
+                            <p><strong>Tid:</strong> 15-20 minuter</p>
+                            <p><strong>OBS:</strong> Om symtom kvarstår &gt;3 dagar → överväg endodonti</p>
+                            
+                            <div class="billing-codes">
+                                <div class="billing-codes-title">Debiteringskoder:</div>
+                                <div class="billing-codes-list">
+                                    💳 431 – Ocklusionsjustering
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALTERNATIV D: Extraktion</div>
+                            <p><strong>Indikation:</strong> Tanden ej restaurerbar, Vertikal rotfraktur bekräftad, Omfattande benförlust, Patient avböjer endodonti.</p>
+                            
+                            <p><strong>Metod:</strong> (Som Scenario 02)</p>
+                            
+                            <div class="billing-codes">
+                                <div class="billing-codes-title">Debiteringskoder:</div>
+                                <div class="billing-codes-list">
+                                    💳 701-703 – Extraktion
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sc3-journal" class="content-panel">
+                        <h3>11. Dokumentationsstöd (Journalmallar)</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Mall: AAP med akutrensning
+
+Anamnes: Pat. anger smärta tand [nr] vid bitning sedan [tid]. Tanden känns "förhöjd". Ingen spontansmärta. Ingen tidigare endodonti i tanden.
+
+Status:
+- Tand [nr]: [Gammal fyllning / Karies / Intakt]
+- Sensibilitet kyla: Negativ
+- Perkussion: Tydligt positiv (bitöm)
+- Palpation: Öm apikalt
+- Ingen synlig svullnad
+
+Rtg: Vidgad rothinnespalt tand [nr], periapikal radioluceens [storlek].
+
+Bedömning: Akut apikal parodontit tand [nr], sekundär till pulpanekros.
+
+Behandling:
+- LA: Artikain 40 mg/ml + adrenalin [ml]
+- Kofferdam
+- Trepanation tand [nr]
+- Exstirpation nekrotisk pulpa
+- Försiktig rensning kanaler [1/2/3], UNDVIKER överinstrumentering
+- Arbetsläng: [mm]
+- Riklig spolning NaOCl 3%
+- Ca(OH)₂-inlägg
+- Provisorisk tätning (Cavit)
+
+Information: Tanden kan vara öm ytterligare 2-3 dagar (normal läkning).
+Analgetika: Ibuprofen 400 mg vid behov. Undvik tugga på tanden.
+
+Planering: Återbesök om 7-14 dagar för definitiv rotfyllning.
+Kontakta vid försämring (ökad svullnad/smärta).</pre>
+                        </div>
+                    </div>
+
+                    <div id="sc3-uppf" class="content-panel">
+                        <h3>12. Uppföljning</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>Tidpunkt:</h5>
+                            <ul>
+                                <li><strong>Symtomkontroll:</strong> 24-48 timmar (telefonkontakt)</li>
+                                <li><strong>Återbesök:</strong> 7-14 dagar för definitiv rotfyllning</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Förväntad läkning:</h5>
+                            <ul>
+                                <li><strong>Dag 1-2:</strong> Måttlig perkussionsömhet kvarstår (normalt)</li>
+                                <li><strong>Dag 3-5:</strong> Tydlig förbättring</li>
+                                <li><strong>Dag 7:</strong> Perkussion nästan normal eller u.a.</li>
+                            </ul>
+                        </div>
+
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ Tecken på komplikation:</strong>
+                            <ul>
+                                <li>Ökad perkussionsömhet efter dag 3</li>
+                                <li>Utveckling av svullnad</li>
+                                <li>Feber</li>
+                            </ul>
+                            <p>→ Akut återbesök, överväg antibiotika</p>
+                        </div>
+                    </div>
+
+                    <div id="sc3-flaggor" class="content-panel">
+                        <h3>13. Röda flaggor (AKUTA VARNINGSSIGNALER)</h3>
+                        
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Indikerar övergång till abscess/spridd infektion:</strong>
+                            <ul>
+                                <li>Synlig svullnad utvecklas (extaoral eller intraoral)</li>
+                                <li>Feber >38°C</li>
+                                <li>Trismus</li>
+                                <li>Allmänpåverkan</li>
+                                <li>Fluktuation vid palpation</li>
+                            </ul>
+                            <p style="margin-top:15px; font-weight:bold;">→ ÅTGÄRD: Byt till Scenario 04 (Abscess), överväg antibiotika och kirurgiskt dränage</p>
+                        </div>
+                        
+                        <div class="info-card scroll-animate" style="margin-top:20px;">
+                            <h5>14. Ansvarsfriskrivning</h5>
+                            <p>OBS! Detta beslutsstöd är vägledande och ersätter inte kliniskt omdöme.</p>
+                            <p>Behandlande tandläkare bär fullt ansvar för diagnostik och behandling enligt Patientsäkerhetslagen(2010:659).</p>
+                            <p>Vid osäkerhet om prognos eller komplexitet: remiss endodontist.</p>
+                        </div>
+                    </div>
+
+                    <div id="sc3-diff" class="content-panel">
+                        <h3>8. Differentialdiagnoser</h3>
+                        
+                        <div id="diag-paro-abscess" class="diff-diagnosis-item scroll-animate">
+                            <h5>8.1 Parodontal abscess</h5>
+                            <p><strong>Skillnader:</strong></p>
+                            <ul>
+                                <li>Djup parodontal ficka (>6 mm)</li>
+                                <li>Svullnad lateralt på roten (ej apikalt)</li>
+                                <li>Sensibilitet ofta normal</li>
+                                <li>Röntgen: vertikal benförlust</li>
+                            </ul>
+                            <p><strong>Behandling:</strong> Dränage via ficka, parodontal terapi</p>
+                        </div>
+
+                        <div id="diag-lat-abscess" class="diff-diagnosis-item scroll-animate">
+                            <h5>8.2 Lateral parodontal abscess (rotsårsrelaterad)</h5>
+                            <p><strong>Skillnader:</strong></p>
+                            <ul>
+                                <li>Svullnad längs rotens sida (ej apex)</li>
+                                <li>Ofta accessorisk kanal eller perforering</li>
+                                <li>Sensibilitet kan vara variabel</li>
+                                <li>Röntgen: lateral radioluceens</li>
+                            </ul>
+                            <p><strong>Behandling:</strong> Endodonti eller extraktion</p>
+                        </div>
+
+                        <div id="diag-sinuit" class="diff-diagnosis-item scroll-animate">
+                            <h5>8.3 Sinuit (överkäke)</h5>
+                            <p><strong>Skillnader:</strong></p>
+                            <ul>
+                                <li>Flera tänder överkäke perkussionsömma</li>
+                                <li>Sensibilitet normal på alla tänder</li>
+                                <li>Näskorrelat (sekretion, täppa)</li>
+                                <li>Smärta vid framåtlutning</li>
+                            </ul>
+                            <p><strong>Behandling:</strong> ÖNH-remiss, avsvällande</p>
+                        </div>
+
+                        <div id="diag-cracked" class="diff-diagnosis-item scroll-animate">
+                            <h5>8.4 Cracked tooth (djup spricka)</h5>
+                            <p><strong>Skillnader:</strong></p>
+                            <ul>
+                                <li>Smärta vid bitning OCH frigörande av bett</li>
+                                <li>Ofta sensibilitet kvarstår (dröjande)</li>
+                                <li>Spricka kan visualiseras</li>
+                                <li>Intermittent symtomatologi</li>
+                            </ul>
+                            <p><strong>Behandling:</strong> Kusptäckning eller endodonti + krona</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+       
+<div id="sc4-display" class="scenario-display-wrapper">
+    <div class="inner-sidebar">
+        <button class="tab-btn active" onclick="openInnerTab('sc4', 'snabb', this)">⚡ Snabböversikt</button>
+        <button class="tab-btn" onclick="openInnerTab('sc4', 'anamnes', this)">❓ Anamnes</button>
+        <button class="tab-btn" onclick="openInnerTab('sc4', 'status', this)">🔬 Status</button>
+        <button class="tab-btn" onclick="openInnerTab('sc4', 'diagnos', this)">📋 Diagnostik</button>
+        <button class="tab-btn" onclick="openInnerTab('sc4', 'behandling', this)">🔧 Behandling</button>
+        <button class="tab-btn" onclick="openInnerTab('sc4', 'journal', this)">📝 Journal</button>
+        <button class="tab-btn" onclick="openInnerTab('sc4', 'uppf', this)">📊 Uppföljning</button>
+        <button class="tab-btn" onclick="openInnerTab('sc4', 'flaggor', this)">🚨 Röda Flaggor</button>
+        <button class="tab-btn" onclick="openInnerTab('sc4', 'diff', this)">🔍 Diff. Diagnoser</button>
+    </div>
+
+    <div class="inner-display">
+        
+        <div id="sc4-snabb" class="content-panel active">
+            <h3>⚡ Scenarioidentifiering</h3>
+            <div class="patient-symptom-box scroll-animate">
+                <div class="symptom-list">
+                    <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-04-ABS</div>
+                    <div class="symptom-item">🗣️ <strong>Citat:</strong> "Svullnad, ömt och varmt"</div>
+                    <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Svullnad, smärta, eventuell fluktuation och feber</div>
+                    <div class="symptom-item">📖 <strong>ICD-10:</strong> K04.6 (Periapikal abscess med fistel), K04.7 (utan fistel)</div>
+                    <div class="symptom-item">📊 <strong>Prevalens:</strong> Vanligt akutfall (~15-20%)</div>
+                    <div class="symptom-item">⚠️ <strong>Allvarlighetsgrad:</strong> Hög – risk för spridning</div>
+                </div>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>2. Klinisk indikation</h5>
+                <p>Scenario används vid misstanke om <strong>avgränsad varansamling</strong> sekundär till odontogen infektion. Kräver ofta omedelbar åtgärd (incision/dränage och/eller antibiotika).</p>
+                <div class="warning-box" style="margin-top: 10px;">
+                    <strong>⚠️ VIKTIGT:</strong>
+                    <p>Odontogen abscess kan spridas till djupa halsrum → livshotande tillstånd. Vid tecken på spridning → akut sjukhusremiss.</p>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        <div id="sc4-anamnes" class="content-panel">
+            <h3>❓ Anamnes – Obligatoriska frågor</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>Primära frågor (kritiska):</h5>
+                <ul>
+                    <li><strong>❓ Har du märkt svullnad i ansiktet/munnen?</strong><br><em>Förväntat svar: Ja</em></li>
+                    <li><strong>❓ När började svullnaden? Utveckling (timmar/dagar)?</strong><br><em>Viktigt: Snabb utveckling (timmar) = högre risk</em></li>
+                    <li><strong>❓ Har du feber eller frossa?</strong><br><em>Förväntat svar: Ofta ja (38-39°C)</em></li>
+                    <li><strong>❓ Kan du öppna munnen normalt?</strong><br><em>Trismus = spridning till tuggmuskulatur</em></li>
+                    <li><strong>❓ Har du svårt att svälja?</strong><br><em>Dysfagi = varning för djup halsinfektion</em></li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Sekundära frågor:</h5>
+                <ul>
+                    <li>📋 Tidigare tandvärk i området?</li>
+                    <li>📋 Spontan dränering (dålig smak, pus i munnen)?</li>
+                    <li>📋 Tagit antibiotika? Vilken sort? Effekt?</li>
+                    <li>📋 Immunosuppression, diabetes?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc4-status" class="content-panel">
+            <h3>🔬 Klinisk Status – Obligatoriska undersökningar</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>Extraoral undersökning (KRITISK):</h5>
+                <ul>
+                    <li>🔍 <strong>Svullnad:</strong> Lokalisation, storlek, konsistens</li>
+                    <li>🔍 <strong>Hudförändring:</strong> Röd, varm, spänd? (cellulitiska tecken)</li>
+                    <li>🔍 <strong>Fluktuation:</strong> Palpera försiktigt (tecken på pus)</li>
+                    <li>🔍 <strong>Lymfkörtlar:</strong> Submandibulära, cervikala (förstorrade, ömma?)</li>
+                    <li>🔍 <strong>Trismus:</strong> Mät gapförmåga (normal >35-40 mm)</li>
+                </ul>
+                <div class="warning-box" style="margin-top: 10px;">
+                    <strong>⚠️ VARNINGSSIGNALER:</strong>
+                    <ul>
+                        <li>Bilateral svullnad i golvet</li>
+                        <li>Svullnad över mandibelvinkeln</li>
+                        <li>Svullnad i nacken</li>
+                        <li>Gapförmåga &lt;20 mm → Akut sjukhusremiss</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Intraoral undersökning:</h5>
+                <ul>
+                    <li>🔍 <strong>Svullnad:</strong> Vestibulär, palatinal, lingual?</li>
+                    <li>🔍 <strong>Fluktuation:</strong> Mjuk, varfylld?</li>
+                    <li>🔍 <strong>Fistel:</strong> Dränerar spontant?</li>
+                    <li>🔍 <strong>Kausal tand:</strong> Identifiera (perkussion, palpation)</li>
+                    <li>🔍 <strong>Perkussion:</strong> Ofta kraftigt positiv</li>
+                    <li>🔍 <strong>Sensibilitet:</strong> Vanligen negativ (nekros)</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Vitalparametrar (vid systemisk påverkan):</h5>
+                <ul>
+                    <li>🌡️ <strong>Temperatur:</strong> >38.5°C = systemisk infektion</li>
+                    <li>❤️ <strong>Puls:</strong> Takykardi (>100/min) = systemisk reaktion</li>
+                    <li>🩸 <strong>Blodtryck:</strong> Hypotension = sepsis-risk</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc4-diagnos" class="content-panel">
+            <h3>📋 Diagnostik & Röntgen</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>5. Radiologiska kriterier</h5>
+                <p><strong>Obligatorisk bilddiagnostik:</strong> Ja</p>
+                <p style="margin-top:10px;"><strong>✅ Förväntat fynd:</strong></p>
+                <ul>
+                    <li>Periapikal radioluceens (ofta stor, >5 mm)</li>
+                    <li>Vidgad rothinnespalt</li>
+                    <li>Eventuell bendestruktion</li>
+                    <li>Kausal tand ofta med djup karies, stor fyllning eller rotfyllning</li>
+                </ul>
+                <div class="warning-box" style="margin-top: 10px;">
+                    <strong>⚠️ Begränsning:</strong>
+                    <p>Konventionell röntgen visar <strong>inte</strong> mjukvävnadsabscess väl. Vid djup halsinfektion → CT med kontrast krävs (sjukhus).</p>
+                </div>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>6. Uteslutningskriterier</h5>
+                <ul>
+                    <li>⛔ Ingen svullnad → Inte abscess (överväg apikal parodontit)</li>
+                    <li>⛔ Svullnad enbart i gingiva runt tand med ficka → Parodontal abscess</li>
+                    <li>⛔ Svullnad i glandula parotis/submandibularis → Sialadenit</li>
+                    <li>⛔ Bilateral svullnad golvet + trismus + dysfagi → Ludwig's angina (AKUT SJUKHUS)</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>7. Diagnostisk bedömning</h5>
+                <p><strong>Trolig diagnos:</strong> Odontogen abscess (periapikaler eller parodontalt)</p>
+                
+                <h5 style="margin-top: 15px;">Klassificering:</h5>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <th style="text-align: left; padding: 8px;">Stadium</th>
+                        <th style="text-align: left; padding: 8px;">Kliniska tecken</th>
+                        <th style="text-align: left; padding: 8px;">Åtgärd</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;">Tidigt (cellulitfas)</td>
+                        <td style="padding: 8px;">Svullnad, fast, ingen fluktuation, rodnad</td>
+                        <td style="padding: 8px;">Antibiotika, observation</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;">Abscessbildning</td>
+                        <td style="padding: 8px;">Fluktuation, avgränsad, eventuell fistel</td>
+                        <td style="padding: 8px;">Incision & dränage (I&D)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px;">Spridd infektion</td>
+                        <td style="padding: 8px;">Trismus, dysfagi, flera anatomiska rum</td>
+                        <td style="padding: 8px;">SJUKHUS - akut kirurgi</td>
+                    </tr>
+                </table>
+
+                <p style="margin-top:15px;"><strong>Etiologi:</strong></p>
+                <ol>
+                    <li>Periapikaler abscess (vanligast) – sekundär till pulpanekros</li>
+                    <li>Parodontal abscess – sekundär till djup ficka</li>
+                    <li>Perikoronit med abscess – kring delvis frambruten visdomstand</li>
+                </ol>
+                <p><strong>Patofysiologi:</strong> Bakteriell invasion (anaerober dominerar) → purulent exsudat → tryckökning → svullnad → potentiell spridning via fascieplan.</p>
+            </div>
+        </div>
+
+        <div id="sc4-behandling" class="content-panel">
+            <h3>9. Behandlingsalternativ</h3>
+            
+            <div class="warning-box scroll-animate">
+                <strong>⚠️ VIKTIGT: Kausal behandling är ALLTID prioritet!</strong>
+                <p>Antibiotika utan dränage/sanering = otillräcklig behandling.</p>
+                
+                <h5 style="margin-top: 15px;">STEG 1: Bedöm allvarlighetsgrad (KRITISKT)</h5>
+                <p>Använd följande kriterier för att välja behandlingsnivå:</p>
+                <ul style="margin-top: 5px;">
+                    <li>🟢 <strong>Liten intraoral svullnad, ingen trismus, ingen feber:</strong> Tandklinik (I&D + endodonti/extraktion)</li>
+                    <li>🟡 <strong>Måttlig svullnad, lätt trismus, låg feber:</strong> Tandklinik (I&D + antibiotika + observation)</li>
+                    <li>🟠 <strong>Stor svullnad, trismus >10 mm, feber >38.5°C:</strong> Remiss käkkirurg samma dag</li>
+                    <li>🔴 <strong>Trismus &lt;20 mm, dysfagi, bilateral svullnad golvet:</strong> AKUT SJUKHUS (ambulans om dyspné)</li>
+                </ul>
+            </div>
+
+            <div class="treatment-box scroll-animate">
+                <div class="treatment-title">ALTERNATIV A: Incision & Dränage (I&D) + Kausal behandling</div>
+                <p><strong>Indikation:</strong> Fluktuerande abscess (pus bekräftad), Intraoral lokalisering, Patient stabil.</p>
+                <p><strong>Kontraindikationer:</strong> Djup halsinfektion, Trismus som förhindrar åtkomst, Antikoagulation.</p>
+                
+                <h5>🔹 Material:</h5>
+                <ul>
+                    <li>Skalpell #15 eller #11, Kirurgisk sug, Krontång, Kompress/tupfer, Eventuell drain (gummiband/Penrose)</li>
+                </ul>
+
+                <h5>🛠️ Metod:</h5>
+                <ol>
+                    <li><strong>Bedövning:</strong> Ytbedövning (Xylocain gel). Infiltration: UNDVIK direkt i abscess. Ledningsbedövning bortom området.</li>
+                    <li><strong>Incision:</strong> Identifiera mest fluktuerande punkt. Incision djupt (minst 1-1.5 cm). Riktning parallellt med viktiga strukturer.</li>
+                    <li><strong>Dränage:</strong> Uttöm pus (sug + kompression). Öppna loger med sond/krontång. Spola med NaCl.</li>
+                    <li><strong>Drain:</strong> Sätt in gummiband/Penrose om stor abscess. Fixera med sutur.</li>
+                    <li><strong>Kausal behandling:</strong> Extraktion eller Trepanation (samma besök om möjligt).</li>
+                </ol>
+                <p><em>OBS: Undvik endodonti omedelbart vid aktiv infektion – gör trepanation + provisorium.</em></p>
+
+                <p style="margin-top:15px;"><strong>Tid:</strong> 20-40 min (I&D) + 20-60 min (kausal)</p>
+                <div class="billing-codes">
+                    <div class="billing-codes-title">Debiteringskoder:</div>
+                    <div class="billing-codes-list">
+                        💳 801 – Incision abscess<br>
+                        💳 701-703 – Extraktion (om utförd)<br>
+                        💳 501-503 – Trepanation/akutrensning (om utförd)<br>
+                        💳 011 – Röntgen
+                    </div>
+                </div>
+            </div>
+
+            <div class="treatment-box alternative scroll-animate">
+                <div class="treatment-title">ALTERNATIV B: Antibiotika (tillägg till I&D)</div>
+                <div class="warning-box">
+                    <strong>⚠️ VIKTIGT:</strong> Antibiotika är <strong>tillägg</strong>, INTE ersättning för kirurgisk behandling!
+                </div>
+                
+                <h5 style="margin-top: 15px;">✅ Indikationer för antibiotika:</h5>
+                <ul>
+                    <li>Systemisk påverkan (feber >38°C, frossa, allmänpåverkan)</li>
+                    <li>Cellulitiska tecken (diffus svullnad utan fluktuation)</li>
+                    <li>Spridning till flera anatomiska rum</li>
+                    <li>Immunosupprimerad patient</li>
+                    <li>Trismus</li>
+                    <li>Kausal tand kan ej behandlas omedelbart</li>
+                </ul>
+
+                <h5 style="margin-top: 15px;">❌ EJ indikation:</h5>
+                <ul>
+                    <li>Liten lokaliserad abscess med fullständigt dränage + kausal sanering</li>
+                    <li>Profylax efter I&D om patient frisk</li>
+                </ul>
+
+                <h5 style="margin-top: 15px;">💊 Val av antibiotika (vuxna, Sverige):</h5>
+                <ol>
+                    <li><strong>Förstahandsval:</strong> Fenoximetylpenicillin (Kåvepenin) <strong>1,6 g x 3 i 5–7 dagar</strong> i 7 dagar <span class="correction-badge">JUSTERAT — 2g x 3 var felaktig överdos</span>.</li>
+                    <li><strong>Vid penicillinallergi:</strong> Klindamycin (Dalacin) <strong>150 mg x 3 i 5–7 dagar</strong> i 7 dagar <span class="correction-badge">JUSTERAT — 300mg x 3 var felaktig dubbeldos</span>.</li>
+                    <li><strong>Vid svår infektion/terapisvikt:</strong> PcV 1,6 g x 3 + Metronidazol 400 mg x 3 i 5–7 dagar vid terapisvikt. (Amoxicillin + klavulansyra / Spektramox saknar stöd som standardval i svenska tandvårdsriktlinjer — undvik bredspektrumantibiotika utan klar indikation.) <span class="correction-badge">JUSTERAT</span> <br>ALT Klindamycin 300-600 mg x 3 + Metronidazol 400 mg x 3.</li>
+                    <li><strong>Vid sepsis/sjukhus:</strong> IV-antibiotika (Benzylpenicillin + Metronidazol).</li>
+                </ol>
+                <p><em>Källa: Strama-riktlinjer för tandvård</em></p>
+            </div>
+
+            <div class="treatment-box alternative scroll-animate">
+                <div class="treatment-title">ALTERNATIV C: Trepanation (dränage via rotkanalen)</div>
+                <p><strong>Indikation:</strong> Tanden ska bevaras, Abscess är huvudsakligen intraossär, Kompletterar I&D.</p>
+                
+                <h5>🛠️ Metod:</h5>
+                <ol>
+                    <li>LA + kofferdam</li>
+                    <li>Trepanation</li>
+                    <li>Exstirpation</li>
+                    <li><strong>LÄMNA kanalen öppen</strong> 24-48 timmar (dränage)</li>
+                    <li>Patient spolar med klorhexidin</li>
+                    <li>Återbesök: Ca(OH)₂-inlägg + provisorium</li>
+                </ol>
+                <p><em>OBS: Kontroversiellt – risk för kontaminering. Vissa föredrar omedelbart provisorium.</em></p>
+            </div>
+        </div>
+
+        <div id="sc4-journal" class="content-panel">
+            <h3>11. Dokumentationsstöd (Journalmallar)</h3>
+            
+            <h5 class="scroll-animate">Mall 1: I&D + Extraktion + Antibiotika</h5>
+            <div class="journal-box scroll-animate">
+                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                <pre>Anamnes: Pat. anger svullnad [lokalisation] sedan [tid].
+Smärta, feber (mätt: [°C]), svårt att tugga.
+Ingen dysfagi. Ingen andningspåverkan.
+Mediciner: [Antikoagulation? Immunosuppression?]
+Allergi: Nej / Ja [specificera]
+
+Status:
+Extraoralt:
+- Svullnad [lokalisation], storlek ca [cm]
+- Hud: Rodnad, varm, fluktuation [ja/nej]
+- Lymfkörtlar: Förstorrade submandibulära bilat/unilat, ömma
+- Gapförmåga: [mm] (normal >35 mm)
+- Temp: [°C], Puls: [/min]
+Intraoralt:
+- Svullnad vestibulär/palatinal/lingual tand [nr]
+- Fluktuation: Ja
+- Perkussion tand [nr]: Kraftigt positiv
+- Sensibilitet: Negativ
+- Fistel: Nej / Ja [lokalisation]
+
+Rtg: Periapikal radioluceens tand [nr], ca [mm].
+Tanden omfattande karies/destruktion.
+
+Bedömning: Odontogen periapikaler abscess tand [nr].
+Systemisk påverkan (feber). Tanden ej restaurerbar.
+
+Behandling:
+1. Information om diagnos, behandling, risker
+2. Incision & dränage:
+- Ytbedövning Xylocain gel
+- Ledningsbedövning [typ] med artikain + adrenalin
+- Incision [lokalisation], djup ca [cm]
+- Purulent dränage, ca [ml]
+- Spolning NaCl
+- [Drain insatt: gummiband, fixerad med sutur]
+3. Extraktion:
+- LA: Artikain 40 mg/ml + adrenalin [ml]
+- Extraktion tand [nr] med hävlar och tång
+- Alveol inspekterad, inget retinerat
+- Hemostas uppnådd
+- Bettamponad
+4. Antibiotika ordinerat:
+- Fenoximetylpenicillin (Kåvepenin) <strong>1,6 g x 3 i 5–7 dagar</strong> i 7 dagar <span class="correction-badge">JUSTERAT — 2g x 3 var felaktig överdos</span>
+- [ALT Klindamycin 150 mg x 3 <span class="correction-badge">JUSTERAT</span> i 7 dagar vid Pc-allergi]
+
+Information given:
+- Drain tas bort om 2-3 dagar (återbesök)
+- Fortsätt antibiotika hela kuren (viktigt!)
+- Mjuk kost, god munhygien
+- Analgetika: Ibuprofen 400-600 mg x 3
+- Feber ska gå ner inom 24-48 h
+- Kontakta AKUT vid: försämrad svullnad, andningssvårigheter, ökad feber, allmänpåverkan
+
+Planering: Återbesök om 2-3 dagar (ta bort drain, kontrollera läkning). Kontakta akut vid försämring.</pre>
+            </div>
+
+            <h5 class="scroll-animate" style="margin-top: 30px;">Mall 2: I&D + Trepanation (tanden bevaras)</h5>
+            <div class="journal-box scroll-animate">
+                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                <pre>[Anamnes och status som ovan]
+
+Bedömning: Odontogen abscess tand [nr].
+Tanden restaurerbar, patient önskar bevara.
+
+Behandling:
+1. I&D [som ovan]
+2. Trepanation tand [nr]:
+- Kofferdam
+- Trepanation
+- Exstirpation nekrotisk pulpa
+- Kanaler [antal] rensade försiktigt
+- Riklig spolning NaOCl 3%
+- Kanal lämnad öppen för dränage 24-48h
+- [ALT: Ca(OH)₂-inlägg + provisorium direkt]
+3. Antibiotika ordinerat: [som ovan]
+
+Information:
+- Spola munnen med klorhexidin 0.2% x 2
+- Undvik tugga på tanden
+- Återbesök om 2 dagar för provisorisk tätning
+
+Planering:
+Återbesök 48h: Ca(OH)₂-inlägg + provisorium.
+Definitiv rotfyllning om 7-14 dagar.</pre>
+            </div>
+        </div>
+
+        <div id="sc4-uppf" class="content-panel">
+            <h3>12. Uppföljning</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>Tidpunkt:</h5>
+                <ul>
+                    <li><strong>24 timmar:</strong> Telefonkontakt (obligatorisk vid antibiotika)</li>
+                    <li><strong>2-3 dagar:</strong> Klinisk kontroll (ta bort drain)</li>
+                    <li><strong>7 dagar:</strong> Antibiotikakur avslutad, bedöm läkning</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Förväntad läkning:</h5>
+                <ul>
+                    <li><strong>24h:</strong> Feber ska gå ner, smärta minska</li>
+                    <li><strong>48h:</strong> Svullnad börjar avta</li>
+                    <li><strong>3-5 dagar:</strong> Tydlig förbättring, drain tas bort</li>
+                    <li><strong>7 dagar:</strong> Minimal restsymtom</li>
+                </ul>
+            </div>
+
+            <div class="warning-box scroll-animate">
+                <strong>⚠️ Tecken på komplikation:</strong>
+                <ul>
+                    <li>Feber kvarstår >48h trots antibiotika</li>
+                    <li>Svullnad ökar</li>
+                    <li>Trismus utvecklas eller förvärras</li>
+                    <li>Dysfagi uppkommer</li>
+                    <li>Allmänpåverkan ökar</li>
+                </ul>
+                <p style="margin-top:10px; font-weight:bold;">→ Åtgärd: Akut återbesök, överväg byte av antibiotika (terapisvikt), remiss käkkirurg/sjukhus</p>
+            </div>
+        </div>
+
+        <div id="sc4-flaggor" class="content-panel">
+            <h3>13. Röda flaggor (AKUTA VARNINGSSIGNALER)</h3>
+            
+            <div class="warning-box scroll-animate">
+                <strong>🚨 OMEDELBAR SJUKHUSREMISS vid:</strong>
+                
+                <h5 style="margin-top: 10px;">Anatomisk spridning:</h5>
+                <ul>
+                    <li><strong>Ludwig's angina:</strong> Bilateral svullnad golvet + trismus + dysfagi</li>
+                    <li><strong>Submandibulär abscess:</strong> Svullnad under mandibula, medial spridning</li>
+                    <li><strong>Pterygomandibulär abscess:</strong> Svår trismus + svullnad tonsillfossa</li>
+                    <li><strong>Retropharyngeal abscess:</strong> Dysfagi + nacksmärta + stelhet</li>
+                </ul>
+
+                <h5 style="margin-top: 10px;">Systemisk påverkan:</h5>
+                <ul>
+                    <li><strong>Sepsis-tecken:</strong> Temp >39°C ELLER &lt;36°C + takykardi + hypotension</li>
+                    <li><strong>Medvetandepåverkan:</strong> Konfusion, somnolens</li>
+                    <li>Kraftig allmänpåverkan</li>
+                </ul>
+
+                <h5 style="margin-top: 10px;">Komplikationer:</h5>
+                <ul>
+                    <li><strong>Luftvägsobstruktion:</strong> Stridor, cyanös</li>
+                    <li><strong>Mediastinit:</strong> Bröstsmärta, dyspné</li>
+                    <li><strong>Kavernös sinustrombos:</strong> Orbital svullnad, synpåverkan, huvudvärk</li>
+                </ul>
+                
+                <p style="margin-top:15px; font-weight:bold; border-top:1px solid rgba(0,0,0,0.1); padding-top:10px;">→ Åtgärd: Ring ambulans vid dyspné eller kraftigt nedsatt allmäntillstånd.</p>
+            </div>
+            
+            <div class="info-card scroll-animate" style="margin-top:20px;">
+                <h5>10. Viktigt före behandling (Riskkontroll)</h5>
+                <p>✋ <strong>Checklist:</strong></p>
+                <ul>
+                    <li>Bedöm allvarlighetsgrad</li>
+                    <li>Vitalparametrar: Temp, puls, BT (om systemisk påverkan)</li>
+                    <li>Trismus: Mät gapförmåga (mm)</li>
+                    <li>Dysfagi/dyspné: Fråga explicit</li>
+                    <li>Medicinlista: Antikoagulation, immunosuppression, diabetes</li>
+                    <li>Allergi: Penicillin, lokalanestesi, latex</li>
+                    <li>Informera patient: Risk för ärrbildning, eventuell recidiv, betydelse av kausal behandling</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc4-diff" class="content-panel">
+            <h3>8. Differentialdiagnoser</h3>
+            
+            <div id="diag-paro-abscess-sc4" class="diff-diagnosis-item scroll-animate">
+                <h5>8.1 Parodontal abscess</h5>
+                <p><strong>Skillnader:</strong></p>
+                <ul>
+                    <li>Djup parodontal ficka (>6 mm)</li>
+                    <li>Svullnad lateralt på roten (inte apex)</li>
+                    <li>Sensibilitet ofta positiv</li>
+                    <li>Röntgen: vertikal benförlust</li>
+                </ul>
+                <p><strong>Behandling:</strong> Dränage via ficka + parodontal terapi</p>
+            </div>
+
+            <div id="diag-perikoronit" class="diff-diagnosis-item scroll-animate">
+                <h5>8.2 Perikoronit (med abscessbildning)</h5>
+                <p><strong>Skillnader:</strong></p>
+                <ul>
+                    <li>Kring delvis frambruten tand (ofta visdomstand)</li>
+                    <li>Inflammation i operkuläret (gingivaflikk)</li>
+                    <li>Ofta trismus om nederkäke</li>
+                    <li>Röntgen: tand delvis erupterad</li>
+                </ul>
+                <p><strong>Behandling:</strong> Spolning, antibiotika, senare extraktion</p>
+            </div>
+
+            <div id="diag-sialadenit" class="diff-diagnosis-item scroll-animate">
+                <h5>8.3 Sialadenit (körtinflammation)</h5>
+                <p><strong>Skillnader:</strong></p>
+                <ul>
+                    <li>Svullnad över glandula submandibularis/parotis</li>
+                    <li>Pus från körtelmynning vid massage</li>
+                    <li>Tänder sensibilitet normal</li>
+                    <li>Eventuell sialolith på röntgen</li>
+                </ul>
+                <p><strong>Behandling:</strong> Antibiotika, spolning, ÖNH-remiss</p>
+            </div>
+
+            <div id="diag-lymfadenit" class="diff-diagnosis-item scroll-animate">
+                <h5>8.4 Lymfadenit (körtelinflammation)</h5>
+                <p><strong>Skillnader:</strong></p>
+                <ul>
+                    <li>Förstorrade lymfkörtlar utan intraoral abscess</li>
+                    <li>Ofta sekundärt till faryngit/tonsillit</li>
+                    <li>Tänder utan fynd</li>
+                </ul>
+                <p><strong>Behandling:</strong> Antibiotika, ÖNH-remiss</p>
+               </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+<div id="sc5-display" class="scenario-display-wrapper">
+    
+    <div class="inner-sidebar">
+        <button class="tab-btn active" onclick="openInnerTab('sc5', 'snabb', this)">⚡ Snabböversikt</button>
+        <button class="tab-btn" onclick="openInnerTab('sc5', 'anamnes', this)">❓ Anamnes</button>
+        <button class="tab-btn" onclick="openInnerTab('sc5', 'status', this)">🔬 Status</button>
+        <button class="tab-btn" onclick="openInnerTab('sc5', 'diagnos', this)">📋 Diagnostik</button>
+        <button class="tab-btn" onclick="openInnerTab('sc5', 'steg', this)">🛠️ Flöde</button>
+        <button class="tab-btn" onclick="openInnerTab('sc5', 'behandling', this)">🔧 Behandling</button>
+        <button class="tab-btn" onclick="openInnerTab('sc5', 'journal', this)">📝 Journal</button>
+        <button class="tab-btn" onclick="openInnerTab('sc5', 'uppf', this)">📊 Uppföljning</button>
+        <button class="tab-btn" onclick="openInnerTab('sc5', 'flaggor', this)">🚨 Röda Flaggor</button>
+    </div>
+
+    <div class="inner-display">
+        
+        <div id="sc5-snabb" class="content-panel active">
+            <h3>⚡ Scenarioidentifiering</h3>
+            <div class="patient-symptom-box scroll-animate">
+                <div class="symptom-list">
+                    <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-05-CTS</div>
+                    <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det ilar till när jag biter – och gör ont precis när jag släpper"</div>
+                    <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Skarp smärta vid tuggning/belastning, särskilt vid specifika punkter eller när bitkraften släpps (rebound pain). Svårlokaliserat. Känslighet för kyla kan förekomma.</div>
+                    <div class="symptom-item">📖 <strong>ICD-10:</strong> K03.8 (Infraktion/Fraktur)</div>
+                    <div class="symptom-item">🦷 <strong>Drabbade tänder:</strong> Oftast molarer (speciellt UK första molar) och premolarer i ÖK.</div>
+                </div>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>2. Klinisk indikation</h5>
+                <p>Används vid misstanke om en ofullständig spricka i tanden (i dentinet) som rör sig vid belastning och retar pulpan. Målet är att immobilisera sprickan innan den når pulpan eller orsakar rotfraktur.</p>
+            </div>
+        </div>
+
+        <div id="sc5-anamnes" class="content-panel">
+            <h3>❓ Anamnes – Obligatoriska frågor</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>Primära frågor:</h5>
+                <ul>
+                    <li><strong>❓ Gör det ont när du biter ihop eller när du släpper?</strong><br><em>Förväntat svar: Ofta värst precis när man släpper (release pain).</em></li>
+                    <li><strong>❓ Är smärtan skarp och kortvarig?</strong><br><em>Förväntat svar: Ja, som en elektrisk stöt vid tuggning.</em></li>
+                    <li><strong>❓ Kan du peka ut tanden?</strong><br><em>Förväntat svar: Ofta svårt för patienten att lokalisera exakt vilken tand det är.</em></li>
+                    <li><strong>❓ Har du bitit på något hårt nyligen?</strong><br><em>Förväntat svar: Kanske (nöt, kärna).</em></li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Sekundära frågor:</h5>
+                <ul>
+                    <li>📋 Gnisslar/pressar du tänder? (Bruxism ökar risken).</li>
+                    <li>📋 Har tanden en stor fyllning? (Försvagar tanden).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc5-status" class="content-panel">
+            <h3>🔬 Klinisk Status – Obligatoriska undersökningar</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>Belastningstest (Avgörande):</h5>
+                <p>✅ <strong>Fracfinder/Bitpinne:</strong> Låt patienten bita på en "Fracfinder" eller hård bomullsrulle, kusp för kusp.</p>
+                <p><strong>Positivt svar:</strong> Smärta vid belastning av en specifik kusp eller smärta vid frikoppling (release).</p>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Visuell inspektion:</h5>
+                <ul>
+                    <li>🔍 <strong>Transillumination:</strong> Lys med härdljuslampa/fiberoptik. En spricka bryter ljusstrålen (tanden lyser upp fram till sprickan, mörkt bakom).</li>
+                    <li>🔍 <strong>Ljus:</strong> Använd fiberspets/härdljuslampa och lys genom tanden. En spricka stoppar ljuset.</li>
+                    <li>🔍 <strong>Färgning:</strong> Metylenblått kan penslas i kaviteten efter att fyllningen avlägsnats för att visualisera spricklinjer.</li>
+                    <li>🔍 <strong>Fyllning:</strong> Ofta finns en stor amalgam- eller kompositfyllning (MOD).</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Parodontal status (Avgörande diff-diagnos):</h5>
+                <p>⚠️ <strong>Fickdjup:</strong> Sondera noggrant runt hela tanden.</p>
+                <ul>
+                    <li><strong>Normal ficka:</strong> Talar för spricka som kan behandlas.</li>
+                    <li><strong>Isolerad djup, smal ficka:</strong> Talar för vertikal rotfraktur (sprickan har gått ner i roten). Prognosen är då usel och tanden bör oftast extraheras.</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Sensibilitet:</h5>
+                <p>✅ <strong>Kyla:</strong> Ofta positiv (vital pulpa). Om kraftig/dröjande reaktion kan pulpan ha tagit skada ( Symtomatisk pulpit).</p>
+            </div>
+        </div>
+
+        <div id="sc5-diagnos" class="content-panel">
+            <h3>📋 Diagnostik & Röntgen</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>5. Radiologiska kriterier</h5>
+                <p><strong>Obligatorisk bilddiagnostik:</strong> Apikalröntgen och Bitewing.</p>
+                <ul>
+                    <li>❌ <strong>Normalt fynd:</strong> Sprickor syns sällan på vanlig röntgen om inte delarna separerat.</li>
+                    <li>✅ <strong>Indirekta tecken:</strong> Djupa fyllningar. Vidgning av periodontalspalten kan ses vid långvarig belastning eller pulpit.</li>
+                </ul>
+                <div class="warning-box" style="margin-top: 10px;">
+                    <strong>Obs:</strong>
+                    <p>CBCT kan ibland visualisera sprickor men används främst vid utredning av rotfrakturer. CBCT kan övervägas i svårbedömda fall för att utesluta vertikal rotfraktur, men artefakter från fyllningar kan försvåra tolkningen.</p>
+                </div>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>6. Uteslutningskriterier</h5>
+                <ul>
+                    <li>⛔ <strong>Isolerad djup ficka (>6 mm):</strong> Talar för vertikal rotfraktur (ej behandlingsbart med fyllning).</li>
+                    <li>⛔ <strong>Negativ sensibilitet + Apikal radiolucens:</strong> Talar för nekros (Endodonti krävs först).</li>
+                    <li>⛔ <strong>Tanden delad i två rörliga delar (Split tooth):</strong> Extraktion.</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>8. Sammanfattning av prognosfaktorer</h5>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem;">
+                    <tr style="background: rgba(196, 127, 100, 0.1); border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                        <th style="text-align: left; padding: 12px;">Status på spricka</th>
+                        <th style="text-align: left; padding: 12px;">Prognos</th>
+                        <th style="text-align: left; padding: 12px;">Rekommenderad Åtgärd</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px;">Ytlig (endast emalj/ytligt dentin)</td>
+                        <td style="padding: 10px; color: #388E3C; font-weight: bold;">God</td>
+                        <td style="padding: 10px;">Fyllning/Krona</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px;">Djup men stannar ovanför pulpagolvet</td>
+                        <td style="padding: 10px; color: #F57C00; font-weight: bold;">God/Avvaktande</td>
+                        <td style="padding: 10px;">Kusptäckande onlay/krona</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px;">Går in i pulpan (pulpit)</td>
+                        <td style="padding: 10px; color: #388E3C; font-weight: bold;">God (om ingen rotfraktur)</td>
+                        <td style="padding: 10px;">Rotfyllning + Krona</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px;">Går ner i rotkanalen/under benet</td>
+                        <td style="padding: 10px; color: #D32F2F; font-weight: bold;">Dålig/Tveksam</td>
+                        <td style="padding: 10px;">Extraktion (alt. RF med reservation)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">Vertikal rotfraktur (djup ficka)</td>
+                        <td style="padding: 10px; color: #B71C1C; font-weight: bold;">Hopplös</td>
+                        <td style="padding: 10px;">Extraktion</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="sc5-steg" class="content-panel">
+            <h3>🛠️ 7. Beslutsstöd & Behandlingsflöde (Steg-för-steg)</h3>
+            
+            <div class="treatment-box scroll-animate" style="border-left-color: #4DB6AC;">
+                <div class="treatment-title">STEG 1: Diagnostisk exkavering & Stabilisering</div>
+                <p><strong>Indikation:</strong> Värk vid belastning, vital tand, ingen djup ficka.</p>
+                <ul>
+                    <li><strong>Avlägsna gammal fyllning:</strong> Ta bort all gammal amalgam/komposit för att kunna inspektera kavumgolvet.</li>
+                    <li><strong>Inspektion:</strong> Följ sprickan. Går den in i pulpan? Går den ner i kanalmynningen?</li>
+                    <li><strong>Kuspsänkning (Viktigt):</strong> Reducera höjden på de kuspar som är involverade eller belastas hårt. Detta minskar hävstångseffekten som får sprickan att vidgas.</li>
+                    <li><strong>Fluoridbehandling:</strong> Om dentinet är sensibelt kan fluoridlack appliceras.</li>
+                    <li><strong>Temporär/Diagnostisk fyllning:</strong>
+                        <ul>
+                            <li>Applicera Glasjonomer (t.ex. Fuji IX/Equia). Materialet binder kemiskt till dentinet och kan hjälpa till att stabilisera tanden temporärt samtidigt som det är snällt mot pulpan.</li>
+                            <li><strong>Syfte:</strong> Utvärdera om smärtan försvinner när tanden stabiliseras och tas ur ocklusion.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="treatment-box scroll-animate" style="border-left-color: #FFF176; background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255, 250, 230, 0.95));">
+                <div class="treatment-title">STEG 2: Utvärdering (efter 2-4 veckor)</div>
+                
+                <h5 style="color: #388E3C; margin-top: 15px;">Scenario A: Smärtfri</h5>
+                <ul>
+                    <li><strong>Tolkning:</strong> Pulpan var reversibelt skadad och sprickan är stabiliserad.</li>
+                    <li><strong>Åtgärd:</strong> Gör en permanent kusptäckande kompositfyllning eller krona (800-kod) för att hålla ihop tanden långsiktigt.</li>
+                </ul>
+
+                <h5 style="color: #D32F2F; margin-top: 15px;">Scenario B: Fortsatt värk / Nattlig värk</h5>
+                <ul>
+                    <li><strong>Tolkning:</strong> Pulpan har tagit permanent skada (senare fas pulpit) eller sprickan rör sig fortfarande.</li>
+                    <li><strong>Åtgärd:</strong> Gå vidare till Endodonti (Steg 3).</li>
+                </ul>
+            </div>
+
+            <div class="treatment-box scroll-animate" style="border-left-color: #E57373; background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255, 235, 238, 0.95));">
+                <div class="treatment-title">STEG 3: Endodontisk bedömning & Prognos</div>
+                <p><strong>Indikation:</strong> Symtomatisk pulpit (nattvärk) eller spricka som når pulpan.</p>
+                <ul>
+                    <li><strong>Trepanation:</strong> Öppna upp till pulpakavum (Kavumpreparation).</li>
+                    <li><strong>Inspektion av pulpagolvet:</strong> Använd mikroskop/luppar och färgning.</li>
+                </ul>
+
+                <h5 style="margin-top: 15px;">Beslut baserat på sprickans djup:</h5>
+                <div class="warning-box" style="margin-top: 10px;">
+                    <strong>🛑 Sprickan går ner i rotkanalen/under benkanten:</strong>
+                    <ul style="margin-top: 5px;">
+                        <li><strong>Prognos:</strong> Dålig/Usel. Bakterier kommer alltid att läcka in och risken för vertikal rotfraktur är mycket hög.</li>
+                        <li><strong>Rekommendation:</strong> Extraktion är förstahandsvalet.</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box" style="background: rgba(255, 243, 224, 0.8); border-left-color: #FFB300; color: #E65100; margin-top: 10px;">
+                    <strong>⚠️ Patienten vägrar extraktion (trots djup spricka):</strong>
+                    <ul style="margin-top: 5px;">
+                        <li>Om patienten är fullt informerad och vill göra ett försök.</li>
+                        <li><strong>Åtgärd:</strong> Utför rotbehandling.</li>
+                        <li><strong>Viktigt:</strong> Tanden måste förses med ett kusptäckande förband (t.ex. kopparring eller ortodontiskt band med glasjonomer) under behandlingstiden för att inte spricka mer.</li>
+                        <li><strong>Information:</strong> Patienten måste informeras om att prognosen är tveksam och att tanden kan behöva dras ut inom kort om fickor uppstår eller smärtan kvarstår.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="sc5-behandling" class="content-panel">
+            <h3>9. Behandlingsalternativ</h3>
+            <p style="margin-bottom: 20px;">Målet är att "binda ihop" tanden och förhindra att sprickan vidgas vid belastning (Kusptäckning).</p>
+            
+            <div class="warning-box scroll-animate">
+                <strong>11. Viktigt före behandling (Riskkontroll)</strong>
+                <ul style="margin-top:10px;">
+                    <li>✋ <strong>Prognos:</strong> Informera patienten om att prognosen är osäker. Även med krona kan sprickan progrediera och kräva rotfyllning eller extraktion i framtiden.</li>
+                    <li>✋ <strong>Kostnad:</strong> Informera om kostnad för krona vs fyllning.</li>
+                </ul>
+            </div>
+
+            <div class="treatment-box scroll-animate">
+                <div class="treatment-title">ALTERNATIV A: Kusptäckande kompositfyllning (Direkt)</div>
+                <p>Förstahandsval vid vital tand och mindre/medelstor spricka.</p>
+                <ul>
+                    <li><strong>Anestesi & Kofferdam.</strong></li>
+                    <li><strong>Avlägsna gammal fyllning:</strong> Inspektera botten.</li>
+                    <li><strong>Preparera:</strong> Borra ner (reducera) de belastade/sprickdrabbade kusparna med minst 2 mm för att täcka dem med materialet.</li>
+                    <li><strong>Exkavera:</strong> Följ sprickan. Om sprickan går in i pulpan → Endodonti (Alt C).</li>
+                    <li><strong>Fyllning:</strong> Bondad komposit som täcker kusparna och binder ihop väggarna.</li>
+                </ul>
+            </div>
+
+            <div class="treatment-box alternative scroll-animate">
+                <div class="treatment-title">ALTERNATIV B: Krona (Indirekt)</div>
+                <p>Vid omfattande sprickor eller tidigare stor substansförlust.</p>
+                <ul>
+                    <li><strong>Preparation:</strong> Cirkulär preparation för krona.</li>
+                    <li><strong>Provisorium:</strong> Ett välgjort provisorium (akrylkrona) fungerar som diagnostiskt test. Om smärtan försvinner med provisoriet är prognosen för permanent krona god.</li>
+                    <li><strong>Permanent krona:</strong> Cementeras om tanden är symptomfri efter en period med provisorium.</li>
+                </ul>
+            </div>
+
+            <div class="treatment-box alternative scroll-animate">
+                <div class="treatment-title">ALTERNATIV C: Endodonti + Krona</div>
+                <p>Om sprickan nått pulpan eller om tanden har pulpit/nekros.</p>
+                <ul>
+                    <li><strong>Rensning:</strong> (Se scenario 02).</li>
+                    <li><strong>Kusptäckning:</strong> Tanden måste förses med kusptäckande förband (t.ex. kopparring eller ortodontiskt band med glasjonomer) omedelbart för att inte spricka mer under rotbehandlingen.</li>
+                </ul>
+            </div>
+
+            <div class="treatment-box alternative scroll-animate">
+                <div class="treatment-title">ALTERNATIV D: Extraktion</div>
+                <p>Vid vertikal rotfraktur (sprickan går ner i roten/isolerad djup ficka) eller "Split tooth".</p>
+            </div>
+
+            <div class="info-card scroll-animate" style="margin-top: 20px;">
+                <h5>10. Farmakologisk behandling</h5>
+                <p>Ej indicerat primärt. Analgetika vid behov.</p>
+            </div>
+
+            <div class="billing-codes scroll-animate">
+                <div class="billing-codes-title">15. Debiteringskoder och Tillstånd (Enligt TLV/KUSP)</div>
+                
+                <h5 style="margin-top: 10px; color: var(--text-primary); font-size: 0.9rem;">Tillstånd:</h5>
+                <ul style="font-size: 0.85rem; margin-bottom: 15px;">
+                    <li><strong>301:</strong> Sjukdom eller skada i tandens hårdvävnad (för fyllning).</li>
+                    <li><strong>404:</strong> Kariesskada eller annan skada på tand som behöver repareras.</li>
+                </ul>
+
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                    <tr style="border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                        <th style="text-align: left; padding: 8px;">Åtgärdskod</th>
+                        <th style="text-align: left; padding: 8px;">Beskrivning</th>
+                        <th style="text-align: left; padding: 8px;">Användning</th>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;"><strong>101/103</strong></td>
+                        <td style="padding: 8px;">Undersökning</td>
+                        <td style="padding: 8px;">Akut undersökning.</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;"><strong>704-706</strong></td>
+                        <td style="padding: 8px;">Fyllning (Molar/Premolar)</td>
+                        <td style="padding: 8px;">Vid direkt kusptäckande kompositfyllning (Alt A). Välj kod efter antal ytor.</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;"><strong>801</strong></td>
+                        <td style="padding: 8px;">Krona i plast/komposit</td>
+                        <td style="padding: 8px;">Permanent krona (Alt B).</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;"><strong>804</strong></td>
+                        <td style="padding: 8px;">Krona i keramik/guld</td>
+                        <td style="padding: 8px;">Permanent krona (Alt B).</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 8px;"><strong>501-503</strong></td>
+                        <td style="padding: 8px;">Rotbehandling</td>
+                        <td style="padding: 8px;">Om endodonti krävs (Alt C).</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px;"><strong>401</strong></td>
+                        <td style="padding: 8px;">Tandextraktion</td>
+                        <td style="padding: 8px;">Vid vertikal rotfraktur (Alt D).</td>
+                    </tr>
+                </table>
+                <p style="font-size: 0.8rem; margin-top: 10px;"><em>Notera: Koder i 800-serien kräver att tanden uppfyller kriterier för omfattande skada/rehabiliteringsbehov.</em></p>
+            </div>
+        </div>
+
+        <div id="sc5-journal" class="content-panel">
+            <h3>12. Dokumentationsstöd (Journalmall)</h3>
+            
+            <h5 class="scroll-animate">Mall 1 för Karies/Sprickutredning:</h5>
+            <div class="journal-box scroll-animate">
+                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                <pre>Diagnos: K03.8 Misstänkt tandfraktur/Infraktion. 
+Anamnes: Värk vid påbitning/release. [Ev. nattlig värk noterad -> Pulpitmisstanke]. 
+Status: Fracfinder pos kusp [vilken]. Transillumination visar spricka [position]. Ingen djup ficka. 
+Behandling: Avlägsnande av fyllning. 
+Inspektion: Spricka synlig i kavum, ej ner i kanal. Kuspsänkning utförd. Fluorid applicerad. 
+Åtgärd: Fyllning med Glasjonomer (Fuji IX) för stabilisering. 
+Info: Pat informerad om att om besvär fortsätter krävs rotbehandling eller ex. Om besvär upphör planeras permanent krona/onlay.</pre>
+            </div>
+
+            <h5 class="scroll-animate" style="margin-top: 30px;">Mall 2 för Kusptäckande fyllning:</h5>
+            <div class="journal-box scroll-animate">
+                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                <pre>Diagnos: K03.8 Infraktion/Spricka tand XX. 
+Symtom: Smärta vid påbitning/frikoppling. 
+Status: Positiv Fracfinder vid belastning av mesiobuckala kuspen. Transillumination visar spricka mesialt. Sensibilitet pos. Ingen djup ficka. 
+Behandling: Infiltrationsanestesi. Avlägsnande av gammal fyllning. Spricka identifierad i kavum, ej till pulpa. Kuspreducering av MB och DB kusp. 
+Åtgärd: Bondad kompositfyllning med kusptäckning (Onlay-typ). Ocklusionsjustering. 
+Info: Pat informerad om att tanden kan behöva rotfyllas eller krona om besvär kvarstår.</pre>
+            </div>
+        </div>
+
+        <div id="sc5-uppf" class="content-panel">
+            <h3>13. Uppföljning</h3>
+            <div class="info-card scroll-animate">
+                <ul>
+                    <li>Utvärdera symtom efter <strong>2-4 veckor</strong>.</li>
+                    <li>Om smärtfri → Klar / Permanent krona.</li>
+                    <li>Om kvarstående smärta → Endodonti eller Extraktion.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc5-flaggor" class="content-panel">
+            <h3>14. Röda flaggor</h3>
+            <div class="warning-box scroll-animate">
+                <ul style="margin-top: 10px;">
+                    <li>🚨 <strong>Djup smal ficka:</strong> Tecken på vertikal rotfraktur.</li>
+                    <li>🚨 <strong>Pulpasymtom:</strong> Om smärtan blir spontan och molande har pulpan tagit skada.</li>
+                    <li>🚨 <strong>Isolerad djup ficka:</strong> = Vertikal rotfraktur = Extraktion.</li>
+                    <li>🚨 <strong>Profus blödning vid sondering:</strong> Kan tyda på spricka ner i furkation/rot.</li>
+                    <li>🚨 <strong>Kvarstående nattvärk efter stabilisering:</strong> =  Symtomatisk pulpit/Nekros.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<div id="sc6-display" class="scenario-display-wrapper">
+                
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc6', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc6', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc6', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc6', 'diagnos', this)">📋 Diagnostik</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc6', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc6', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc6', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc6', 'diff', this)">🔍 Diff. Diagnoser</button>
+                </div>
+
+                <div class="inner-display">
+                    
+                    <div id="sc6-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> BETT-6-OCCL</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Tanden känns för hög, öm att bita på och ilar vid kyla"</div>
+                                <div class="symptom-item">🤕 <strong>Etiologi:</strong> Vanligast iatrogen orsak (för hög ny fyllning/krona). Även tandvandring/bruxism.</div>
+                                <div class="symptom-item">📖 <strong>Diagnos:</strong> Traumatisk ocklusion (Ocklusalt trauma). K07.24 (Traumatisk ocklusion — korrekt ICD-10-kod. T88.8 avser "komplikation till kirurgiskt ingrepp" och är ej vedertagen kod för traumatisk ocklusion) <span class="correction-badge">JUSTERAT</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Patienten söker ofta akut kort tid (dagar till veckor) efter en tandvårdsbehandling (fyllning/krona) med klagomål på att "bettet inte stämmer" eller att en specifik tand är öm.</p>
+                        </div>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>Definition & Patofysiologi</h5>
+                            <p><strong>Beskrivning:</strong> En eller flera tänder utsätts för onormalt hög belastning som överstiger vävnadens toleransnivå. Leder till skada i parodontalvävnader, pulpa eller käkled.</p>
+                            <p style="margin-top: 10px;"><strong>Patofysiologi:</strong> Överbelastningen skapar inflammatorisk reaktion i rothinnan och ibland hyperemi i pulpan. Detta leder till ödem som pressar upp tanden ur alveolen, vilket gör att den känns ännu "högre" och mer smärtande.</p>
+                        </div>
+                    </div>
+
+                    <div id="sc6-anamnes" class="content-panel">
+                        <h3>❓ Anamnes – Subjektiv bedömning</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <ul>
+                                <li><strong>Debut:</strong> "När började besvären?" Ofta tydligt samband med nyligen utförd fyllningsterapi eller krona.</li>
+                                <li><strong>Smärtkaraktär:</strong> Gör det ont när du biter ihop? (Ja). Känns tanden för hög? (Ja). Ilar det vid kyla? (Ja, pulpan kan bli hypersensibel av traumat).</li>
+                                <li><strong>Lokalisation:</strong> Patienten kan ofta peka ut exakt vilken tand som känns fel/hög ("Finger-pointing sign").</li>
+                                <li><strong>Parafunktioner:</strong> Pressar eller gnisslar patienten tänder? (Kan förvärra traumat).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc6-status" class="content-panel">
+                        <h3>🔬 Klinisk status – Undersökningsgång</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>1. Ocklusionsanalys (Avgörande):</h5>
+                            <ul>
+                                <li>🔍 <strong>Artikulationspapper:</strong> Kontrollera ocklusion i IP (Interkuspidationsposition) och artikulation (sidorörelser). Leta efter "bulls-eye" (hål i mitten av färgmärket) eller kraftigare färgmarkeringar på den aktuella tanden jämfört med grannarna.</li>
+                                <li>🔍 <strong>Fremitus:</strong> Känn med ett finger på tanden medan patienten biter ihop och tuggar ("hackar"). Tydlig rörlighet/vibration vid kontakt indikerar traumatiserande ocklusion.</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>2. Perkussion & Palpation:</h5>
+                            <ul>
+                                <li>🔍 <strong>Perkussion:</strong> Tanden är ofta öm vid perkussion (knackning) och tuggning.</li>
+                                <li>🔍 <strong>Mobilitet:</strong> Tanden kan uppvisa ökad mobilitet (rörlighet) på grund av vidgad parodontalspalt och inflammation i rothinnan.</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>3. Sensibilitet:</h5>
+                            <p>🔍 <strong>Kyla/Värme:</strong> Tanden reagerar ofta positivt och ibland hypersensibelt (ilning) på grund av pulpit orsakad av traumat. Om tanden inte reagerar kan traumat ha lett till pulpanekros (se diff.diagnos).</p>
+                        </div>
+                    </div>
+
+                    <div id="sc6-diagnos" class="content-panel">
+                        <h3>📋 Diagnostik & Röntgen</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>4. Röntgen:</h5>
+                            <p>📸 <strong>Apikalbild:</strong> Kan visa en vidgad parodontalspalt (rothinnespalt), särskilt apikalt och marginalt. Ofta ses ingen apikal destruktion i det akuta skedet.</p>
+                        </div>
+                    </div>
+
+                    <div id="sc6-behandling" class="content-panel">
+                        <h3>🔧 6. Åtgärd & Behandling</h3>
+                        <p style="margin-bottom: 20px;">Målet är att eliminera den traumatiska kraften och låta vävnaderna läka.</p>
+                        
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Behandlingssteg</div>
+                            <ul>
+                                <li><strong>Identifiering:</strong> Lokalisera den prematura kontakten (höga punkten) med artikulationspapper (tunt, &lt; 20 mikron föredras för finjustering).</li>
+                                
+                                <li style="margin-top: 10px;"><strong>Bettslipning (Ocklusal justering):</strong>
+                                    <ul>
+                                        <li>Slipa försiktigt på den aktuella tanden (eller fyllningen/kronan) för att få jämna kontakter.</li>
+                                        <li>Målet är stabil tand-mot-tandkontakt med axial belastning och samtidiga bilaterala kontakter.</li>
+                                        <li>Avlägsna eventuella interferenser i sidorörelser (artikulation).</li>
+                                    </ul>
+                                </li>
+
+                                <li style="margin-top: 10px;"><strong>Fluorlackning:</strong>
+                                    <ul>
+                                        <li>De slipade ytorna ska poleras och lackas med fluor (t.ex. Duraphat) för att reducera risken för postoperativ känslighet och ilningar.</li>
+                                    </ul>
+                                </li>
+
+                                <li style="margin-top: 10px;"><strong>Information & Avlastning:</strong>
+                                    <ul>
+                                        <li>Informera patienten om att tanden kan vara öm i några dagar till ("blåmärke i tandroten").</li>
+                                        <li>Rekommendera mjuk kost i 2–3 dagar och analgetika (NSAID, t.ex. Ibuprofen 400 mg) vid behov.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc6-journal" class="content-panel">
+                        <h3>📝 7. Dokumentationsstöd (Journalmall)</h3>
+                        
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K07.24 Traumatisk ocklusion (eller T88.8 Komplikation till kirurgisk/medicinsk vård om efter fyllning). 
+Anamnes: Pat söker för ömhet vid tuggning och ilningar tand [XX] efter fyllningsterapi utförd [datum]. 
+Status:
+Ocklusion: Prematurkontakt noterad på [kusp/fyllning] tand [XX] med artikulationspapper. Fremitus pos.
+Perkussion: Öm.
+Sensibilitet: Positiv kyla (hypersensibel). 
+Åtgärd: Selektiv bettslipning av fyllning/tand [XX] i IP och artikulation. Kontroll att kontakten är jämn med granntänder. Polering. Fluorlack applicerat. 
+Info: Pat informerad om att undvika belastning närmaste dagarna. Om ej bättre inom 1 vecka -> åter.</pre>
+                        </div>
+                    </div>
+
+                    <div id="sc6-flaggor" class="content-panel">
+                        <h3>🚨 8. Röda Flaggor & "Icke-göra"</h3>
+                        <div class="warning-box scroll-animate">
+                            <ul>
+                                <li>⛔ <strong>Dysocklusion som inte kan verifieras kliniskt:</strong> Om patienten upplever att bettet är fel ("fantom-bett") men du inte kan se några kliniska tecken på traumatisk ocklusion (fremitus, facetter, vidgad p-spalt), ska du <strong>INTE</strong> slipa. Detta har prioritet "Icke-göra" enligt Socialstyrelsen då det riskerar att försämra tillståndet och leda till kroniska besvär.</li>
+                                <li><strong>Kvarstående symtom:</strong> Om symtomen inte försvinner efter justering måste ny bedömning göras (kan kräva rotbehandling om pulpan tagit permanent skada/nekrotiserat).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc6-diff" class="content-panel">
+                        <h3>🔍 5. Differentialdiagnoser (Uteslut dessa!)</h3>
+                        
+                        <div class="diff-diagnosis-item scroll-animate">
+                            <h5>Symtomatisk apikal parodontit</h5>
+                            <p>Om tanden är nekrotisk (negativ sensibilitet) är smärtan vid påbitning orsakad av infektion, inte bara traumatisk ocklusion.</p>
+                        </div>
+
+                        <div class="diff-diagnosis-item scroll-animate">
+                            <h5>Symtomatisk pulpit</h5>
+                            <p>Om smärtan är spontan och bultande, snarare än enbart vid belastning.</p>
+                        </div>
+
+                        <div class="diff-diagnosis-item scroll-animate">
+                            <h5>Cracked Tooth Syndrome (Tandspricka)</h5>
+                            <p>Smärta vid frigörande av bett ("rebound pain") och svårigheter att lokalisera tanden talar mer för spricka.</p>
+                        </div>
+
+                        <div class="diff-diagnosis-item scroll-animate">
+                            <h5>Perikoronit</h5>
+                            <p>Kan ge liknande smärta om en antagonist biter ner i tandköttet över en visdomstand (traumatisk ocklusion på mjukvävnad).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+<div id="sc7-display" class="scenario-display-wrapper">
+                
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc7', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc7', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc7', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc7', 'diagnos', this)">📋 Diagnostik</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc7', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc7', 'material', this)">🦷 Materialval</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc7', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc7', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc7', 'diff', this)">🔍 Diff. Diagnoser</button>
+                </div>
+
+                <div class="inner-display">
+                    
+                    <div id="sc7-snabb" class="content-panel active">
+                        <h3>⚡ 1. Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-07-SENS</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det ilar till skarpt vid kyla och tandborstning"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Skarp, kortvarig smärta (ilning) vid provokation (kyla, luft, beröring, sött). Smärtan försvinner omedelbart (< 10 sek) när retningen upphör.</div>
+                                <div class="symptom-item">📖 <strong>Diagnos (ICD-10):</strong> 
+                                    <ul style="margin-left: 20px; font-size: 0.85em; margin-top: 5px;">
+                                        <li>K03.1 (Abrasion/Hypersensitivitet)</li>
+                                        <li>K03.2 (Erosion) – om kemisk orsak</li>
+                                        <li>K03.8 (Dentinhypersensitivitet)</li>
+                                    </ul>
+                                </div>
+                                <div class="symptom-item">🦷 <strong>Drabbade tänder:</strong> Oftast buckala tandhalsar på premolarer och hörntänder, men kan förekomma generellt.</div>
+                            </div>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Används när patienten söker för ilningar där orsaken bedöms vara öppet dentin (på grund av tillbakadraget tandkött, erosion eller abrasion) och inte karies eller pulpit.</p>
+                        </div>
+                    </div>
+
+                    <div id="sc7-anamnes" class="content-panel">
+                        <h3>❓ 3. Anamnes – Obligatoriska frågor</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>Smärtanalys:</h5>
+                            <ul>
+                                <li><strong>❓ När gör det ont?</strong><br><em>Förväntat svar: När jag dricker kallt, andas in luft eller borstar tänderna.</em></li>
+                                <li><strong>❓ Hur länge sitter smärtan i?</strong><br><em>Kritiskt: "Det går över direkt" = Hypersensitivitet. "Det molvärker efteråt" = Pulpit.</em></li>
+                                <li><strong>❓ Har du bytt tandkräm eller borstteknik nyligen?</strong><br><em>(Whitening-tandkräm kan öka besvär).</em></li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Riskfaktorer (Etiologi):</h5>
+                            <ul>
+                                <li>📋 <strong>Kost:</strong> Konsumerar du mycket sura drycker/frukt? (Erosion).</li>
+                                <li>📋 <strong>Mage:</strong> Har du sura uppstötningar/reflux? (Erosion).</li>
+                                <li>📋 <strong>Teknik:</strong> Borstar du hårt? Använder du eltandborste? (Abrasion).</li>
+                                <li>📋 <strong>Parafunktion:</strong> Pressar/gnisslar du tänder? (Abfraktion – stress vid tandhalsen).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc7-status" class="content-panel">
+                        <h3>🔬 4. Klinisk status – Obligatoriska undersökningar</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>Inspektion:</h5>
+                            <ul>
+                                <li>🔍 <strong>Gingivarecession:</strong> Är rotytan blottad? (Miller klass I–IV).</li>
+                                <li>🔍 <strong>Substansförlust:</strong>
+                                    <ul>
+                                        <li><strong>Erosion:</strong> Matt/glansig yta, "smälta" former, "cupping" på kuspar.</li>
+                                        <li><strong>Abrasion:</strong> Kilformade defekter vid tandhalsen, hårda kanter.</li>
+                                        <li><strong>Abfraktion:</strong> Djupa, smala kilformiga defekter, ofta subgingivalt.</li>
+                                    </ul>
+                                </li>
+                                <li>🔍 <strong>Karies:</strong> Uteslut kavitet med mjukt dentin.</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Sensibilitetstest (Avgörande):</h5>
+                            <ul>
+                                <li>✅ <strong>Luftblästring:</strong> Blästra på tandhalsen. Positivt svar: Skarp smärta.</li>
+                                <li>✅ <strong>Sond:</strong> Skrapa försiktigt på tandhalsen (i sidled). Positivt svar: Ilning.</li>
+                                <li>✅ <strong>Kyla:</strong> Is/Kylspray. Ska ge snabb reaktion som klingar av direkt.</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Perkussion:</h5>
+                            <p>✅ U.a. (Tanden ska inte vara öm att knacka på. Om den är det → Misstänk spricka eller pulpit).</p>
+                        </div>
+                    </div>
+
+                    <div id="sc7-diagnos" class="content-panel">
+                        <h3>📋 Diagnostik & Röntgen</h3>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>5. Radiologiska kriterier</h5>
+                            <ul>
+                                <li><strong>Bilddiagnostik:</strong> Ofta ej nödvändigt om kliniska fynd är tydliga (synlig blottad hals).</li>
+                                <li><strong>Indikation för röntgen:</strong> Vid tveksamhet om karies, eller om symtomen är diffusa för att utesluta apikal parodontit/internt resorbtion.</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>6. Uteslutningskriterier</h5>
+                            <ul>
+                                <li>⛔ <strong>Kvarstående värk:</strong> Om smärtan dröjer kvar >15 sekunder efter provokation → Pulpit (Gå till Scenario 01/02).</li>
+                                <li>⛔ <strong>Perkussionsömhet:</strong> Indikerar periapikal retning/spricka.</li>
+                                <li>⛔ <strong>Karies:</strong> Mjukt dentin vid sondering ska behandlas som karies.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc7-behandling" class="content-panel">
+                        <h3>🔧 7. Behandlingsstrategi</h3>
+                        
+                        <div class="treatment-box scroll-animate" style="border-left-color: #4DB6AC;">
+                            <div class="treatment-title">STEG 1: Icke-invasiv behandling (Desensibilisering)</div>
+                            <p>Förstahandsval vid måttliga besvär och grunda defekter.</p>
+                            <ul>
+                                <li><strong>Rengöring:</strong> Putsa ytan försiktigt (pumice/pasta).</li>
+                                <li><strong>Fluoridlackning:</strong> Applicera Duraphat (22,6 mg/ml) eller liknande fluoridlack på de blottade ytorna.
+                                    <ul><li><strong>Syfte:</strong> Blockera dentinkanalerna och stärka ytan.</li></ul>
+                                </li>
+                                <li><strong>Desensibiliserande medel:</strong> Applicera glutaraldehyd-baserat medel (t.ex. Gluma) om tillgängligt. Det koagulerar proteiner i dentinkanalerna och stoppar vätskeflödet.</li>
+                                <li><strong>Instruktion:</strong>
+                                    <ul>
+                                        <li>Byt till mjuk tandborste.</li>
+                                        <li>Använd tandkräm mot ilningar (innehåller ofta kaliumnitrat eller arginin).</li>
+                                        <li>Massera in tandkräm på halsen till natten ("fingertoppsmassage").</li>
+                                        <li>Undvik sura drycker/borstning direkt efter intag av surt.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">STEG 2: Invasiv behandling (Fyllning)</div>
+                            <p>Vid djupa defekter (kilformade), risk för pulpa, eller om Steg 1 inte hjälper.</p>
+                            <ul>
+                                <li><strong>Anestesi:</strong> Ofta nödvändigt då ytan är extremt känslig.</li>
+                                <li><strong>Preparation:</strong> Rengör ytan. Vid kilformade defekter behövs sällan borrning, rugga ev. upp ytan med diamant för retention.</li>
+                                <li><strong>Materialval:</strong>
+                                    <ul>
+                                        <li><strong>Glasjonomer (Klass V):</strong> (t.ex. Fuji II LC). Bra vid svår torrläggning och frisätter fluor. Kemisk bindning till dentin.</li>
+                                        <li><strong>Komposit:</strong> (t.ex. Flow eller vanlig). Kräver god torrläggning (kofferdam/tråd). Ger bättre estetik.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Metod:</strong> Etsa (emalj), bonda, fyll. Var noga med att inte lägga överskott mot gingivan.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">11. Debiteringskoder (TLV)</div>
+                            <ul style="font-size: 0.85rem;">
+                                <li><strong>301:</strong> Sjukdomsbehandling (för lackning/desensibilisering och instruktion).</li>
+                                <li><strong>111:</strong> Information/Instruktion (om besöket fokuserar på profylax).</li>
+                                <li><strong>701-703:</strong> Fyllning (om fyllningsterapi utförs). Val av kod beror på material och storlek. Enl. Nationella Riktlinjer är fyllning en prioriterad åtgärd (Prio 4) om reparation krävs.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc7-material" class="content-panel">
+                        <h3>🦷 Val av fyllningsmaterial (Klass V/rotkaries)</h3>
+                        <p style="margin-bottom: 15px;">Materialvalet påverkar prognosen främst genom materialens olika känslighet för fukt vid applicering, deras förmåga att binda till tanden, samt deras estetiska och mekaniska egenskaper. Enligt Socialstyrelsens nationella riktlinjer bedöms både komposit och glasjonomer ha god effekt vid behandling av rotkaries, och kostnadseffektiviteten anses likvärdig.</p>
+                        
+                        <div class="info-card scroll-animate">
+                            <h5>1. Komposit</h5>
+                            <p>Förstahandsvalet vid höga estetiska krav och när god torrläggning är möjlig.</p>
+                            <ul>
+                                <li><strong>Prognos och överlevnad:</strong> Kompositfyllningar har generellt en hög överlevnad. Vid behandling av rotkaries/klass V har studier visat en överlevnad på 90–96 % efter 2–4 år. Vid täckning av blottade tandhalsar för att behandla hypersensitivitet anges att man kan förvänta sig 90–95 % symtomfrihet.</li>
+                                <li><strong>Fördelar:</strong>
+                                    <ul>
+                                        <li><strong>Estetik:</strong> Överlägsen estetik jämfört med glasjonomer, vilket är avgörande i fronten.</li>
+                                        <li><strong>Hållfasthet:</strong> Har bättre slitstyrka och mekaniska egenskaper än glasjonomer.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Risker/Nackdelar:</strong>
+                                    <ul>
+                                        <li><strong>Teknikkänslighet:</strong> Materialet kräver god torrläggning. Fukt eller saliv under applicering leder till sämre bonding och ökad risk för lossnande fyllningar.</li>
+                                        <li><strong>Krympning:</strong> Polymerisationskrympning kan skapa spänningar i den tunna emaljkanten eller leda till spaltbildning, vilket kan ge postoperativ sensibilitet.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>2. Glasjonomer (Konventionell och Resinmodifierad)</h5>
+                            <p>Förstahandsvalet när torrläggning är svår (t.ex. subgingivala kaviteter) eller vid hög kariesrisk.</p>
+                            <ul>
+                                <li><strong>Prognos och överlevnad:</strong> Vid klass V-fyllningar (rotkaries) har glasjonomer visat en överlevnad på upp till 96 % efter två år. Tittar man på generell fyllningsterapi på tuggbelastade ytor har glasjonomer dock lägre långtidsöverlevnad (55–69 % efter 5 år) jämfört med komposit, ofta på grund av materialutmattning eller slitage.</li>
+                                <li><strong>Fördelar:</strong>
+                                    <ul>
+                                        <li><strong>Kemisk bindning:</strong> Binder kemiskt till dentin och emalj utan behov av ets och bonding, vilket minskar risken för mikroläckage.</li>
+                                        <li><strong>Fukttolerans:</strong> Är mindre fuktkänsligt än komposit, vilket ger en bättre prognos i svåråtkomliga områden där torrläggning är omöjlig.</li>
+                                        <li><strong>Fluoridavgivning:</strong> Frisätter fluor, vilket teoretiskt kan minska risken för sekundärkaries, även om klinisk konsensus kring detta varierar.</li>
+                                        <li><strong>Biokompatibilitet:</strong> Är vävnadsvänligt och har samma termiska expansionskoefficient som tanden, vilket minskar stress på bindningen vid temperaturväxlingar.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Resinmodifierad Glasjonomer (RMGIC):</strong> Rekommenderas ofta framför konventionell glasjonomer vid klass V eftersom den har bättre hållfasthet, bättre estetik och är mindre känslig för uttorkning.</li>
+                            </ul>
+                        </div>
+
+                        <div class="warning-box scroll-animate">
+                            <strong>Sammanfattning av prognosfaktorer</strong>
+                            <p>Valet mellan materialen styrs av den kliniska situationen för att maximera prognosen:</p>
+                            <ul>
+                                <li><strong>Torrläggning:</strong> Om kaviteten ligger under tandköttskanten eller om det blöder, ger glasjonomer (RMGIC) bättre prognos eftersom kompositbondingen troligen kommer att fallera av fukten.</li>
+                                <li><strong>Estetik och slitage:</strong> Om tanden är synlig eller utsätts för viss nötning (t.ex. vid tandborstning), ger komposit bättre långsiktig estetik och ytstruktur.</li>
+                                <li><strong>Hypersensitivitet:</strong> Båda materialen fungerar väl, men flytande komposit (flowable) anges specifikt som en metod för att täcka blottade halsar med mycket gott resultat (90–95 % symtomfrihet).</li>
+                            </ul>
+                            <p style="margin-top: 10px; font-size: 0.9em;">Socialstyrelsen bedömer att det inte finns någon avgörande skillnad i kostnadseffektivitet mellan materialen för just denna indikation (icke tuggbelastad rotkaries/klass V), utan valet bör baseras på möjligheten till torrläggning och estetiska krav.</p>
+                        </div>
+                    </div>
+
+                    <div id="sc7-journal" class="content-panel">
+                        <h3>📝 9. Dokumentationsstöd (Journalmall)</h3>
+                        
+                        <h5 class="scroll-animate">Mall för Hypersensitivitet:</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K03.1 Dentinhypersensitivitet (p.g.a. abrasion/retraktion) 13, 14, 23. 
+Anamnes: Ilningar vid kyla/borstning. Kortvarig smärta. 
+Status: Blottade tandhalsar buckalt 13, 14, 23. Ingen karies. Sonderingsöm/Luftblästeröm. Perkussion u.a. 
+Behandling: Rengöring. Applicering av Duraphat-lack på tandhalsar. 
+Info: Instr. mjuk borstteknik (gnuggmetod). Rek. tandkräm mot ilningar (t.ex. Sensodyne). Undvika surt. Åter om ej bättre för ev. fyllning.</pre>
+                        </div>
+                    </div>
+
+                    <div id="sc7-uppf" class="content-panel">
+                        <h3>📊 8. Prognos och Uppföljning</h3>
+                        <div class="info-card scroll-animate">
+                            <ul>
+                                <li><strong>Prognos:</strong> God. Ilningar brukar minska med tiden (sclerosering av dentin).</li>
+                                <li><strong>Uppföljning:</strong> Utvärdera vid nästa revision. Om fyllning gjorts, kontrollera retention och gingival hälsa.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc7-flaggor" class="content-panel">
+                        <h3>🚨 10. Röda flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <ul style="margin-top: 10px;">
+                                <li>🚨 <strong>Smärtan ändrar karaktär:</strong> Om ilningarna övergår till molande värk eller spontan smärta har pulpan tagit skada (pulpit).</li>
+                                <li>🚨 <strong>Erosionsskador:</strong> Om generella erosioner upptäcks (t.ex. palatinalt ÖK) måste orsak (reflux/ätstörning) utredas. Remiss till läkare kan vara aktuellt.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="sc7-diff" class="content-panel">
+                        <h3>🔍 Skillnader mellan Erosion och Abrasion</h3>
+                        <p style="margin-bottom: 15px;">De främsta kliniska skillnaderna mellan erosion och abrasion kopplade till skadornas form, ytstruktur och lokalisation, vilket speglar deras olika bakomliggande orsaker (kemisk kontra mekanisk).</p>
+                        
+                        <div class="info-card scroll-animate">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px;">
+                                <tr style="background: rgba(196, 127, 100, 0.1); border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                                    <th style="text-align: left; padding: 10px;">Egenskap</th>
+                                    <th style="text-align: left; padding: 10px;">Erosion (Kemisk påverkan)</th>
+                                    <th style="text-align: left; padding: 10px;">Abrasion (Mekanisk påverkan)</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px; font-weight: bold;">Orsak (Etiologi)</td>
+                                    <td style="padding: 10px;">Kemisk upplösning av syror utan bakterier. Ex: Sur kost/dryck (juice, läsk), reflux, kräkningar.</td>
+                                    <td style="padding: 10px;">Mekanisk nötning mot främmande föremål. Ex: Hård tandborstning, slipande tandkräm, pipor, snus, hårnålar.</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px; font-weight: bold;">Form på skadan</td>
+                                    <td style="padding: 10px;">Avrundade, mjuka forms. Tanden ser "smält" ut. Morfologin slätas ut. På ocklusalytor syns urgröpingar (cuppings).</td>
+                                    <td style="padding: 10px;">Skarpa, tydliga kanter. Ofta kilformade defekter (V-form) vid tandhalsen eller specifika spår efter föremål.</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px; font-weight: bold;">Ytstruktur</td>
+                                    <td style="padding: 10px;">Matt/Sidenmatt vid aktiv erosion. Kan bli blank om den avstannar. Ytan är "ren" och saknar ofta plack.</td>
+                                    <td style="padding: 10px;">Blankpolerad och hård. Ytan är ofta glatt på grund av friktionen (t.ex. från borstning).</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px; font-weight: bold;">Relation till fyllningar</td>
+                                    <td style="padding: 10px;">Fyllningar "stiger upp" (stand proud). Eftersom syra inte löser upp komposit/amalgam/porslin, ligger fyllningen kvar högt medan tanden runt om försvinner.</td>
+                                    <td style="padding: 10px;">Fyllningen slits ofta ned tillsammans med tanden, eller så uppstår skarpa hack även i fyllningsmaterialet beroende på hårdhet.</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px; font-weight: bold;">Relation till tandköttet</td>
+                                    <td style="padding: 10px;">Ofta finns en intakt emaljzon (en "krage") precis längs med tandköttskanten, eftersom sulcusvätskan neutraliserar syran där.</td>
+                                    <td style="padding: 10px;">Skadan går ofta hela vägen ner till eller under tandköttskanten (särskilt vid borstskador).</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; font-weight: bold;">Lokalisation</td>
+                                    <td style="padding: 10px;">Ofta palatinalt ÖK (vid reflux/kräkning) eller ocklusalt/buckalt (vid kost).</td>
+                                    <td style="padding: 10px;">Oftast buckalt vid tandhalsarna (cervikalt), särskilt på hörntänder och premolarer.</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Visuella kännetecken (Kliniska fynd)</h5>
+                            
+                            <h6 style="margin-top: 10px;">1. Erosion: "Cuppings" och upphöjda fyllningar</h6>
+                            <ul>
+                                <li><strong>Bildbeskrivning:</strong> På tuggytorna (ocklusalt) ser man skålformade urgröpningar på kusptopparna. Detta kallas "cuppings". Det beror på att emaljen slitits bort och det mjukare dentinet under eroderar snabbare än emaljringen runt omkring.</li>
+                                <li><strong>Amalgamöar:</strong> Om tanden har en amalgamfyllning ser det ut som att fyllningen har "växt" eller stigit upp ur tanden. I verkligheten har tandsubstansen runt fyllningen smält bort av syra, medan metallen är opåverkad. Detta ger vassa kanter mellan fyllning och tand.</li>
+                            </ul>
+
+                            <h6 style="margin-top: 15px;">2. Erosion: Palatinala ytor (Reflux/Bulimi)</h6>
+                            <ul>
+                                <li><strong>Bildbeskrivning:</strong> På insidan av överkäkens framtänder (palatinalt 13-23) är emaljen helt borta och den gulare dentinytan lyser igenom. Tänderna ser tunna och sköra ut. Ofta ser man en tunn kant av sparad emalj precis vid tandköttskanten (gingivan), eftersom vätska från tandköttsfickan skyddar precis där.</li>
+                            </ul>
+
+                            <h6 style="margin-top: 15px;">3. Abrasion: Kilformiga defekter</h6>
+                            <ul>
+                                <li><strong>Bildbeskrivning:</strong> Vid tandhalsarna, särskilt på hörntänder och premolarer, ser man djupa V-formade jack som ser ut som om någon huggit med en yxa. Ytan i jacket är ofta hård och blankpolerad. Detta är klassiska borstskador.</li>
+                            </ul>
+                        </div>
+
+                        <div class="warning-box scroll-animate">
+                            <strong>Sammanfattande kommentar:</strong>
+                            <p>Kliniskt är det ofta svårt att skilja dessa åt helt eftersom de ofta samverkar. En tandyta som mjukats upp av syra (erosion) är mycket känsligare för tandborstning (abrasion). Detta fenomen, där kemisk och mekanisk nötning samverkar, kallas ibland för perimylolys.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<div id="sc8-display" class="scenario-display-wrapper">
+                
+    <div class="inner-sidebar">
+        <button class="tab-btn active" onclick="openInnerTab('sc8', 'snabb', this)">⚡ Snabböversikt</button>
+        <button class="tab-btn" onclick="openInnerTab('sc8', 'anamnes', this)">❓ Anamnes</button>
+        <button class="tab-btn" onclick="openInnerTab('sc8', 'status', this)">🔬 Status</button>
+        <button class="tab-btn" onclick="openInnerTab('sc8', 'diagnos', this)">📋 Diagnostik</button>
+        <button class="tab-btn" onclick="openInnerTab('sc8', 'behandling', this)">🔧 Behandling</button>
+        <button class="tab-btn" onclick="openInnerTab('sc8', 'journal', this)">📝 Journal</button>
+        <button class="tab-btn" onclick="openInnerTab('sc8', 'flaggor', this)">🚨 Röda Flaggor</button>
+        <button class="tab-btn" onclick="openInnerTab('sc8', 'uppfoljning', this)">📊 Uppföljning</button>
+    </div>
+
+    <div class="inner-display">
+        
+        <div id="sc8-snabb" class="content-panel active">
+            <h3>⚡ Scenarioidentifiering</h3>
+            <div class="patient-symptom-box scroll-animate">
+                <div class="symptom-list">
+                    <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-8-FLARE</div>
+                    <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det gör ondare nu än innan ni rotfyllde!"</div>
+                    <div class="symptom-item">📈 <strong>Prevalens:</strong> Drabbar ca 2–20% av endodontiska behandlingar. Vanligare vid nekros och preoperativ smärta.</div>
+                    <div class="symptom-item">📖 <strong>Diagnos:</strong> K04.4 (Akut apikal parodontit) eller K04.6 (Periapikal abscess med sinus).</div>
+                </div>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Klinisk indikation & Tidsfönster</h5>
+                <p>Syftet är att skilja på normal postoperativ smärta och en infektionsexacerbation som kräver åtgärd (dränage/antibiotika) för att undvika onödig reopening av kanaler.</p>
+                <ul style="margin-top: 10px;">
+                    <li><strong>0–12 timmar:</strong> Troligen normal reaktion på vävnadsskada/instrumentering.</li>
+                    <li><strong>12–48 timmar:</strong> Klassiskt fönster för "Flare-up" (bakteriell obalans/inflammation).</li>
+                    <li><strong>>48 timmar:</strong> Kan vara flare-up men kräver noggrannare utredning.</li>
+                </ul>
+            </div>
+            
+        </div>
+
+        <div id="sc8-anamnes" class="content-panel">
+            <h3>❓ Anamnes – Obligatoriska frågor</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>Tidssamband (Kritiskt för bedömning)</h5>
+                <ul>
+                    <li><strong>När gjordes behandlingen?</strong> (0-12h förväntat, 1-3 dygn klassisk flare-up).</li>
+                    <li><strong>Har du haft ont hela tiden eller kom det plötsligt?</strong> (Gradvis = inflammation, Plötslig/intensiv = abscess).</li>
+                    <li><strong>Känns tanden för lång när du biter ihop?</strong> (Klassiskt tecken på periapikalt ödem).</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Allmäntillstånd (Kritiskt för antibiotikabeslut)</h5>
+                <ul>
+                    <li><strong>Har du feber (>38°C) eller känner dig sjuk?</strong> (Indikerar systemisk spridning).</li>
+                    <li><strong>Har du svårt att gapa?</strong> (<25 mm tyder på spridning till tuggmuskulatur - Allvarligt!).</li>
+                    <li><strong>Har du svårt att svälja?</strong> (Hot mot luftväg/svalg).</li>
+                    <li><strong>Har du svullnad någonstans?</strong> (Bukkal/lingual/extraoral?).</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Fyllningsstatus</h5>
+                <ul>
+                    <li><strong>Känns fyllningen hög när du biter?</strong> (Direkt åtgärdbar mekanisk smärta).</li>
+                    <li><strong>Har den tillfälliga fyllningen lossnat?</strong> (Risk för reinfektion).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc8-status" class="content-panel">
+            <h3>🔬 Klinisk status – "The Critical Steps"</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>1. Inspektion</h5>
+                <ul>
+                    <li><strong>Provisorium/Fyllning:</strong> Sitter det kvar? Är det tätt? Är det högt?</li>
+                    <li><strong>Svullnad (Avgörande!):</strong> Titta i omslagsvecket (utplånat/spänt?). Asymmetri i ansiktet?</li>
+                    <li><strong>Fistulering:</strong> Finns spontan dränageöppning?</li>
+                </ul>
+            </div>
+
+            <div class="warning-box scroll-animate">
+                <h5>2. Palpation (Kritisk differentiering)</h5>
+                <ul>
+                    <li>Känn i omslagsvecket. Ömhet är förväntat.</li>
+                    <li><strong>Fluktuation:</strong> Mjuk, rörlig, vätskefylld = Pus som MÅSTE dräneras!</li>
+                    <li><strong>Hård svullnad:</strong> Ödem/cellulitis. Inget att dränera via incision.</li>
+                    <li><strong>Lymfkörtlar:</strong> Palpera submandibulärt/cervikalt för spridningstecken.</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>3. Perkussion & Ocklusion</h5>
+                <ul>
+                    <li><strong>Perkussion:</strong> Oftast kraftigt öm vid flare-up.</li>
+                    <li><strong>Ocklusionskontroll (Mycket viktig!):</strong> Rider tanden på provisoriet? Använd folie. Ocklusal justering ger ofta omedelbar lindring.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc8-diagnos" class="content-panel">
+            <h3>📋 Diagnostik & Röntgen</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>4. Apikalbild (Obligatorisk)</h5>
+                <p>Kontrollera alltid:</p>
+                <ul>
+                    <li><strong>Rensdjup:</strong> Är det 1 mm från apex? (Överrensning orsakar mekanisk smärta).</li>
+                    <li><strong>Kvalitet:</strong> Välfyllt? Finns överskott periapikalt (kemisk retning)? Gaps?</li>
+                    <li><strong>Missad kanal:</strong> Syns anatomi som inte bearbetats?</li>
+                    <li><strong>Periapikal lesion:</strong> Vidgad perspalt eller förlust av lamina dura?</li>
+                    <li><strong>Komplikation:</strong> Kvarvarande fil/separation? Tandfraktur?</li>
+                </ul>
+            </div>
+            
+        </div>
+
+        <div id="sc8-behandling" class="content-panel">
+            <h3>🔧 Behandlingsstrategi & Åtgärd</h3>
+            
+            <div class="treatment-box scroll-animate">
+                <h5>KRITISK BESLUTSPUNKT: Finns svullnad?</h5>
+                <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-weight: bold;">
+POSTENDODONTISK SMÄRTA
+         |
+    Finns SVULLNAD?
+    _____|_____
+   |           |
+  NEJ         JA
+   |           |
+ ALT A:      ALT B:
+Avlastning  Dränage
+                </pre>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>ALT A: Smärta UTAN svullnad (Mekanisk/Kemisk retning)</h5>
+                <p>Finns ingen pus. Öppna INTE tanden om röntgen är OK.</p>
+                <ol>
+                    <li><strong>Information:</strong> Lugnande besked ("träningsvärk i benet"), avtar över 2-5 dagar.</li>
+                    <li><strong>Ocklusal justering (Primär åtgärd):</strong> Slipa ner så tanden INGEN kontakt har vid sammanbitning. Avlastar ödemet.</li>
+                    <li><strong>Analgetika:</strong> Ibuprofen 400–600 mg + Paracetamol 1 g (3 ggr/dag i 3-5 dgr).</li>
+                </ol>
+            </div>
+
+            <div class="warning-box scroll-animate">
+                <h5>ALT B: Smärta MED lokal svullnad (Abscess)</h5>
+                <p>Pusansamling måste dräneras för att minska trycket.</p>
+                <ul>
+                    <li><strong>Incision:</strong> Om fluktuerande/mjuk. Snitt 1-1.5cm i omslagsveck. Skölj med saltvatten.</li>
+                    <li><strong>Dränage via rotkanal:</strong> Om hård/diffus ELLER om tanden ej är färdigrotfylld. Kofferdam -> Öppna -> Spola (NaOCl) -> Nytt Ca(OH)2 -> FÖRSLUT.</li>
+                    <li>⛔ <strong>KONTRAINDIKATION:</strong> Lämna ALDRIG tanden öppen. "Closed dressing" gäller alltid.</li>
+                </ul>
+            </div>
+
+            <div class="info-card scroll-animate">
+                <h5>Antibiotika? (Endast vid systemiska tecken)</h5>
+                <p>Antibiotika är INTE smärtlindring. Ges ALDRIG vid enbart lokal smärta eller svullnad.</p>
+                <ul>
+                    <li><strong>Ja, ge vid:</strong> Feber >38°C + sjukdomskänsla, trismus (<25mm), svullna lymfkörtlar, snabbt progressiv svullnad.</li>
+                    <li><strong>Förstahandsval:</strong> PcV 1,6 g × 3 i 5–7 dagar.</li>
+                    <li><strong>Vid PC-allergi:</strong> Klindamycin 150–300 mg × 3.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc8-journal" class="content-panel">
+            <h3>📝 Dokumentationsstöd (Journalmall)</h3>
+            
+            <div class="journal-box scroll-animate">
+                <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                <pre>Diagnos: K04.4 Akut apikal parodontit (Flare-up) tand [XX].
+Anamnes: Rotbehandling utförd för [X] dgr sedan. Nu kraftig värk och tuggömhet. Upplever tanden som för lång. Ingen feber. Ingen svullnad. 
+Status: Ingen synlig/palperbar svullnad. Kraftigt perkussionsöm (VAS 8/10). Provisoriet högt i ocklusion.
+Röntgen: Apikalbild [XX]: Rotfyllning/inlägg ser adekvat ut. Vidgad perspalt.
+Bedömning: Flare-up, mekanisk retning. Ej tecken på abscess.
+Åtgärd: Info om förlopp. Ocklusal justering (tagen ur ocklusion). Ordinerat Ibuprofen 400mg + Alvedon 1g. 
+Plan: Telefonuppföljning om 3 dagar. Åter vid försämring.</pre>
+            </div>
+            
+            <div class="info-card scroll-animate">
+                <h5>Debiteringskoder (TLV)</h5>
+                <ul>
+                    <li><strong>301:</strong> Sjukdomsbehandling, allmän (akutbesök, slipning).</li>
+                    <li><strong>404:</strong> Incision av abscess.</li>
+                    <li><strong>520/521:</strong> Akut endodontisk åtgärd (om tanden öppnas).</li>
+                    <li><strong>701:</strong> Bettkorrigering (vid omfattande ocklusal justering).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc8-flaggor" class="content-panel">
+            <h3>🚨 Röda Flaggor – Systemisk Spridning</h3>
+            
+            <div class="warning-box scroll-animate">
+                <h5>Kritiska varningssignaler (Kräver akut handläggning / Remiss)</h5>
+                <ul>
+                    <li>🔥 <strong>Allmänpåverkan & Feber:</strong> >38°C, sjukdomskänsla, frossa, sepsis-tecken (takykardi). -> <em>Antibiotika + dränage. Ev remiss.</em></li>
+                    <li>🔒 <strong>Trismus:</strong> Gapförmåga <20–25 mm. Infektionen har nått tuggmuskulaturen. -> <em>Akut remiss käkkirurg.</em></li>
+                    <li>💧 <strong>Dysfagi (Sväljsvårigheter):</strong> Smärta vid sväljning. Hot mot svalg/luftväg. -> <em>Akut remiss sjukhus.</em></li>
+                    <li>🫁 <strong>Andningspåverkan:</strong> Stridor, "grötigt tal", måste sitta upp. -> <em>LIVSHOTANDE. Larma 112!</em></li>
+                    <li>💀 <strong>Anatomisk spridning:</strong> Munbotten (Ludwigs Angina), svullnad mot ögat (Sinus cavernosus). -> <em>Akut remiss sjukhus.</em></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sc8-uppfoljning" class="content-panel">
+            <h3>📊 Uppföljning & Checklistor</h3>
+            
+            <div class="info-card scroll-animate">
+                <h5>Patientkontakt & Förväntat förlopp</h5>
+                <ul>
+                    <li><strong>Utan svullnad:</strong> Klingar av över 2-5 dagar. Ocklusal justering ger ofta snabb lindring.</li>
+                    <li><strong>Med svullnad:</strong> Bör minska 24-48h efter dränage.</li>
+                    <li><strong>Med antibiotika:</strong> Förbättring förväntas inom 48-72h. Annars remiss.</li>
+                    <li><strong>Varningsinfo till patient:</strong> Hör av dig direkt vid tilltagande svullnad, feber, gap- eller sväljsvårigheter.</li>
+                </ul>
+            </div>
+
+            <div class="treatment-box scroll-animate">
+                <h5>Checklista innan patienten lämnar kliniken:</h5>
+                <ul style="list-style-type: none; padding-left: 0;">
+                    <li>✅ Har jag uteslutit systemiska tecken (feber, trismus, dysfagi)?</li>
+                    <li>✅ Har jag bedömt om svullnad finns och fluktuerar?</li>
+                    <li>✅ Har jag utfört ocklusal justering vid behov?</li>
+                    <li>✅ Har jag ordinerat rätt analgetika (NSAID + Paracetamol)?</li>
+                    <li>✅ Har jag <strong>undvikit</strong> antibiotika om systemiska tecken saknas?</li>
+                    <li>✅ Har patienten fått tydliga instruktioner och ev. uppföljningstid?</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+</div><div class="right-sidebar">
+            <div class="sidebar-card">
+                <h4 class="sidebar-title">🔍 Differentialdiagnoser</h4>
+                <div style="margin-bottom: 15px;">
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc1', 'diag-tandhals')">🪥 Blottade tandhalsar</button>
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc1', 'diag-spricka')">⚡ Spricka (Cracked tooth)</button>
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc1', 'diag-pulpit')">💢  Symtomatisk pulpit</button>
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc2', 'diag-sinuit')">🤧 Sinuit (maxillär)</button>
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc2', 'diag-abscess')">🦷 Parodontal abscess</button>
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc2', 'diag-cracked')">⚡ Cracked tooth (pulpa)</button>
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc3', 'diag-lat-abscess')">🦷 Lateral Abscess</button>
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc3', 'diag-sinuit')">🤧 Sinuit (ÖK)</button>
+                    <button class="sidebar-btn" onclick="goToDiagnosis('sc3', 'diag-cracked')">⚡ Cracked Tooth</button>
+                </div>
+                <div class="sidebar-info">
+                    <h4>💊 Analgetika-stöd</h4>
+                    <p><strong>Para 1g + Ibu 400mg</strong><br>Max 4 ggr/dygn.</p>
+                </div>
+                <div class="sidebar-info">
+                    <h4>⚠️ Kom ihåg</h4>
+                    <p style="font-size: 0.85rem;">Detta är beslutsstöd. Vid osäkerhet - konsultera kollega.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+   <script>
+        const imgStart = 'start.png'; 
+        const scenarioData = {
+            'sc1': 'cold.png',
+            'sc2': 'pain.png',
+            'sc3': 'bite.png',
+            'sc4': 'abscess.png',
+            'sc5': 'crack.png',
+            'sc6': 'occlusion.png',
+            'sc7': 'sens.png',
+            'sc8': 'flareup.png'
+        };
+    </script>
+
+    <script src="script.js">
+</script>
+
+
+
+    <button class="sources-btn" onclick="document.getElementById('sourcesModalVark').classList.add('active')">📚 Källor</button>
+    <div class="sources-modal-overlay" id="sourcesModalVark" onclick="if(event.target===this)this.classList.remove('active')">
+        <div class="sources-modal">
+            <button class="close-modal" onclick="document.getElementById('sourcesModalVark').classList.remove('active')">✕ Stäng</button>
+            <h2>📚 Källförteckning — Akut Endodonti & Smärta</h2>
+            <ul>
+                <li><strong>Internetodontologi.</strong> Antibiotikabehandling av odontogena infektioner (uppdaterad 25 april 2025). internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> pulpit — diagnostik och behandling.</li>
+                <li><strong>Internetodontologi.</strong> Stegvis kariesexcavering.</li>
+                <li><strong>Internetodontologi.</strong> Akut apikal parodontit (AAP).</li>
+                <li><strong>Internetodontologi.</strong> Endodontisk behandling — grundprinciper (closed dressing).</li>
+                <li><strong>Internetodontologi.</strong> Endodontiska komplikationer — flare-up.</li>
+                <li><strong>Internetodontologi.</strong> Cracked Tooth Syndrome (CTS).</li>
+                <li><strong>Internetodontologi.</strong> Dentinhypersensitivitet.</li>
+                <li><strong>Internetodontologi.</strong> Rotbehandling — spolning och instrumentering.</li>
+                <li><strong>Socialstyrelsen.</strong> Nationella riktlinjer för tandvård 2022 — bettslipning vid reversibel bettförändring = Icke-göra.</li>
+                <li><strong>Socialstyrelsen.</strong> ICD-10-SE. Koder: K04.0, K04.1, K04.4, K04.6, K04.7, K03.8, K07.24.</li>
+                <li><strong>VGR.</strong> Regional medicinsk riktlinje — Antibiotikabehandling i tandvården.</li>
+                <li><strong>FASS.</strong> Artikain, Kåvepenin (PcV), Klindamycin, Duraphat. fass.se</li>
+                <li><strong>Strama.</strong> Antibiotikariktlinjer — odontogena infektioner.</li>
+                <li><strong>TLV.</strong> Aktuell tandvårdstaxa — verifiera koder på kusp.tlv.se</li>
+            </ul>
+            <p style="color:#888; font-size:0.85rem; margin-top:20px;">Senast granskad: Mars 2026. Ansvarig granskare: Nedaa Abujazar.</p>
+        </div>
+    </div>
+</body>
+</html>

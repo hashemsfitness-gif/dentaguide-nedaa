@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Oralmedicin — Akuta Slemhinnetillstånd (Scenario 35–38)</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .sources-btn { position: fixed; bottom: 24px; right: 24px; z-index: 1000; background: linear-gradient(135deg, #6a1b9a, #8e24aa); color: white; border: none; border-radius: 50px; padding: 12px 22px; font-size: 0.95rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(106,27,154,0.4); display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .sources-btn:hover { transform: translateY(-2px); }
+        .sources-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .sources-modal-overlay.active { display: flex; }
+        .sources-modal { background: white; border-radius: 16px; padding: 30px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .sources-modal h2 { color: #6a1b9a; margin-bottom: 15px; }
+        .sources-modal ul { padding-left: 20px; }
+        .sources-modal li { margin-bottom: 10px; line-height: 1.6; }
+        .sources-modal .close-modal { float: right; background: #eee; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: bold; }
+        .correction-badge { display: inline-block; background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; border-radius: 6px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+        .addition-badge { display: inline-block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 6px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+<div class="orb-container"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+<button class="back-btn" onclick="history.back()">← TILLBAKA</button>
+<div class="container">
+    <div class="hero"><h1>Oralmedicin</h1><p class="hero-subtitle">Kliniskt beslutsstöd — Akuta slemhinnetillstånd (Scenario 35–38)</p></div>
+    <div class="search-wrapper"><div class="search-box"><span>🔍</span><input type="text" id="mainSearch" placeholder="Sök diagnos eller symtom..." onkeyup="searchCards()"></div></div>
+    <div class="dashboard-layout">
+    <div class="scenario-nav">
+    
+    <div class="scenario-trigger-card" id="trigger-sc35" onclick="selectScenario('sc35')">
+        <span class="trigger-tag red">SCENARIO 35</span>
+        <div class="trigger-avatar-container"><img src="sar_blasor.png" alt="Sår" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=SÅR'"></div>
+        <h2 class="trigger-title">"Det svider och jag har fått blåsor/sår i munnen"</h2>
+        <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Herpes, afte, trauma, immunologiska. 4 delscenarier.</div>
+    </div>
+    
+    <div class="scenario-trigger-card" id="trigger-sc36" onclick="selectScenario('sc36')">
+        <span class="trigger-tag">SCENARIO 36</span>
+        <div class="trigger-avatar-container"><img src="candida.png" alt="Candida" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff3e0/e65100?text=CAND'"></div>
+        <h2 class="trigger-title">"Det svider i gommen och tungan är röd"</h2>
+        <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Akut erytematös candidos. Antibiotika/astma-utlöst.</div>
+    </div>
+
+    <div class="scenario-trigger-card" id="trigger-sc37m" onclick="selectScenario('sc37m')">
+        <span class="trigger-tag red">SCENARIO 37</span>
+        <div class="trigger-avatar-container"><img src="malignitet.png" alt="Malignitet" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=MAL'"></div>
+        <h2 class="trigger-title">"Ett sår som inte läker, en knöl som växer"</h2>
+        <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Malignitetssuspekta förändringar. SVF-remiss.</div>
+    </div>
+
+    <div class="scenario-trigger-card" id="trigger-sc38" onclick="selectScenario('sc38')">
+        <span class="trigger-tag red">SCENARIO 38</span>
+        <div class="trigger-avatar-container"><img src="lakemedel.png" alt="Läkemedel" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e8eaf6/283593?text=MRONJ'"></div>
+        <h2 class="trigger-title">"Svullet tandkött eller blottlagt ben"</h2>
+        <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Läkemedelsrelaterade: Gingival överväxt + MRONJ.</div>
+    </div>
+
+    <div class="scenario-trigger-card" id="trigger-sc39" onclick="selectScenario('sc39')">
+        <span class="trigger-tag red">SCENARIO 39</span>
+        <div class="trigger-avatar-container"><img src="ngnp.png" alt="NG/NP" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff3e0/e65100?text=NGNP'"></div>
+        <h2 class="trigger-title">"Akut smärta, blödning och 'avhuggna' papiller"</h2>
+        <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Nekrotiserande gingivit/parodontit (ANUG/ANUP).</div>
+    </div>
+
+    <div class="scenario-trigger-card" id="trigger-sc40" onclick="selectScenario('sc40')">
+        <span class="trigger-tag">SCENARIO 40</span>
+        <div class="trigger-avatar-container"><img src="neurogent.png" alt="Neurogent" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e8eaf6/283593?text=NEUR'"></div>
+        <h2 class="trigger-title">"Det bränner eller hugger – men tanden ser frisk ut"</h2>
+        <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Trigeminusneuralgi, Munsveda (BMS), Herpes Zoster.</div>
+    </div>
+
+</div>
+        <div class="main-content-panel">
+    
+    <div id="dynamic-header" class="header-container centered">
+        <div class="avatar-wrapper">
+            <img id="story-avatar" class="character-img" src="start.png" alt="Start" onerror="this.src='https://placehold.co/300x300/ffebee/b71c1c?text=ORAL'">
+        </div>
+        <div class="header-text-block">
+            <h2 id="dynamic-header-title">Oralmedicin — Omfattande Diagnostik</h2>
+            <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario i menyn till vänster för att starta guiden.</p>
+        </div>
+    </div>
+
+    <div id="sc35-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+            <button class="tab-btn active" onclick="openInnerTab('sc35', 'snabb', this)">⚡ Snabböversikt</button>
+            <button class="tab-btn" onclick="openInnerTab('sc35', 'herpes', this)">🦠 Herpes</button>
+            <button class="tab-btn" onclick="openInnerTab('sc35', 'afte', this)">🟡 Afte (RAS)</button>
+            <button class="tab-btn" onclick="openInnerTab('sc35', 'trauma', this)">🩹 Trauma</button>
+            <button class="tab-btn" onclick="openInnerTab('sc35', 'immuno', this)">🔬 Immunologiska</button>
+            <button class="tab-btn" onclick="openInnerTab('sc35', 'journal', this)">📝 Journal</button>
+            <button class="tab-btn" onclick="openInnerTab('sc35', 'flaggor', this)">🚨 Röda Flaggor</button>
+        </div>
+        <div class="inner-display">
+            <div id="sc35-snabb" class="content-panel active">
+                <h3>⚡ Scenarioidentifiering</h3>
+                <div class="patient-symptom-box scroll-animate">
+                    <div class="symptom-list">
+                        <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORAL-35-SÅRBLÅS</div>
+                        <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det svider, gör ont att äta och jag har fått blåsor/sår i munnen"</div>
+                        <div class="symptom-item">📖 <strong>ICD-10:</strong> K12.0 (Afte), B00.2 (Herpetisk gingivostomatit), K12.1 (Traumatiskt sår)</div>
+                    </div>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Överblick</h5>
+                    <p>Scenario täcker patienter som söker akut för smärtsamma förändringar i munslemhinnan. Differentialdiagnostik baseras främst på <strong>lokalisation</strong> (fast vs. rörlig slemhinna), <strong>allmänpåverkan</strong> och <strong>etiologi</strong> (trauma vs. infektion/immunologi).</p>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Snabbguide — Delscenarier</h5>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Diagnos</th><th style="padding:8px;">Ålder</th><th style="padding:8px;">Lokalisation</th><th style="padding:8px;">Feber?</th><th style="padding:8px;">Nyckelklinik</th></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">A. Herpes</td><td style="padding:8px;">Barn/unga</td><td style="padding:8px;">Fast + rörlig</td><td style="padding:8px;">Ja</td><td style="padding:8px;">Vesiklar + svullen gingiva</td></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">B. Afte (RAS)</td><td style="padding:8px;">Alla</td><td style="padding:8px;">Rörlig</td><td style="padding:8px;">Nej</td><td style="padding:8px;">Utstansat sår med halo</td></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">C. Trauma</td><td style="padding:8px;">Alla</td><td style="padding:8px;">Matchar orsak</td><td style="padding:8px;">Nej</td><td style="padding:8px;">Solitärt sår vid vass tand</td></tr>
+                        <tr><td style="padding:8px; font-weight:700;">D. Immunologisk</td><td style="padding:8px;">Vuxna</td><td style="padding:8px;">Gingiva + läppar</td><td style="padding:8px;">Varierar</td><td style="padding:8px;">Blodiga krustor / deskvamation</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div id="sc35-herpes" class="content-panel">
+                <h3>🦠 Delscenario A: Akut Primär Herpetisk Gingivostomatit</h3>
+                <div class="warning-box scroll-animate"><strong>Virusinfektion orsakad av Herpes Simplex (HSV-1).</strong> Oftast barn (6 mån – 4 år) eller ungdomar/unga vuxna.</div>
+                <div class="info-card scroll-animate">
+                    <h5>Kliniska fynd</h5>
+                    <ul>
+                        <li>🔍 <strong>Lokalisation:</strong> Drabbar <strong>både rörlig och fast slemhinna</strong> (gom, tunga, insida läppar) samt gingivan.</li>
+                        <li>🔍 <strong>Lesioner:</strong> Multipla små vätskefyllda blåsor (vesiklar) som snabbt spricker och bildar ytliga, smärtsamma sår med gulaktig fibrinbeläggning och röd randzon (halo).</li>
+                        <li>🔍 <strong>Gingiva:</strong> Ofta ilsket röd, svullen och lättblödande.</li>
+                        <li>🔍 <strong>Extraoralt:</strong> Svullna lymfkörtlar och ibland sår/krustor på läpparna.</li>
+                        <li>🤒 <strong>Allmänpåverkan:</strong> Feber, huvudvärk, allmän sjukdomskänsla, svårigheter att äta/dricka.</li>
+                    </ul>
+                </div>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Åtgärd & Behandling</div>
+                    <ul>
+                        <li><strong>Information:</strong> Virussjukdom som läker ut själv på 10–14 dagar. Smittsamt i det akuta skedet.</li>
+                        <li><strong>Nutrition & Vätska (Viktigast):</strong> Kritiskt att patienten får i sig vätska. Vid svår dehydrering → sjukhusvård (dropp).</li>
+                        <li><strong>Smärtlindring systemisk:</strong> Paracetamol.</li>
+                        <li><strong>Smärtlindring lokal:</strong> Ytanestetika (t.ex. Lidokain/Xylocain gel) före måltid för att möjliggöra ätande.</li>
+                        <li><strong>Munhygien:</strong> Klorhexidinsköljning — undvika sekundärinfektion när tandborstning för smärtsam.</li>
+                        <li><strong>Antiviralia:</strong> (T.ex. Valaciklovir/Aciklovir) har effekt <strong>endast om det sätts in i mycket tidigt skede</strong> (prodromalstadium) eller vid svåra fall hos vuxna/immunosupprimerade.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc35-afte" class="content-panel">
+                <h3>🟡 Delscenario B: Recidiverande Aftös Stomatit (Afte/RAS)</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Beskrivning</h5>
+                    <p>Vanligt inflammatoriskt tillstånd av okänd etiologi, ofta återkommande. Debut ofta i barn/ungdomsåren. Patienter oftast allmänmedicinskt friska. <strong>Ingen feber</strong> (till skillnad från herpes).</p>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Kliniska fynd</h5>
+                    <ul>
+                        <li>🔍 <strong>Lokalisation:</strong> Nästan uteslutande på <strong>rörlig, icke-keratiniserad slemhinna</strong> (insida läppar/kinder, tungrygg, munbotten). Sällan i gommen eller på gingivan.</li>
+                        <li>🔍 <strong>Lesioner:</strong> Välavgränsade, "utstansade" sår med gulvit fibrinbeläggning och en röd inflammatorisk zon runt om (halo).</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Typer</h5>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Typ</th><th style="padding:8px;">Storlek</th><th style="padding:8px;">Läkning</th><th style="padding:8px;">Ärrbildning</th></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">Minor</td><td style="padding:8px;">&lt;1 cm</td><td style="padding:8px;">10–14 dagar</td><td style="padding:8px;">Nej (vanligast)</td></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">Major</td><td style="padding:8px;">&gt;1 cm</td><td style="padding:8px;">Långsam</td><td style="padding:8px;">Ja</td></tr>
+                        <tr><td style="padding:8px; font-weight:700;">Herpetiforma</td><td style="padding:8px;">Multipla små</td><td style="padding:8px;">Varierar</td><td style="padding:8px;">Nej</td></tr>
+                    </table>
+                </div>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Åtgärd & Behandling</div>
+                    <ul>
+                        <li><strong>Symtomlindring:</strong> Lokalbedövande salva/gel eller munskölj (t.ex. Andolex). Tandkräm utan SLS (natriumlaurylsulfat), t.ex. Zendium.</li>
+                        <li><strong>Antiinflammatorisk behandling:</strong> Vid svåra besvär: lokala steroider (t.ex. klobetasolgel/Dermovat) för att förkorta läkningstiden.</li>
+                        <li><strong>Utredning:</strong> Om debut i vuxen ålder eller mycket svåra besvär, överväg remiss för utredning (järn-/B12-brist, tarmsjukdom etc.).</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc35-trauma" class="content-panel">
+                <h3>🩹 Delscenario C: Traumatiska Sår (Decubitus)</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Beskrivning</h5>
+                    <p><strong>Etiologi:</strong> Bitning, vass tand/fyllning, illasittande protes (decubitus), brännskada, eller kemisk skada (t.ex. aspirin lagd mot slemhinnan).</p>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Kliniska fynd</h5>
+                    <ul>
+                        <li>🔍 Sår med gulvit fibrinbotten och rodnad randzon. Utseendet stämmer ofta överens med traumat (t.ex. sår på tungan som matchar en vass kusp).</li>
+                        <li>🔍 Ofta solitära sår.</li>
+                    </ul>
+                </div>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Åtgärd & Behandling</div>
+                    <ul>
+                        <li><strong>Kausal behandling:</strong> Avlägsna orsaken! Slipa vass tand/fyllning, justera protes.</li>
+                        <li><strong>Läkning:</strong> Sår läker normalt på 7–14 dagar efter att orsaken avlägsnats.</li>
+                        <li><strong>Smärtlindring:</strong> Ytanestetika vid behov. Klorhexidin för att hålla rent.</li>
+                    </ul>
+                </div>
+                <div class="warning-box scroll-animate"><strong>🚨 KRITISKT: Om såret inte läkt inom 2 veckor efter åtgärd → remittera för biopsi för att utesluta malignitet (skivepitelcancer).</strong></div>
+            </div>
+            <div id="sc35-immuno" class="content-panel">
+                <h3>🔬 Delscenario D: Immunologiska sjukdomar</h3>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">A. Erythema Multiforme (EM)</div>
+                    <p><strong>Beskrivning:</strong> Akut överkänslighetsreaktion, ofta utlöst av infektion (Herpes, Mycoplasma) eller läkemedel.</p>
+                    <ul>
+                        <li>🔍 <strong>Klinik:</strong> Snabb debut. Omfattande sår i munnen.</li>
+                        <li>🔍 <strong>Läppar:</strong> Karakteristiska <strong>blodiga krustor</strong> på läpparna.</li>
+                        <li>🔍 <strong>Hud:</strong> Kan ha "target lesions" (kokardutslag) på huden.</li>
+                        <li>🔧 <strong>Åtgärd:</strong> Kräver ofta kortisonbehandling (lokalt eller systemiskt). Remiss till specialist/läkare.</li>
+                    </ul>
+                </div>
+                <div class="treatment-box alternative scroll-animate">
+                    <div class="treatment-title">B. Slemhinnepemfigoid</div>
+                    <p><strong>Beskrivning:</strong> Autoimmun blåssjukdom som drabbar slemhinnor (mun, ögon).</p>
+                    <ul>
+                        <li>🔍 <strong>Deskvamativ gingivit:</strong> Rött, ilsket tandkött där epitelet flagnar av.</li>
+                        <li>🔍 <strong>Blåsor:</strong> Ofta blodfyllda som brister och lämnar sår.</li>
+                        <li>🔍 <strong>Nikolskys tecken:</strong> Epitelet lossnar om man gnuggar på slemhinnan.</li>
+                        <li>🔧 <strong>Åtgärd:</strong> Remiss till specialist (Oralmedicin/Käkkirurg/Hud) för biopsi och immunfluorescens. Behandlas med lokala steroider och optimerad munhygien.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc35-journal" class="content-panel">
+                <h3>📝 Dokumentationsstöd</h3>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: [Välj: K12.0 Afte / B00.2 Herpetisk gingivostomatit / K12.1 Traumatiskt sår] 
+Anamnes: Söker för sår i munnen sedan [X] dagar. 
+[Har/Har ej] feber. [Kan/Kan ej] äta. 
+Tidigare liknande besvär? [Ja/Nej]. 
+Status:
+- Extraoralt: [Lymfkörtlar palpömma? Blåsor på läppar?]
+- Intraoralt: Sår lokaliserade till [fast/rörlig] slemhinna i 
+  regio [XX]. Utseende: [Beskriv storlek, form, fibrin, halo].
+- Utredning: [Ev. traumakontroll: vass kusp 36]. 
+Bedömning: Klinisk bild talar för [Diagnos]. 
+Åtgärd: [Info om förlopp / Slipning av vass tand / 
+Recept Xylocain / Kostråd]. 
+Planering: [Åb om 2 v för läkningskontroll vid trauma / Avslutas].</pre>
+                </div>
+            </div>
+            <div id="sc35-flaggor" class="content-panel">
+                <h3>🚨 Röda Flaggor</h3>
+                <div class="warning-box scroll-animate"><strong>🚨 Sår som inte läker</strong><p style="margin-top:10px;">Alla sår som kvarstår <strong>>2 veckor</strong> utan tydlig orsak måste utredas för cancer.</p></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Allmänpåverkan</strong><p style="margin-top:10px;">Hög feber och dehydrering (särskilt hos barn) kräver sjukvårdskontakt.</p></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Ögonengagemang</strong><p style="margin-top:10px;">Vid misstanke om pemfigoid, fråga om ögonbesvär (risk för blindhet).</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sc36-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+            <button class="tab-btn active" onclick="openInnerTab('sc36', 'snabb', this)">⚡ Snabböversikt</button>
+            <button class="tab-btn" onclick="openInnerTab('sc36', 'anamnes', this)">❓ Anamnes</button>
+            <button class="tab-btn" onclick="openInnerTab('sc36', 'status', this)">🔬 Status</button>
+            <button class="tab-btn" onclick="openInnerTab('sc36', 'behandling', this)">🔧 Behandling</button>
+            <button class="tab-btn" onclick="openInnerTab('sc36', 'journal', this)">📝 Journal</button>
+            <button class="tab-btn" onclick="openInnerTab('sc36', 'flaggor', this)">🚨 Röda Flaggor</button>
+        </div>
+        <div class="inner-display">
+            <div id="sc36-snabb" class="content-panel active">
+                <h3>⚡ Scenarioidentifiering</h3>
+                <div class="patient-symptom-box scroll-animate">
+                    <div class="symptom-list">
+                        <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORAL-36-CANDIDA-ERYT</div>
+                        <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det svider i gommen och tungan är röd – ofta efter antibiotika eller astmamedicin"</div>
+                        <div class="symptom-item">📖 <strong>ICD-10:</strong> B37.0 (Akut erytematös candidos)</div>
+                        <div class="symptom-item">🔬 <strong>Etiologi:</strong> Opportunistisk svampinfektion (C. albicans) — normalflora rubbas</div>
+                    </div>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Vanligaste utlösande faktorer</h5>
+                    <ul>
+                        <li><strong>Antibiotikabehandling:</strong> Bredspektrumantibiotika slår ut konkurrerande bakterier → svamptillväxt.</li>
+                        <li><strong>Inhalationssteroider:</strong> Astmatiker som använder kortisonspray utan att skölja munnen.</li>
+                        <li><strong>Muntorrhet:</strong> Salivbrist minskar skyddande enzymer och IgA.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc36-anamnes" class="content-panel">
+                <h3>❓ Anamnes — Subjektiv bedömning</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Symtom</h5>
+                    <ul>
+                        <li><strong>❓ Upplever du en brännande, svidande känsla?</strong><br><em>Ja — sveda är kardinalsymtom vid erytematös form.</em></li>
+                        <li><strong>❓ Har smaken förändrats?</strong></li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Medicinering</h5>
+                    <ul>
+                        <li><strong>❓ Har du tagit antibiotika nyligen?</strong></li>
+                        <li><strong>❓ Använder du inhalator för astma/KOL?</strong> Sköljer du munnen efteråt?</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Riskfaktorer</h5>
+                    <ul>
+                        <li><strong>❓ Är du muntorr?</strong></li>
+                        <li><strong>❓ Röker du?</strong></li>
+                        <li><strong>❓ Har du diabetes?</strong></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc36-status" class="content-panel">
+                <h3>🔬 Klinisk Status</h3>
+                <div class="info-card scroll-animate">
+                    <h5>1. Inspektion</h5>
+                    <ul>
+                        <li>🔍 <strong>Utseende:</strong> Kraftigt rodnad, oskarpt avgränsad yta. Inga vita avskrapbara beläggningar.</li>
+                        <li>🔍 <strong>Lokalisation:</strong> Efter antibiotika: Ofta tungryggen och gommen. Astmatiker: Ofta gommen där sprayen träffar.</li>
+                        <li>🔍 <strong>Munvinklar:</strong> Kontrollera sprickor/ragader (Angulär cheilit).</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>2. Diagnostik</h5>
+                    <ul>
+                        <li><strong>Klinisk bild:</strong> Diagnosen ställs oftast på kliniskt utseende och anamnes.</li>
+                        <li><strong>Odling:</strong> Vid osäkerhet eller terapisvikt — svampodling för verifiering.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc36-behandling" class="content-panel">
+                <h3>🔧 Åtgärd & Behandling</h3>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Kausal behandling (Viktigast)</div>
+                    <ul>
+                        <li><strong>Astmatiker:</strong> Skölj munnen med vatten efter varje inhalationstillfälle.</li>
+                        <li><strong>Muntorrhet:</strong> Sätt in salivstimulerande eller fuktbevarande medel.</li>
+                    </ul>
+                </div>
+                <div class="treatment-box alternative scroll-animate">
+                    <div class="treatment-title">Lokal antimykotisk behandling (Förstahandsval)</div>
+                    <p><strong>Nystatin (Mycostatin/Nystimex):</strong> Oral suspension.</p>
+                    <ul>
+                        <li><strong>Dosering:</strong> 1–4 ml sköljes i munnen 4 gånger dagligen och sväljes sedan.</li>
+                        <li><strong>Behandlingstid:</strong> 4–6 veckor (fortsätt ca 1–2 veckor efter symtomfrihet).</li>
+                        <li><strong>Fördel:</strong> Tas ej upp av kroppen, få biverkningar/interaktioner.</li>
+                    </ul>
+                </div>
+                <div class="treatment-box alternative scroll-animate">
+                    <div class="treatment-title">Systemisk behandling (Andrahandsval)</div>
+                    <p><strong>Flukonazol (Diflucan):</strong> Kapsel 50–100 mg i 7–14 dagar.</p>
+                    <div class="warning-box" style="margin-top:10px;"><strong>⚠️ VARNING: Flukonazol interagerar kraftigt med Warfarin (Waran). Kontrollera ALLTID interaktioner!</strong></div>
+                </div>
+            </div>
+            <div id="sc36-journal" class="content-panel">
+                <h3>📝 Dokumentationsstöd</h3>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: B37.0 Akut erytematös candidos 
+Anamnes: Pat söker för sveda i tunga/gom sedan [tid]. 
+Avslutade pc-kur för 1 vecka sedan / Använder Pulmicort dagligen. 
+Status:
+- Intraoralt: Kraftig rodnad diffust avgränsad i hårda gommen 
+  och på tungryggen. Papillatrofi på tungan. 
+- Munvinklar: Bilaterala ragader (angulär cheilit). 
+Bedömning: Typisk för antibiotika-associerad erytematös candidos. 
+Åtgärd: Info om orsak. Instruktion om munhygien/sköljning. 
+Recept: Mixt Nystimex 100 000 IE/ml. Skölj 4ml, 4 ggr/dag i 4 veckor. 
+Planering: Uppföljning om läkning uteblir.</pre>
+                </div>
+            </div>
+            <div id="sc36-flaggor" class="content-panel">
+                <h3>🚨 Differentialdiagnoser & Röda Flaggor</h3>
+                <div class="warning-box scroll-animate">
+                    <strong>🚨 Erytroplaki</strong>
+                    <p style="margin-top:10px;">Röd, väldefinierad förändring som inte svider (oftast) och <strong>inte svarar på svampbehandling</strong>. Malignitetssuspekt! Remiss för biopsi/utredning efter 2v terapisvikt.</p>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Övriga differentialdiagnoser</h5>
+                    <ul>
+                        <li><strong>BMS:</strong> Sveda i tungan men utan kliniska tecken (ingen rodnad).</li>
+                        <li><strong>Bristtillstånd:</strong> Järn- eller B12-brist kan ge en röd, svedande, "biffig" tunga.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sc37m-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+            <button class="tab-btn active" onclick="openInnerTab('sc37m', 'snabb', this)">⚡ Snabböversikt</button>
+            <button class="tab-btn" onclick="openInnerTab('sc37m', 'anamnes', this)">❓ Anamnes</button>
+            <button class="tab-btn" onclick="openInnerTab('sc37m', 'status', this)">🔬 Status</button>
+            <button class="tab-btn" onclick="openInnerTab('sc37m', 'atgard', this)">🔧 Åtgärd</button>
+            <button class="tab-btn" onclick="openInnerTab('sc37m', 'journal', this)">📝 Journal</button>
+            <button class="tab-btn" onclick="openInnerTab('sc37m', 'flaggor', this)">🚨 Röda Flaggor</button>
+        </div>
+        <div class="inner-display">
+            <div id="sc37m-snabb" class="content-panel active">
+                <h3>⚡ Scenarioidentifiering</h3>
+                <div class="patient-symptom-box scroll-animate">
+                    <div class="symptom-list">
+                        <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORAL-37-MALIGN</div>
+                        <div class="symptom-item">🗣️ <strong>Citat:</strong> "Ett sår som inte läker, en knöl som växer eller en konstig fläck"</div>
+                        <div class="symptom-item">📖 <strong>Diagnos:</strong> Oral skivepitelcancer (90% av muncancer), spottkörteltumörer, premaligna tillstånd</div>
+                        <div class="symptom-item">🚨 <strong>Riktvärde:</strong> Sår som ej läker inom 2 veckor = malignt tills motsatsen är bevisad</div>
+                    </div>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>2. Klinisk indikation</h5>
+                    <p>Patienten söker för — eller tandläkaren upptäcker vid undersökning — ett sår, en svullnad eller en färgförändring som avviker från normal anatomi och inte svarar på konventionell behandling.</p>
+                </div>
+            </div>
+            <div id="sc37m-anamnes" class="content-panel">
+                <h3>❓ Anamnes — Subjektiv bedömning</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Obligatoriska frågor</h5>
+                    <ul>
+                        <li><strong>❓ Duration:</strong> "Hur länge har du haft såret/knölen?" (>2 veckor = varningssignal).</li>
+                        <li><strong>❓ Smärta:</strong> Gör det ont? (Initial cancer är ofta smärtfri, men smärta kan uppstå vid ulceration eller nervengagemang).</li>
+                        <li><strong>❓ Tillväxt:</strong> Har den blivit större snabbt?</li>
+                        <li><strong>❓ Funktionsbortfall:</strong> Känselbortfall (parestesi) i läpp/haka? Svårt att röra tungan? Svårt att svälja (dysfagi)?</li>
+                        <li><strong>❓ Riskfaktorer:</strong> Rökning, alkohol, snus, tidigare cancer?</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc37m-status" class="content-panel">
+                <h3>🔬 Klinisk Status</h3>
+                <div class="info-card scroll-animate">
+                    <h5>1. Inspektion (Utseende & Färg)</h5>
+                    <ul>
+                        <li>🔍 <strong>Sår:</strong> Ulcerationer med <strong>vallartade kanter</strong> och en "smutsig" sårbotten.</li>
+                        <li>🔍 <strong>Erytroplaki:</strong> Röd, sammetsliknande förändring. <strong>Mycket hög malignitetsrisk</strong>.</li>
+                        <li>🔍 <strong>Leukoplaki:</strong> Vit fläck som ej går att skrapa bort. Icke-homogena = högre risk.</li>
+                        <li>🔍 <strong>Växtsätt:</strong> Exofytisk ("blomkålsliknande") eller endofytisk (växer inåt, bildar grop).</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>2. Palpation (Konsistens)</h5>
+                    <ul>
+                        <li>🔍 <strong>Induration:</strong> Känns förändringen <strong>hård</strong> vid palpation? Starkt tecken på cancer.</li>
+                        <li>🔍 <strong>Fixation:</strong> Är förändringen fastvuxen i underlaget?</li>
+                        <li>🔍 <strong>Lymfkörtlar:</strong> Palpera halsen. Asymmetrisk, hård och oöm knöl = metastas.</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>3. Röntgen (Vid benengagemang)</h5>
+                    <ul>
+                        <li>📸 Diffusa, oskarpa gränser ("malätet utseende"). Respekterar ej anatomiska gränser.</li>
+                        <li>📸 Vidgade parodontalspalter runt enstaka tänder utan parodontal orsak.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc37m-atgard" class="content-panel">
+                <h3>🔧 Akut Åtgärd & Handläggning</h3>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Steg 1: Avlägsna retning (Vid tveksamhet)</div>
+                    <p>Om såret kan bero på vass tand/protes: Slipa/justera och ta tillbaka patienten efter 10–14 dagar. Om såret kvar efter 2 veckor → Misstänkt Malignitet.</p>
+                </div>
+                <div class="treatment-box alternative scroll-animate">
+                    <div class="treatment-title">Steg 2: Remittering (Omedelbart vid misstanke)</div>
+                    <ul>
+                        <li>Skicka remiss till <strong>Käkkirurgisk klinik</strong> eller <strong>ÖNH</strong>.</li>
+                        <li>Märk remissen: <strong>"Malignitetsmisstanke"</strong> eller <strong>"Snabb handläggning"</strong> (SVF).</li>
+                    </ul>
+                </div>
+                <div class="treatment-box alternative scroll-animate">
+                    <div class="treatment-title">Steg 3: Dokumentation</div>
+                    <ul>
+                        <li><strong>Foto:</strong> Ta bra kliniska foton och bifoga remissen.</li>
+                        <li><strong>Telefonkontakt:</strong> Ring mottagande klinik för att säkerställa att remissen omhändertas skyndsamt.</li>
+                    </ul>
+                </div>
+                <div class="warning-box scroll-animate">
+                    <strong>⛔ ICKE-GÖRA: INGEN EGEN BIOPSI</strong>
+                    <p style="margin-top:10px;">Som allmäntandläkare bör du inte ta biopsi själv vid stark misstanke om malignitet. Det kan försvåra den definitiva tumörkirurgin. Överlåt detta till specialisten.</p>
+                </div>
+            </div>
+            <div id="sc37m-journal" class="content-panel">
+                <h3>📝 Dokumentationsstöd</h3>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: Z03.1 Observation för misstänkt malign tumör / 
+K13.7 Andra förändringar i munslemhinnan. 
+Anamnes: Söker för sår/knöl i [lokalisation] som funnits i 
+> [X] veckor. Ingen läkning trots avlägsnande av skavande protes. 
+Status:
+- Kliniskt: [X] mm stort sår/förändring regio [XX]. 
+  Vallartade kanter. Röd/Vit spräcklig yta.
+- Palpation: Kraftig induration (hård) och fixerad mot underlaget. 
+- Neurologi: [Ev. känselbortfall i läpp/haka]. 
+Bedömning: Malignitetssuspekt förändring som ej läkt på 2 veckor. 
+Åtgärd: Remiss skickad omgående till Käkkirurgiska kliniken/ÖNH 
+för utredning (förtur). Kliniska foton bifogade. 
+Info: Pat informerad om vikten av snabb utredning.</pre>
+                </div>
+            </div>
+            <div id="sc37m-flaggor" class="content-panel">
+                <h3>🚨 Röda Flaggor & Varningstecken</h3>
+                <div class="warning-box scroll-animate"><strong>🚨 Sår som inte läker >2 veckor utan tydlig orsak</strong></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Induration — förändringen känns hård och stum</strong></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Parestesi — domning i läpp eller tunga (nervinväxt)</strong></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Tandmobilitet — enstaka tänder blir lösa snabbt utan parodontal orsak</strong></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Knöl på halsen — metastasering till lymfkörtlar</strong></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Sväljningssvårigheter — tumör i svalg/tungbas</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sc38-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+            <button class="tab-btn active" onclick="openInnerTab('sc38', 'snabb', this)">⚡ Snabböversikt</button>
+            <button class="tab-btn" onclick="openInnerTab('sc38', 'anamnes', this)">❓ Anamnes & Risk</button>
+            <button class="tab-btn" onclick="openInnerTab('sc38', 'status', this)">🔬 Status</button>
+            <button class="tab-btn" onclick="openInnerTab('sc38', 'behandling', this)">🔧 Behandling</button>
+            <button class="tab-btn" onclick="openInnerTab('sc38', 'mronj', this)">📊 MRONJ Fördjupning</button>
+            <button class="tab-btn" onclick="openInnerTab('sc38', 'journal', this)">📝 Journal</button>
+            <button class="tab-btn" onclick="openInnerTab('sc38', 'flaggor', this)">🚨 Röda Flaggor</button>
+        </div>
+        <div class="inner-display">
+            <div id="sc38-snabb" class="content-panel active">
+                <h3>⚡ Scenarioidentifiering</h3>
+                <div class="patient-symptom-box scroll-animate">
+                    <div class="symptom-list">
+                        <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORAL-38-LAKEMEDEL</div>
+                        <div class="symptom-item">🗣️ <strong>Citat:</strong> "När medicineringen orsakar munproblem: Svullet tandkött eller blottlagt ben"</div>
+                        <div class="symptom-item">📖 <strong>ICD-10:</strong> K06.1 (Gingival överväxt), M87.18 (Osteonekros i käkarna)</div>
+                    </div>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Två huvuddiagnoser</h5>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:10px;">Diagnos</th><th style="padding:10px;">Orsakande läkemedel</th><th style="padding:10px;">Kliniskt</th></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">A. DIGO (Gingival överväxt)</td><td style="padding:8px;">Kalciumblockerare (amlodipin), Immunosuppressiva (ciklosporin), Antiepileptika (fenytoin)</td><td style="padding:8px;">Vävnaden växer upp över tänder, fibrös, pseudofickor</td></tr>
+                        <tr><td style="padding:8px; font-weight:700;">B. MRONJ (Käkbensnekros)</td><td style="padding:8px;">Bisfosfonater (zoledronsyra, alendronat), Denosumab (Prolia/Xgeva)</td><td style="padding:8px;">Exponerat ben >8 veckor, ej läkande</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div id="sc38-anamnes" class="content-panel">
+                <h3>❓ Anamnes & Riskprofil</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Riskfaktorer att identifiera</h5>
+                    <ul>
+                        <li><strong>Medicinlista:</strong> Leta efter: Amlodipin, Sandimmun, Fenytoin (för överväxt). Alendronat, Zometa, Prolia (för MRONJ).</li>
+                        <li><strong>Sjukdomshistoria:</strong> Organtransplantation, epilepsi, hypertoni (för överväxt). Osteoporos, bröstcancer, prostatacancer, myelom (för MRONJ).</li>
+                        <li><strong>Tidigare ingrepp:</strong> Har patienten nyligen extraherat en tand? (Vanlig utlösande faktor för MRONJ).</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>MRONJ — Riskprofil beroende på dos</h5>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Riskgrupp</th><th style="padding:8px;">Typ</th><th style="padding:8px;">Prevalens MRONJ</th></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700; color:#dc2626;">Hög risk</td><td style="padding:8px;">Cancerpatienter — IV högdos (Zometa, Xgeva)</td><td style="padding:8px;">1–15 %</td></tr>
+                        <tr><td style="padding:8px; font-weight:700; color:#059669;">Låg risk</td><td style="padding:8px;">Osteoporos — PO lågdos (Fosamax, Prolia)</td><td style="padding:8px;">0,001–0,01 %</td></tr>
+                    </table>
+                    <p style="margin-top:10px; font-size:0.85rem;">Risken ökar om behandlingstiden >3 år eller vid samtidig medicinering med kortikosteroider.</p>
+                </div>
+            </div>
+            <div id="sc38-status" class="content-panel">
+                <h3>🔬 Klinisk Status</h3>
+                <div class="info-card scroll-animate">
+                    <h5>A. Vid misstanke om Gingival Överväxt</h5>
+                    <ul>
+                        <li>🔍 <strong>Utseende:</strong> Gingivan växer upp över tandkronorna. Kan vara blek och "knottrig" eller röd och blödande.</li>
+                        <li>🔍 <strong>Konsistens:</strong> Ofta <strong>fast, fibrös och hård</strong> vid palpation.</li>
+                        <li>🔍 <strong>Pseudofickor:</strong> Sonderingsdjupet ökat p.g.a. att tandköttet vuxit koronalt.</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>B. Vid misstanke om MRONJ</h5>
+                    <ul>
+                        <li>🔍 <strong>Blottlagt ben:</strong> Synligt gul-vitt ben, ofta i anslutning till ett tidigare extraktionsområde.</li>
+                        <li>🔍 <strong>Infektion:</strong> Rodnad, svullnad, pusflöde eller fistelgång.</li>
+                        <li>🔍 <strong>Lukt:</strong> Dålig andedräkt (foetor ex ore) vanligt vid nekrotiskt ben.</li>
+                        <li>🔍 <strong>Neurologi:</strong> Känselbortfall i läppen (Vincent's symptom) — påverkan n. alveolaris inferior.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc38-behandling" class="content-panel">
+                <h3>🔧 Behandling</h3>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">SPÅR A: Gingival Överväxt</div>
+                    <h5>1. Infektionskontroll (Basbehandling):</h5>
+                    <p>Professionell tandrengöring (depuration) och optimerad munhygien. Minskar inflammatorisk komponent.</p>
+                    <h5>2. Läkemedelsjustering (Kausal):</h5>
+                    <p>Kontakta patientens läkare för att diskutera byte av preparat. <strong>OBS: Sätt aldrig ut medicin själv!</strong></p>
+                    <h5>3. Kirurgi (Gingivektomi):</h5>
+                    <p>Om kvarstående trots hygienåtgärder. Hög recidivrisk om medicineringen kvarstår.</p>
+                </div>
+                <div class="treatment-box alternative scroll-animate">
+                    <div class="treatment-title">SPÅR B: MRONJ</div>
+                    <h5>Konservativ behandling (Allmäntandläkare):</h5>
+                    <ul>
+                        <li><strong>Spolning:</strong> Håll rent med koksalt eller Klorhexidin.</li>
+                        <li><strong>Antibiotika:</strong> Vid infektion/svullnad/smärta. (PcV + Metronidazol eller Amoxicillin).</li>
+                        <li><strong>Avlägsna vassa kanter:</strong> Slipa försiktigt på benkanter, <strong>undvik att blottlägga nytt ben</strong>.</li>
+                    </ul>
+                    <h5>Remiss (Nödvändigt):</h5>
+                    <p>Patienter med etablerad MRONJ (blottlagt ben) ska remitteras till käkkirurg.</p>
+                </div>
+            </div>
+            <div id="sc38-mronj" class="content-panel">
+                <h3>📊 MRONJ — Fördjupning</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Riskfaktorer för MRONJ</h5>
+                    <ul>
+                        <li>Bisfosfonater: zoledronsyra (Zometa, Aclasta), alendronsyra (Fosamax)</li>
+                        <li>RANKL-hämmare: Denosumab (Prolia, Xgeva)</li>
+                        <li>Angiogeneshämmare: Bevacizumab (Avastin)</li>
+                    </ul>
+                    <h5>Systemiska & Lokala:</h5>
+                    <ul>
+                        <li>Maligniteter (myelom, bröst-/prostata-/njurcancer)</li>
+                        <li>Samtidig kortisonbehandling, kemoterapi</li>
+                        <li><strong>Tandextraktion</strong> — vanligaste utlösande faktorn</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>MRONJ vs Osteomyelit — Differentialdiagnostik</h5>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Symtom/Fynd</th><th style="padding:8px;">MRONJ</th><th style="padding:8px;">Osteomyelit (Akut)</th></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Blottlagt ben</td><td style="padding:8px;">Ja, obligatoriskt (&gt;8 v)</td><td style="padding:8px;">Nej, oftast inte initialt</td></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Feber/Allmänpåverkan</td><td style="padding:8px;">Sällan initialt</td><td style="padding:8px;">Ja, ofta hög feber</td></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Smärtdebut</td><td style="padding:8px;">Kan vara smärtfri</td><td style="padding:8px;">Akut, djup, intensiv</td></tr>
+                        <tr><td style="padding:8px;">Läkemedelskoppling</td><td style="padding:8px;">Ja (Bisfosfonater etc.)</td><td style="padding:8px;">Nej (odontogen orsak)</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div id="sc38-journal" class="content-panel">
+                <h3>📝 Dokumentationsstöd</h3>
+                <h5 class="scroll-animate">Mall A: Gingival överväxt</h5>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: K06.1 Gingival överväxt (Läkemedelsinducerad). 
+Anamnes: Medicinerar med [Amlodipin/Sandimmun/Fenytoin] sedan [årtal]. 
+Upplever svullet tandkött, svårt att hålla rent. 
+Status: Generell gingival hyperplasi, framförallt i fronten. 
+Vävnaden fast/fibrös. Pseudofickor 5-6 mm. 
+Bedömning: Klinisk bild överensstämmer med läkemedelsbiverkan. 
+Åtgärd: Professionell rengöring, polering. 
+Instruktion i atraumatisk borstteknik. 
+[Ev: Kontaktar behandlande läkare ang ev preparatbyte].</pre>
+                </div>
+                <h5 class="scroll-animate" style="margin-top:30px;">Mall B: Misstänkt MRONJ</h5>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: M87.18 Osteonekros i käkarna (läkemedelsrelaterad). 
+Anamnes: Medicinerar med [Alendronat/Zometa/Prolia]. 
+Extraherade tand [XX] för 3 mån sedan. Söker nu för sår som ej läker. 
+Status: Blottlagt, gulvitt ben synligt i regio [XX]. 
+Storlek ca [X] mm. Gingivan runtom röd. Pus tömmer sig vid palpation. 
+Åtgärd: Spolning med koksalt. Info om tillståndet. Recept Klorhexidin. 
+Remiss: Käkkirurgiska kliniken för bedömning MRONJ.</pre>
+                </div>
+            </div>
+            <div id="sc38-flaggor" class="content-panel">
+                <h3>🚨 Röda Flaggor</h3>
+                <div class="warning-box scroll-animate"><strong>🚨 Leukemi</strong><p style="margin-top:10px;">Gingival överväxt kan vara debutsymtom på akut myeloisk leukemi. Om vävnaden är <strong>blåröd, "rullgardinsliknande", spontanblödande</strong> och patienten har trötthet/feber → <strong>Akut läkarremiss för blodprov.</strong></p></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Malignitet</strong><p style="margin-top:10px;">Sår/benblotta som inte läker kan vara cancer. Om patienten <strong>inte</strong> står på antiresorptiva läkemedel och har ett sår >2 veckor → Remiss för biopsi/utredning.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sc39-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+            <button class="tab-btn active" onclick="openInnerTab('sc39', 'snabb', this)">⚡ Snabböversikt</button>
+            <button class="tab-btn" onclick="openInnerTab('sc39', 'anamnes', this)">❓ Anamnes & Triad</button>
+            <button class="tab-btn" onclick="openInnerTab('sc39', 'behandling', this)">🔧 Behandling</button>
+            <button class="tab-btn" onclick="openInnerTab('sc39', 'journal', this)">📝 Journal</button>
+            <button class="tab-btn" onclick="openInnerTab('sc39', 'flaggor', this)">🚨 Röda Flaggor</button>
+        </div>
+        <div class="inner-display">
+            <div id="sc39-snabb" class="content-panel active">
+                <h3>⚡ Scenarioidentifiering</h3>
+                <div class="patient-symptom-box scroll-animate">
+                    <div class="symptom-list">
+                        <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORAL-39-NGNP</div>
+                        <div class="symptom-item">🗣️ <strong>Citat:</strong> "Akut smärta, blödande tandkött och 'avhuggna' papiller"</div>
+                        <div class="symptom-item">📖 <strong>ICD-10:</strong> K05.10 (Nekrotiserande gingivit/ANUG), K05.32 (Nekrotiserande parodontit/ANUP)</div>
+                        <div class="symptom-item">🔬 <strong>Etiologi:</strong> Opportunistisk infektion — spiroketer + fusobakterier invaderar vävnaden</div>
+                    </div>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Definitioner</h5>
+                    <ul>
+                        <li><strong>Diagnos A — NG/ANUG:</strong> Infektion begränsad till gingivan utan fästeförlust.</li>
+                        <li><strong>Diagnos B — NP/ANUP:</strong> Infektionen har spridit sig apikalt med fästeförlust och bennedbrytning.</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Riskfaktorer (Predisponerande)</h5>
+                    <ul>
+                        <li><strong>Rökning</strong> (Mycket stark koppling)</li>
+                        <li><strong>Stress</strong> (Psykologisk stress, sömnbrist, "tentaperioder")</li>
+                        <li><strong>Immunsuppression:</strong> HIV/AIDS, leukemi, neutropeni</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc39-anamnes" class="content-panel">
+                <h3>❓ Anamnes</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Subjektiv bedömning</h5>
+                    <ul>
+                        <li><strong>❓ Smärtkaraktär:</strong> Intensiv, konstant smärta i tandköttet. Ofta svårt att äta eller borsta.</li>
+                        <li><strong>❓ Debut:</strong> Plötslig (akut) debut.</li>
+                        <li><strong>❓ Allmäntillstånd:</strong> Feber eller sjukdomskänsla? (Vanligt).</li>
+                        <li><strong>❓ Andedräkt:</strong> Dålig smak eller lukt? ("Metallisk smak").</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Den diagnostiska triaden</h5>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+                        <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:10px;">Kardinalsymtom</th><th style="padding:10px;">Kliniskt fynd</th></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">1. Smärta</td><td style="padding:8px;">Uttalad gingival smärta</td></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">2. Ulcerationer (Nekros)</td><td style="padding:8px;">Papillerna "utstansade/avhuggna" (inverterad kontur). Gråvita pseudomembran.</td></tr>
+                        <tr><td style="padding:8px; font-weight:700;">3. Spontan blödning</td><td style="padding:8px;">Gingivan blöder vid minsta beröring eller spontant.</td></tr>
+                    </table>
+                    <p style="margin-top:10px;">Övriga: Foetor ex ore, svullna lymfkörtlar, feber. Börjar ofta i UK-fronten.</p>
+                </div>
+            </div>
+            <div id="sc39-behandling" class="content-panel">
+                <h3>🔧 Akut Åtgärd & Behandling</h3>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Steg 1: Debridering (Avlägsnande av pseudomembran och plack)</div>
+                    <ol>
+                        <li>Applicera ytanestesi eller försiktig LA.</li>
+                        <li>Avlägsna försiktigt gråvita beläggningar och supragingivalt plack med <strong>bomullspellets dränkta i 3% väteperoxid (H₂O₂)</strong>.</li>
+                        <li><strong>OBS: Undvik djup subgingival depuration</strong> i akuta skedet — risk för ytterligare vävnadsskada och bakteriemi.</li>
+                    </ol>
+                </div>
+                <div class="treatment-box alternative scroll-animate">
+                    <div class="treatment-title">Steg 2: Farmakologisk behandling</div>
+                    <h5>Antibiotika (vid allmänpåverkan/spridning):</h5>
+                    <ul>
+                        <li><strong>Förstahandsval:</strong> Metronidazol (Flagyl) 400 mg x 3 i 5–7 dagar.</li>
+                        <li><strong>Alternativ:</strong> Penicillin V (PcV).</li>
+                    </ul>
+                </div>
+                <div class="treatment-box alternative scroll-animate">
+                    <div class="treatment-title">Steg 3: Egenvård & Instruktion</div>
+                    <ul>
+                        <li><strong>Klorhexidin:</strong> Sköljning 0,12–0,2% två gånger dagligen i 1–2 veckor.</li>
+                        <li><strong>Rökstopp:</strong> Informera om att rökning kraftigt försämrar läkningen.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc39-journal" class="content-panel">
+                <h3>📝 Dokumentationsstöd</h3>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: K05.10 Nekrotiserande gingivit (ANUG). 
+Anamnes: Söker akut för intensiv smärta i tandköttet och blödning sedan [tid]. Röker [antal] cig/dag. Upplever stress. 
+Status:
+- Gingiva: Nekrotiska, utstansade papiller regio [XX-YY]. Gråvita pseudomembran. Kraftig blödning vid beröring.
+- Allmänt: Foetor ex ore. 
+Behandling: Ytanestesi. Varsam rengöring med bomullspellets och 3% väteperoxid. Supragingival rengöring. 
+Ordination: Klorhexidinsköljning 0,2% morgon och kväll. 
+Info: Rökstopp. Mjuk kost. Återbesök om 2–3 dagar.</pre>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Uppföljning</h5>
+                    <ul>
+                        <li><strong>Akut återbesök:</strong> Inom 2–5 dagar för kontroll.</li>
+                        <li><strong>Parodontal sanering:</strong> Konventionell depuration efter akuta fasen.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc39-flaggor" class="content-panel">
+                <h3>🚨 Röda Flaggor</h3>
+                <div class="warning-box scroll-animate"><strong>🚨 Ingen förbättring inom 48 timmar</strong><p style="margin-top:10px;">Misstänk allvarlig underliggande sjukdom (HIV/Leukemi). Remiss till läkare/specialist.</p></div>
+                <div class="warning-box scroll-animate"><strong>🚨 Nekrotiserande Stomatit / Noma</strong><p style="margin-top:10px;">Om nekrosen sprider sig utanför tandköttet till slemhinna och ben (ovanligt i västvärlden, kopplat till svår malnutrition/HIV).</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sc40-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+            <button class="tab-btn active" onclick="openInnerTab('sc40', 'snabb', this)">⚡ Snabböversikt</button>
+            <button class="tab-btn" onclick="openInnerTab('sc40', 'trig', this)">⚡ Trigeminusneuralgi</button>
+            <button class="tab-btn" onclick="openInnerTab('sc40', 'bms', this)">🔥 Munsveda (BMS)</button>
+            <button class="tab-btn" onclick="openInnerTab('sc40', 'zoster', this)">🦠 Herpes Zoster</button>
+            <button class="tab-btn" onclick="openInnerTab('sc40', 'journal', this)">📝 Journalmallar</button>
+        </div>
+        <div class="inner-display">
+            <div id="sc40-snabb" class="content-panel active">
+                <h3>⚡ Scenarioidentifiering</h3>
+                <div class="patient-symptom-box scroll-animate">
+                    <div class="symptom-list">
+                        <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORAL-40-NEURO</div>
+                        <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det bränner, ilar eller hugger – men tanden ser frisk ut"</div>
+                        <div class="symptom-item">⚠️ <strong>Fälla:</strong> Feldiagnostik → onödiga rotbehandlingar/extraktioner av friska tänder</div>
+                    </div>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Tre delscenarier</h5>
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                        <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Tillstånd</th><th style="padding:8px;">Smärttyp</th><th style="padding:8px;">Duration</th><th style="padding:8px;">Utlösande</th><th style="padding:8px;">Kliniska fynd</th></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">Pulpit (DD)</td><td style="padding:8px;">Bultande/ilande</td><td style="padding:8px;">Min–Timmar</td><td style="padding:8px;">Kyla/Värme</td><td style="padding:8px;">Karies, fyllning</td></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">A. Trigeminusneuralgi</td><td style="padding:8px;">Elektrisk stöt</td><td style="padding:8px;">Sekunder</td><td style="padding:8px;">Beröring (trigger)</td><td style="padding:8px;">Inga (tänder u.a.)</td></tr>
+                        <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">B. Munsveda (BMS)</td><td style="padding:8px;">Brännande</td><td style="padding:8px;">Konstant (dag)</td><td style="padding:8px;">Stress/Spontan</td><td style="padding:8px;">Inga (slemhinna u.a.)</td></tr>
+                        <tr><td style="padding:8px; font-weight:700;">C. Herpes Zoster</td><td style="padding:8px;">Brännande/Värk</td><td style="padding:8px;">Konstant</td><td style="padding:8px;">Virusreaktivering</td><td style="padding:8px;">Enkelsidiga blåsor</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div id="sc40-trig" class="content-panel">
+                <h3>⚡ Delscenario A: Trigeminusneuralgi</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Beskrivning & Etiologi</h5>
+                    <p><strong>Orsak:</strong> Ofta vaskulär kompression (blodkärl trycker på trigeminusnerven vid hjärnstammen) → demyelinisering och hyperexcitabilitet. Oftast >50 år, vanligare hos kvinnor.</p>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Anamnes & Symtom</h5>
+                    <ul>
+                        <li><strong>Smärtkaraktär:</strong> Blixtrande, huggande, "elektrisk stöt". Mycket hög intensitet.</li>
+                        <li><strong>Duration:</strong> Sekunder upp till 2 minuter. Mellan attackerna smärtfri.</li>
+                        <li><strong>Triggerzoner:</strong> Utlöses av lätt beröring (tvätta ansiktet, rakning), tal, tuggning.</li>
+                        <li><strong>Refraktärperiod:</strong> Efter attack följer kort period då ny smärta ej kan utlösas.</li>
+                    </ul>
+                </div>
+                <div class="warning-box scroll-animate"><strong>⚠️ Diagnostisk fälla:</strong> Smärtan kan misstolkas som pulpit. Skillnaden: neuralgi har tydlig "på/av"-karaktär och utlöses av beröring. Om <strong>känselnedsättning finns</strong> → misstänk tumör/skada.</div>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Åtgärd</div>
+                    <ul>
+                        <li><strong>Ingen invasiv tandvård:</strong> Borra eller rotfyll INTE om du inte hittar tydlig dental orsak.</li>
+                        <li><strong>Vanliga analgetika hjälper inte</strong> (Alvedon/NSAID).</li>
+                        <li><strong>Förstahandsval:</strong> Antiepileptika, t.ex. Karbamazepin (Tegretol) — förskrivs av läkare.</li>
+                        <li><strong>Remiss:</strong> Till läkare/neurolog för utredning och medicinering.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc40-bms" class="content-panel">
+                <h3>🔥 Delscenario B: Munsveda (Burning Mouth Syndrome)</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Beskrivning</h5>
+                    <p><strong>Definition:</strong> Intraoral brännande känsla/smärta som återkommer dagligen (>2h/dag) i >3 månader utan medicinsk eller dental orsak. Drabbar främst postmenopausala kvinnor.</p>
+                    <ul>
+                        <li><strong>Primär BMS:</strong> Idiopatisk/Neuropatisk (felfunktion i nervsystemet).</li>
+                        <li><strong>Sekundär BMS:</strong> Orsakad av svamp, allergi, muntorrhet, brist på B12/Järn/Zink, diabetes.</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Anamnes & Symtom</h5>
+                    <ul>
+                        <li>Sveda, "bränd tunga", stickningar. Ofta bilateralt. Vanligast tungspetsen.</li>
+                        <li><strong>Crescendo-mönster:</strong> Lindriga besvär på morgonen som förvärras under dagen. Stör sällan nattsömnen.</li>
+                        <li>Muntorrhet (xerostomi) och smakförändringar (dysgeusi) vanligt.</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Kliniska fynd</h5>
+                    <p>🔍 <strong>Slemhinnan ser helt normal ut</strong> (ingen rodnad, inga sår). Om röd slemhinna → troligen candidos, inte BMS.</p>
+                </div>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Åtgärd</div>
+                    <ul>
+                        <li><strong>Information:</strong> Lugnande besked ("cancerofobi" vanligt). Ofarligt men besvärligt.</li>
+                        <li><strong>Utredning:</strong> Remiss läkare för blodprover: Järn, B12, Folsyra, Zink, P-glukos.</li>
+                        <li><strong>Farmaka (vid primär BMS):</strong> Lokalt Klonazepam (sugtablett) eller systemisk antidepressiv (specialist).</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc40-zoster" class="content-panel">
+                <h3>🦠 Delscenario C: Herpes Zoster (Bältros)</h3>
+                <div class="info-card scroll-animate">
+                    <h5>Beskrivning</h5>
+                    <p>Reaktivering av Varicella Zoster-virus (Vattkoppor). Ligger latent i trigeminusgangliet.</p>
+                    <ul>
+                        <li><strong>Fas 1 (Prodromal):</strong> Akut smärta <strong>innan</strong> utslag syns. Kan simulera tandvärk/pulpit.</li>
+                        <li><strong>Fas 2 (Akut):</strong> Blåsor och sår längs en nervbana.</li>
+                        <li><strong>Fas 3 (Kronisk):</strong> Postherpetisk neuralgi (smärta kvarstår >3 månader).</li>
+                    </ul>
+                </div>
+                <div class="info-card scroll-animate">
+                    <h5>Kliniska fynd</h5>
+                    <ul>
+                        <li>🔍 <strong>Smärtkaraktär:</strong> Brännande, skärande eller bultande. Ofta mycket intensiv.</li>
+                        <li>🔍 <strong>Lokalisation:</strong> Alltid <strong>strikt enkelsidig</strong> (stannar vid medellinjen). Följer en trigeminusgren.</li>
+                        <li>🔍 <strong>Efter 2–4 dagar:</strong> Enkelsidiga blåsor och sår intraoralt/på hud i smärtande området.</li>
+                    </ul>
+                </div>
+                <div class="treatment-box scroll-animate">
+                    <div class="treatment-title">Åtgärd</div>
+                    <ul>
+                        <li><strong>Antiviral behandling:</strong> Måste sättas in <strong>inom 72 timmar</strong> efter blåsdebut (t.ex. Valaciklovir). Minskar risk för långvarig nervsmärta.</li>
+                        <li><strong>Smärtlindring:</strong> Paracetamol + NSAID eller opioider akut.</li>
+                        <li><strong>Remiss:</strong> Till läkare/vårdcentral vid osäkerhet eller behov av antiviralia.</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="sc40-journal" class="content-panel">
+                <h3>📝 Journalmallar</h3>
+                <h5 class="scroll-animate">Mall A: Trigeminusneuralgi</h5>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: 8B82.0 Trigeminusneuralgi (Misstänkt). 
+Anamnes: Söker för attacker av extrem, blixtrande smärta höger sida ansikte/käke. Duration sekunder. Utlöses av beröring/tvätt/tuggning. Besvärsfri mellan attackerna. 
+Status: Dental: Tänder u.a. Sensibilitet normal. Ingen perkussionsömhet. Neuro: Ingen känselnedsättning noterad. 
+Bedömning: Klinisk bild talar starkt för trigeminusneuralgi. Ingen dental orsak funnen. 
+Åtgärd: Info. Ingen dental åtgärd. Remiss till läkare/neurolog för utredning.</pre>
+                </div>
+                <h5 class="scroll-animate" style="margin-top:30px;">Mall B: Munsveda (BMS)</h5>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: DA0F.0 Burning Mouth Syndrome (Munsveda). 
+Anamnes: Söker för daglig sveda tunga/läppar sedan [tid]. Värre på kvällen. Muntorrhet. 
+Status: Slemhinna: U.a. Normal färg och struktur. Ingen candida synlig. 
+Bedömning: Munsveda utan synliga kliniska fynd. 
+Åtgärd: Info om tillståndets godartade natur. Råd om SLS-fri tandkräm och salivstimulerande. [Ev. remiss vc för provtagning B12/Järn].</pre>
+                </div>
+                <h5 class="scroll-animate" style="margin-top:30px;">Mall C: Herpes Zoster</h5>
+                <div class="journal-box scroll-animate">
+                    <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                    <pre>Diagnos: 1E91 Herpes Zoster (V2/V3). 
+Anamnes: Intensiv smärta höger sida ök/uk sedan 3 dagar. Brännande. Nu debut av blåsor. 
+Status: Intraoralt: Enkelsidiga sår/blåsor i gommen/kinden som ej överskrider medellinjen. Dental: Tänder u.a. 
+Åtgärd: Diagnos Bältros. Pat informerad. Remiss till läkare — antiviral behandling (inom 72h). Smärtlindring vb.</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+<div class="right-sidebar">
+            <div class="sidebar-card">
+                <h4 class="sidebar-title">🔬 Oralmedicin — Snabbval</h4>
+                
+                <div style="margin-bottom:15px; display: flex; flex-direction: column; gap: 8px;">
+                    <button class="sidebar-btn" style="background:var(--accent-terracotta-dark);" onclick="selectScenario('sc35')">🩹 Sår & Blåsor</button>
+                    <button class="sidebar-btn" onclick="selectScenario('sc36')">🍄 Candida</button>
+                    <button class="sidebar-btn" style="background:var(--accent-terracotta-dark);" onclick="selectScenario('sc37m')">🔴 Malignitet</button>
+                    <button class="sidebar-btn" style="background:var(--accent-terracotta-dark);" onclick="selectScenario('sc38')">💊 Läkemedelsrelaterat</button>
+                    <button class="sidebar-btn" style="background:var(--accent-terracotta-dark);" onclick="selectScenario('sc39')">🦠 NG/NP (ANUG)</button>
+                    <button class="sidebar-btn" onclick="selectScenario('sc40')">⚡ Neurogent</button>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>🚨 2-veckorsregeln</h4>
+                    <p style="font-size:0.85rem; text-align:left;">Alla sår som kvarstår <strong>>2 veckor</strong> utan tydlig orsak → malignt tills motsatsen är bevisad. Remiss för biopsi/utredning.</p>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>⛔ Ingen egen biopsi</h4>
+                    <p style="font-size:0.85rem; text-align:left;">Vid malignitetsmisstanke: remittera, ta INTE biopsi själv.</p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>⚠️ Flukonazol + Waran</h4>
+                    <p style="font-size:0.85rem; text-align:left;">Flukonazol interagerar kraftigt med Warfarin → livshotande blödningar. Kontrollera ALLTID!</p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>🦴 MRONJ-varning</h4>
+                    <p style="font-size:0.85rem; text-align:left;">Blottlagt ben >8 v + bisfosfonater = MRONJ → remiss käkkirurg.</p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>⚡ Neuralgi-fälla</h4>
+                    <p style="font-size:0.85rem; text-align:left;">Trigeminusneuralgi misstolkas ofta som pulpit → onödiga endodontier. "På/av"-smärta + triggers = neuralgi.</p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>📋 Kom ihåg</h4>
+                    <p style="font-size:0.85rem;">Beslutsstöd — ersätter inte kliniskt omdöme. PSL 2010:659.</p>
+                </div>
+            </div>
+        </div>  </div>  </div>
+
+      
+
+
+<script>
+    const scenarioData = {
+        'sc35': { img:'sar_blasor.png', fallback:'https://placehold.co/120x100/ffebee/b71c1c?text=SÅR', title:'"Blåsor och sår i munnen"' },
+        'sc36': { img:'candida.png', fallback:'https://placehold.co/120x100/fff3e0/e65100?text=CAND', title:'"Svider i gommen — tungan röd"' },
+        'sc38': { img:'lakemedel.png', fallback:'https://placehold.co/120x100/e8eaf6/283593?text=MRONJ', title:'"Svullet tandkött eller blottlagt ben"' }
+    };
+    function selectScenario(id) {
+        document.querySelectorAll('.scenario-trigger-card').forEach(c => c.classList.remove('active'));
+        const trigger = document.getElementById('trigger-' + id);
+        if (trigger) trigger.classList.add('active');
+        document.querySelectorAll('.scenario-display-wrapper').forEach(w => w.classList.remove('active'));
+        const display = document.getElementById(id + '-display');
+        if (display) display.classList.add('active');
+        const h = document.getElementById('dynamic-header');
+        h.classList.remove('centered'); h.classList.add('scenario-mode');
+        const data = scenarioData[id];
+        if (data) {
+            document.getElementById('dynamic-header-title').textContent = data.title;
+            const avatar = document.getElementById('story-avatar');
+            avatar.src = data.img;
+            avatar.onerror = function() { this.src = data.fallback; };
+            avatar.classList.add('pop');
+            setTimeout(() => avatar.classList.remove('pop'), 600);
+        }
+        const wrapper = document.getElementById(id + '-display');
+        if (wrapper) {
+            wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const fp = wrapper.querySelector('.content-panel');
+            const fb = wrapper.querySelector('.tab-btn');
+            if (fp) fp.classList.add('active');
+            if (fb) fb.classList.add('active');
+        }
+        setTimeout(triggerScrollAnimations, 100);
+    }
+    function openInnerTab(scenarioId, tabName, btn) {
+        const wrapper = document.getElementById(scenarioId + '-display');
+        if (!wrapper) return;
+        wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const target = document.getElementById(scenarioId + '-' + tabName);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+        setTimeout(triggerScrollAnimations, 100);
+    }
+    function copyText(btn) {
+        const pre = btn.nextElementSibling;
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            const orig = btn.innerText;
+            btn.innerText = '✅ Kopierat!';
+            setTimeout(() => { btn.innerText = orig; }, 1500);
+        });
+    }
+    function searchCards() {
+        const input = document.getElementById('mainSearch').value.toLowerCase();
+        document.querySelectorAll('.scenario-trigger-card').forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(input) ? 'flex' : 'none';
+        });
+    }
+    function triggerScrollAnimations() {
+        document.querySelectorAll('.scroll-animate').forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', triggerScrollAnimations);
+</script>
+
+    <button class="sources-btn" onclick="document.getElementById('sourcesModalOral').classList.add('active')">📚 Källor</button>
+    <div class="sources-modal-overlay" id="sourcesModalOral" onclick="if(event.target===this)this.classList.remove('active')">
+        <div class="sources-modal">
+            <button class="close-modal" onclick="document.getElementById('sourcesModalOral').classList.remove('active')">✕ Stäng</button>
+            <h2>📚 Källförteckning — Oralmedicin</h2>
+            <ul>
+                <li><strong>Internetodontologi.</strong> Afte och afte-liknande ulcerationer (uppdaterad 7 mars 2025). internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Orala virusinfektioner. internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Oral lichen planus. internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Slemhinnepemfigoid. internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Erythema multiforme (uppdaterad 7 mars 2025).</li>
+                <li><strong>Internetodontologi.</strong> Orala svampinfektioner. internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Oral cancer och premaligna tillstånd. internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Leukoplaki (uppdaterad 24 oktober 2023).</li>
+                <li><strong>Internetodontologi.</strong> Aktinisk cheilit (uppdaterad 13 juni 2025).</li>
+                <li><strong>Internetodontologi.</strong> Läkemedelsbiverkningar i munhålan (uppdaterad 21 oktober 2024).</li>
+                <li><strong>Internetodontologi.</strong> Läkemedelsrelaterad käkbensnekros (MRONJ). internetodontologi.se/kakkirurgi/lakemedelsrelaterad-kakbensnekros-mronj</li>
+                <li><strong>Internetodontologi.</strong> Trigeminusneuralgi. internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Burning Mouth Syndrome (BMS) (uppdaterad 2 februari 2024).</li>
+                <li><strong>VGR.</strong> Regional medicinsk riktlinje — Antiresorptiva läkemedel (fastställd oktober 2024, giltig t.o.m. oktober 2026). alfresco.vgregion.se</li>
+                <li><strong>Skånelistan.</strong> MRONJ-riktlinje (publicerad 2025-01-02). vardgivare.skane.se</li>
+                <li><strong>Socialstyrelsen.</strong> SVF Huvud-halscancer; Nationellt vårdprogram huvud-halscancer.</li>
+                <li><strong>Socialstyrelsen.</strong> ICD-10-SE. Koder: B37.0, A69.1, K05.10, K05.32 m.fl.</li>
+                <li><strong>FASS.</strong> Klobetasol (Dermovat), Flukonazol, Valaciklovir, Karbamazepin. fass.se</li>
+                <li><strong>Janusmed interaktioner.</strong> Flukonazol + Warfarin/simvastatin/fenytoin. janusmed.se</li>
+                <li><strong>Regionalt cancercentrum Sverige.</strong> SVF Huvud-halscancer — remissformulär.</li>
+                <li><strong>TLV.</strong> Aktuell taxa — kusp.tlv.se</li>
+            </ul>
+            <p style="color:#888; font-size:0.85rem; margin-top:20px;">Senast granskad: Mars 2026. Ansvarig granskare: Nedaa Abujazar.</p>
+        </div>
+    </div>
+</body>
+</html>

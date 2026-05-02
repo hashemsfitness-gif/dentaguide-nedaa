@@ -17,7 +17,7 @@
 
 :root {
   /* === GEMENSAMMA TOKENS (alla teman) === */
-
+  
   /* Primära färger */
   --primary: #0E3B52;
   --primary-container: #1E3028;
@@ -25,19 +25,19 @@
   --secondary-container: #FF7E55;
   --neutral: #F9F7F2;
   --surface: #FCF9F8;
-
+  
   /* Status */
   --status-ok: #2D6A4F;
   --status-warning: #E07B39;
   --status-danger: #C1121F;
   --status-info: #0E3B52;
   --tertiary-gold: #C9A84C;
-
+  
   /* Typografi */
   --font-display: 'Newsreader', 'Cormorant Garamond', serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'IBM Plex Mono', 'Space Grotesk', monospace;
-
+  
   /* Spacing */
   --space-xs: 0.5rem;
   --space-sm: 1rem;
@@ -45,7 +45,7 @@
   --space-lg: 2rem;
   --space-xl: 3rem;
   --space-2xl: 4rem;
-
+  
   /* Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -54,7 +54,7 @@
   --radius-2xl: 2rem;
   --radius-3xl: 3rem;
   --radius-pill: 9999px;
-
+  
   /* Default */
   --bg-main: var(--surface);
   --text-primary: var(--primary-container);
@@ -62,7 +62,7 @@
   --text-muted: #9CA39F;
   --border-light: #E5E3DF;
   --border-medium: #D1CEC9;
-
+  
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(30, 81, 71, 0.08);
   --shadow-md: 0 4px 16px rgba(30, 81, 71, 0.12);
@@ -82,18 +82,17 @@
   --bg-sidebar: rgba(247, 244, 242, 0.85);
   --bg-header-from: #0d4a65;
   --bg-header-to: #062f40;
-
-  --accent-primary: var(--secondary);
-  /* #CC5833 */
+  
+  --accent-primary: var(--secondary);     /* #CC5833 */
   --accent-light: var(--secondary-container);
   --accent-gradient-from: #C53A19;
   --accent-gradient-to: #E07B39;
-
+  
   --text-primary: #091b14;
   --text-secondary: rgba(9, 27, 20, 0.7);
   --text-muted: rgba(9, 27, 20, 0.4);
   --text-inverse: #FCF9F8;
-
+  
   /* Glass effects */
   --glass-bg: rgba(255, 255, 255, 0.45);
   --glass-border: rgba(255, 255, 255, 0.6);
@@ -110,29 +109,28 @@
   --bg-card-solid: #FFFFFF;
   --bg-sidebar: #F6F3F2;
   --bg-sidebar-dark: #1E3028;
-
+  
   /* Dot pattern background */
   --bg-pattern: radial-gradient(#1E302808 1px, transparent 0);
   --bg-pattern-size: 24px 24px;
-
-  --accent-primary: var(--secondary);
-  /* #CC5833 */
+  
+  --accent-primary: var(--secondary);     /* #CC5833 */
   --accent-warm: #FFB59F;
   --accent-soft: #FFDBD0;
-
+  
   /* Varma toner */
   --text-primary: #091B14;
   --text-secondary: #424845;
   --text-muted: #737874;
-
+  
   /* Mjukare radius */
   --radius-card: 1.5rem;
   --radius-large: 2rem;
-
+  
   /* Claymorphism shadows */
   --shadow-clay: 0 8px 24px rgba(30, 48, 40, 0.06);
   --shadow-clay-lg: 0 20px 50px rgba(9, 27, 20, 0.08);
-
+  
   /* Atmospheric gradients */
   --orb-primary: rgba(30, 48, 40, 0.04);
   --orb-secondary: rgba(165, 60, 25, 0.04);
@@ -146,30 +144,30 @@
   --bg-main: #FCF9F8;
   --bg-card: rgba(255, 255, 255, 0.4);
   --bg-card-solid: #FFFFFF;
-
+  
   /* Mörk sidebar */
   --sidebar-bg: #1E3028;
   --sidebar-text: #B6CBC0;
   --sidebar-text-active: #FF7E55;
   --sidebar-text-hover: #FCF9F8;
   --sidebar-active-bg: rgba(252, 249, 248, 0.1);
-
+  
   /* Stat card borders */
   --card-border-users: #B6CBC0;
   --card-border-subs: #FF7E55;
   --card-border-scenarios: #C9A84C;
   --card-border-mrr: #1E3028;
-
+  
   /* Charts */
   --chart-primary: #CC5833;
   --chart-secondary: #2D6A4F;
   --chart-tertiary: #C9A84C;
   --chart-quaternary: #0E3B52;
-
+  
   /* Background dots */
   --bg-pattern: radial-gradient(#091b14 0.5px, transparent 0.5px);
   --bg-pattern-size: 24px 24px;
-
+  
   /* Status footer */
   --footer-bg: #1E3028;
   --footer-text: #B6CBC0;
@@ -193,22 +191,14 @@ body {
   min-height: 100vh;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
-code,
-pre,
-.mono,
-.font-mono {
+code, pre, .mono, .font-mono {
   font-family: var(--font-mono);
 }
 
@@ -426,7 +416,7 @@ pre,
   color: white !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 16px -4px rgba(204, 88, 51, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+              inset 0 1px 1px rgba(255, 255, 255, 0.3);
   font-weight: 700;
 }
 
@@ -436,7 +426,7 @@ pre,
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.7);
   box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06),
-    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+              inset 0 1px 2px rgba(255, 255, 255, 0.9);
   border-radius: 1rem;
   padding: 1.25rem;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -448,14 +438,14 @@ pre,
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1),
-    0 0 15px rgba(255, 255, 255, 0.5);
+              0 0 15px rgba(255, 255, 255, 0.5);
 }
 
 .morphic-button-dark {
   background: linear-gradient(145deg, #0d4a65, #062f40);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.15);
+              inset 0 1px 2px rgba(255, 255, 255, 0.15);
   color: white;
   border-radius: 1rem;
   padding: 1.25rem;
@@ -743,13 +733,8 @@ pre,
 }
 
 @keyframes drift {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  100% {
-    transform: translate(100px, 100px) scale(1.2);
-  }
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(100px, 100px) scale(1.2); }
 }
 
 .orb-emerald {
@@ -879,7 +864,6 @@ pre,
 
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -887,7 +871,7 @@ pre,
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
+  
   .orb {
     animation: none;
   }
@@ -921,18 +905,17 @@ pre,
 /* ================================================== */
 
 @media (max-width: 1024px) {
-
   .sidebar-left,
   .sidebar-right {
     position: relative;
     width: 100%;
     height: auto;
   }
-
+  
   .header-gradient {
     padding: 1rem;
   }
-
+  
   .glass-bento {
     padding: 1.5rem;
     border-radius: 1rem;
@@ -943,19 +926,11 @@ pre,
   body {
     font-size: 0.875rem;
   }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-  }
-
-  h3 {
-    font-size: 1.25rem;
-  }
-
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  
   .pill-button {
     padding: 8px 14px;
     font-size: 12px;
@@ -967,7 +942,6 @@ pre,
 /* ================================================== */
 
 @media print {
-
   .noise-overlay,
   .orb,
   .sidebar-left,
@@ -975,12 +949,12 @@ pre,
   .header-gradient {
     display: none !important;
   }
-
+  
   body {
     background: white !important;
     color: black !important;
   }
-
+  
   .glass-bento,
   .glass-bento-dark {
     background: white !important;

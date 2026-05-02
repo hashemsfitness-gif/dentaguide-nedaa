@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antibiotika — DentalGuide Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   CSS VARIABLES & RESET
+═══════════════════════════════════════════ */
+:root {
+  --sand-50: #fdf8f2;
+  --sand-100: #f5ece0;
+  --sand-200: #ead9c4;
+  --terra: #c4885a;
+  --terra-dark: #8f5230;
+  --terra-deeper: #6e3a1e;
+  --green-ok: #059669;
+  --red-no: #dc2626;
+  --orange-warn: #d97706;
+  --warm-dark: #2c1e12;
+  --text-primary: #2c1e12;
+  --text-secondary: #6b4f36;
+  --text-muted: #9b7b5e;
+  --accent-terracotta-dark: #8f5230;
+  --glass: rgba(253,248,242,0.60);
+  --glass-border: rgba(196,136,90,0.22);
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(44,30,18,0.10);
+  --shadow-hover: 0 12px 40px rgba(44,30,18,0.18);
+  --transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--sand-50);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATED BACKGROUND ORBS
+═══════════════════════════════════════════ */
+.orb-container {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(70px); opacity: 0.4;
+  animation: orbFloat 12s ease-in-out infinite alternate;
+}
+.orb-1 { width: 500px; height: 500px; background: rgba(196,136,90,0.20); top: -150px; left: -100px; animation-duration: 14s; }
+.orb-2 { width: 350px; height: 350px; background: rgba(143,82,48,0.14); bottom: 5%; right: -80px; animation-duration: 11s; animation-delay: -4s; }
+.orb-3 { width: 280px; height: 280px; background: rgba(176,110,66,0.16); top: 45%; left: 55%; animation-duration: 16s; animation-delay: -7s; }
+@keyframes orbFloat {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(30px,-30px) scale(1.08); }
+}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.back-btn {
+  position: relative; z-index: 10;
+  display: inline-flex; align-items: center; gap: 7px;
+  margin: 18px 24px 0;
+  padding: 8px 18px; border-radius: 50px;
+  background: white; border: 1.5px solid var(--sand-200);
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
+  font-weight: 600; letter-spacing: 0.06em;
+  color: var(--text-secondary); cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.back-btn:hover { background: var(--terra-dark); color: white; border-color: var(--terra-dark); }
+
+.container {
+  position: relative; z-index: 1;
+  max-width: 1380px; margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero {
+  text-align: center; padding: 32px 20px 24px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700;
+  color: var(--warm-dark); margin-bottom: 8px;
+}
+.hero-subtitle {
+  font-size: 0.9rem; color: var(--text-secondary);
+  font-weight: 400; line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   DECISION SUPPORT BANNER
+═══════════════════════════════════════════ */
+.decision-banner {
+  background: linear-gradient(135deg, rgba(196,136,90,0.12), rgba(143,82,48,0.08));
+  border: 1.5px solid rgba(196,136,90,0.30);
+  border-radius: var(--radius); padding: 16px 22px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+}
+.decision-banner-text { font-size: 0.9rem; color: var(--text-primary); }
+.decision-banner-text strong { color: var(--terra-dark); }
+.decision-btn {
+  padding: 9px 22px; border-radius: 50px;
+  background: linear-gradient(135deg, var(--terra), var(--terra-dark));
+  color: white; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+  box-shadow: 0 4px 16px rgba(143,82,48,0.30);
+  transition: var(--transition); white-space: nowrap;
+}
+.decision-btn:hover { transform: scale(1.04); box-shadow: 0 6px 22px rgba(143,82,48,0.42); }
+
+/* ═══════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════ */
+.search-wrapper { display: flex; justify-content: center; margin-bottom: 24px; }
+.search-box {
+  display: flex; align-items: center; gap: 10px;
+  background: white; border: 1.5px solid var(--sand-200);
+  border-radius: 50px; padding: 10px 20px;
+  width: 100%; max-width: 520px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.2s;
+}
+.search-box:focus-within { border-color: var(--terra); }
+.search-box input {
+  flex: 1; border: none; outline: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.93rem;
+  color: var(--text-primary); background: transparent;
+}
+.search-box input::placeholder { color: var(--text-muted); }
+
+/* ═══════════════════════════════════════════
+   DASHBOARD LAYOUT
+═══════════════════════════════════════════ */
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 230px;
+  gap: 20px; align-items: start;
+}
+@media (max-width: 1100px) {
+  .dashboard-layout { grid-template-columns: 200px 1fr; }
+  .right-sidebar { display: none; }
+}
+@media (max-width: 720px) {
+  .dashboard-layout { grid-template-columns: 1fr; }
+  .scenario-nav { display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; }
+  .scenario-trigger-card { min-width: 140px; }
+}
+
+/* ═══════════════════════════════════════════
+   LEFT NAV — SCENARIO CARDS
+═══════════════════════════════════════════ */
+.scenario-nav {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.scenario-trigger-card {
+  background: var(--glass);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius); padding: 16px;
+  cursor: pointer; transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+.scenario-trigger-card:hover, .scenario-trigger-card.active {
+  background: rgba(196,136,90,0.14);
+  border-color: rgba(196,136,90,0.45);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+.trigger-tag {
+  display: inline-block; font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 50px;
+  background: var(--sand-100); color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.trigger-tag.red { background: rgba(220,38,38,0.10); color: #dc2626; }
+.trigger-tag.green { background: rgba(5,150,105,0.10); color: #059669; }
+.trigger-tag.blue { background: rgba(37,99,235,0.10); color: #2563eb; }
+.trigger-tag.orange { background: rgba(217,119,6,0.10); color: #d97706; }
+
+.trigger-avatar-container {
+  width: 50px; height: 50px; margin-bottom: 10px;
+  border-radius: 12px; overflow: hidden;
+  background: var(--sand-100);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+}
+.trigger-avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.trigger-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--warm-dark); margin-bottom: 5px; line-height: 1.3;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN CONTENT PANEL
+═══════════════════════════════════════════ */
+.main-content-panel { min-width: 0; }
+
+.header-container {
+  display: flex; align-items: center; gap: 20px;
+  background: var(--glass); backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius);
+  padding: 22px 24px; margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+.header-container.centered { justify-content: center; text-align: center; flex-direction: column; }
+.avatar-wrapper { width: 80px; height: 80px; border-radius: 16px; overflow: hidden; flex-shrink: 0; background: var(--sand-100); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+.character-img { width: 100%; height: 100%; object-fit: cover; }
+.character-img.pop { animation: popAnim 0.5s ease; }
+@keyframes popAnim { 0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+
+#dynamic-header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; font-weight: 700; color: var(--warm-dark);
+  margin-bottom: 4px;
+}
+.header-subtitle { font-size: 0.88rem; color: var(--text-secondary); }
+
+/* Scenario display wrappers */
+.scenario-display-wrapper {
+  display: none;
+  background: var(--glass); backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius);
+  overflow: hidden; box-shadow: var(--shadow);
+}
+.scenario-display-wrapper.active { display: flex; flex-direction: column; }
+
+/* Inner sidebar (tabs) */
+.inner-sidebar {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 14px 16px; background: rgba(244,235,226,0.6);
+  border-bottom: 1px solid var(--glass-border);
+}
+.tab-btn {
+  padding: 7px 14px; border-radius: 50px;
+  border: 1.5px solid var(--sand-200); background: white;
+  font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+  color: var(--text-secondary); cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.tab-btn:hover { border-color: var(--terra); color: var(--terra-dark); }
+.tab-btn.active {
+  background: var(--terra-dark); color: white;
+  border-color: var(--terra-dark);
+}
+
+.inner-display { padding: 24px; }
+.content-panel { display: none; }
+.content-panel.active { display: block; }
+.content-panel h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--warm-dark); margin-bottom: 16px;
+}
+
+/* ═══════════════════════════════════════════
+   CONTENT BOXES
+═══════════════════════════════════════════ */
+.warning-box {
+  background: rgba(220,38,38,0.07); border-left: 4px solid #dc2626;
+  border-radius: 10px; padding: 14px 16px;
+  font-size: 0.88rem; line-height: 1.6;
+  margin-bottom: 14px;
+}
+.info-card {
+  background: rgba(196,136,90,0.06); border: 1px solid rgba(196,136,90,0.20);
+  border-radius: 12px; padding: 18px;
+  margin-bottom: 14px;
+}
+.info-card h5 {
+  font-size: 0.82rem; font-weight: 700; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--terra-dark);
+  margin-bottom: 12px;
+}
+.treatment-box {
+  background: rgba(5,150,105,0.06); border: 1px solid rgba(5,150,105,0.20);
+  border-radius: 12px; padding: 18px; margin-bottom: 14px;
+}
+.treatment-box.alternative {
+  background: rgba(196,136,90,0.06); border-color: rgba(196,136,90,0.20);
+}
+.treatment-box.warning-box-style {
+  background: rgba(220,38,38,0.06); border-color: rgba(220,38,38,0.20);
+}
+.treatment-title {
+  font-size: 0.85rem; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 10px; letter-spacing: 0.02em;
+}
+.dose-highlight {
+  background: rgba(196,136,90,0.09); padding: 16px 20px;
+  border-radius: 12px; margin: 10px 0; text-align: center;
+}
+.dose-highlight p { font-size: 1.15rem; font-weight: 800; margin: 0; }
+.dose-highlight .dose-note { font-size: 0.8rem; color: var(--text-secondary); font-weight: 400; margin-top: 4px; }
+
+/* Source badges */
+.source-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em;
+  padding: 2px 8px; border-radius: 50px;
+  background: rgba(143,82,48,0.12); color: var(--terra-dark);
+  border: 1px solid rgba(143,82,48,0.20);
+  cursor: default; vertical-align: middle; margin-left: 4px;
+}
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+th {
+  text-align: left; padding: 10px 8px;
+  border-bottom: 2px solid rgba(196,136,90,0.25);
+  font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+td { padding: 9px 8px; border-bottom: 1px solid rgba(196,136,90,0.10); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.ok   { color: var(--green-ok); font-weight: 700; }
+.no   { color: var(--red-no); font-weight: 700; }
+.warn { color: var(--orange-warn); font-weight: 700; }
+
+/* Scroll animations */
+.scroll-animate { opacity: 0; transform: translateY(16px); transition: opacity 0.4s, transform 0.4s; }
+.scroll-animate.visible { opacity: 1; transform: translateY(0); }
+
+/* ═══════════════════════════════════════════
+   RIGHT SIDEBAR
+═══════════════════════════════════════════ */
+.right-sidebar { display: flex; flex-direction: column; gap: 14px; }
+.sidebar-card {
+  background: var(--glass); backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow);
+}
+.sidebar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--warm-dark); margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--sand-200);
+}
+.sidebar-btn {
+  display: block; width: 100%; margin-bottom: 8px;
+  padding: 9px 14px; border-radius: 10px;
+  border: 1.5px solid var(--sand-200); background: white;
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+  font-weight: 600; color: var(--text-primary);
+  cursor: pointer; text-align: left;
+  transition: all 0.2s;
+}
+.sidebar-btn:hover { background: var(--terra-dark); color: white; border-color: var(--terra-dark); }
+.sidebar-info {
+  background: var(--sand-100); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 10px;
+}
+.sidebar-info h4 { font-size: 0.78rem; font-weight: 700; color: var(--terra-dark); margin-bottom: 6px; }
+.sidebar-info p { font-size: 0.82rem; line-height: 1.6; color: var(--text-secondary); }
+
+/* Copy button */
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 8px;
+  background: var(--sand-100); border: 1px solid var(--sand-200);
+  font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 600;
+  color: var(--text-secondary); cursor: pointer;
+  transition: all 0.2s; margin-bottom: 8px;
+}
+.copy-btn:hover { background: var(--terra-dark); color: white; }
+.journal-template {
+  background: white; border: 1px solid var(--sand-200);
+  border-radius: 8px; padding: 10px 12px;
+  font-size: 0.78rem; color: var(--text-secondary);
+  line-height: 1.7; white-space: pre-wrap;
+  font-family: monospace;
+}
+
+/* ═══════════════════════════════════════════
+   DOSAGE CALCULATOR
+═══════════════════════════════════════════ */
+.calc-wrap {
+  background: rgba(5,150,105,0.06); border: 1px solid rgba(5,150,105,0.20);
+  border-radius: 12px; padding: 18px; margin-bottom: 14px;
+}
+.calc-wrap h4 { font-size: 0.9rem; font-weight: 700; color: var(--warm-dark); margin-bottom: 14px; }
+.calc-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
+.calc-field { display: flex; flex-direction: column; gap: 5px; }
+.calc-field label { font-size: 0.77rem; font-weight: 600; color: var(--text-muted); }
+.calc-field input, .calc-field select {
+  padding: 8px 12px; border: 1.5px solid var(--sand-200);
+  border-radius: 8px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem; color: var(--text-primary);
+  background: white; outline: none; width: 120px;
+}
+.calc-field input:focus, .calc-field select:focus { border-color: var(--terra); }
+.calc-go {
+  padding: 9px 18px; border-radius: 8px;
+  background: var(--terra-dark); color: white;
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+  transition: all 0.2s;
+}
+.calc-go:hover { background: var(--terra-deeper); }
+.calc-result {
+  display: none; margin-top: 12px;
+  background: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.25);
+  border-radius: 10px; padding: 14px 16px;
+}
+.calc-result.show { display: block; }
+.calc-result h5 { font-size: 0.8rem; font-weight: 700; color: #059669; margin-bottom: 8px; }
+.calc-result table td { padding: 5px 8px; font-size: 0.85rem; }
+
+/* ═══════════════════════════════════════════
+   DECISION SUPPORT MODAL
+═══════════════════════════════════════════ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(44,30,18,0.55); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--sand-50); border-radius: 22px;
+  width: 100%; max-width: 600px; max-height: 88vh;
+  overflow-y: auto; box-shadow: 0 20px 60px rgba(44,30,18,0.28);
+  animation: modalIn 0.32s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modalIn { from { opacity:0; transform:scale(0.88); } to { opacity:1; transform:scale(1); } }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 26px 16px;
+  border-bottom: 1px solid var(--sand-200);
+}
+.modal-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; font-weight: 700; color: var(--warm-dark);
+}
+.modal-close {
+  background: none; border: none; cursor: pointer;
+  font-size: 1.3rem; color: var(--text-muted); transition: color 0.2s;
+}
+.modal-close:hover { color: var(--terra-dark); }
+.modal-body { padding: 22px 26px 28px; }
+
+/* Decision steps */
+.step { display: none; }
+.step.active { display: block; }
+.step-counter {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--terra); margin-bottom: 6px;
+}
+.step-question {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem; font-weight: 700; color: var(--warm-dark);
+  margin-bottom: 6px; line-height: 1.4;
+}
+.step-hint { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 18px; line-height: 1.5; }
+.step-options { display: flex; flex-direction: column; gap: 9px; }
+.step-btn {
+  padding: 12px 18px; border-radius: 12px;
+  border: 1.5px solid var(--sand-200); background: white;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+  font-weight: 500; color: var(--text-primary);
+  cursor: pointer; text-align: left; transition: all 0.2s;
+}
+.step-btn:hover { border-color: var(--terra); background: rgba(196,136,90,0.07); transform: translateX(4px); }
+.step-btn.selected { background: var(--terra-dark); color: white; border-color: var(--terra-dark); }
+
+/* Result box */
+.decision-result { display: none; padding: 0; }
+.decision-result.show { display: block; }
+.result-level {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 20px; border-radius: 14px; margin-bottom: 16px;
+}
+.result-level.green { background: rgba(5,150,105,0.10); border: 1.5px solid rgba(5,150,105,0.30); }
+.result-level.red   { background: rgba(220,38,38,0.08); border: 1.5px solid rgba(220,38,38,0.25); }
+.result-level.yellow{ background: rgba(217,119,6,0.08); border: 1.5px solid rgba(217,119,6,0.25); }
+.result-icon { font-size: 2rem; }
+.result-verdict { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; }
+.result-detail { font-size: 0.84rem; color: var(--text-secondary); margin-top: 3px; line-height: 1.5; }
+.result-boxes { display: flex; flex-direction: column; gap: 12px; }
+.result-box {
+  background: var(--sand-100); border-radius: 12px;
+  padding: 14px 16px;
+}
+.result-box h5 { font-size: 0.8rem; font-weight: 700; color: var(--terra-dark); margin-bottom: 8px; }
+.result-box p, .result-box li { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.6; }
+.result-box ul { padding-left: 16px; }
+.result-disclaimer {
+  margin-top: 14px; padding: 10px 14px; border-radius: 10px;
+  background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.15);
+  font-size: 0.77rem; color: var(--text-muted); line-height: 1.5;
+}
+.modal-footer-btns {
+  display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap;
+}
+.modal-footer-btns button {
+  padding: 9px 18px; border-radius: 50px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-reset {
+  background: var(--sand-100); border: 1.5px solid var(--sand-200); color: var(--text-secondary);
+}
+.btn-reset:hover { background: var(--sand-200); }
+.btn-close-modal {
+  background: var(--terra-dark); color: white; border: none;
+}
+.btn-close-modal:hover { background: var(--terra-deeper); }
+
+/* Progress bar */
+.progress-bar-wrap { margin-bottom: 18px; }
+.progress-bar-track {
+  height: 4px; background: var(--sand-200); border-radius: 50px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--terra), var(--terra-dark));
+  border-radius: 50px; transition: width 0.4s ease;
+}
+</style>
+</head>
+<body>
+
+<!-- Animated background -->
+<div class="orb-container" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- Back button -->
+<a class="back-btn" href="index.html" onclick="history.back(); return false;">← TILLBAKA</a>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>💊 Antibiotika i Odontologin</h1>
+    <p class="hero-subtitle">Kliniskt beslutsstöd — Preparatval, dosering &amp; indikationer per disciplin<br>
+      Källor: <span class="source-badge">Strama</span><span class="source-badge">VGR</span><span class="source-badge">LMV 2012</span><span class="source-badge">Janusinfo</span><span class="source-badge">Tandvårdens Läkemedel 2024–25</span>
+    </p>
+  </div>
+
+  <!-- DECISION SUPPORT BANNER -->
+  <div class="decision-banner">
+    <div class="decision-banner-text">
+      <strong>🔍 Interaktivt beslutsstöd:</strong> Svara på 5 kliniska frågor och få direkt rekommendation om antibiotika är indicerat, vilket preparat och dos.
+    </div>
+    <button class="decision-btn" onclick="openDecisionModal()">Starta beslutsstöd →</button>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrapper">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="mainSearch" placeholder="Sök preparat, indikation eller tillstånd…" oninput="searchCards(this.value)">
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div class="dashboard-layout">
+
+    <!-- ═══ LEFT NAV ═══ -->
+    <div class="scenario-nav">
+
+      <div class="scenario-trigger-card" id="trigger-ab1" onclick="selectScenario('ab1')">
+        <span class="trigger-tag red">REFERENS</span>
+        <div class="trigger-avatar-container">💊</div>
+        <h2 class="trigger-title">Preparatval &amp; Dosering</h2>
+        <div style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">PcV, Klindamycin, Metronidazol. Vuxna + Barn + Profylax.</div>
+      </div>
+
+      <div class="scenario-trigger-card" id="trigger-ab2" onclick="selectScenario('ab2')">
+        <span class="trigger-tag orange">ALLERGI</span>
+        <div class="trigger-avatar-container">⚠️</div>
+        <h2 class="trigger-title">Penicillinallergi</h2>
+        <div style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">Äkta vs biverkning. Klindamycin-guide.</div>
+      </div>
+
+      <div class="scenario-trigger-card" id="trigger-ab3" onclick="selectScenario('ab3')">
+        <span class="trigger-tag">PER DISCIPLIN</span>
+        <div class="trigger-avatar-container">🦷</div>
+        <h2 class="trigger-title">Indikationer per Disciplin</h2>
+        <div style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">Endodonti, Paro, Kirurgi, Implantat.</div>
+      </div>
+
+      <div class="scenario-trigger-card" id="trigger-ab4" onclick="selectScenario('ab4')">
+        <span class="trigger-tag green">PROFYLAX</span>
+        <div class="trigger-avatar-container">🛡️</div>
+        <h2 class="trigger-title">Profylax-guide</h2>
+        <div style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">Riskpatienter, ingrepp, doseringsräknare.</div>
+      </div>
+
+      <div class="scenario-trigger-card" id="trigger-ab5" onclick="selectScenario('ab5')">
+        <span class="trigger-tag blue">SÄKERHET</span>
+        <div class="trigger-avatar-container">⚡</div>
+        <h2 class="trigger-title">Interaktioner &amp; Säkerhet</h2>
+        <div style="font-size:0.82rem; color:var(--text-secondary); line-height:1.5;">Waran, graviditet, C. difficile, resistens.</div>
+      </div>
+
+    </div>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <div class="main-content-panel">
+
+      <!-- Dynamic header -->
+      <div id="dynamic-header" class="header-container centered">
+        <div class="avatar-wrapper">💊</div>
+        <div class="header-text-block">
+          <h2 id="dynamic-header-title">Antibiotika i Odontologin</h2>
+          <p class="header-subtitle" id="dynamic-subtitle">Välj en kategori i menyn till vänster — eller starta det interaktiva beslutsstödet ovan.</p>
+        </div>
+      </div>
+
+      <!-- ═══ AB1: Preparatval & Dosering ═══ -->
+      <div id="ab1-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+          <button class="tab-btn active" onclick="openInnerTab('ab1','oversikt',this)">⚡ Grundprinciper</button>
+          <button class="tab-btn" onclick="openInnerTab('ab1','dosering',this)">💊 Dosering Vuxna</button>
+          <button class="tab-btn" onclick="openInnerTab('ab1','barn',this)">👶 Dosering Barn</button>
+          <button class="tab-btn" onclick="openInnerTab('ab1','profylax',this)">🛡️ Profylax (snabb)</button>
+        </div>
+        <div class="inner-display">
+
+          <!-- Grundprinciper -->
+          <div id="ab1-oversikt" class="content-panel active">
+            <h3>⚡ Grundprinciper — Antibiotikaanvändning i tandvården</h3>
+            <div class="warning-box scroll-animate">
+              <strong>⚠️ GRUNDREGEL:</strong> Antibiotika ersätter <em>aldrig</em> mekanisk/kirurgisk behandling (dränage, extraktion, rensning). Antibiotika är alltid ett <strong>tillägg</strong> vid specifika indikationer. <span class="source-badge">Strama</span><span class="source-badge">Janusinfo</span>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Indikationer för antibiotika</h5>
+              <table>
+                <tr><th>✅ Indicerat</th><th>⛔ EJ indicerat</th></tr>
+                <tr>
+                  <td>
+                    <ul style="padding-left:14px; line-height:2;">
+                      <li>Allmänpåverkan (feber + sjukdomskänsla)</li>
+                      <li>Spridningstecken (lymfadenit, trismus, dysfagi)</li>
+                      <li>Svullnad mot munbotten/hals</li>
+                      <li>Immunsupprimerad patient</li>
+                      <li>Replantation av utslagen tand</li>
+                    </ul>
+                  </td>
+                  <td>
+                    <ul style="padding-left:14px; line-height:2;">
+                      <li>Fistel utan allmänpåverkan</li>
+                      <li>Lokal svullnad utan feber</li>
+                      <li>Enbart smärta</li>
+                      <li>Pulpit/nekros (ingen blodcirkulation)</li>
+                      <li>Alveolit (dry socket)</li>
+                      <li>Kronisk apikal parodontit (utan spridning)</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Beslutsmatris — Var befinner sig infektionen?</h5>
+              <table>
+                <tr><th>Klinisk bild</th><th>Beslut</th><th>Motivering</th></tr>
+                <tr><td>Pulpit (reversibel/irreversibel)</td><td class="no">⛔ Nej</td><td>Ingen blodcirkulation → antibiotika når inte dit</td></tr>
+                <tr><td>Apikal abscess utan feber</td><td class="no">⛔ Nej</td><td>Dränage = behandling. AB ger försumbar effekt.</td></tr>
+                <tr><td>Apikal abscess + feber/spridning</td><td class="ok">✅ Ja (tillägg)</td><td>Primärt dränage. AB = tillägg till mekanisk åtgärd.</td></tr>
+                <tr><td>Perikoronit utan spridning</td><td class="no">⛔ Nej</td><td>Spolning/dränage. AB om spridningstecken.</td></tr>
+                <tr><td>Perikoronit med trismus/feber</td><td class="ok">✅ Ja (tillägg)</td><td>Spridningsrisk. AB + kirurgisk åtgärd.</td></tr>
+                <tr><td>Alveolit (dry socket)</td><td class="no">⛔ Nej</td><td>Lokal tamponad + smärtlindring.</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Dosering Vuxna -->
+          <div id="ab1-dosering" class="content-panel">
+            <h3>💊 Preparatval &amp; Dosering — Vuxna</h3>
+            <div class="treatment-box scroll-animate">
+              <div class="treatment-title">1. Förstahandsval — Fenoximetylpenicillin (PcV / Kåvepenin) <span class="source-badge">Strama</span><span class="source-badge">VGR</span></div>
+              <p style="font-size:0.88rem; margin-bottom:10px; color:var(--text-secondary);">Standardbehandling i Sverige. Låg resistens, smalt spektrum, låg biverkningsrisk.</p>
+              <div class="dose-highlight">
+                <p>💊 PcV 1,6 g × 3 i 5–7 dagar</p>
+                <p class="dose-note">OBS: 1,6 g (ej 1 g) rekommenderas för tillräcklig vävnadskoncentration (Tid &gt; MIC). Ta på tom mage eller 30 min före mat.</p>
+              </div>
+            </div>
+            <div class="treatment-box alternative scroll-animate">
+              <div class="treatment-title">2. Vid Penicillinallergi — Klindamycin (Dalacin) <span class="source-badge">Strama</span><span class="source-badge">LMV 2012</span></div>
+              <p style="font-size:0.88rem; margin-bottom:10px; color:var(--text-secondary);">Används vid konstaterad överkänslighet (Typ 1: urtikaria, anafylaxi).</p>
+              <div class="dose-highlight">
+                <p>💊 Klindamycin 150 mg × 3 i 5–7 dagar</p>
+                <p class="dose-note">Vid svårare infektion: 300 mg × 3. Svälj kapslar med minst ½ glas vatten i upprätt läge.</p>
+              </div>
+              <div class="warning-box" style="margin-top:10px;">⚠️ <strong>C. difficile-risk:</strong> Informera patienten. Avbryt vid diarré &gt;24h och kontakta läkare.</div>
+            </div>
+            <div class="treatment-box alternative scroll-animate">
+              <div class="treatment-title">3. Terapisvikt (ingen förbättring 48h) — PcV + Metronidazol <span class="source-badge">Strama</span></div>
+              <p style="font-size:0.88rem; margin-bottom:6px; color:var(--text-secondary);">Innan tillägg — kontrollera: diagnosen, att dränage är utfört, compliance, överväg odling.</p>
+              <div class="dose-highlight">
+                <p>💊 PcV 1,6 g × 3 <strong>+</strong> Metronidazol 400 mg × 3 i 5–7 dagar</p>
+              </div>
+              <div class="warning-box" style="margin-top:10px;"><strong>⚠️ Metronidazol:</strong> Kombineras EJ med alkohol (antabus-effekt). Undviks vid graviditet. Waran-patienter: risk för förhöjt INR → blödningsrisk.</div>
+            </div>
+            <div class="treatment-box alternative scroll-animate">
+              <div class="treatment-title">4. Alternativ vid terapisvikt — Amoxicillin-Klavulansyra</div>
+              <div class="dose-highlight"><p>💊 Amoxicillin + Klavulansyra (Spektramox) 875/125 mg × 3</p></div>
+            </div>
+            <div class="treatment-box warning-box-style scroll-animate">
+              <div class="treatment-title">5. Sjukhusvård (Parenteral) — Vid hotande luftvägar</div>
+              <p style="font-size:0.88rem; margin-bottom:8px; color:var(--text-secondary);">Vid dysfagi, svår trismus, svullnad mot munbotten eller sepsis → <strong>akut remiss sjukhus</strong>.</p>
+              <div class="dose-highlight"><p>💉 Bensylpenicillin IV + Metronidazol IV</p></div>
+            </div>
+          </div>
+
+          <!-- Dosering Barn -->
+          <div id="ab1-barn" class="content-panel">
+            <h3>👶 Dosering Barn <span class="source-badge">Tandvårdens Läkemedel 2024–25</span><span class="source-badge">LMV 2012</span></h3>
+            <div class="treatment-box scroll-animate">
+              <div class="treatment-title">Förstahandsval — PcV</div>
+              <div class="dose-highlight"><p>💊 PcV 25 mg/kg kroppsvikt × 3 i 5–7 dagar</p><p class="dose-note">Maxdos: 1,6 g × 3</p></div>
+            </div>
+            <div class="treatment-box alternative scroll-animate">
+              <div class="treatment-title">Vid Penicillinallergi — Klindamycin</div>
+              <div class="dose-highlight"><p>💊 Klindamycin 5 mg/kg × 3 i 5–7 dagar</p><p class="dose-note">Maxdos: 150 mg × 3</p></div>
+            </div>
+            <div class="treatment-box alternative scroll-animate">
+              <div class="treatment-title">Terapisvikt — PcV + Metronidazol</div>
+              <div class="dose-highlight"><p>💊 PcV (dos enl ovan) + Metronidazol 7,5 mg/kg × 3 i 5–7 dagar</p><p class="dose-note">Maxdos Metro: 400 mg × 3</p></div>
+            </div>
+            <div class="treatment-box alternative scroll-animate">
+              <div class="treatment-title">🧮 Snabb doseringsräknare — Barn</div>
+              <div class="calc-wrap" style="margin-top:10px;">
+                <h4>Räkna ut dos baserat på vikt</h4>
+                <div class="calc-row">
+                  <div class="calc-field">
+                    <label>Vikt (kg)</label>
+                    <input type="number" id="childWeight" min="3" max="80" placeholder="t.ex. 25">
+                  </div>
+                  <div class="calc-field">
+                    <label>Preparat</label>
+                    <select id="childDrug">
+                      <option value="pcv">PcV (behandling)</option>
+                      <option value="klinda">Klindamycin (behandling)</option>
+                      <option value="metro">Metronidazol (tillägg)</option>
+                      <option value="amox_prof">Amoxicillin (profylax)</option>
+                      <option value="klinda_prof">Klindamycin (profylax)</option>
+                    </select>
+                  </div>
+                  <button class="calc-go" onclick="calcChildDose()">Beräkna</button>
+                </div>
+                <div class="calc-result" id="childCalcResult">
+                  <h5>✅ Beräknad dos</h5>
+                  <table><tbody id="childCalcTable"></tbody></table>
+                  <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Kontrollera alltid mot aktuell Fass. Maxdoser gäller.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profylax snabb -->
+          <div id="ab1-profylax" class="content-panel">
+            <h3>🛡️ Profylax — Snabbreferens <span class="source-badge">LMV 2012</span></h3>
+            <div class="info-card scroll-animate">
+              <h5>Indikationer (engångsdos 60 min före)</h5>
+              <table>
+                <tr><th>Tillstånd</th><th>Profylax?</th></tr>
+                <tr><td>Sinuskommunikation vid extraktion</td><td class="ok">✅ Ja</td></tr>
+                <tr><td>Replantation av utslagen tand</td><td class="ok">✅ Ja</td></tr>
+                <tr><td>Högdosstrålat käkben (benskadande ingrepp)</td><td class="ok">✅ Ja</td></tr>
+                <tr><td>IV-bisfosfonater (cancer) — benskadande ingrepp</td><td class="ok">✅ Ja</td></tr>
+                <tr><td>Gravt nedsatt immunförsvar (neutrofiler &lt;1,0×10⁹/L)</td><td class="ok">✅ Ja (vid extraktion, depuration, kirurgi)</td></tr>
+                <tr><td>Anomalikirurgi / frakturkirurgi / bentransplantation</td><td class="ok">✅ Ja</td></tr>
+                <tr><td>Implantatkirurgi (frisk patient)</td><td class="warn">⚠️ Överväg vid multipla riskfaktorer</td></tr>
+                <tr><td>Klaffprotes, pacemaker, ICD</td><td class="no">⛔ Nej (LMV 2012)</td></tr>
+                <tr><td>Ledprotes (äldre, frisk)</td><td class="no">⛔ Nej</td></tr>
+                <tr><td>Ledprotes inom 3 mån + ≥3 riskfaktorer</td><td class="warn">⚠️ Överväg individuellt</td></tr>
+              </table>
+            </div>
+            <div class="treatment-box scroll-animate">
+              <div class="treatment-title">Profylaxdos — Vuxna</div>
+              <div class="dose-highlight"><p>💊 Amoxicillin 2 g peroralt — 60 min före ingrepp</p></div>
+            </div>
+            <div class="treatment-box alternative scroll-animate">
+              <div class="treatment-title">Vid Penicillinallergi</div>
+              <div class="dose-highlight"><p>💊 Klindamycin 600 mg peroralt — 60 min före ingrepp</p></div>
+            </div>
+            <div class="treatment-box alternative scroll-animate">
+              <div class="treatment-title">Profylaxdos — Barn</div>
+              <div class="dose-highlight"><p>💊 Amoxicillin 50 mg/kg (max 2 g) — 60 min före<br>Vid allergi: Klindamycin 15 mg/kg (max 600 mg)</p></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══ AB2: Penicillinallergi ═══ -->
+      <div id="ab2-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+          <button class="tab-btn active" onclick="openInnerTab('ab2','allergi',this)">⚠️ Allergibedömning</button>
+          <button class="tab-btn" onclick="openInnerTab('ab2','klindamycin',this)">💊 Klindamycin-guide</button>
+        </div>
+        <div class="inner-display">
+          <div id="ab2-allergi" class="content-panel active">
+            <h3>⚠️ Penicillinallergi — Klinisk bedömning <span class="source-badge">LMV 2012</span><span class="source-badge">Janusinfo</span></h3>
+            <div class="info-card scroll-animate">
+              <h5>Äkta allergi vs Biverkning</h5>
+              <table>
+                <tr><th>✅ Äkta allergi (= byt preparat)</th><th>⛔ EJ allergi (= PcV kan ges)</th></tr>
+                <tr>
+                  <td>
+                    <ul style="padding-left:14px; line-height:2.1;">
+                      <li>Urtikaria (nässelutslag)</li>
+                      <li>Anafylaxi / anafylaktisk chock</li>
+                      <li>Angioödem (svullnad av läppar, tunga, hals)</li>
+                      <li>Andningssvårigheter</li>
+                      <li>Akut allergisk reaktion &lt;1h efter intag</li>
+                    </ul>
+                  </td>
+                  <td>
+                    <ul style="padding-left:14px; line-height:2.1;">
+                      <li>Illamående, lös avföring, magbesvär</li>
+                      <li>Exantem vid mononukleos (körtelfeber)</li>
+                      <li>Dessa är biverkningar — ej allergi</li>
+                      <li>Utgör ej hinder för PcV-behandling</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Klinisk beslutsregel</h5>
+              <p style="font-size:0.88rem; line-height:1.7; color:var(--text-secondary);">Om patienten uppger allergi men anamnesen är <strong>osäker</strong>: Behandla med <strong>Klindamycin i det akuta skedet</strong> och remittera för allergiutredning. Korsallergi mellan penicilliner och cefalosporiner är sällsynt (&lt;2%) — diskutera med specialist vid behov.</p>
+            </div>
+            <div class="warning-box scroll-animate">
+              <strong>⚠️ Makrolider (erytromycin, azitromycin):</strong> Rekommenderas <em>inte</em> längre vid odontogena infektioner — sämre effekt mot anaerober och ökad resistens. Klindamycin är förstahandsval vid penicillinallergi.
+            </div>
+          </div>
+          <div id="ab2-klindamycin" class="content-panel">
+            <h3>💊 Klindamycin — Fördjupad guide <span class="source-badge">LMV 2012</span></h3>
+            <div class="info-card scroll-animate">
+              <h5>Doseringsöversikt</h5>
+              <table>
+                <tr><th>Indikation</th><th>Vuxna</th><th>Barn</th></tr>
+                <tr><td>Infektion (standard)</td><td>150 mg × 3, 5–7 d</td><td>5 mg/kg × 3, 5–7 d</td></tr>
+                <tr><td>Svår infektion</td><td>300 mg × 3, 5–7 d</td><td>—</td></tr>
+                <tr><td>Profylax (engångsdos)</td><td>600 mg, 60 min före</td><td>15 mg/kg, 60 min före</td></tr>
+              </table>
+            </div>
+            <div class="warning-box scroll-animate">
+              <strong>⚠️ Biverkningar — informera patienten om:</strong>
+              <ul style="margin-top:8px; padding-left:16px; line-height:2;">
+                <li><strong>C. difficile-enterit:</strong> Starkare koppling än penicillin. Avbryt + kontakta läkare vid diarré &gt;24h. Risk finns även vid engångsdos (dock lägre).</li>
+                <li><strong>Esofagusskada:</strong> Svälj kapslarna med minst ½ glas vätska i <em>upprätt läge</em>. Lägg sig inte ner direkt.</li>
+                <li><strong>GI-biverkningar:</strong> Illamående, diarré hos ~8%. Illamående hos ~10%.</li>
+                <li><strong>Anafylaktoid reaktion:</strong> Sällsynt (&lt;0,1%).</li>
+              </ul>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Interaktioner</h5>
+              <table>
+                <tr><th>Läkemedel</th><th>Interaktion</th><th>Åtgärd</th></tr>
+                <tr><td>Erytromycin</td><td>Antagonism — minskar effekt</td><td>Kombinera ej</td></tr>
+                <tr><td>Muskelavslappnande (kurare)</td><td>Förstärkt effekt</td><td>Försiktighet</td></tr>
+                <tr><td>Antikonceptionella medel</td><td>Möjlig reduktion</td><td>Informera</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ AB3: Indikationer per Disciplin ═══ -->
+      <div id="ab3-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+          <button class="tab-btn active" onclick="openInnerTab('ab3','endo',this)">🦷 Endodonti</button>
+          <button class="tab-btn" onclick="openInnerTab('ab3','paro',this)">🦠 Parodontologi</button>
+          <button class="tab-btn" onclick="openInnerTab('ab3','kirurgi',this)">🔪 Kirurgi &amp; Akut</button>
+          <button class="tab-btn" onclick="openInnerTab('ab3','implantat',this)">🔩 Implantat</button>
+        </div>
+        <div class="inner-display">
+          <div id="ab3-endo" class="content-panel active">
+            <h3>🦷 Endodonti — Antibiotika? <span class="source-badge">Strama</span><span class="source-badge">VGR</span></h3>
+            <div class="info-card scroll-animate">
+              <table>
+                <tr><th>Tillstånd</th><th>Antibiotika?</th><th>Motivering</th></tr>
+                <tr><td>Pulpit (reversibel/irreversibel)</td><td class="no">⛔ Nej</td><td>Ingen blodcirkulation → AB når inte dit</td></tr>
+                <tr><td>Symtomatisk apikal parodontit (utan allmänpåverkan)</td><td class="no">⛔ Nej (Prio 10)</td><td>Ingen effekt. Mekanisk rensning = behandling.</td></tr>
+                <tr><td>Akut apikal abscess MED feber/spridning</td><td class="ok">✅ Ja (tillägg)</td><td>Primärt: dränage via tand/incision. AB = tillägg.</td></tr>
+                <tr><td>Kronisk apikal parodontit</td><td class="no">⛔ Nej</td><td>Kronisk infektion ger sällan bakteriemi. Instrumentering = behandling.</td></tr>
+              </table>
+            </div>
+          </div>
+          <div id="ab3-paro" class="content-panel">
+            <h3>🦠 Parodontologi — Antibiotika? <span class="source-badge">Strama</span><span class="source-badge">VGR</span></h3>
+            <div class="info-card scroll-animate">
+              <table>
+                <tr><th>Tillstånd</th><th>Antibiotika?</th><th>Motivering</th></tr>
+                <tr><td>Kronisk parodontit (Stadium 1–4)</td><td class="no">⛔ Nej (Prio 10)</td><td>Försumbar tilläggseffekt jmf mekanisk rengöring</td></tr>
+                <tr><td>Aggressiv/snabb-progressiv parodontit (unga)</td><td class="warn">⚠️ Överväg</td><td>Amoxicillin + Metronidazol som tillägg till mek. rengöring</td></tr>
+                <tr><td>Parodontal abscess</td><td class="warn">⚠️ Endast vid feber/spridning</td><td>Primärt: dränage</td></tr>
+                <tr><td>Nekrotiserande gingivit/parodontit</td><td class="warn">⚠️ Vid allmänpåverkan</td><td>Metronidazol eller PcV som tillägg till debridering</td></tr>
+              </table>
+            </div>
+          </div>
+          <div id="ab3-kirurgi" class="content-panel">
+            <h3>🔪 Kirurgi &amp; Akuta tillstånd <span class="source-badge">LMV 2012</span><span class="source-badge">Strama</span></h3>
+            <div class="info-card scroll-animate">
+              <table>
+                <tr><th>Tillstånd</th><th>Antibiotika?</th><th>Kommentar</th></tr>
+                <tr><td>Perikoronit (utan spridning)</td><td class="no">⛔ Nej</td><td>Spolning/dränage. AB om spridning/feber.</td></tr>
+                <tr><td>Perikoronit med trismus/feber</td><td class="ok">✅ Ja (tillägg)</td><td>PcV + kirurgisk åtgärd</td></tr>
+                <tr><td>Alveolit (Dry Socket)</td><td class="no">⛔ Nej</td><td>Lokal tamponad + smärtlindring</td></tr>
+                <tr><td>Postoperativ infektion</td><td class="warn">⚠️ Vid feber/spridning</td><td>Primärt: dränage. AB = tillägg.</td></tr>
+                <tr><td>Sinuskommunikation</td><td class="ok">✅ Profylax</td><td>Amoxicillin engångsdos</td></tr>
+                <tr><td>Replantation (trauma)</td><td class="ok">✅ Ja</td><td>PcV (barnkur vid barn)</td></tr>
+                <tr><td>Anomalikirurgi / frakturkirurgi</td><td class="ok">✅ Ja (profylax)</td><td>Bensylpenicillin parenteralt ≤1 dygn. Klinda vid allergi.</td></tr>
+              </table>
+            </div>
+          </div>
+          <div id="ab3-implantat" class="content-panel">
+            <h3>🔩 Implantat (Periimplantit) <span class="source-badge">LMV 2012</span></h3>
+            <div class="info-card scroll-animate">
+              <table>
+                <tr><th>Behandling</th><th>Antibiotika?</th><th>Kommentar</th></tr>
+                <tr><td>Icke-kirurgisk periimplantitbehandling</td><td class="no">⛔ Nej</td><td>Ingen/mycket låg effekt</td></tr>
+                <tr><td>Kirurgisk behandling (lambå) + benmaterial</td><td class="warn">⚠️ Överväg</td><td>Vid pus eller bentransplantat</td></tr>
+                <tr><td>Fixturinstallation (frisk patient)</td><td class="warn">⚠️ Begränsad evidens</td><td>Engångsdos Amoxicillin om indikerat (riskfaktorer)</td></tr>
+                <tr><td>AB som enda behandling av periimplantit</td><td class="no">⛔ Nej</td><td>Verkningslöst utan mekanisk åtgärd</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ AB4: Profylax-guide ═══ -->
+      <div id="ab4-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+          <button class="tab-btn active" onclick="openInnerTab('ab4','riskpat',this)">👤 Riskpatienter</button>
+          <button class="tab-btn" onclick="openInnerTab('ab4','riskingrepp',this)">🔧 Riskingrepp</button>
+          <button class="tab-btn" onclick="openInnerTab('ab4','kalkylator',this)">🧮 Doseringsräknare</button>
+          <button class="tab-btn" onclick="openInnerTab('ab4','ej_indikation',this)">⛔ Ej indicerat</button>
+        </div>
+        <div class="inner-display">
+
+          <!-- Riskpatienter -->
+          <div id="ab4-riskpat" class="content-panel active">
+            <h3>👤 Riskpatienter — Profylaxindikation <span class="source-badge">LMV 2012</span></h3>
+            <div class="warning-box scroll-animate">
+              <strong>Grundregel:</strong> Profylaktisk antibiotikabehandling rekommenderas till ett fåtal patientkategorier. En <strong>individuell helhetsbedömning</strong> ska alltid göras. Vid tveksamhet — kontakta behandlande läkare.
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>A. Gravt nedsatt immunförsvar — profylax vid extraktion, subgingival depuration, dentoalveolär kirurgi</h5>
+              <table>
+                <tr><th>Tillstånd</th><th>Profylax?</th></tr>
+                <tr><td>Neutrofiler &lt;1,0×10⁹/L</td><td class="ok">✅ Ja</td></tr>
+                <tr><td>Neutrofiler &lt;0,5×10⁹/L (grav neutropeni)</td><td class="ok">✅ Ja — remittera specialisttandvård</td></tr>
+                <tr><td>Defekt granulocytfunktion (myelodysplasi, CGD)</td><td class="ok">✅ Ja</td></tr>
+                <tr><td>Tung immunsuppressiv behandling (tidigt post-transplantation)</td><td class="ok">✅ Ja</td></tr>
+                <tr><td>HIV (välkontrollerad, normalt immunförsvar)</td><td class="no">⛔ Nej</td></tr>
+                <tr><td>Välinställd diabetes</td><td class="no">⛔ Nej</td></tr>
+                <tr><td>Reumatoid artrit, lågdos prednisolon (&lt;10mg)</td><td class="no">⛔ Nej</td></tr>
+                <tr><td>Utan mjälte (splenektomi)</td><td class="no">⛔ Nej</td></tr>
+                <tr><td>Thalassemi, sicklecellsanemi</td><td class="no">⛔ Nej</td></tr>
+              </table>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>B. Locus minoris resistentiae — profylax vid benskadande ingrepp</h5>
+              <table>
+                <tr><th>Tillstånd</th><th>Profylax?</th></tr>
+                <tr><td>Högdosstrålbehandlat käkben</td><td class="ok">✅ Ja — benskadande ingrepp</td></tr>
+                <tr><td>IV-bisfosfonater (cancerpatienter)</td><td class="ok">✅ Ja — benskadande ingrepp</td></tr>
+                <tr><td>Perorala bisfosfonater (osteoporos)</td><td class="no">⛔ Nej</td></tr>
+                <tr><td>Inopererad klaffprotes</td><td class="no">⛔ Nej (LMV 2012)</td></tr>
+                <tr><td>Pacemaker / ICD / CVK</td><td class="no">⛔ Nej</td></tr>
+              </table>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>C. Ledproteser — individuell bedömning</h5>
+              <p style="font-size:0.87rem; line-height:1.7; color:var(--text-secondary);">Patienter med <strong>nyopererad ledprotes (&lt;3 månader)</strong> och <strong>minst 3 riskfaktorer</strong> (BMI&gt;35, rökning, immunbrist, anemi, hög ålder, dålig munhälsa, ASA≥3) kan ges profylax vid invasivt ingrepp om det inte kan skjutas upp. I övriga fall: <span class="no">⛔ Nej</span>.</p>
+            </div>
+          </div>
+
+          <!-- Riskingrepp -->
+          <div id="ab4-riskingrepp" class="content-panel">
+            <h3>🔧 Riskingrepp på i övrigt friska patienter <span class="source-badge">LMV 2012</span></h3>
+            <div class="info-card scroll-animate">
+              <table>
+                <tr><th>Ingrepp</th><th>Profylax?</th><th>Regim</th></tr>
+                <tr><td><strong>Anomalikirurgi</strong></td><td class="ok">✅ Ja</td><td>Bensylpenicillin IV ≤1 dygn (1–3 doser)</td></tr>
+                <tr><td><strong>Frakturkirurgi (mandibelfraktur)</strong></td><td class="ok">✅ Ja</td><td>Bensylpenicillin IV ≤1 dygn</td></tr>
+                <tr><td><strong>Bentransplantation</strong></td><td class="ok">✅ Ja</td><td>Amoxicillin 2g preoperativt (engångsdos)</td></tr>
+                <tr><td>Implantatkirurgi (frisk patient)</td><td class="warn">⚠️ Svag evidens</td><td>Amoxicillin 2g om indicerat (riskfaktorer)</td></tr>
+                <tr><td>Övrig dentoalveolär kirurgi (frisk patient)</td><td class="no">⛔ Nej</td><td>Inte indicerat i normalfallet</td></tr>
+              </table>
+            </div>
+            <div class="warning-box scroll-animate">
+              <strong>⚠️ Viktigt:</strong> Antibiotikaprofylax bör vara <em>så kortvarig som möjligt</em>. Engångsdos vid peroral profylax. ≤1 dygn vid parenteral profylax. Längre behandling ger inte bättre resultat men ökar resistensrisk.
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Bakteriemi-risk vid olika ingrepp (för riskbedömning)</h5>
+              <table>
+                <tr><th>Åtgärd</th><th>Bakteriemi-frekvens</th></tr>
+                <tr><td>Tandextraktion</td><td>20–96 %</td></tr>
+                <tr><td>Intraligamentell anestesi</td><td>97 %</td></tr>
+                <tr><td>Subgingival depuration</td><td>10–90 %</td></tr>
+                <tr><td>Endodontisk behandling</td><td>30 %</td></tr>
+                <tr><td>Infiltrationsanestesi</td><td>16 %</td></tr>
+                <tr><td>Tandborstning (daglig)</td><td>0–46 %</td></tr>
+              </table>
+              <p style="font-size:0.78rem; color:var(--text-muted); margin-top:6px;">Källa: LMV 2012, baserat på publikationer 1991–2012</p>
+            </div>
+          </div>
+
+          <!-- Doseringsräknare vuxna + barn -->
+          <div id="ab4-kalkylator" class="content-panel">
+            <h3>🧮 Doseringsräknare <span class="source-badge">LMV 2012</span><span class="source-badge">Tandvårdens Läkemedel 2024–25</span></h3>
+            <div class="calc-wrap scroll-animate">
+              <h4>Profylaxdos — Barn (mg/kg)</h4>
+              <div class="calc-row">
+                <div class="calc-field">
+                  <label>Vikt (kg)</label>
+                  <input type="number" id="profWeight" min="3" max="80" placeholder="t.ex. 30">
+                </div>
+                <div class="calc-field">
+                  <label>Preparat</label>
+                  <select id="profDrug">
+                    <option value="amox">Amoxicillin (profylax)</option>
+                    <option value="klinda">Klindamycin (profylax, pc-allergi)</option>
+                  </select>
+                </div>
+                <button class="calc-go" onclick="calcProfDose()">Beräkna</button>
+              </div>
+              <div class="calc-result" id="profCalcResult">
+                <h5>✅ Beräknad profylaxdos</h5>
+                <table><tbody id="profCalcTable"></tbody></table>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Ges 60 minuter före ingreppet. Kontrollera alltid mot aktuell Fass.</p>
+              </div>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Vuxna — Standarddoser</h5>
+              <table>
+                <tr><th>Preparat</th><th>Dos</th><th>Tidpunkt</th></tr>
+                <tr><td>Amoxicillin (förstahandsval)</td><td>2 g peroralt</td><td>60 min före ingrepp</td></tr>
+                <tr><td>Klindamycin (pc-allergi)</td><td>600 mg peroralt</td><td>60 min före ingrepp</td></tr>
+                <tr><td>Bensylpenicillin (parenteral)</td><td>3 g × 1–3</td><td>Preoperativt ≤1 dygn</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Ej indicerat -->
+          <div id="ab4-ej_indikation" class="content-panel">
+            <h3>⛔ Profylax — Ej indicerat <span class="source-badge">LMV 2012</span></h3>
+            <div class="warning-box scroll-animate">
+              <strong>Viktigt:</strong> Dessa tillstånd motiverar <em>inte</em> antibiotikaprofylax vid tandvård. Tidigare rekommendationer (t.ex. profylax vid klaffprotes) har reviderats av Läkemedelsverket 2012 och bör inte längre tillämpas.
+            </div>
+            <div class="info-card scroll-animate">
+              <table>
+                <tr><th>Tillstånd</th><th>Profylax?</th><th>Kommentar</th></tr>
+                <tr><td>Klaffprotes / genomgången endokardit</td><td class="no">⛔ Nej</td><td>Reviderat 2012. God munhälsa är viktigare.</td></tr>
+                <tr><td>Pacemaker / ICD / CVK</td><td class="no">⛔ Nej</td><td>—</td></tr>
+                <tr><td>Utan mjälte (splenektomi)</td><td class="no">⛔ Nej</td><td>—</td></tr>
+                <tr><td>Cystisk fibros / dialys</td><td class="no">⛔ Nej</td><td>—</td></tr>
+                <tr><td>Downs syndrom</td><td class="no">⛔ Nej</td><td>—</td></tr>
+                <tr><td>Perorala bisfosfonater (osteoporos)</td><td class="no">⛔ Nej</td><td>Endast IV-bisfosfonater vid cancer har indikation</td></tr>
+                <tr><td>Blåsljud / septumdefekter</td><td class="no">⛔ Nej</td><td>—</td></tr>
+                <tr><td>Endovaskulära stentar / bypass</td><td class="no">⛔ Nej</td><td>—</td></tr>
+                <tr><td>Stabil reumatoid artrit, SLE, lågdos prednisolon</td><td class="no">⛔ Nej</td><td>God sjukdomskontroll — ingen generell ökad risk</td></tr>
+                <tr><td>Välkontrollerad HIV</td><td class="no">⛔ Nej</td><td>Kan gå i allmäntandvård</td></tr>
+                <tr><td>Välinställd diabetes mellitus</td><td class="no">⛔ Nej</td><td>Vid okontrollerat högt glukos — avvakta icke-akuta ingrepp</td></tr>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══ AB5: Interaktioner & Säkerhet ═══ -->
+      <div id="ab5-display" class="scenario-display-wrapper">
+        <div class="inner-sidebar">
+          <button class="tab-btn active" onclick="openInnerTab('ab5','interaktioner',this)">⚡ Interaktioner</button>
+          <button class="tab-btn" onclick="openInnerTab('ab5','graviditet',this)">🤰 Graviditet &amp; Amning</button>
+          <button class="tab-btn" onclick="openInnerTab('ab5','resistens',this)">🦠 Resistens</button>
+        </div>
+        <div class="inner-display">
+          <div id="ab5-interaktioner" class="content-panel active">
+            <h3>⚡ Kliniskt viktiga interaktioner <span class="source-badge">LMV 2012</span><span class="source-badge">Fass</span></h3>
+            <div class="info-card scroll-animate">
+              <h5>PcV / Fenoximetylpenicillin</h5>
+              <table>
+                <tr><th>Kombination</th><th>Risk</th><th>Åtgärd</th></tr>
+                <tr><td>Waran (warfarin)</td><td class="warn">⚠️ Möjlig ↑INR</td><td>Kontrollera INR. Informera patienten.</td></tr>
+                <tr><td>P-piller</td><td class="warn">⚠️ Möjlig minskad effekt</td><td>Informera patienten</td></tr>
+                <tr><td>Metotrexat</td><td class="warn">⚠️ ↑ metotrexatnivå</td><td>Försiktighet, kortaste kur</td></tr>
+              </table>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Metronidazol — Kritiska interaktioner</h5>
+              <table>
+                <tr><th>Kombination</th><th>Risk</th><th>Åtgärd</th></tr>
+                <tr><td><strong>Alkohol</strong></td><td class="no">⛔ Antabus-effekt (flush, illamående, hjärtklappning)</td><td>Absolut kontraindikation under kur + 48h efter</td></tr>
+                <tr><td><strong>Waran (warfarin)</strong></td><td class="no">⛔ Kraftigt ↑INR → blödningsrisk</td><td>Undvik om möjligt. Kontrollera INR noga.</td></tr>
+                <tr><td>Litium</td><td class="warn">⚠️ ↑ litiumtoxicitet</td><td>Kontakta läkare</td></tr>
+                <tr><td>Fenytoin</td><td class="warn">⚠️ ↑ fenytoinnivå</td><td>Monitorera</td></tr>
+                <tr><td>Ciklosporin</td><td class="warn">⚠️ ↑ ciklosporinnivå</td><td>Kontakta läkare</td></tr>
+              </table>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Klindamycin — Interaktioner</h5>
+              <table>
+                <tr><th>Kombination</th><th>Risk</th><th>Åtgärd</th></tr>
+                <tr><td>Erytromycin / azitromycin</td><td class="no">⛔ Antagonism — minskad effekt</td><td>Kombinera ej</td></tr>
+                <tr><td>Muskelavslappnande (kurare)</td><td class="warn">⚠️ Förstärkt neuromuskulär blockad</td><td>Informera anestesiolog</td></tr>
+                <tr><td>P-piller</td><td class="warn">⚠️ Möjlig minskad effekt</td><td>Informera patienten</td></tr>
+              </table>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Amoxicillin — Interaktioner (profylax)</h5>
+              <table>
+                <tr><th>Kombination</th><th>Risk</th><th>Åtgärd</th></tr>
+                <tr><td>Allopurinol</td><td class="warn">⚠️ ↑ risk för exantem</td><td>Informera patienten</td></tr>
+                <tr><td>Waran</td><td class="warn">⚠️ Möjlig ↑INR (lägre risk vid engångsdos)</td><td>Informera patienten</td></tr>
+                <tr><td>P-piller</td><td class="warn">⚠️ Möjlig minskad effekt</td><td>Informera</td></tr>
+                <tr><td>Metotrexat</td><td class="warn">⚠️ ↑ metotrexatnivå</td><td>Försiktighet</td></tr>
+                <tr><td>Mononukleos (körtelfeber)</td><td class="no">⛔ Utslag (ej allergi — undvik amoxicillin)</td><td>Använd annat preparat</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div id="ab5-graviditet" class="content-panel">
+            <h3>🤰 Graviditet &amp; Amning <span class="source-badge">Fass</span><span class="source-badge">Tandvårdens Läkemedel 2024–25</span></h3>
+            <div class="info-card scroll-animate">
+              <table>
+                <tr><th>Preparat</th><th>Graviditet</th><th>Amning</th></tr>
+                <tr><td><strong>PcV (Kåvepenin)</strong></td><td class="ok">✅ Säkert — välstuderat</td><td class="ok">✅ Säkert</td></tr>
+                <tr><td><strong>Amoxicillin</strong></td><td class="ok">✅ Säkert</td><td class="ok">✅ Säkert</td></tr>
+                <tr><td><strong>Klindamycin</strong></td><td class="warn">⚠️ Använd om starkt indicerat</td><td class="warn">⚠️ Försiktighet</td></tr>
+                <tr><td><strong>Metronidazol</strong></td><td class="no">⛔ Undvik om möjligt (trimester 1)</td><td class="no">⛔ Avbryt amning under kur + 12-24h</td></tr>
+                <tr><td><strong>Erytromycin</strong></td><td class="warn">⚠️ Kan användas (ej estolat)</td><td class="warn">⚠️ Försiktighet</td></tr>
+              </table>
+            </div>
+            <div class="warning-box scroll-animate">
+              <strong>Klinisk riktlinje vid graviditet:</strong> PcV är förstahandsval. Vid penicillinallergi — diskutera med läkare. Metronidazol bör undvikas i första trimestern. Vid akut indikation — nyttan av behandling väger alltid in.
+            </div>
+          </div>
+
+          <div id="ab5-resistens" class="content-panel">
+            <h3>🦠 Antibiotikaresistens — Kliniska konsekvenser <span class="source-badge">Strama</span><span class="source-badge">LMV 2012</span></h3>
+            <div class="info-card scroll-animate">
+              <h5>Resistensläget i Sverige</h5>
+              <p style="font-size:0.88rem; line-height:1.7; color:var(--text-secondary);">Tandläkare svarar för ca <strong>8% av all receptförskriven antibiotika</strong> i Sverige. Korrelationen mellan antibiotikaanvändning och resistensutveckling är mycket stark. Trots relativt låg användning försämras resistensläget — ESBL-producerande gramnegativa bakterier ökar kraftigt.</p>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>C. difficile — Särskild risk</h5>
+              <table>
+                <tr><th>Preparat</th><th>C. difficile-risk</th></tr>
+                <tr><td>Klindamycin</td><td class="no">⛔ Hög — starkaste kopplingen</td></tr>
+                <tr><td>Amoxicillin-klavulansyra</td><td class="warn">⚠️ Förhöjd</td></tr>
+                <tr><td>Cefalosporiner</td><td class="warn">⚠️ Förhöjd</td></tr>
+                <tr><td>PcV / Amoxicillin</td><td class="ok">✅ Lägre risk</td></tr>
+                <tr><td>Metronidazol</td><td class="ok">✅ Lägre risk</td></tr>
+              </table>
+            </div>
+            <div class="info-card scroll-animate">
+              <h5>Strama:s Fem Principer</h5>
+              <ol style="padding-left:16px; line-height:2.2; font-size:0.88rem; color:var(--text-secondary);">
+                <li>Antibiotika är <strong>aldrig</strong> behandling av smärta</li>
+                <li>Mekanisk åtgärd (dränage, rensning, extraktion) är <strong>alltid primär</strong></li>
+                <li>Välj <strong>smalt spektrum</strong> — PcV är förstahandsval</li>
+                <li>Kortast möjliga kur — <strong>5–7 dagar</strong> vid odontogen infektion</li>
+                <li>Antibiotika som enda behandling är en <strong>icke-göra</strong></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ RIGHT SIDEBAR ═══ -->
+    <div class="right-sidebar">
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">💊 Snabbnavigering</div>
+        <button class="sidebar-btn" style="background:var(--terra-dark); color:white; border-color:var(--terra-dark);" onclick="selectScenario('ab1')">💊 Preparatval &amp; Dosering</button>
+        <button class="sidebar-btn" onclick="selectScenario('ab2')">⚠️ Penicillinallergi</button>
+        <button class="sidebar-btn" onclick="selectScenario('ab3')">🦷 Per Disciplin</button>
+        <button class="sidebar-btn" onclick="selectScenario('ab4')">🛡️ Profylax-guide</button>
+        <button class="sidebar-btn" onclick="selectScenario('ab5')">⚡ Interaktioner</button>
+        <button class="sidebar-btn" onclick="openDecisionModal()" style="border-color:var(--terra); color:var(--terra-dark);">🔍 Starta beslutsstöd</button>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">📋 Snabbreferens Vuxna</div>
+        <div class="sidebar-info">
+          <h4>Behandling</h4>
+          <p><strong>PcV:</strong> 1,6g × 3 × 5–7d<br><strong>Klinda (allergi):</strong> 150mg × 3 × 5d<br><strong>Svikt +Metro:</strong> 400mg × 3<br><strong>Svikt alt:</strong> Spektramox 875mg × 3</p>
+        </div>
+        <div class="sidebar-info">
+          <h4>Profylax (engångsdos)</h4>
+          <p><strong>Amoxicillin:</strong> 2g — 60 min före<br><strong>Klinda (allergi):</strong> 600mg — 60 min före</p>
+        </div>
+        <div class="sidebar-info">
+          <h4>⛔ Grundregel</h4>
+          <p>Antibiotika ersätter ALDRIG dränage/rensning/extraktion</p>
+        </div>
+        <div class="sidebar-info">
+          <h4>⚠️ Interaktioner</h4>
+          <p>Metro + alkohol = antabus<br>Metro + Waran = ↑INR<br>Klinda → C. difficile-risk<br>Amox + mononukleos = utslag</p>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">📝 Journalmall</div>
+        <button class="copy-btn" onclick="copyJournal()">📋 Kopiera mall</button>
+        <div class="journal-template" id="journalTemplate">Antibiotika ordinerat:
+Preparat: PcV 1,6g × 3
+Duration: 5 dagar
+Indikation: [spridningstecken / feber / trismus]
+Primär åtgärd: [dränage / extraktion / rensning]
+Allergi: Nej
+Interaktioner kontrollerade: Ja
+Källa: Strama/VGR-riktlinje</div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">📚 Källor</div>
+        <div class="sidebar-info">
+          <p>
+            <strong>Strama</strong> — Antibiotikabehandling i tandvården<br>
+            <strong>VGR</strong> — Regional riktlinje 2023<br>
+            <strong>LMV 2012</strong> — Profylax i tandvården<br>
+            <strong>Janusinfo</strong> — Patientbroschyr<br>
+            <strong>Tandvårdens Läkemedel 2024–25</strong> — Doseringar
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /dashboard-layout -->
+</div><!-- /container -->
+
+<!-- ═══════════════════════════════════════════
+     DECISION SUPPORT MODAL
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="decisionModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <h2 id="modalTitle">🔍 Beslutsstöd — Antibiotika indicerat?</h2>
+      <button class="modal-close" onclick="closeDecisionModal()" aria-label="Stäng">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+
+      <!-- STEG 1 -->
+      <div class="step active" id="step-1">
+        <div class="step-counter">Steg 1 av 5</div>
+        <div class="step-question">Föreligger allmänpåverkan?</div>
+        <div class="step-hint">Feber (&gt;38°C), uttalad sjukdomskänsla, frossa, takykardi.</div>
+        <div class="step-options">
+          <button class="step-btn" onclick="nextStep(1, 'yes', this)">✅ Ja — patienten är allmänpåverkad</button>
+          <button class="step-btn" onclick="nextStep(1, 'no', this)">⛔ Nej — ingen allmänpåverkan</button>
+        </div>
+      </div>
+
+      <!-- STEG 2 -->
+      <div class="step" id="step-2">
+        <div class="step-counter">Steg 2 av 5</div>
+        <div class="step-question">Finns tecken på infektionsspridning?</div>
+        <div class="step-hint">Trismus, dysfagi, lymfadenit, svullnad mot munbotten/hals/pterygomandibulär region.</div>
+        <div class="step-options">
+          <button class="step-btn" onclick="nextStep(2, 'yes', this)">✅ Ja — spridningstecken föreligger</button>
+          <button class="step-btn" onclick="nextStep(2, 'no', this)">⛔ Nej — lokal infektion utan spridning</button>
+        </div>
+      </div>
+
+      <!-- STEG 3 -->
+      <div class="step" id="step-3">
+        <div class="step-counter">Steg 3 av 5</div>
+        <div class="step-question">Är patienten immunsupprimerad eller medicinskt riskpatient?</div>
+        <div class="step-hint">Neutropeni, pågående immunsuppressiv behandling, okontrollerad diabetes, strålbehandlat käkben, IV-bisfosfonater.</div>
+        <div class="step-options">
+          <button class="step-btn" onclick="nextStep(3, 'yes', this)">✅ Ja — riskpatient</button>
+          <button class="step-btn" onclick="nextStep(3, 'no', this)">⛔ Nej — frisk patient i övrigt</button>
+        </div>
+      </div>
+
+      <!-- STEG 4 -->
+      <div class="step" id="step-4">
+        <div class="step-counter">Steg 4 av 5</div>
+        <div class="step-question">Har kirurgisk/mekanisk åtgärd utförts eller planeras?</div>
+        <div class="step-hint">Dränage, extraktion, incision, rotbehandling (mekanisk rensning). Antibiotika är alltid ett tillägg — aldrig en ersättning.</div>
+        <div class="step-options">
+          <button class="step-btn" onclick="nextStep(4, 'yes', this)">✅ Ja — kirurgisk åtgärd utförd/planerad</button>
+          <button class="step-btn" onclick="nextStep(4, 'no', this)">⚠️ Nej — ej möjligt just nu</button>
+        </div>
+      </div>
+
+      <!-- STEG 5 -->
+      <div class="step" id="step-5">
+        <div class="step-counter">Steg 5 av 5</div>
+        <div class="step-question">Har patienten penicillinallergi (äkta Typ 1)?</div>
+        <div class="step-hint">Äkta allergi = urtikaria, anafylaxi, andningssvårigheter. Magbesvär = INTE allergi.</div>
+        <div class="step-options">
+          <button class="step-btn" onclick="nextStep(5, 'yes', this)">⚠️ Ja — dokumenterad penicillinallergi</button>
+          <button class="step-btn" onclick="nextStep(5, 'no', this)">✅ Nej — ingen penicillinallergi</button>
+        </div>
+      </div>
+
+      <!-- RESULTAT -->
+      <div class="decision-result" id="decisionResult">
+        <div id="resultLevelBox" class="result-level">
+          <div class="result-icon" id="resultIcon">✅</div>
+          <div>
+            <div class="result-verdict" id="resultVerdict">—</div>
+            <div class="result-detail" id="resultDetail">—</div>
+          </div>
+        </div>
+        <div class="result-boxes" id="resultBoxes"></div>
+        <div class="result-disclaimer">
+          ⚠️ Detta beslutsstöd är ett hjälpmedel — inte ett beslut. Tandläkaren bär fullt kliniskt ansvar. Konsultera alltid aktuella riktlinjer (Strama, VGR) och gör en individuell bedömning.
+        </div>
+        <div class="modal-footer-btns">
+          <button class="btn-reset" onclick="resetDecision()">🔄 Börja om</button>
+          <button class="btn-close-modal" onclick="closeDecisionModal()">Stäng</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   SCENARIO NAVIGATION
+═══════════════════════════════════════════ */
+const scenarioMeta = {
+  ab1: { icon:'💊', title:'Preparatval & Dosering', sub:'Vuxna, barn, profylax, terapisvikt.' },
+  ab2: { icon:'⚠️', title:'Penicillinallergi — Bedömning', sub:'Äkta allergi vs biverkning. Klindamycin-guide.' },
+  ab3: { icon:'🦷', title:'Indikationer per Disciplin', sub:'Endodonti, parodontologi, kirurgi, implantat.' },
+  ab4: { icon:'🛡️', title:'Profylax-guide', sub:'Riskpatienter, riskingrepp, doseringsräknare.' },
+  ab5: { icon:'⚡', title:'Interaktioner & Säkerhet', sub:'Waran, alkohol, graviditet, resistens.' }
+};
+
+function selectScenario(id) {
+  document.querySelectorAll('.scenario-trigger-card').forEach(c => c.classList.remove('active'));
+  const trigger = document.getElementById('trigger-' + id);
+  if (trigger) trigger.classList.add('active');
+
+  document.querySelectorAll('.scenario-display-wrapper').forEach(w => w.classList.remove('active'));
+  const display = document.getElementById(id + '-display');
+  if (display) display.classList.add('active');
+
+  const meta = scenarioMeta[id];
+  if (meta) {
+    const hdr = document.getElementById('dynamic-header');
+    hdr.classList.remove('centered');
+    const avatar = hdr.querySelector('.avatar-wrapper');
+    avatar.textContent = meta.icon;
+    document.getElementById('dynamic-header-title').textContent = meta.title;
+    document.getElementById('dynamic-subtitle').textContent = meta.sub;
+    // Pop animation
+    avatar.style.transform = 'scale(1.2)';
+    setTimeout(() => avatar.style.transform = '', 400);
+  }
+
+  // Activate first tab
+  const wrapper = document.getElementById(id + '-display');
+  if (wrapper) {
+    wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+    wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const fp = wrapper.querySelector('.content-panel');
+    const fb = wrapper.querySelector('.tab-btn');
+    if (fp) fp.classList.add('active');
+    if (fb) fb.classList.add('active');
+  }
+
+  setTimeout(triggerScrollAnimations, 80);
+}
+
+function openInnerTab(scenarioId, tabName, btn) {
+  const wrapper = document.getElementById(scenarioId + '-display');
+  if (!wrapper) return;
+  wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+  wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const target = document.getElementById(scenarioId + '-' + tabName);
+  if (target) target.classList.add('active');
+  if (btn) btn.classList.add('active');
+  setTimeout(triggerScrollAnimations, 80);
+}
+
+/* ═══════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════ */
+function searchCards(val) {
+  const q = val.toLowerCase();
+  document.querySelectorAll('.scenario-trigger-card').forEach(card => {
+    card.style.display = card.innerText.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL ANIMATIONS
+═══════════════════════════════════════════ */
+function triggerScrollAnimations() {
+  document.querySelectorAll('.scroll-animate').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), i * 70);
+  });
+}
+document.addEventListener('DOMContentLoaded', triggerScrollAnimations);
+
+/* ═══════════════════════════════════════════
+   COPY JOURNAL TEMPLATE
+═══════════════════════════════════════════ */
+function copyJournal() {
+  const text = document.getElementById('journalTemplate').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✅ Kopierat!';
+    setTimeout(() => btn.innerHTML = orig, 2000);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   DOSAGE CALCULATORS
+═══════════════════════════════════════════ */
+const childDrugs = {
+  pcv:        { name:'PcV', dose: 25, max: 1600, unit:'mg', perDay: 3, days: '5–7 d', note:'Maxdos 1,6g × 3. Tas på tom/fastande mage(kan tas med mat till barn).' },
+  klinda:     { name:'Klindamycin', dose: 5, max: 150, unit:'mg', perDay: 3, days: '5–7 d', note:'Maxdos 150mg × 3. Svälj med ½ glas vatten.' },
+  metro:      { name:'Metronidazol', dose: 7.5, max: 400, unit:'mg', perDay: 3, days: '5–7 d', note:'Maxdos 400mg × 3. Alkohol strängt förbjudet.' },
+  amox_prof:  { name:'Amoxicillin (profylax)', dose: 50, max: 2000, unit:'mg', perDay: 1, days: 'engångsdos', note:'Ges 60 min före ingrepp.' },
+  klinda_prof:{ name:'Klindamycin (profylax)', dose: 15, max: 600, unit:'mg', perDay: 1, days: 'engångsdos', note:'Ges 60 min före ingrepp. Vid pc-allergi.' }
+};
+
+function calcChildDose() {
+  const weight = parseFloat(document.getElementById('childWeight').value);
+  const drugKey = document.getElementById('childDrug').value;
+  if (!weight || weight < 3 || weight > 80) { alert('Ange vikt mellan 3–80 kg'); return; }
+  const d = childDrugs[drugKey];
+  const rawDose = Math.round(weight * d.dose);
+  const finalDose = Math.min(rawDose, d.max);
+  const capped = rawDose > d.max ? ' (maxdos tillämpad)' : '';
+  document.getElementById('childCalcTable').innerHTML = `
+    <tr><td><strong>Preparat</strong></td><td>${d.name}</td></tr>
+    <tr><td><strong>Dos per gång</strong></td><td><strong>${finalDose} mg</strong>${capped}</td></tr>
+    <tr><td><strong>Frekvens</strong></td><td>${d.perDay === 1 ? 'Engångsdos' : '× ' + d.perDay + '/dag'}</td></tr>
+    <tr><td><strong>Duration</strong></td><td>${d.days}</td></tr>
+    <tr><td><strong>OBS</strong></td><td>${d.note}</td></tr>
+  `;
+  document.getElementById('childCalcResult').classList.add('show');
+}
+
+const profDrugs = {
+  amox:  { name:'Amoxicillin', dose: 50, max: 2000, note:'Ges 60 min före ingrepp. Förstahandsval.' },
+  klinda:{ name:'Klindamycin', dose: 15, max: 600, note:'Ges 60 min före ingrepp. Vid pc-allergi.' }
+};
+
+function calcProfDose() {
+  const weight = parseFloat(document.getElementById('profWeight').value);
+  const drugKey = document.getElementById('profDrug').value;
+  if (!weight || weight < 3 || weight > 80) { alert('Ange vikt mellan 3–80 kg'); return; }
+  const d = profDrugs[drugKey];
+  const rawDose = Math.round(weight * d.dose);
+  const finalDose = Math.min(rawDose, d.max);
+  const capped = rawDose > d.max ? ' (maxdos tillämpad)' : '';
+  document.getElementById('profCalcTable').innerHTML = `
+    <tr><td><strong>Preparat</strong></td><td>${d.name}</td></tr>
+    <tr><td><strong>Dos</strong></td><td><strong>${finalDose} mg</strong>${capped}</td></tr>
+    <tr><td><strong>Tidpunkt</strong></td><td>60 min före ingrepp (engångsdos)</td></tr>
+    <tr><td><strong>OBS</strong></td><td>${d.note}</td></tr>
+  `;
+  document.getElementById('profCalcResult').classList.add('show');
+}
+
+/* ═══════════════════════════════════════════
+   DECISION SUPPORT MODAL
+═══════════════════════════════════════════ */
+let answers = {};
+
+function openDecisionModal() {
+  document.getElementById('decisionModal').classList.add('open');
+  resetDecision();
+}
+function closeDecisionModal() {
+  document.getElementById('decisionModal').classList.remove('open');
+}
+document.getElementById('decisionModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDecisionModal();
+});
+
+function resetDecision() {
+  answers = {};
+  document.querySelectorAll('.step').forEach((s, i) => {
+    s.classList.toggle('active', i === 0);
+  });
+  document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('decisionResult').classList.remove('show');
+  document.getElementById('progressFill').style.width = '0%';
+}
+
+function nextStep(stepNum, answer, btn) {
+  answers['step' + stepNum] = answer;
+  btn.classList.add('selected');
+  const progress = (stepNum / 5) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+
+  if (stepNum < 5) {
+    setTimeout(() => {
+      document.getElementById('step-' + stepNum).classList.remove('active');
+      document.getElementById('step-' + (stepNum + 1)).classList.add('active');
+    }, 300);
+  } else {
+    setTimeout(() => {
+      document.getElementById('step-' + stepNum).classList.remove('active');
+      document.getElementById('progressFill').style.width = '100%';
+      showDecisionResult();
+    }, 300);
+  }
+}
+
+function showDecisionResult() {
+  const a = answers;
+  const hasFever = a.step1 === 'yes';
+  const hasSpread = a.step2 === 'yes';
+  const isRisk = a.step3 === 'yes';
+  const hasSurgery = a.step4 === 'yes';
+  const isPcAllergi = a.step5 === 'yes';
+
+  let level = 'green';
+  let icon = '✅';
+  let verdict = '';
+  let detail = '';
+  let boxes = [];
+
+  // Decision logic
+  if (hasFever || hasSpread) {
+    // Strong indication
+    level = 'green';
+    icon = '✅';
+    verdict = 'Antibiotika indicerat';
+    detail = hasFever ? 'Allmänpåverkan (feber) föreligger — antibiotika som tillägg till kirurgisk åtgärd.' : 'Spridningstecken föreligger — antibiotika indicerat.';
+    if (!hasSurgery) {
+      level = 'yellow';
+      icon = '⚠️';
+      detail += ' ⚠️ OBS: Kirurgisk/mekanisk åtgärd bör utföras snarast — antibiotika ersätter inte dränage.';
+    }
+    if (isPcAllergi) {
+      boxes.push({ title:'💊 Rekommenderat preparat', html:'<p><strong>Klindamycin 150 mg × 3</strong> i 5–7 dagar<br><small>Vid svårare infektion: 300 mg × 3</small></p><p style="margin-top:6px; font-size:0.82rem; color:var(--text-muted);">⚠️ C. difficile-risk — informera patienten. Svälj med ½ glas vatten upprätt.</p>' });
+    } else {
+      boxes.push({ title:'💊 Rekommenderat preparat', html:'<p><strong>PcV (Kåvepenin) 1,6 g × 3</strong> i 5–7 dagar<br><small>Ta på tom mage eller 30 min före mat.</small></p>' });
+    }
+    if (hasSpread) {
+      boxes.push({ title:'🚨 Röd flagga', html:`<p>Spridningstecken identifierade. Kontrollera:<br>
+        • Hotande luftvägar? → <strong>Akut remiss sjukhus</strong><br>
+        • Trismus, dysfagi, svullnad mot munbotten → Beredskap för sjukhusvård<br>
+        • IV-behandling kan vara indicerad: Bensylpenicillin + Metronidazol</p>` });
+    }
+  } else if (isRisk) {
+    level = 'yellow';
+    icon = '⚠️';
+    verdict = 'Individuell bedömning — riskpatient';
+    detail = 'Riskpatient utan spridningstecken. Bedömning görs på individnivå. Kontakta behandlande läkare vid osäkerhet.';
+    if (isPcAllergi) {
+      boxes.push({ title:'💊 Vid behov av antibiotika', html:'<p><strong>Klindamycin 150 mg × 3</strong> × 5–7 dagar</p>' });
+    } else {
+      boxes.push({ title:'💊 Vid behov av antibiotika', html:'<p><strong>PcV 1,6 g × 3</strong> × 5–7 dagar</p>' });
+    }
+    boxes.push({ title:'📋 Åtgärd', html:'<p>• Kontrollera om kirurgisk åtgärd är möjlig<br>• Diskutera med behandlande läkare<br>• Dokumentera beslutsunderlag</p>' });
+  } else {
+    level = 'red';
+    icon = '⛔';
+    verdict = 'Antibiotika ej indicerat';
+    detail = 'Ingen allmänpåverkan, ingen spridning, frisk patient. Mekanisk/kirurgisk åtgärd är primär behandling.';
+    boxes.push({ title:'✅ Primär åtgärd', html:`<p>• <strong>Dränage</strong> via tand eller incision<br>
+      • <strong>Extraktion</strong> om indicerat<br>
+      • <strong>Mekanisk rensning</strong> (rotbehandling)<br>
+      • Antibiotika tillför ingen nytta vid lokal infektion utan spridning.</p>` });
+    boxes.push({ title:'💊 Smärtlindring (om behov)', html:`<p>• Paracetamol 1g × 4<br>• NSAID (ibuprofen 400mg × 3) om ej kontraindicerat<br>• Kombination paracetamol + NSAID vid svår smärta</p>` });
+  }
+
+  // Render
+  const lvlBox = document.getElementById('resultLevelBox');
+  lvlBox.className = 'result-level ' + level;
+  document.getElementById('resultIcon').textContent = icon;
+  document.getElementById('resultVerdict').textContent = verdict;
+  document.getElementById('resultDetail').textContent = detail;
+
+  const boxesHtml = boxes.map(b => `
+    <div class="result-box">
+      <h5>${b.title}</h5>
+      ${b.html}
+    </div>`).join('');
+  document.getElementById('resultBoxes').innerHTML = boxesHtml;
+
+  document.getElementById('decisionResult').classList.add('show');
+}
+</script>
+</body>
+</html>

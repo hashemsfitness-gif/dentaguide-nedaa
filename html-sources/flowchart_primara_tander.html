@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akut Trauma — Primära Tänder (Mjölkbett) — Diagnostiskt Flödesschema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            --glass: rgba(255,255,255,0.06);
+            --glass-border: rgba(255,255,255,0.12);
+            --red: #ef4444; --red-bg: rgba(239,68,68,0.1); --red-border: rgba(239,68,68,0.3);
+            --blue: #3b82f6; --blue-bg: rgba(59,130,246,0.1); --blue-border: rgba(59,130,246,0.3);
+            --green: #10b981; --green-bg: rgba(16,185,129,0.1); --green-border: rgba(16,185,129,0.3);
+            --amber: #f59e0b; --amber-bg: rgba(245,158,11,0.1); --amber-border: rgba(245,158,11,0.3);
+            --gray: #94a3b8;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); min-height:100vh; color:white; -webkit-font-smoothing:antialiased; }
+        .wrap { max-width:820px; margin:0 auto; padding:20px; }
+        
+        .header { text-align:center; padding:40px 0 30px; }
+        .header h1 { font-size:2rem; font-weight:900; letter-spacing:-1px; margin-bottom:8px; }
+        .header h1 span { color:var(--blue); }
+        .header p { opacity:0.5; font-size:0.85rem; }
+        
+        .principle { background:var(--red-bg); border:1px solid var(--red-border); border-radius:16px; padding:16px 20px; text-align:center; margin-bottom:30px; }
+        .principle strong { color:#f87171; font-size:0.9rem; }
+        
+        .step { display:none; animation: fadeIn 0.4s ease; }
+        .step.active { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(15px)} to{opacity:1;transform:translateY(0)} }
+        
+        .step-label { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+        .step-num { background:var(--blue); color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.75rem; flex-shrink:0; }
+        .step-num.red { background:var(--red); }
+        .step-num.amber { background:var(--amber); }
+        .step-num.green { background:var(--green); }
+        .step-text { font-size:0.75rem; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; opacity:0.5; }
+        
+        .card { background:var(--glass); border:1px solid var(--glass-border); border-radius:20px; padding:24px; margin-bottom:16px; }
+        .card h2 { font-size:1.3rem; font-weight:800; margin-bottom:6px; }
+        .card .desc { font-size:0.85rem; opacity:0.6; line-height:1.5; margin-bottom:16px; }
+        
+        .options { display:grid; gap:10px; }
+        .opt2 { grid-template-columns:1fr 1fr; }
+        .opt3 { grid-template-columns:1fr 1fr 1fr; }
+        .opt1 { grid-template-columns:1fr; }
+        
+        .btn { padding:16px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:14px; cursor:pointer; text-align:left; transition:all 0.2s; color:white; font-size:0.88rem; font-weight:600; line-height:1.4; }
+        .btn:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); transform:translateY(-2px); }
+        .btn small { display:block; font-weight:400; font-size:0.75rem; opacity:0.5; margin-top:3px; }
+        .btn.c-red { border-color:var(--red-border); color:#fca5a5; }
+        .btn.c-red:hover { background:var(--red-bg); border-color:var(--red); }
+        .btn.c-blue { border-color:var(--blue-border); color:#93c5fd; }
+        .btn.c-blue:hover { background:var(--blue-bg); border-color:var(--blue); }
+        .btn.c-green { border-color:var(--green-border); color:#6ee7b7; }
+        .btn.c-green:hover { background:var(--green-bg); border-color:var(--green); }
+        .btn.c-amber { border-color:var(--amber-border); color:#fcd34d; }
+        .btn.c-amber:hover { background:var(--amber-bg); border-color:var(--amber); }
+        
+        .connector { display:flex; justify-content:center; padding:6px 0; }
+        .conn-line { width:2px; height:20px; background:rgba(255,255,255,0.15); border-radius:1px; }
+        
+        .result { border-radius:20px; padding:24px; margin-top:8px; }
+        .result h3 { font-size:1.2rem; font-weight:800; margin-bottom:8px; }
+        .result p { font-size:0.9rem; line-height:1.7; opacity:0.9; }
+        .result .meta { font-size:0.8rem; opacity:0.6; margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1); }
+        .r-red { background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.35); }
+        .r-red h3 { color:#f87171; }
+        .r-blue { background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.35); }
+        .r-blue h3 { color:#93c5fd; }
+        .r-green { background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.35); }
+        .r-green h3 { color:#6ee7b7; }
+        .r-amber { background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.35); }
+        .r-amber h3 { color:#fcd34d; }
+        
+        .reset-btn { display:inline-block; margin-top:16px; padding:12px 28px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:14px; color:white; cursor:pointer; font-weight:700; font-size:0.85rem; transition:0.2s; }
+        .reset-btn:hover { background:rgba(255,255,255,0.15); }
+
+        .ref-table { width:100%; border-collapse:collapse; margin-top:30px; font-size:0.78rem; }
+        .ref-table th { background:rgba(255,255,255,0.08); padding:10px 12px; text-align:left; font-weight:700; border-bottom:1px solid rgba(255,255,255,0.15); }
+        .ref-table td { padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.06); vertical-align:top; }
+        .ref-table tr:hover td { background:rgba(255,255,255,0.03); }
+        .ref-table .dx { font-weight:700; white-space:nowrap; }
+        
+        .footer { text-align:center; padding:30px 0; font-size:0.7rem; opacity:0.3; }
+        
+        @media(max-width:600px) {
+            .opt2,.opt3 { grid-template-columns:1fr; }
+            .header h1 { font-size:1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <div class="header">
+        <h1>🧸 Primära Tänder <span>(Mjölkbett)</span></h1>
+        <p>Interaktivt diagnostiskt flödesschema — Barn 0–6 år | IADT 2020 + Dental Trauma Guide</p>
+    </div>
+    
+    <div class="principle">
+        <strong>⚠️ GRUNDPRINCIP: Primära tänder ska ALDRIG reponeras med kraft eller replanteras. Mål: smärtfrihet + skydda permanenta anlaget.</strong>
+    </div>
+
+    <!-- ══════ STEG 1 ══════ -->
+    <div id="s0" class="step active">
+        <div class="step-label"><div class="step-num red">1</div><span class="step-text">Allmäntillstånd — alltid först</span></div>
+        <div class="card">
+            <h2>🚨 Huvudskada?</h2>
+            <div class="desc">Medvetslöshet? Kräkningar? Nacksmärta? Slog barnet i huvudet?</div>
+            <div class="options opt2">
+                <button class="btn c-green" onclick="go('s1')">✅ Nej — barnet är alert</button>
+                <button class="btn c-red" onclick="show('rem')">🚨 Ja — misstänkt huvudskada</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REMISS -->
+    <div id="rem" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div class="result r-red">
+            <h3>🚨 REMISS BARNAKUT — OMEDELBART</h3>
+            <p>Tandbehandling väntar. Stabilisera barnet först.</p>
+        </div>
+        <button class="reset-btn" onclick="reset()">↺ Börja om</button>
+    </div>
+
+    <!-- ══════ STEG 2 ══════ -->
+    <div id="s1" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div class="step-label"><div class="step-num">2</div><span class="step-text">Tandens status</span></div>
+        <div class="card">
+            <h2>🦷 Vad ser du?</h2>
+            <div class="options opt3">
+                <button class="btn c-blue" onclick="go('s2a')">Tanden sitter kvar<small>Rörlig / snett / intryckt</small></button>
+                <button class="btn c-red" onclick="go('s2b')">Tanden helt ute<small>Exartikulation</small></button>
+                <button class="btn c-amber" onclick="go('s2c')">En bit har gått av<small>Fraktur</small></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ STEG 3A: LUXATION ══════ -->
+    <div id="s2a" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div class="step-label"><div class="step-num">3</div><span class="step-text">Luxationstyp</span></div>
+        <div class="card">
+            <h2>Rörlighet, position, perkussion?</h2>
+            <div class="options opt2">
+                <button class="btn c-green" onclick="go('s-konk')">Rörlig, rätt plats, öm<small>Subluxation / Konkussion</small></button>
+                <button class="btn c-amber" onclick="go('s-bett')">Tryckt snett eller dragen utåt<small>Lateral luxation / Extrusion</small></button>
+                <button class="btn c-red" onclick="go('s-intru')">Intryckt i benet (kortare/osynlig)<small>Intrusion</small></button>
+                <button class="btn c-red" onclick="res('alv')">Flera tänder + ben rör sig som block<small>Alveolarutskottsfraktur</small></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KONK vs SUBLUX -->
+    <div id="s-konk" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div class="card">
+            <h2>Har tanden ökad rörlighet?</h2>
+            <div class="options opt2">
+                <button class="btn c-blue" onclick="res('sublux')">Ja — ökad rörlighet<small>→ Subluxation</small></button>
+                <button class="btn c-green" onclick="res('konk')">Nej — normal rörlighet<small>→ Konkussion</small></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BETT + APEX -->
+    <div id="s-bett" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div class="step-label"><div class="step-num amber">4</div><span class="step-text">Bett + apex-riktning (röntgen)</span></div>
+        <div class="card">
+            <h2>⚠️ Bettstörning? Apex buckalt eller palatinalt?</h2>
+            <div class="desc">Kan barnet bita ihop? Kontrollera apex-riktning på röntgen (minst 2 projektioner).</div>
+            <div class="options opt2">
+                <button class="btn c-green" onclick="res('avvakta')">Ingen bettstörning + apex buckalt<small>Bort från anlaget</small></button>
+                <button class="btn c-blue" onclick="res('slipa')">Liten bettstörning<small>Kan lösas med slipning</small></button>
+                <button class="btn c-amber" onclick="res('ex-bett')">Stor bettstörning<small>Ej slipbar</small></button>
+                <button class="btn c-red" onclick="res('ex-apex')">Apex palatinalt<small>Mot permanenta anlaget</small></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTRUSION -->
+    <div id="s-intru" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div class="step-label"><div class="step-num red">4</div><span class="step-text">Intrusion — apex-riktning (röntgen)</span></div>
+        <div class="card">
+            <h2>📷 Vart pekar apex?</h2>
+            <div class="options opt2">
+                <button class="btn c-green" onclick="res('intru-b')">Apex buckalt<small>Bort från anlaget → avvakta</small></button>
+                <button class="btn c-red" onclick="res('intru-p')">Apex palatinalt<small>Mot anlaget → extraktion</small></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ STEG 3B: EXARTIKULATION ══════ -->
+    <div id="s2b" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div class="step-label"><div class="step-num red">3</div><span class="step-text">Exartikulation — tand helt ute</span></div>
+        <div class="card">
+            <div class="principle" style="margin-bottom:16px;"><strong>⛔ MJÖLKTÄNDER REPLANTERAS ALDRIG</strong></div>
+            <h2>Hittades tanden? Hostar barnet?</h2>
+            <div class="options opt1">
+                <button class="btn c-green" onclick="res('exart-ok')">✅ Tanden hittad — ingen hosta</button>
+                <button class="btn c-red" onclick="res('asp')">🚨 Tanden EJ hittad + hosta / andningsbesvär</button>
+                <button class="btn c-amber" onclick="res('exart-rtg')">⚠️ Tanden EJ hittad, ingen hosta — behöver röntgen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ STEG 3C: FRAKTUR ══════ -->
+    <div id="s2c" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div class="step-label"><div class="step-num amber">3</div><span class="step-text">Frakturtyp — inspektera frakturytan</span></div>
+        <div class="card">
+            <h2>Vad ser du?</h2>
+            <div class="desc">Palpera ALLTID läpparna — tandfragment kan vara inbäddade!</div>
+            <div class="options opt2">
+                <button class="btn c-green" onclick="res('infrak')">Spricka / liten emaljbit av<small>Infraktion / Emaljfraktur</small></button>
+                <button class="btn c-blue" onclick="res('frak-ok')">Dentin blottat, INGEN röd punkt<small>Okomplicerad kronfraktur</small></button>
+                <button class="btn c-amber" onclick="res('frak-komp')">Röd punkt / blödning i frakturyta<small>Komplicerad (pulpablotta)</small></button>
+                <button class="btn c-amber" onclick="res('kronrot')">Fraktur under tandköttet<small>Kronrotfraktur</small></button>
+                <button class="btn c-red" onclick="res('rotfrak')">Kronan intakt men extremt rörlig<small>Rotfraktur (rtg bekräftar)</small></button>
+                <button class="btn c-red" onclick="res('alv')">Flera tänder + ben rör sig<small>Alveolarutskottsfraktur</small></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ RESULTAT ══════ -->
+    <div id="s-res" class="step">
+        <div class="connector"><div class="conn-line"></div></div>
+        <div id="res-box"></div>
+        <button class="reset-btn" onclick="reset()">↺ Börja om från steg 1</button>
+    </div>
+
+    <!-- ══════ REFERENSTABELL ══════ -->
+    <table class="ref-table">
+        <tr><th colspan="4" style="font-size:0.9rem; padding:14px 12px;">📋 Snabbreferens — Alla diagnoser primära tänder</th></tr>
+        <tr><th>Diagnos</th><th>Kliniska fynd</th><th>Åtgärd</th><th>Prognos</th></tr>
+        <tr><td class="dx">Konkussion</td><td>Normal rörlighet, perkussionsöm</td><td>Avvakta, skonkost 1–2 v</td><td>Utmärkt</td></tr>
+        <tr><td class="dx">Subluxation</td><td>Ökad rörlighet, ej displacerad</td><td>Avvakta, klorhexidin</td><td>God</td></tr>
+        <tr><td class="dx">Extrusion</td><td>Tanden ser längre ut, kraftigt rörlig</td><td>Liten: avvakta/slipa. Stor: extraktion</td><td>Varierar</td></tr>
+        <tr><td class="dx">Lateral luxation</td><td>Tryckt snett, kan vara låst</td><td>Bett + apex avgör: avvakta/slipa/ex</td><td>Varierar</td></tr>
+        <tr><td class="dx">Intrusion</td><td>Intryckt, ser kortare ut</td><td>Apex buckalt: avvakta. Palatinalt: ex</td><td>Beror på apex</td></tr>
+        <tr><td class="dx" style="color:#f87171;">Exartikulation</td><td>Tand helt ute ur alveol</td><td>ALDRIG replantation. Hemostas.</td><td>God akut</td></tr>
+        <tr><td class="dx">Infraktion</td><td>Spricka utan substansförlust</td><td>Ingen åtgärd</td><td>Utmärkt</td></tr>
+        <tr><td class="dx">Emaljfraktur</td><td>Emaljförlust utan dentinblotta</td><td>Slipa kanter</td><td>Utmärkt</td></tr>
+        <tr><td class="dx">Okompl. kronfraktur</td><td>Dentin blottat, ingen pulpablotta</td><td>Slipa + ev. GIC</td><td>God</td></tr>
+        <tr><td class="dx">Kompl. kronfraktur</td><td>Pulpablotta (röd punkt)</td><td>Litet barn: ex. Stort barn: Cvek</td><td>Varierar</td></tr>
+        <tr><td class="dx">Kronrotfraktur</td><td>Fraktur subgingivalt</td><td>Oftast extraktion</td><td>Dålig</td></tr>
+        <tr><td class="dx">Rotfraktur</td><td>Kronan intakt, extremt rörlig</td><td>Ex koronalt fragment, lämna apikalt</td><td>God</td></tr>
+        <tr><td class="dx" style="color:#f87171;">Alveolarfraktur</td><td>Bensegment + 2–4 tänder rörliga</td><td>Specialist. Reponering + splint 4 v</td><td>God</td></tr>
+    </table>
+
+    <div class="footer">
+        Akuttand beslutsstöd v1.0 | 2026-03-20 | Källor: IADT 2020, Dental Trauma Guide (dentaltraumaguide.org), Socialstyrelsen<br>
+        OBS: Ersätter inte kliniskt omdöme. Försäkringsanmälan ALLTID vid trauma hos barn.
+    </div>
+</div>
+
+<script>
+var R = {
+    'konk':     {c:'green', t:'✅ Konkussion', x:'Normal rörlighet, perkussionsöm. Avvakta. Skonkost 1–2 v. Kontroll: 1 v, 3 v, 3 mån. Utmärkt prognos — mycket liten risk för nekros.'},
+    'sublux':   {c:'blue',  t:'📋 Subluxation', x:'Ökad rörlighet, ej displacerad. Avvakta. Skonkost + klorhexidin 0,12 % 2 ggr/dag. Kontroll: 1 v, 4 v, 3 mån. God prognos.'},
+    'avvakta':  {c:'green', t:'✅ Avvakta — observation', x:'Ingen bettstörning + apex buckalt. Skonkost 1–2 v. Klorhexidinbaddning. Kontroll: 1 v, 4 v, 3 mån, 6 mån. Försäkringsanmälan.'},
+    'slipa':    {c:'blue',  t:'🔧 Ocklusionsjustering — slipa', x:'Liten bettstörning → slipa störande kontakt med diamantborr. Kontrollera att barnet kan bita ihop normalt. Skonkost + klorhexidin.'},
+    'ex-bett':  {c:'amber', t:'⚠️ Extraktion — stor bettstörning', x:'Ocklusionsstörning ej lösbar med slipning. Extraktion i LA (beräkna barnvikt!). Hemostas. Postop-instruktioner till förälder. Försäkringsanmälan.'},
+    'ex-apex':  {c:'red',   t:'🚨 Extraktion — apex mot anlaget', x:'Apex displacerat palatinalt → risk för skada på permanent tandanlag. Extraktion krävs. Använd ALDRIG apikalt tryck nära anlag. Försäkringsanmälan.'},
+    'intru-b':  {c:'green', t:'✅ Intrusion — avvakta reeruption', x:'Apex buckalt (bort från anlag). Avvakta spontan reeruption 1–6 månader. Kontroll var 4:e vecka. Om ingen reeruption 6 mån → extraktion. Försäkringsanmälan.'},
+    'intru-p':  {c:'red',   t:'🚨 Intrusion — extraktion krävs', x:'Apex palatinalt (mot anlag). Hög risk för skada på permanent tandanlag. Extraktion. Försäkringsanmälan.'},
+    'exart-ok': {c:'red',   t:'🚨 Exartikulation — ALDRIG replantation', x:'Replanteras ALDRIG. Spolning koksalt, hemostas med kompress. Info till förälder: permanent anlag kan visa skada vid 6–7 år (hypomineralisering, formavvikelse). Försäkringsanmälan ALLTID.'},
+    'asp':      {c:'red',   t:'🚨 MISSTÄNKT ASPIRATION — AKUT REMISS', x:'Tand ej hittad + hosta/andningsbesvär → AKUT remiss barnakut/sjukhus för lungröntgen. Vid stridor/andnöd: RING 112.'},
+    'exart-rtg':{c:'amber', t:'⚠️ Tand ej hittad — röntga omedelbart', x:'Röntga för att utesluta total intrusion (tand uppslagen i benet). Om tom alveol på rtg = exartikulation bekräftad (replanteras aldrig). Om tand syns i benet = total intrusion → bedöm apex-riktning.'},
+    'infrak':   {c:'green', t:'✅ Infraktion / Emaljfraktur', x:'Ingen eller minimal substansförlust. Slipa eventuella vassa kanter. Ingen annan åtgärd krävs. Uppföljning vid ordinarie revision. Utmärkt prognos.'},
+    'frak-ok':  {c:'blue',  t:'📋 Okomplicerad kronfraktur', x:'Dentin blottat utan pulpablotta. Slipa/runda vassa kanter. Palpera läpp (tandfragment?). Om stort dentinsår + kooperativt barn: GIC-förband. Fluorlack. Kontroll 4 v.'},
+    'frak-komp':{c:'amber', t:'⚠️ Komplicerad kronfraktur — pulpablotta', x:'Litet/okooperativt barn (<3–4 år): EXTRAKTION är förstahandsval — tvinga aldrig smärtsam behandling.\nKooperativt äldre barn + vital tand + <24 h: partiell pulpotomi (Cvek) med Ca(OH)₂ eller MTA.\n>24 h eller nekrotisk pulpa: extraktion.'},
+    'kronrot':  {c:'amber', t:'⚠️ Kronrotfraktur', x:'Fraktur genom emalj, dentin och rotcement. Oftast dålig prognos i primära bettet. Avlägsna löst fragment. Extraktion rekommenderas i de flesta fall. Lämna djupt apikalt fragment (resorberas). Försäkringsanmälan.'},
+    'rotfrak':  {c:'red',   t:'🔴 Rotfraktur', x:'Kronan kan se intakt ut men är extremt rörlig. Röntgen (2 vinklar) bekräftar frakturlinje i roten.\n\nÅtgärd: Extrahera koronalt fragment. LÄMNA apikalt fragment om det sitter djupt — att gräva efter det riskerar skada på permanenta anlaget. Resorberas spontant. Kontroll 1 mån + 1 år.'},
+    'alv':      {c:'red',   t:'🚨 Alveolarutskottsfraktur — Specialistfall', x:'Rörligt bensegment med 2–4 tänder som enhet. Kraftig blödning.\n\nAkut: Reponering + flexibel splint 4 v (om möjligt). Små barn 1–3 år: splintning ofta omöjlig → skonkost/flytande föda + sårvård.\n\nRemittera till pedodontist/käkkirurg. Försäkringsanmälan.'}
+};
+
+var allSteps = ['s0','s1','s2a','s2b','s2c','s-konk','s-bett','s-intru','rem','s-res'];
+
+function go(id) {
+    document.getElementById(id).classList.add('active');
+    setTimeout(function(){ document.getElementById(id).scrollIntoView({behavior:'smooth',block:'nearest'}); },50);
+}
+
+function show(id) {
+    document.getElementById(id).classList.add('active');
+    setTimeout(function(){ document.getElementById(id).scrollIntoView({behavior:'smooth',block:'nearest'}); },50);
+}
+
+function res(key) {
+    var r = R[key];
+    var box = document.getElementById('res-box');
+    var lines = r.x.split('\n').map(function(l){ return '<p style="margin-bottom:6px;">' + l + '</p>'; }).join('');
+    box.innerHTML = '<div class="result r-' + r.c + '">' +
+        '<h3>' + r.t + '</h3>' + lines +
+        '<div class="meta">📋 Försäkringsanmälan ALLTID | 📅 Boka uppföljning | 📝 Dokumentera i journal</div>' +
+        '</div>';
+    document.getElementById('s-res').classList.add('active');
+    setTimeout(function(){ document.getElementById('s-res').scrollIntoView({behavior:'smooth',block:'nearest'}); },50);
+}
+
+function reset() {
+    allSteps.forEach(function(id){
+        document.getElementById(id).classList.remove('active');
+    });
+    document.getElementById('s0').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Akut Trauma- permanenta tänder</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<button class="back-btn" onclick="history.back()">← TILLBAKA</button>
+
+<div class="container">
+    <div class="hero">
+        <h1>Akut Trauma & Pedodonti</h1>
+        <p class="hero-subtitle">Kliniskt beslutsstöd — Alveolarfraktur & Permanenta tänder (Scenario 45–48)</p>
+    </div>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="mainSearch" placeholder="Sök diagnos eller symtom..." onkeyup="searchCards()">
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+
+        <div class="scenario-nav">
+
+            <div class="scenario-trigger-card" id="trigger-sc45" onclick="selectScenario('sc45')">
+                <span class="trigger-tag red">SCENARIO 45</span>
+                <div class="trigger-avatar-container">
+                    <img src="alveolar.png" alt="Alveolarfraktur" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=ALV'">
+                </div>
+                <h2 class="trigger-title">"Hela tandköttspartiet och flera tänder rör sig tillsammans"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Alveolarutskottsfraktur. Rörligt bensegment. Specialistfall.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc46" onclick="selectScenario('sc46')">
+                <span class="trigger-tag">SCENARIO 46</span>
+                <div class="trigger-avatar-container">
+                    <img src="kronfrak_perm.png" alt="Kronfraktur perm" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff3e0/e65100?text=KRON'">
+                </div>
+                <h2 class="trigger-title">"Barnet har slagit av en bit av den nya framtanden"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Kronfraktur/infraktion permanenta tänder. Cvek vid pulpablotta.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc47" onclick="selectScenario('sc47')">
+                <span class="trigger-tag">SCENARIO 47</span>
+                <div class="trigger-avatar-container">
+                    <img src="konkussion.png" alt="Konkussion" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e8f5e9/2e7d32?text=KONK'">
+                </div>
+                <h2 class="trigger-title">"Tanden fick en smäll och är jätteöm vid beröring, men sitter helt fast"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Konkussion permanent tand. Expektans.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc48" onclick="selectScenario('sc48')">
+                <span class="trigger-tag red">SCENARIO 48</span>
+                <div class="trigger-avatar-container">
+                    <img src="exart_perm.png" alt="Exartikulation perm" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffcdd2/b71c1c?text=EXAR'">
+                </div>
+                <h2 class="trigger-title">"Hela tanden – eller ett helt käksegment – är löst eller utslaget"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Exartikulation + alveolarfraktur permanenta tänder. HYPERAKUT replantation.</div>
+            </div>
+
+        </div>
+
+        <div class="main-content-panel">
+
+            <div id="dynamic-header" class="header-container centered">
+                <div class="avatar-wrapper">
+                    <img id="story-avatar" class="character-img" src="start.png" alt="Story Character" onerror="this.src='https://placehold.co/300x300/fff3e0/e65100?text=PEDO'">
+                </div>
+                <div class="header-text-block">
+                    <h2 id="dynamic-header-title">Akut Trauma — Permanenta tänder & Alveolar</h2>
+                    <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario i menyn till vänster för att starta guiden.</p>
+                </div>
+            </div>
+
+
+            <div id="sc45-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc45', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc45', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc45', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc45', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc45', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc45', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc45', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc45-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-45-ALVFRAK</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Hela tandköttspartiet och flera tänder rör sig tillsammans"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> S02.8 (Fraktur av alveolarutskottet)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Ovanligt — uppstår vid kraftigare trauma</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> Alla åldrar (barn och vuxna)</div>
+                                <div class="symptom-item">⚠️ <strong>Klassificering:</strong> Primärt ett SPECIALISTFALL</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Definition</h5>
+                            <p>Ett kraftigare trauma har orsakat fraktur av alveolarutskottet (käkbenet som håller tänderna). Vid palpation rör sig ett helt <strong>block av ben och 2–4 tänder</strong> som en enhet.</p>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk betydelse</h5>
+                            <ul>
+                                <li>Kraftigare trauma → högre risk för samtidig huvudskada</li>
+                                <li>Multipla permanenta tandanlag kan vara hotade</li>
+                                <li>Korrekt reponering och fixering krävs för att minimera senskador</li>
+                                <li>Mycket små barn (1–3 år): splintning ofta omöjlig → konservativ behandling</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Differentiering</h5>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                                <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Fynd</th><th style="padding:8px;">Alveolarfraktur</th><th style="padding:8px;">Multipla luxationer</th><th style="padding:8px;">Käkbensfraktur</th></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Bensegment rörligt</td><td style="padding:8px;">Ja (block)</td><td style="padding:8px;">Nej (enskilda)</td><td style="padding:8px;">Större segment</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Krepitationer</td><td style="padding:8px;">Ja</td><td style="padding:8px;">Nej</td><td style="padding:8px;">Ja</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Antal tänder</td><td style="padding:8px;">2–4 i block</td><td style="padding:8px;">Enskilda</td><td style="padding:8px;">Större avsnitt</td></tr>
+                                <tr><td style="padding:8px;">Bettstörning</td><td style="padding:8px;">Ja (segment)</td><td style="padding:8px;">Varierar</td><td style="padding:8px;">Uttalad</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sc45-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Obligatoriska frågor</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🔴 Primära frågor (KRITISKA — allmäntillstånd FÖRST)</h5>
+                            <ul>
+                                <li><strong>❓ Slog barnet i huvudet? Medvetslöshet? Kräkningar?</strong><br><em>Kraftigare trauma = högre risk för huvudskada → barnakut FÖRST</em></li>
+                                <li><strong>❓ Hur skedde olyckan? Fall från höjd? Cykelolycka? Slag?</strong><br><em>Kraftmekanismen avgör skadeutbredning</em></li>
+                                <li><strong>❓ Kan barnet bita ihop normalt?</strong><br><em>Förväntat: Nej — bettstörning vanligt</em></li>
+                                <li><strong>❓ Blöder det kraftigt?</strong><br><em>Alveolarfrakturer blöder ofta rikligt från tandköttsfickor</em></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>🔵 Sekundära frågor</h5>
+                            <ul>
+                                <li>📋 Stelkrampsskydd?</li>
+                                <li>📋 Allmänsjukdomar? Mediciner? Blödningsrubbning?</li>
+                                <li>📋 Allergi?</li>
+                                <li>📋 Barnmisshandel — stämmer skadan med berättelsen?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc45-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Extraoral undersökning</h5>
+                            <ul>
+                                <li>🔍 Sårskador ansikte — utbredning, svullnad, hematom?</li>
+                                <li>🔍 Ansiktsasymmetri?</li>
+                                <li>🔍 Palpation av käkben — smärta, krepitationer?</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Intraoral undersökning</h5>
+                            <ul>
+                                <li>🔍 <strong>Rörligt bensegment</strong> — flera tänder + ben rör sig som enhet vid palpation</li>
+                                <li>🔍 Kraftig blödning ur tandköttsfickor</li>
+                                <li>🔍 Bettstörning — segmentet ur position</li>
+                                <li>🔍 Sår i slemhinna, lacerationer</li>
+                                <li>🔍 Krepitationer vid palpation av benet</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Tandstatus</h5>
+                            <ul>
+                                <li>🔍 Vilka tänder ingår i det rörliga segmentet?</li>
+                                <li>🔍 Displacement — segmentet tippad lingualt/buckalt?</li>
+                                <li>🔍 Ocklusion — kontrollera bettstörning</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc45-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ Detta är oftast ett specialistfall. Allmäntandläkaren sköter det akuta omhändertagandet.</strong>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">ALT A: Reponering + fixering (äldre barn med tänder att splinta på)</div>
+                            <p><strong>Indikation:</strong> Displacerat alveolarsegment. Barn tillräckligt gammalt för splintning (vanligen >4–5 år). Tänder på var sida om segmentet att förankra splinten i.</p>
+                            <h5>📦 Material:</h5>
+                            <ul>
+                                <li>🔹 Lokalanestesi: Artikain 40 mg/ml + adrenalin (<strong>barnvikt!</strong>)</li>
+                                <li>🔹 Flexibel ortodontisk tråd (0,4 mm)</li>
+                                <li>🔹 Flödbar komposit (SDR/flödbar)</li>
+                                <li>🔹 Ets + bonding</li>
+                                <li>🔹 Kompresser</li>
+                            </ul>
+                            <h5>🛠️ Metod:</h5>
+                            <ol>
+                                <li>Adekvat lokalanestesi (ev. sedering/narkos om litet barn)</li>
+                                <li>Försiktig reponering — tryck segmentet tillbaka till ursprungligt läge</li>
+                                <li>Kontrollera ocklusion — barnet ska kunna bita ihop normalt</li>
+                                <li><strong>Fixering:</strong> Flexibel tråd + komposit fäst på stabila, icke-mobila tänder på var sida om frakturen</li>
+                                <li>Kontrollröntgen</li>
+                                <li>Splinten ska sitta i <strong>4 veckor</strong></li>
+                            </ol>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">108 — Akut us | 011 — Röntgen | 301 — Reponering | 408 — Fixering/splintning</div></div>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALT B: Konservativ behandling (mycket små barn 1–3 år)</div>
+                            <p><strong>Indikation:</strong> Barn 1–3 år där splintning är extremt svår/omöjlig. Minimalt displacerat segment.</p>
+                            <h5>🛠️ Metod:</h5>
+                            <ol>
+                                <li>Försiktig reponering med digitalt tryck om möjligt</li>
+                                <li><strong>Splintning oftast omöjlig</strong> — ordinera istället:
+                                    <ul>
+                                        <li>Skonkost / flytande föda i 4 veckor</li>
+                                        <li>Noggrann sårvård</li>
+                                        <li>Klorhexidinbaddning</li>
+                                    </ul>
+                                </li>
+                                <li>Tät uppföljning</li>
+                            </ol>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">108 — Akut us | 011 — Röntgen</div></div>
+                        </div>
+                    </div>
+                    <div id="sc45-journal" class="content-panel">
+                        <h3>📝 Journalmall</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Trauma-anamnes: Pat. [ålder] år. [Traumabeskrivning — kraftigare trauma]. 
+Ingen medvetslöshet/kräkning. Stelkramp: OK.
+
+Status:
+- Extraoralt: [Svullnad / hematom / sårskador ansikte]
+- Intraoralt: Rörligt alveolarsegment regio [tand nr–tand nr]. 
+  Bensegment + [antal] tänder rör sig som enhet vid palpation. 
+  Kraftig blödning ur gingivalfickor. Bettstörning.
+- Krepitationer: [Ja/Nej]
+
+Rtg: [Periapikalbilder / OPG] — Frakturlinje i alveolarutskottet 
+regio [område]. [Inga rotfrakturer / rotfraktur tand nr].
+Permanenta anlag bedöms [intakta / ev. påverkade].
+
+Bedömning: Alveolarutskottsfraktur regio [område].
+
+Åtgärd:
+- LA: Artikain [ml] (barnvikt [kg]) [ev. sedering]
+- Reponering av segmentet till ursprungsläge
+- Ocklusion kontrollerad — barnet kan bita ihop
+- Fixering med flexibel splint (ortodontisk tråd + komposit) 
+  förankrad på tand [nr] och [nr]
+- Kontrollröntgen efter fixering
+
+Information:
+- Skonkost/flytande kost 4 veckor
+- Klorhexidinbaddning 2 ggr/dag
+- Paracetamol [dos] mg v.b.
+- Kontakta vid ökad svullnad/feber/ökad rörlighet
+
+Planering: Splintborttagning om [4–8 v beroende på skadans omfattning]. 
+Kontroller: [1 v, 4 v, 3 mån, 1 år]. 
+Försäkringsanmälan upprättad.
+Konsultation med [pedodontist/käkkirurg]: [Ja — datum/Planerad].</pre>
+                        </div>
+                    </div>
+                    <div id="sc45-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Systemiska (HÖGSTA PRIORITET)</strong>
+                            <ul style="margin-top:10px;">
+                                <li>Medvetslöshet/kräkning → barnakut (kraftigare trauma = högre risk)</li>
+                                <li>Feber + svullnad → infektion → akut bedömning</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Lokala</strong>
+                            <ul style="margin-top:10px;">
+                                <li>Käkbensfraktur (större segment, smärta vid käkrörelse) → käkkirurg AKUT</li>
+                                <li>Okontrollerad blödning → kompression, koagulationsstatus</li>
+                                <li>Splint lossnad → akut omfixering</li>
+                                <li>Nekros av tänder i segmentet → extraktion</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Uppföljning</h5>
+                            <ul>
+                                <li><strong>1 vecka:</strong> Klinisk kontroll — splint intakt? Infektion?</li>
+                                <li><strong>4 veckor:</strong> Splintborttagning, röntgenkontroll</li>
+                                <li><strong>3 månader:</strong> Klinik + röntgen — läkning?</li>
+                                <li><strong>1 år:</strong> Röntgenkontroll — nekros? Resorption?</li>
+                                <li><strong>Vid eruption av permanenta tänder:</strong> Kontroll av anlag</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Ansvarsfriskrivning</h5>
+                            <p>Ersätter inte kliniskt omdöme. PSL 2010:659. Alveolarutskottsfraktur är <strong>primärt ett specialistfall</strong> — rådgör alltid med pedodontist eller käkkirurg. Försäkringsanmälan ALLTID.</p>
+                        </div>
+                    </div>
+                    <div id="sc45-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära riktlinjer</h5>
+                            <ul>
+                                <li><strong>IADT 2020:</strong> Fouad AF et al. "Management of dental avulsion in the permanent dentition." Dental Traumatology 2020;36(4):331–342</li>
+                                <li><strong>Dental Trauma Guide:</strong> <a href="https://www.dentaltraumaguide.org" target="_blank">dentaltraumaguide.org</a></li>
+                                <li><strong>Internetodontologi:</strong> Alveolarutskottsfraktur. <a href="https://www.internetodontologi.se" target="_blank">internetodontologi.se</a></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>ICD-10</h5>
+                            <ul>
+                                <li><strong>S02.8</strong> — Fraktur av andra specificerade skallben och ansiktsben (inkl. alveolarutskott)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc46-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc46', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc46', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc46', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc46', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc46', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc46-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-46-KFRAKPERM</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnet har slagit av en bit av den nya framtanden"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> S02.5 (Fraktur av tand)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Mycket vanligt — vanligaste traumaskadan på permanenta tänder</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> 7–16 år (vanligast 8–12 år)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Skadetyper</h5>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+                                <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:10px;">Typ</th><th style="text-align:left; padding:10px;">Definition</th><th style="text-align:left; padding:10px;">Kliniskt fynd</th></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;"><strong>Infraktion</strong></td><td style="padding:8px;">Spricka i emaljen utan substansförlust</td><td style="padding:8px;">Synlig spricka vid transilluminering, ingen materialförlust</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;"><strong>Okomplicerad</strong></td><td style="padding:8px;">Emalj eller emalj + dentin utan pulpablotta</td><td style="padding:8px;">Frakturyta utan blödning inifrån tanden</td></tr>
+                                <tr><td style="padding:8px;"><strong>Komplicerad</strong></td><td style="padding:8px;">Frakturen blottar pulpan</td><td style="padding:8px;">Synlig röd punkt/blödning i frakturytan</td></tr>
+                            </table>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk betydelse</h5>
+                            <ul>
+                                <li><strong>Öppet apex:</strong> Rotutveckling pågår → bevara vitalitet = högsta prioritet</li>
+                                <li><strong>Komplicerad fraktur:</strong> Partiell pulpotomi (Cvek) är förstahandsval</li>
+                                <li><strong>Prognos:</strong> God — endast 1–6% av tänder med okomplicerad fraktur går i nekros</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc46-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">ALT A: Infraktion — expektans</div>
+                            <p><strong>Indikation:</strong> Spricka i emaljen utan substansförlust</p>
+                            <ol>
+                                <li>Dokumentera sprickan (foto + journal)</li>
+                                <li>Sensibilitetstest (referensvärde)</li>
+                                <li>Ingen operativ åtgärd krävs</li>
+                                <li>Uppföljning vid ordinarie revision</li>
+                            </ol>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">108 — Akut us | 011 — Röntgen</div></div>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALT B: Okomplicerad kronfraktur — slipning/bonding/komposit</div>
+                            <p><strong>Indikation:</strong> Emalj- eller emalj/dentinfraktur utan pulpablotta</p>
+                            <h5>Tre spår:</h5>
+                            <ul>
+                                <li><strong>B1: Mindre emaljfraktur</strong> — Runda av vassa kanter — klart</li>
+                                <li><strong>B2: Fragment finns</strong> — <strong>Bonding av fragment:</strong> Limma tillbaka tandbiten med adhesiv + flödbar komposit. Bästa estetiska resultatet.</li>
+                                <li><strong>B3: Fragment saknas</strong> — <strong>Komposituppbyggnad</strong> (anatomisk). Alternativ: GIC som långtidstemporärt täckförband.</li>
+                            </ul>
+                            <h5 style="margin-top:15px;">🛠️ Metod (bonding av fragment):</h5>
+                            <ol>
+                                <li>Prova in fragmentet — kontrollera passform</li>
+                                <li>Ets frakturyta på tand + fragment (15–30 sek emalj, 10 sek dentin)</li>
+                                <li>Skölj + torka</li>
+                                <li>Adhesiv på båda ytor — ljushärda</li>
+                                <li>Flödbar komposit som bindemedel</li>
+                                <li>Placera fragment i exakt position</li>
+                                <li>Ljushärda från alla håll</li>
+                                <li>Kontrollera ocklusion + polera</li>
+                            </ol>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">108 — Akut us | 011 — Röntgen | 701 — Fyllning 1 yta | 702 — Fyllning 2 ytor</div></div>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALT C: Komplicerad kronfraktur — Partiell pulpotomi (Cvek)</div>
+                            <p><strong>Indikation:</strong> Traumatisk pulpablotta. Vital tand (blödning från pulpan). <strong>&lt;24 timmar</strong> sedan pulpablotta uppstod. Förstahandsval vid öppet apex — bevara vitalitet för fortsatt rotutveckling.</p>
+                            <div class="warning-box" style="margin-top:10px;">
+                                <strong>Kontraindikationer (Cvek EJ indicerad):</strong>
+                                <ul style="margin-top:5px;">
+                                    <li>⛔ Tanden symtomgivande (värk/spontansmärta)</li>
+                                    <li>⛔ Tanden ej vital (ingen blödning från pulpa)</li>
+                                    <li>⛔ Pulpa bedömt kraftigt infekterad</li>
+                                    <li>⛔ >24 timmar sedan pulpablotta (relativ kontraindikation)</li>
+                                </ul>
+                            </div>
+                            <h5>📦 Material:</h5>
+                            <ul>
+                                <li>🔹 Lokalanestesi (artikain 40 mg/ml + adrenalin)</li>
+                                <li>🔹 Kofferdam (obligatorisk)</li>
+                                <li>🔹 Roserande borr (högt varvtal, under spolning)</li>
+                                <li>🔹 Steril koksaltlösning + sterila bomullspellets</li>
+                                <li>🔹 <strong>MTA</strong> (ProRoot MTA) eller <strong>Biodentine</strong> — förstahandsval</li>
+                                <li>🔹 Alternativ: Kalciumhydroxid (Dycal)</li>
+                                <li>🔹 Glasjonomer eller komposit för tät förslutning</li>
+                            </ul>
+                            <h5>🛠️ Metod:</h5>
+                            <ol>
+                                <li>Lokalanestesi</li>
+                                <li>Kofferdam (obligatorisk!)</li>
+                                <li>Avlägsna ca 1–2 mm av inflammerad pulpa med roserande borr under vattenspray</li>
+                                <li>Hemostas — steril bomullspellet med koksalt (vänta 3–5 min)</li>
+                                <li>Applicera MTA/Biodentine direkt på pulpasårytan</li>
+                                <li>Täck med fuktad bomullspellet (MTA behöver fukt för att härda)</li>
+                                <li>Temporär förslutning med GIC</li>
+                                <li><strong>Återbesök efter 24–48 h:</strong> Avlägsna bomull, slutlig kompositfyllning</li>
+                                <li>Kontrollera ocklusion</li>
+                            </ol>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">108 — Akut us | 011 — Röntgen | 301 — Pulpotomi | 701/702 — Fyllning (slutlig)</div></div>
+                        </div>
+                    </div>
+                    <div id="sc46-journal" class="content-panel">
+                        <h3>📝 Journalmallar</h3>
+                        <h5 class="scroll-animate">Mall 1: Okomplicerad — bonding/komposit</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Trauma-anamnes: Pat. [ålder] år. [Traumabeskrivning]. 
+Ingen medvetslöshet/kräkning. Stelkramp: OK. 
+[Fragment medtaget i koksalt/mjölk / Fragment saknas].
+
+Status:
+- Okomplicerad kronfraktur tand [11/21]. 
+  Emalj/dentinfraktur, ingen pulpablotta. 
+  Läppar palperade — inga inbäddade fragment.
+- Sensibilitet kyla: Positiv (normal)
+- Perkussion: u.a. Rörlighet: u.a.
+
+Rtg: Fraktur synlig kronan tand [nr]. Avstånd till pulpa ca [X] mm.
+Rotutveckling: [Öppet/slutet apex]. Ingen rotfraktur.
+
+Bedömning: Okomplicerad kronfraktur tand [nr].
+
+Åtgärd:
+- [Bonding av fragment med adhesiv + flödbar komposit]
+- [Komposituppbyggnad (nanohybrid, färg A2)]
+- [GIC-förband temporärt]
+- Ocklusion kontrollerad
+
+Planering: Kontroll [3–4 v], [3 mån], [1 år]. 
+Försäkringsanmälan upprättad.</pre>
+                        </div>
+                        <h5 class="scroll-animate" style="margin-top:30px;">Mall 2: Komplicerad — Cvek-pulpotomi</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Status: Komplicerad kronfraktur tand [11/21]. 
+Pulpablotta med vital blödning. Frakturyta ca [X] mm².
+Sensibilitet kyla: Positiv. Rotutveckling: [Öppet apex — stadium X].
+Tid sedan skada: [<24 h].
+
+Åtgärd:
+- LA: Artikain 40 mg/ml + adrenalin [ml]
+- Kofferdam applicerad
+- Partiell pulpotomi (Cvek) — ca 2 mm inflammerad pulpa avlägsnad
+  med roserande borr under vattenspray
+- Hemostas uppnådd med steril koksaltpellet
+- Täckning med [MTA / Biodentine]
+- Fuktad bomullspellet + temporär GIC
+
+Plan: Återbesök [24–48 h] för slutlig kompositfyllning. 
+Röntgenkontroller: [4 v, 3 mån, 6 mån, 1 år]. 
+Försäkringsanmälan upprättad.</pre>
+                        </div>
+                    </div>
+                    <div id="sc46-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Lokala tecken</strong>
+                            <ul style="margin-top:10px;">
+                                <li><strong>Tandfragment i läpp</strong> — palpera ALLTID!</li>
+                                <li>Sensibilitetsförlust vid kontroll → misstänk nekros</li>
+                                <li>Fistel/svullnad → infektion → akut endodonti</li>
+                                <li>Progressiv missfärgning → monitorera pulpastatus</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Behandlingsrelaterade</strong>
+                            <ul style="margin-top:10px;">
+                                <li>Cvek >24 h efter pulpablotta → ökad infektionsrisk, överväg alternativ</li>
+                                <li>Nekrotisk pulpa + öppet apex → <strong>apexifikation</strong> (specialist)</li>
+                                <li>Ofullständig kofferdamplacering vid Cvek → kontaminationsrisk</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Uppföljning efter Cvek</h5>
+                            <ul>
+                                <li><strong>24–48 h:</strong> Slutlig restauration</li>
+                                <li><strong>4 veckor:</strong> Sensibilitet, röntgen</li>
+                                <li><strong>3 månader:</strong> Röntgen — rotutveckling? Pulpastatus?</li>
+                                <li><strong>6 månader:</strong> Röntgen</li>
+                                <li><strong>1 år:</strong> Röntgen — slutbedömning</li>
+                            </ul>
+                            <p style="margin-top:10px;"><strong>Kriterier lyckat Cvek:</strong> Sensibilitet bevarad, fortsatt rotutveckling (öppet apex), ingen apikal patologi, dentinbrygga bildad.</p>
+                        </div>
+                    </div>
+                    <div id="sc46-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära riktlinjer</h5>
+                            <ul>
+                                <li><strong>IADT 2020:</strong> Bourguignon C et al. "International Association of Dental Traumatology guidelines for the management of traumatic dental injuries." Dental Traumatology 2020;36(4):314–330</li>
+                                <li><strong>Internetodontologi:</strong> Kronfraktur permanent tand. <a href="https://www.internetodontologi.se" target="_blank">internetodontologi.se</a></li>
+                                <li><strong>Socialstyrelsen NR Tandvård 2022:</strong> Partiell pulpotomi (Prioritet 2)</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Material</h5>
+                            <ul>
+                                <li><strong>MTA (ProRoot MTA) / Biodentine:</strong> Förstahandsval vid Cvek — evidensbaserade och rekommenderade av IADT 2020</li>
+                                <li><strong>Kofferdam:</strong> Obligatorisk vid pulpaarbete — kräver steril miljö</li>
+                                <li><strong>Hemostas:</strong> Steril koksaltpellet — INTE natriumhypoklorit eller väteperoxid</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc47-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc47', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc47', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc47', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc47', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc47', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc47-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-47-KONK</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Tanden fick en smäll och är jätteöm vid beröring, men sitter helt fast"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> S03.2 (Luxation av tand — används i klinisk praxis för konkussion). S03.2 är vanligast förekommande i klinisk kodningspraxis.</em></div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Vanligt — en av de lindrigaste formerna av tandtrauma</div>
+                                <div class="symptom-item">⭐ <strong>Definition:</strong> Skada på parodontiet UTAN ökad mobilitet och UTAN displacement</div>
+                                <div class="symptom-item">✅ <strong>Prognos:</strong> God. Mycket liten risk för pulpanekros.</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Differentiering</h5>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                                <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Parameter</th><th style="padding:8px;">Konkussion</th><th style="padding:8px;">Subluxation</th><th style="padding:8px;">Rotfraktur</th></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Rörlighet</td><td style="padding:8px;">Normal</td><td style="padding:8px;">Ökad</td><td style="padding:8px;">Ökad</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Perkussion</td><td style="padding:8px;">Öm</td><td style="padding:8px;">Öm</td><td style="padding:8px;">Öm</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Position</td><td style="padding:8px;">Normal</td><td style="padding:8px;">Normal</td><td style="padding:8px;">Normal/lätt</td></tr>
+                                <tr><td style="padding:8px;">Röntgen</td><td style="padding:8px;">u.a.</td><td style="padding:8px;">Vidgad rothinnespalt</td><td style="padding:8px;">Frakturlinje i rot</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sc47-behandling" class="content-panel">
+                        <h3>🔧 Behandling</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">ENDA ALTERNATIV: Expektans (avvakta)</div>
+                            <p><strong>Indikation:</strong> Bekräftad konkussion (perkussionsöm, normal rörlighet, normal röntgen)</p>
+                            <h5>🛠️ Åtgärd:</h5>
+                            <ol>
+                                <li>Sensibilitetstest — dokumentera referensvärde</li>
+                                <li>Dokumentera perkussionsömhet</li>
+                                <li>Röntgen — uteslut rotfraktur</li>
+                                <li><strong>Ingen operativ åtgärd krävs</strong></li>
+                                <li>Ordinera skonkost i 1–2 veckor</li>
+                                <li>Informera patient/förälder om uppföljningsschema</li>
+                                <li>Försäkringsanmälan</li>
+                            </ol>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">108 — Akut us | 011 — Röntgen</div></div>
+                        </div>
+                    </div>
+                    <div id="sc47-journal" class="content-panel">
+                        <h3>📝 Journalmall</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Trauma-anamnes: Pat. [ålder] år. [Traumabeskrivning] idag kl [tid].
+Ingen medvetslöshet/kräkning. Stelkramp: OK.
+
+Status:
+- Extraoralt: [Sårskador / u.a.]
+- Dental: Tand [nr] perkussionsöm. Normal rörlighet. 
+  Normal position. Ingen kronfraktur.
+- Sensibilitet kyla: [Positiv / nedsatt / ej testbar]
+- Ocklusion: Normal
+
+Rtg: Tand [nr] — normalt utseende. Normal rothinnespalt. 
+Ingen rotfraktur.
+
+Bedömning: Konkussion tand [nr].
+
+Åtgärd:
+- Ingen operativ åtgärd
+- Skonkost 1–2 v och vid behov tvätt/baddning med Klorhexidinlösning 0,1%
+- Info till patient/förälder om uppföljningsschema
+
+Planering: Kontroll [1 v, 3 v, 3 mån, 6 mån]. 
+Försäkringsanmälan upprättad.
+Kontakta vid ökad smärta, missfärgning, svullnad.</pre>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Uppföljningsschema</h5>
+                            <ul>
+                                <li><strong>1 vecka:</strong> Perkussion, sensibilitet</li>
+                                <li><strong>3 veckor:</strong> Perkussion, sensibilitet</li>
+                                <li><strong>3 månader:</strong> Klinik + röntgen</li>
+                                <li><strong>6 månader:</strong> Klinik + röntgen — slutbedömning</li>
+                            </ul>
+                            <p style="margin-top:10px;"><strong>Kriterier lyckat:</strong> Perkussionsömhet avtagande/försvunnen, normal sensibilitet, ingen missfärgning, normal röntgenbild.</p>
+                        </div>
+                    </div>
+                    <div id="sc47-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Varningssignaler</strong>
+                            <ul style="margin-top:10px;">
+                                <li>Sensibilitetsförlust som kvarstår >3 månader → misstänk nekros → endodonti/specialist</li>
+                                <li>Missfärgning (grånad) → monitorera pulpastatus</li>
+                                <li>Fistel/svullnad → apikal infektion → akut endodonti</li>
+                                <li>Perkussionsömhet som <strong>förvärras</strong> (istället för förbättras) → rotfraktur?</li>
+                                <li>Medvetslöshet/kräkning → akutsjukvård</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Ansvarsfriskrivning</h5>
+                            <p>Ersätter inte kliniskt omdöme. PSL 2010:659. Försäkringsanmälan ALLTID vid tandtrauma.</p>
+                        </div>
+                    </div>
+                    <div id="sc47-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära riktlinjer</h5>
+                            <ul>
+                                <li><strong>IADT 2020:</strong> Bourguignon C et al. Dental Traumatology 2020;36(4):314–330</li>
+                                <li><strong>Dental Trauma Guide:</strong> <a href="https://www.dentaltraumaguide.org" target="_blank">dentaltraumaguide.org</a></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>ICD-10 not</h5>
+                            <p><strong>S03.2</strong> (Luxation av tand) används i klinisk praxis för konkussion.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc48-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc48', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc48', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc48', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc48', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc48', 'uppf', this)">📊 Uppföljning</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc48', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc48', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc48-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-48-EXALV</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Hela tanden – eller ett helt käksegment – är löst eller utslaget"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> S03.2 (Exartikulation), S02.8 (Alveolarutskottsfraktur)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Exartikulation: 0,5–3%. Alveolarfraktur: ovanligare.</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> 7–16 år (växelbett)</div>
+                                <div class="symptom-item">🚨 <strong>HYPERAKUT:</strong> Permanent tand → replantation så fort som möjligt!</div>
+                            </div>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 KRITISKT: Till skillnad från mjölktänder (ALDRIG replanteras) är en utslagen PERMANENT tand ett HYPERAKUT tillstånd — tanden ska replanteras så fort som möjligt!</strong>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Prognos baserat på tid och förvaring</h5>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                                <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Scenario</th><th style="padding:8px;">Prognos</th><th style="padding:8px;">Åtgärd</th></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">&lt;60 min, förvarad fuktigt (mjölk/saliv/koksalt)</td><td style="padding:8px; color:#388E3C; font-weight:bold;">God</td><td style="padding:8px;">Replantation + flexibel splint</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">&lt;60 min, torrt</td><td style="padding:8px; color:#F57C00; font-weight:bold;">Måttlig</td><td style="padding:8px;">Blötlägg i koksalt 20 min → replantation</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">>60 min, fuktigt</td><td style="padding:8px; color:#F57C00; font-weight:bold;">Måttlig–dålig</td><td style="padding:8px;">Replantation (men PDL skadat)</td></tr>
+                                <tr><td style="padding:8px;">>60 min, torrt</td><td style="padding:8px; color:#D32F2F; font-weight:bold;">Dålig</td><td style="padding:8px;">Replantation ändå (funktionellt, ej PDL-läkning)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sc48-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Obligatoriska frågor</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🔴 HYPERAKUT — tid är avgörande</h5>
+                            <ul>
+                                <li><strong>❓ Var är tanden? Har ni den med er?</strong><br><em>KRITISK fråga — tanden behövs för replantation</em></li>
+                                <li><strong>❓ Hur förvaras tanden?</strong><br><em>Bäst: Mjölk, koksalt, saliv (i munnen). Sämst: Torrt.</em></li>
+                                <li><strong>❓ Hur länge har tanden varit utanför munnen?</strong><br><em>&lt;60 min: God prognos. >60 min torrt: Avsevärt sämre prognos.</em></li>
+                                <li><strong>❓ Slog barnet i huvudet? Medvetslöshet? Kräkningar?</strong><br><em>Vid ja → akutsjukvård FÖRST (men skicka tanden i mjölk med!)</em></li>
+                                <li><strong>❓ Är det en mjölktand eller permanent tand?</strong><br><em>Mjölktand → ALDRIG replantation. Permanent → ALLTID replantation.</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc48-behandling" class="content-panel">
+                        <h3>🔧 Behandling</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">DEL A: Replantation av permanent tand</div>
+                            <p><strong>⚠️ TIDSKRITISKT — varje minut räknas!</strong></p>
+                            <h5>📦 Material:</h5>
+                            <ul>
+                                <li>🔹 Koksaltlösning (NaCl 0,9%) för sköljning</li>
+                                <li>🔹 Lokalanestesi (artikain 40 mg/ml + adrenalin)</li>
+                                <li>🔹 Flexibel ortodontisk tråd (0,4 mm)</li>
+                                <li>🔹 Ets + bonding + flödbar komposit (för splint)</li>
+                                <li>🔹 Sutur: Vicryl 5-0 (vid behov)</li>
+                            </ul>
+                            <h5>🛠️ Metod:</h5>
+                            <ol>
+                                <li><strong>Hantera tanden varsamt</strong> — håll i kronan, ALDRIG i roten</li>
+                                <li>Skölj roten försiktigt med koksalt (gnugga INTE)</li>
+                                <li>Skölj alveolen med koksalt (avlägsna koagler)</li>
+                                <li>Lokalanestesi</li>
+                                <li><strong>Replantation:</strong> Tryck tanden försiktigt tillbaka i alveolen med lätt digitalt tryck</li>
+                                <li>Kontrollera ocklusion</li>
+                                <li><strong>Flexibel splint:</strong> Ortodontisk tråd + komposit på 2–3 tänder på var sida</li>
+                                <li>Splinttid: <strong>2 veckor</strong></li>
+                                <li>Kontrollröntgen</li>
+                                <li>Antibiotika: Fenoximetylpenicillin (Kåvepenin) — <strong>barndosering: 12,5 mg/kg x 3 (max 1 g x 3), kur 7 dagar</strong> (IADT 2020 rekommenderar 7 dagars kur). <em>OBS: Doxycyklin kan vara ett alternativ hos patienter ≥10 år tack vare dokumenterade anti-resorptiva och anti-inflammatoriska egenskaper — kontraindicerat under 10 år p.g.a. risk för tandfärgning. Konsultera FASS/Strama.</em></li>
+                                <li>Kontrollera stelkrampsskydd</li>
+                                <li><strong>Försäkringsanmälan</strong> — OBLIGATORISK</li>
+                            </ol>
+                            <h5 style="margin-top:15px;">💊 Postoperativa instruktioner:</h5>
+                            <ul>
+                                <li>Mjuk kost 2 veckor</li>
+                                <li>Klorhexidinsköljning 0,12% 2 ggr/dag</li>
+                                <li>Antibiotika enligt ordination</li>
+                                <li>Kontakta vid ökad smärta/svullnad/feber</li>
+                                <li>Undvik kontaktsport tills splint avlägsnats</li>
+                            </ul>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">108 — Akut us | 011 — Röntgen | 407 — Replantation | 408 — Fixering/splintning | 406 — Sutur</div></div>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">DEL B: Alveolarutskottsfraktur — Reponering + fixering</div>
+                            <h5>🛠️ Metod:</h5>
+                            <ol>
+                                <li>Adekvat lokalanestesi</li>
+                                <li>Reponera segmentet försiktigt till ursprungligt läge</li>
+                                <li>Kontrollera ocklusion</li>
+                                <li><strong>Flexibel splint</strong> fäst på stabila, icke-mobila tänder på var sida om frakturen</li>
+                                <li>Splinttid: <strong>4 veckor</strong></li>
+                                <li>Kontrollröntgen</li>
+                                <li>Antibiotika vid indikation</li>
+                            </ol>
+                            <div class="billing-codes"><div class="billing-codes-title">💳 Debiteringskoder</div><div class="billing-codes-list">108 — Akut us | 011 — Röntgen/OPG | 301 — Reponering | 408 — Fixering/splintning</div></div>
+                        </div>
+                    </div>
+                    <div id="sc48-journal" class="content-panel">
+                        <h3>📝 Journalmallar</h3>
+                        <h5 class="scroll-animate">Mall 1: Exartikulation — replantation</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Trauma-anamnes: Pat. [ålder] år. [Traumabeskrivning] idag kl [tid]. 
+Tand [nr] helt exartikulerad. Förvarad i [mjölk/koksalt/saliv/torrt] 
+sedan [tid]. Extraoral tid: [X] minuter. 
+Ingen medvetslöshet/kräkning. Stelkramp: OK.
+
+Status:
+- Extraoralt: [Sårskador / u.a.]
+- Intraoralt: Tom alveol regio [nr]. [Intilliggande tänder u.a./skadade]
+- Tanden: [Intakt rot / skadad / kontaminerad]. 
+  Rotutveckling: [Öppet/slutet apex]
+
+Rtg (efter replantation): Tand [nr] replanterad i god position. 
+Splint kontrollerad. [Inga rotfrakturer / alveolarfraktur].
+
+Bedömning: Exartikulation tand [nr]. 
+Extraoral tid [X] min, förvarad [medium].
+
+Åtgärd:
+- Tanden sköljd med koksalt
+- Alveolen sköljd med koksalt
+- LA: Artikain [ml]
+- Replantation utförd med digitalt tryck
+- Flexibel splint applicerad regio [nr–nr]
+- Kontrollröntgen u.a.
+- Rp: Kåvepenin [barndos]
+
+Information given (till förälder):
+- Mjuk kost 2 v, klorhexidin 2 ggr/dag
+- Antibiotikabehandling enligt ordination
+- Kontakta vid smärta/svullnad/feber
+- Ej kontaktsport tills splint borttagen
+
+Planering: Splintborttagning om [2 v]. 
+[Om slutet apex: rotbehandling inleds om 7–10 dagar(görs innan fixeringen avlägsnas)].
+[Om öppet apex: monitorera revaskularisering].
+Försäkringsanmälan upprättad.</pre>
+                        </div>
+                        <h5 class="scroll-animate" style="margin-top:30px;">Mall 2: Alveolarutskottsfraktur</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Trauma-anamnes: Pat. [ålder] år. [Kraftigare traumabeskrivning]. 
+Ingen medvetslöshet/kräkning.
+
+Status:
+- Rörligt alveolarsegment regio [tand nr–tand nr]
+- Bettstörning. Blödning ur gingivalfickor.
+
+Rtg: Frakturlinje alveolarutskottet regio [område]. 
+[Inga rotfrakturer / rotfraktur tand nr].
+
+Bedömning: Alveolarutskottsfraktur regio [område].
+
+Åtgärd:
+- LA: Citanest [ml]
+- Reponering av segmentet
+- Ocklusion kontrollerad
+- Flexibel splint regio [nr–nr]
+- Kontrollröntgen
+
+Planering: Splintborttagning om [4–8 v beroende på skadans omfattning]. 
+Kontroller: [1 v, 4 v, 3 mån, 1 år].
+Konsultation med [käkkirurg/pedodontist].
+Försäkringsanmälan upprättad.</pre>
+                        </div>
+                    </div>
+                    <div id="sc48-uppf" class="content-panel">
+                        <h3>📊 Uppföljning</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Efter replantation</h5>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+                                <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Tid</th><th style="text-align:left; padding:8px;">Åtgärd</th></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;"><strong>2 veckor</strong></td><td style="padding:8px;">Splintborttagning, sensibilitet, röntgen</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;"><strong>4 veckor</strong></td><td style="padding:8px;">Klinik, sensibilitet</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;"><strong>3 månader</strong></td><td style="padding:8px;">Klinik + röntgen</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;"><strong>6 månader</strong></td><td style="padding:8px;">Klinik + röntgen</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;"><strong>1 år</strong></td><td style="padding:8px;">Klinik + röntgen — slutbedömning</td></tr>
+                                <tr><td style="padding:8px;"><strong>Årligen 5 år</strong></td><td style="padding:8px;">Monitorering</td></tr>
+                            </table>
+                            <p style="margin-top:10px;"><strong>Öppet apex:</strong> Möjlighet till revaskularisering — monitorera sensibilitet och rotutveckling.</p>
+                            <p><strong>Slutet apex:</strong> Rotbehandling behövs oftast inom 7–14 dagar (nekros förväntas).</p>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Efter alveolarfraktur</h5>
+                            <ul>
+                                <li><strong>1 vecka:</strong> Splint intakt? Infektion?</li>
+                                <li><strong>4 veckor:</strong> Splintborttagning, röntgen</li>
+                                <li><strong>3 månader:</strong> Klinik + röntgen</li>
+                                <li><strong>6 månader:</strong> Klinik + röntgen</li>
+                                <li><strong>1 år:</strong> Slutbedömning</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc48-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 HYPERAKUT</strong>
+                            <ul style="margin-top:10px;">
+                                <li>Utslagen permanent tand → replantation OMEDELBART (varje minut räknas!)</li>
+                                <li>Tanden förvaras torrt → blötlägg i koksalt genast</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Respiratoriska</strong>
+                            <ul style="margin-top:10px;">
+                                <li>Tanden ej hittad + hosta/andningsbesvär → aspiration → akut remiss</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Systemiska</strong>
+                            <ul style="margin-top:10px;">
+                                <li>Medvetslöshet/kräkning → akutsjukvård</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Lokala</strong>
+                            <ul style="margin-top:10px;">
+                                <li>Käkbensfraktur → käkkirurg akut</li>
+                                <li>Sensibilitetsförlust replanterad tand (slutet apex) → planera rotbehandling</li>
+                                <li>Infektion/abscess → akut endodonti</li>
+                                <li>Extern rotresorption → specialist</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Information till förälder</h5>
+                            <ul>
+                                <li>Risk för pulpanekros (missfärgning, abscess) — kan uppträda veckor till månader efter replantation</li>
+                                <li>Försäkringsanmälan OBLIGATORISK</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Ansvarsfriskrivning</h5>
+                            <p>Ersätter inte kliniskt omdöme. PSL 2010:659. <strong>Replantation av permanent tand</strong> ska utföras så snart som möjligt. <strong>Mjölktänder replanteras ALDRIG.</strong> Försäkringsanmälan ALLTID.</p>
+                        </div>
+                    </div>
+                    <div id="sc48-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära riktlinjer</h5>
+                            <ul>
+                                <li><strong>IADT 2020:</strong> Fouad AF et al. Dental Traumatology 2020;36(4):331–342</li>
+                                <li><strong>Dental Trauma Guide:</strong> <a href="https://www.dentaltraumaguide.org" target="_blank">dentaltraumaguide.org</a></li>
+                                <li><strong>Internetodontologi:</strong> Exartikulation permanent tand. <a href="https://www.internetodontologi.se" target="_blank">internetodontologi.se</a></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Antibiotika (IADT 2020 + FASS)</h5>
+                            <ul>
+                                <li><strong>PcV (Kåvepenin):</strong> 12,5 mg/kg x 3 (max 1 g x 3), 7 dagar</li>
+                                <li><strong>Doxycyklin ≥10 år:</strong> Anti-resorptiv + anti-inflammatorisk. Kontraindicerat &lt;10 år p.g.a. tandfärgning</li>
+                                <li><strong>Källa:</strong> FASS — Kåvepenin; IADT 2020; <a href="https://www.strama.se" target="_blank">Strama</a></li>
+
+<li><strong>Folkhälsa och sjukvård:</strong> Användning av klorhexidin inom barn- och ungdomstandvården. <a href="https://folkhalsaochsjukvard.rjl.se/dokument/evo/acbb451d-b01b-411f-a087-6e4166794d17" target="_blank">folkhalsaochsjukvard.rjl.se</a></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Förvaringsmedier för PDL-celler</h5>
+                            <ul>
+                                <li>✅ <strong>Godkänt:</strong> Mjölk, HBSS, fysiologisk NaCl, saliv</li>
+                                <li>❌ <strong>EJ godkänt:</strong> Kranvatten (hypotont = PDL-celldöd), torr förvaring</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div><!-- /main-content-panel -->
+
+        <div class="right-sidebar">
+            <div class="sidebar-card">
+                <h4 class="sidebar-title">🧸 Trauma — Perm & Alveolar</h4>
+                <div style="margin-bottom: 15px;">
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('sc45')">🦴 Alveolarfraktur</button>
+                    <button class="sidebar-btn" onclick="selectScenario('sc46')">💔 Kronfraktur permanent</button>
+                    <button class="sidebar-btn" onclick="selectScenario('sc47')">👆 Konkussion permanent</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('sc48')">🚨 Exartikulation permanent</button>
+                </div>
+                <div class="sidebar-info">
+                    <h4>⏱️ Tidskritiskt</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        <strong>Replantation:</strong> &lt;60 min<br>
+                        <strong>Splint exart:</strong> 2 veckor<br>
+                        <strong>Splint alveolar:</strong> 4 veckor<br>
+                        <strong>Cvek:</strong> &lt;24 h
+                    </p>
+                </div>
+                <div class="sidebar-info">
+                    <h4>⚠️ Grundprinciper</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        • Permanent tand → ALLTID replantera<br>
+                        • Mjölktand → ALDRIG replantera<br>
+                        • Öppet apex → bevara vitalitet<br>
+                        • Försäkringsanmälan ALLTID
+                    </p>
+                </div>
+                <div class="sidebar-info">
+                    <h4>📋 Kom ihåg</h4>
+                    <p style="font-size: 0.85rem;">Beslutsstöd — ersätter inte kliniskt omdöme. PSL 2010:659.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const scenarioData = {
+        'sc45': { img: 'alveolar.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=ALV', title: '"Hela partiet rör sig tillsammans"' },
+        'sc46': { img: 'kronfrak_perm.png', fallback: 'https://placehold.co/120x100/fff3e0/e65100?text=KRON', title: '"Barnet slagit av en bit av framtanden"' },
+        'sc47': { img: 'konkussion.png', fallback: 'https://placehold.co/120x100/e8f5e9/2e7d32?text=KONK', title: '"Tanden är jätteöm men sitter fast"' },
+        'sc48': { img: 'exart_perm.png', fallback: 'https://placehold.co/120x100/ffcdd2/b71c1c?text=EXAR', title: '"Tanden eller käksegmentet är löst/utslaget"' }
+    };
+
+    function selectScenario(id) {
+        document.querySelectorAll('.scenario-trigger-card').forEach(c => c.classList.remove('active'));
+        const trigger = document.getElementById('trigger-' + id);
+        if (trigger) trigger.classList.add('active');
+        document.querySelectorAll('.scenario-display-wrapper').forEach(w => w.classList.remove('active'));
+        const display = document.getElementById(id + '-display');
+        if (display) display.classList.add('active');
+        const h = document.getElementById('dynamic-header');
+        h.classList.remove('centered');
+        h.classList.add('scenario-mode');
+        const data = scenarioData[id];
+        if (data) {
+            document.getElementById('dynamic-header-title').textContent = data.title;
+            const avatar = document.getElementById('story-avatar');
+            avatar.src = data.img;
+            avatar.onerror = function() { this.src = data.fallback; };
+            avatar.classList.add('pop');
+            setTimeout(() => avatar.classList.remove('pop'), 600);
+        }
+        const wrapper = document.getElementById(id + '-display');
+        if (wrapper) {
+            wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const fp = wrapper.querySelector('.content-panel');
+            const fb = wrapper.querySelector('.tab-btn');
+            if (fp) fp.classList.add('active');
+            if (fb) fb.classList.add('active');
+        }
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    function openInnerTab(scenarioId, tabName, btn) {
+        const wrapper = document.getElementById(scenarioId + '-display');
+        if (!wrapper) return;
+        wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const target = document.getElementById(scenarioId + '-' + tabName);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    function copyText(btn) {
+        const pre = btn.nextElementSibling;
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            const orig = btn.innerText;
+            btn.innerText = '✅ Kopierat!';
+            setTimeout(() => { btn.innerText = orig; }, 1500);
+        });
+    }
+
+    function searchCards() {
+        const input = document.getElementById('mainSearch').value.toLowerCase();
+        document.querySelectorAll('.scenario-trigger-card').forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(input) ? 'flex' : 'none';
+        });
+    }
+
+    function triggerScrollAnimations() {
+        document.querySelectorAll('.scroll-animate').forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', triggerScrollAnimations);
+</script>
+
+</body>
+</html>

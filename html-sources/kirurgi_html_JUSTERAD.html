@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Kirurgi & Komplikationer — Kliniskt Beslutsstöd</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .sources-btn { position: fixed; bottom: 24px; right: 24px; z-index: 1000; background: linear-gradient(135deg, #1565c0, #1976d2); color: white; border: none; border-radius: 50px; padding: 12px 22px; font-size: 0.95rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(21,101,192,0.4); display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .sources-btn:hover { transform: translateY(-2px); }
+        .sources-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .sources-modal-overlay.active { display: flex; }
+        .sources-modal { background: white; border-radius: 16px; padding: 30px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .sources-modal h2 { color: #1565c0; margin-bottom: 15px; }
+        .sources-modal ul { padding-left: 20px; }
+        .sources-modal li { margin-bottom: 10px; line-height: 1.6; }
+        .sources-modal .close-modal { float: right; background: #eee; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: bold; }
+        .correction-badge { display: inline-block; background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; border-radius: 6px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+        .addition-badge { display: inline-block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 6px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<button class="back-btn" onclick="history.back()">← TILLBAKA</button>
+
+<div class="container">
+    <div class="hero">
+        <h1>Kirurgi & Komplikationer</h1>
+        <p class="hero-subtitle">Kliniskt beslutsstöd: Alveolit, Blödning, Sinus, Infektion, Fraktur och Nervpåverkan</p>
+    </div>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="mainSearch" placeholder="Sök diagnos eller symtom..." onkeyup="searchCards()">
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+
+        <div class="scenario-nav">
+
+            <div class="scenario-trigger-card" id="trigger-kir07" onclick="selectScenario('kir07')">
+                <span class="trigger-tag">SCENARIO 07</span>
+                <div class="trigger-avatar-container"><img src="alveolit.png" alt="Alveolit" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff3e0/e65100?text=ALV'"></div>
+                <h2 class="trigger-title">Alveolit (Dry Socket)</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Värken kom tillbaka efter 3 dagar och smakar illa.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-kir21" onclick="selectScenario('kir21')">
+                <span class="trigger-tag red">SCENARIO 21</span>
+                <div class="trigger-avatar-container"><img src="blodning.png" alt="Blödning" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=BLÖD'"></div>
+                <h2 class="trigger-title">Postoperativ blödning</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Det slutar inte blöda efter tandutdragningen.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-kir22" onclick="selectScenario('kir22')">
+                <span class="trigger-tag">SCENARIO 22</span>
+                <div class="trigger-avatar-container"><img src="sinus.png" alt="Sinus" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e3f2fd/1565c0?text=SINUS'"></div>
+                <h2 class="trigger-title">Sinuskommunikation</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Det bubblar i såret när jag andas / vatten i näsan.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-kir23" onclick="selectScenario('kir23')">
+                <span class="trigger-tag red">SCENARIO 23</span>
+                <div class="trigger-avatar-container"><img src="infektion.png" alt="Infektion" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffcdd2/b71c1c?text=INF'"></div>
+                <h2 class="trigger-title">Postoperativ infektion</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Svullnat upp igen och feber 3-4 dagar efter ingrepp.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-kir24" onclick="selectScenario('kir24')">
+                <span class="trigger-tag red">SCENARIO 24</span>
+                <div class="trigger-avatar-container"><img src="rot.png" alt="Dislocerad Rot" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=ROT'"></div>
+                <h2 class="trigger-title">Dislocerad tand/rot</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Roten försvann plötsligt upp i bihålan eller munbotten.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-kir25" onclick="selectScenario('kir25')">
+                <span class="trigger-tag red">SCENARIO 25</span>
+                <div class="trigger-avatar-container"><img src="nerv.png" alt="Nervpåverkan" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff8e1/ff6f00?text=NERV'"></div>
+                <h2 class="trigger-title">Nervpåverkan (Parestesi)</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Bedövningen släpper inte / Det sticker i läppen.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-kir27" onclick="selectScenario('kir27')">
+                <span class="trigger-tag">SCENARIO 27</span>
+                <div class="trigger-avatar-container"><img src="tuber.png" alt="Tuberfraktur" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e8f5e9/2e7d32?text=TUBER'"></div>
+                <h2 class="trigger-title">Tuberfraktur</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Benfragment lossnar vid extraktion av sista molar i ÖK.</div>
+            </div>
+
+        </div>
+
+        <div class="main-content-panel">
+
+            <div id="dynamic-header" class="header-container centered">
+                <div class="avatar-wrapper">
+                    <img id="story-avatar" class="character-img" src="start.png" alt="Kirurgi" onerror="this.src='https://placehold.co/300x300/fff3e0/e65100?text=KIR'">
+                </div>
+                <div class="header-text-block">
+                    <h2 id="dynamic-header-title">Kirurgiska Komplikationer</h2>
+                    <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario i menyn till vänster för att starta guiden.</p>
+                </div>
+            </div>
+
+            <div id="kir07-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('kir07', 'snabb', this)">⚡ Översikt & Diff</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir07', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir07', 'journal', this)">📝 Journal & TLV</button>
+                </div>
+                <div class="inner-display">
+                    <div id="kir07-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 07: Alveolit (Dry Socket)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> VARK-07-ALV</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Värken kom tillbaka efter 3 dagar och smakar illa"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K10.3 (Alveolit i käkarna)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Patofysiologi (Granskad fysiologi)</h5>
+                            <p><strong>Fibrinolys</strong> där blodkoaglet löses upp för tidigt, vilket lämnar benet i alveolen blottat och oskyddat. Detta är <strong>inte</strong> primärt en bakteriell infektion i vävnaden, utan en läkningsstörning.</p>
+                            <ul>
+                                <li><strong>Tidsförlopp:</strong> Dag 2–4 är det klassiska fönstret för debut. (Smärta dag 1 är oftast normal op-smärta, svullnad dag 4+ är ofta infektion).</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 DIFFERENTIALDIAGNOS: OSTEOMYELIT (RÖD FLAGG)</strong>
+                            <p>Osteomyelit (benröta) är en allvarlig djupliggande infektion i käkbenet. Om patienten utöver smärta uppvisar <strong>Feber, djup obeskrivlig smärta och DOMNINGAR i läppen (Numb Chin)</strong> ska osteomyelit misstänkas omedelbart! Röntgenfynd släpar ofta 1-2 veckor. Kräver omedelbar remiss.</p>
+                        </div>
+                    </div>
+                    <div id="kir07-behandling" class="content-panel">
+                        <h3>🔧 Behandling av Alveolit</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Lokalsanering (Klinik)</div>
+                            <ol>
+                                <li><strong>Skonsam Spolning:</strong> Spola alveolen mycket försiktigt med koksalt eller väteperoxid (3%) för att avlägsna matrester och debris.</li>
+                                <li><strong>Tamponad/Förband:</strong> Applicera en kompress/gasväv indränkt i <strong>Terracortril-Polymyxin B</strong> (antibiotika/kortison) blandat med <strong>Xylocain-salva</strong>, alt. Alvogyl.</li>
+                                <li><strong>Uppföljning:</strong> Byts varannan/var tredje dag tills smärtan vänder (ofta 1-3 byten).</li>
+                            </ol>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ KIRURGISK VARNING: SKRAPA ALDRIG!</strong>
+                            <p>Man ska <strong>ALDRIG</strong> skrapa i alveolen (excochleera) för att framkalla en ny blödning vid misstänkt alveolit. Detta förvärrar smärtan enormt och ökar risken för att sprida bakterier djupt i benet.</p>
+                        </div>
+                    </div>
+                    <div id="kir07-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K10.3 Alveolit (Dry socket) regio [XX].
+Anamnes: Extraktion utförd för [3] dagar sedan. Tilltagande, 
+bultande värk sedan igår. Dålig smak i munnen. Ingen feber.
+Status: Alveol [XX] saknar koagel, blottat ben synligt i botten. 
+Rodnad gingivalkant. Matrester i alveolen. 
+Ingen svullnad, ingen pus, ingen parestesi (utesluter osteomyelit).
+Åtgärd: Alveolen försiktigt renspolad med koksalt. (Ej skrapat!).
+Applicerat tamponad indränkt i Terracortril + Xylocain-salva. 
+Omedelbar smärtlindring.
+Planering: Återbesök om 2-3 dagar för byte av tamponad. 
+Pat rekommenderas Paracetamol+Ibuprofen v.b.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning / Kompletterande undersökning</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandling (Spolning och tamponad)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="kir21-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('kir21', 'snabb', this)">⚡ Översikt & Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir21', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir21', 'journal', this)">📝 Journal & TLV</button>
+                </div>
+                <div class="inner-display">
+                    <div id="kir21-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 21: Postoperativ Blödning</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> KIR-21-BLOD</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det slutar inte blöda efter tandutdragningen"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> T81.0 (Blödning och hematom som komplikation till kirurgiskt ingrepp)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Riskfaktorer & Anamnes</h5>
+                            <ul>
+                                <li><strong>Antikoagulantia:</strong> Waran (INR ska kontrolleras — extraktion kan utföras med lokala hemostasåtgärder upp till INR ~3.5–4.0; bedöm individuellt) <span class="correction-badge">JUSTERAT</span>, NOAK (Eliquis, Xarelto), Trombyl.</li>
+                                <li><strong>Leverkoagel:</strong> Ett ineffektivt, mörkt, geléliknande koagel som hänger över alveolen men läcker underifrån.</li>
+                                <li><strong>NSAID (Ipren/Ibuprofen):</strong> Hämmar trombocytaggregationen = ökad blödningsrisk!</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="kir21-behandling" class="content-panel">
+                        <h3>🔧 Behandling (Hemostas)</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Åtgärd på Klinik</div>
+                            <ol>
+                                <li><strong>Anestesi:</strong> Infiltration med lokalanestesi <strong>UTAN adrenalin</strong> (t.ex. Mepivakain). Adrenalin ger vasokonstriktion som maskerar blödningen tillfälligt, varpå det börjar blöda igen hemma.</li>
+                                <li><strong>Rensning:</strong> Sug ut allt leverkoagel! Du måste se källan (ben vs mjukvävnad) för att hemostas ska kunna etableras.</li>
+                                <li><strong>Lokalt preparat:</strong> Applicera <em>Surgicel</em> (Oxiderad cellulosa) eller <em>Spongostan</em> dränkt i <em>Cyklokapron</em> (Tranexamsyra) i alveolen.</li>
+                                <li><strong>Suturering:</strong> Lägg en tät kryssutur över alveolen. Detta håller hemostatikumet på plats och drar ihop papillerna.</li>
+                                <li><strong>Kompression:</strong> Låt pat bita hårt på kompress (gärna fuktad med Cyklokapron) i 20-30 minuter på kliniken. Skicka EJ hem förrän det slutat!</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div id="kir21-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: T81.0 Postoperativ blödning regio [XX].
+Anamnes: Extraktion utförd [datum]. Blött ihållande sedan dess. 
+Pat tar [Waran/Eliquis / Inga lm]. Ej allmänpåverkad.
+Status: Riklig blödning från mjukvävnadskanten/alveol [XX]. 
+Stort leverkoagel avlägsnat.
+Åtgärd: Sugning. Infiltration Mepivakain (u. adrenalin). 
+Hemostas: Applicerat [Surgicel/Spongostan] i alveol. 
+Suturerat [1] st Vicryl 4-0 kryssutur. 
+Kompression med kompress dränkt i Cyklokapron 20 min.
+Resultat: Blödning stillad (torrt) vid hemgång.
+Info: Skriftlig info. Hög huvudända i natt. Undvik fysisk
+ansträngning. [Recept Cyklokapron munskölj utfärdat]. 
+Åb vid behov.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandling (Stillande av blödning / Suturering)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="kir22-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('kir22', 'snabb', this)">⚡ Översikt & Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir22', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir22', 'journal', this)">📝 Journal & TLV</button>
+                </div>
+                <div class="inner-display">
+                    <div id="kir22-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 22: Sinuskommunikation (Oroantral fistel)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> KIR-22-SINUS</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det bubblar i såret när jag andas / Vatten kommer ut genom näsan"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> T81.8 (Komplikation till kirurgiskt ingrepp)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Diagnostik (Valsalvas test)</h5>
+                            <p>Utförs ALLTID vid extraktion av ÖK-premolarer/molarer med nära sinusrelation.</p>
+                            <ol>
+                                <li>Håll för patientens näsa.</li>
+                                <li>Be patienten "blåsa ut" genom näsan.</li>
+                                <li><strong>Positivt test:</strong> Luft hörs/ses pysa ut (ofta med bubblor i blodet) ur alveolen = Kommunikation föreligger!</li>
+                            </ol>
+                            <p><em>Sondera ALDRIG djupt i en alveol om du misstänker sinuskommunikation (du kan iatrogent spräcka schneiderianmembranet).</em></p>
+                        </div>
+                    </div>
+                    <div id="kir22-behandling" class="content-panel">
+                        <h3>🔧 Behandling & Riktlinjer</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Alt A: Liten kommunikation (< 2 mm)</div>
+                            <p>Läker ofta spontant om koaglet får vara ifred.</p>
+                            <ul>
+                                <li>Säkerställ ett bra blodkoagel i alveolen (ev. med spongostan).</li>
+                                <li>Suturera (kryssutur) för att hålla koaglet på plats.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Alt B: Stor kommunikation (> 2 mm)</div>
+                            <p>Kräver kirurgisk slutning (t.ex. Rehrmann-plastik).</p>
+                            <ul>
+                                <li>Lägg ett periostsnitt för att mobilisera en buckal lambå.</li>
+                                <li>Slut lambån spänningsfritt palatinalt.</li>
+                                <li>Om kompetens saknas: Lägg in tamponad, suturera tillfälligt och remittera akut till käkkirurg.</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Medicinsk Profylax & Hemgångsråd (Viktigt!)</strong>
+                            <ul>
+                                <li><strong>Snytförbud:</strong> Patienten får EJ snyta sig på 10-14 dagar. Nysning måste ske med ÖPPEN mun!</li>
+                                <li><strong>Nässpray:</strong> Slemhinneavsvällande (t.ex. Nezeril) i 7 dgr för att hålla ostiet i näsan öppet och undvika tryck i sinus.</li>
+                                <li><strong>Antibiotika:</strong> Amoxicillin (t.ex. Amimox) 500mg x 3 i 7 dagar ges som profylax mot sinuit vid säkerställd kommunikation.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="kir22-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: T81.8 Sinuskommunikation regio [XX].
+Status: Efter extraktion av [XX] noterades bubblor i alveolen. 
+Test: Valsalva positivt (luftpassage bekräftad). 
+Kommunikation bedöms som [liten/stor]. Ingen rot i sinus (rtg ua).
+Åtgärd: [Alt A: Suturering av alveol med kryssutur Vicryl 4-0].
+[Alt B: Rehrmann-plastik utförd. Mobilisering av buckal lambå 
+genom periostsnitt. Spänningsfri slutning mot palatinal vävnad].
+Farmaka: Förskrivit Amoxicillin 500mg x 3 i 7 dgr samt rek. Nezeril.
+Info: Pat informerad om komplikationen. Snytförbud i 14 dagar. 
+Nysa med öppen mun.
+Planering: Åb för suturtagning och kontroll om 1-2 veckor.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandling (vid enkel sutur)</td></tr>
+                                <tr><td><strong>404</strong></td><td>Mjukdelsplastik / Lambå (vid Rehrmann)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="kir23-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('kir23', 'snabb', this)">⚡ Översikt & Diff</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir23', 'behandling', this)">🔧 Behandling / Strama</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir23', 'journal', this)">📝 Journal & TLV</button>
+                </div>
+                <div class="inner-display">
+                    <div id="kir23-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 23: Postoperativ Infektion</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> KIR-23-INFEK</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det har svullnat upp igen och jag har fått feber"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> T81.4 (Infektion efter ingrepp)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Differentialdiagnostik: Infektion vs Alveolit</h5>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;">
+                                <tr style="border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                                    <th style="text-align: left; padding: 8px;">Egenskap</th>
+                                    <th style="text-align: left; padding: 8px;">Infektion (Kir 23)</th>
+                                    <th style="text-align: left; padding: 8px;">Alveolit (Kir 07)</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;"><strong>Svullnad</strong></td><td style="padding: 8px; color: #d32f2f; font-weight:bold;">Tydlig, ofta progredierande</td><td style="padding: 8px;">Ingen / minimal</td></tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;"><strong>Feber & Pus</strong></td><td style="padding: 8px; color: #d32f2f; font-weight:bold;">Ofta närvarande</td><td style="padding: 8px;">Nej</td></tr>
+                                <tr><td style="padding: 8px;"><strong>Behandlingsmål</strong></td><td style="padding: 8px; font-weight:bold;">Håll öppet för dränage!</td><td style="padding: 8px; font-weight:bold;">Packa med tamponad!</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="kir23-behandling" class="content-panel">
+                        <h3>🔧 Behandling & Strama-riktlinjer</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Incision och Dränage (Mekaniskt)</div>
+                            <p><strong>Den primära åtgärden vid en infektion är dränage!</strong></p>
+                            <ol>
+                                <li>Lokalanestesi (ofta blockad, då infiltration i infektion tar dåligt pga lågt pH).</li>
+                                <li>Identifiera fluktuation. Incidera (skär upp) abscessen.</li>
+                                <li>Vidga försiktigt med peang. Låt pus tömmas ut.</li>
+                                <li><em>Viktigt:</em> Till skillnad från alveolit packar man inte in material djupt. Vid infektion strävar man efter att hålla såret ÖPPET (t.ex. med ett gummidrän/laska) så varet kan rinna ut.</li>
+                            </ol>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Antibiotika (Enligt Strama)</strong>
+                            <p>Pus = Incision. Antibiotika är ett KOMPLEMENT till dränage vid:</p>
+                            <ul>
+                                <li>Feber och allmänpåverkan.</li>
+                                <li>Snabb spridning, trismus eller lymfkörtelpåverkan.</li>
+                                <li>Nedsatt immunförsvar.</li>
+                            </ul>
+                            <p><strong>Förstahandsval:</strong> PcV (Fenoximetylpenicillin) <strong>1,6 g x 3 i 5–7 dagar</strong> <span class="correction-badge">JUSTERAT — 1g x 3 var felaktig underdos</span>. Vid allergi: Klindamycin.</p>
+                        </div>
+                    </div>
+                    <div id="kir23-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: T81.4 Postoperativ sårinfektion regio [XX].
+Anamnes: Extraktion utförd för 4 dgr sedan. Tilltagande svullnad, 
+feber (38.2) och allmänpåverkan. 
+Status: Svullnad och rodnad i omslagsvecket regio [XX]. 
+Fluktuerande abscess. Pus sipprar från alveolen. 
+Lätt trismus.
+Åtgärd: LA [Mandibularblockad]. Incision utförd i omslagsvecket. 
+Rikligt med pus dränerat. Sköljning med koksalt. 
+Gummidrän (laska) inlagt och suturerat för att hålla öppet.
+Farmaka: Utfärdat recept på Kåvepenin <strong>1,6 g x 3 i 5–7 dagar</strong> <span class="correction-badge">JUSTERAT</span> enligt Strama.
+Planering: Återbesök om 2 dgr för avlägsnande av drän 
+samt kontroll av förlopp.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandling (Mindre incision / spolning)</td></tr>
+                                <tr><td><strong>402</strong></td><td>Incision / Abscessdränage (Större)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="kir24-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('kir24', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir24', 'behandling', this)">🔧 Handläggning & Remiss</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir24', 'journal', this)">📝 Journal & TLV</button>
+                </div>
+                <div class="inner-display">
+                    <div id="kir24-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 24: Dislocerad tand eller rot</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> KIR-24-DISLOC</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Roten försvann plötsligt / Tanden åkte upp i bihålan"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> T81.8 (Komplikation vid ingrepp), S03.2 (Dislokation av tand)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Huvudtyper av dislokation</h5>
+                            <ul>
+                                <li><strong>Sinusdislokation (Vanligast):</strong> ÖK-molarers rötter trycks upp i käkhålan. Följs ofta av sinuskommunikation.</li>
+                                <li><strong>Munbottendislokation (Submandibulär/Sublingual):</strong> UK-molarer. Rot trycks lingualt ut genom den tunna linguala benplattan.</li>
+                                <li><strong>Fossa infratemporalis (Sällsynt):</strong> Visdomstand i ÖK trycks bakåt/uppåt. Mycket svåråtkomligt.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="kir24-behandling" class="content-panel">
+                        <h3>🔧 Handläggning & Remiss (Riktlinjer)</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 GRUNDREGEL: Rota inte i blindo!</strong>
+                            <p>Om roten inte är fullt synlig och extremt lättåtkomlig: SLUTA. Att leta i blindo trycker oftast roten djupare (in i sinus eller ner i munbotten).</p>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Åtgärder vid dislokation till Sinus</div>
+                            <ol>
+                                <li>Gör Valsalvas test (försiktigt) för att verifiera sinuskommunikation.</li>
+                                <li>Ta en <strong>röntgenbild (Periapikal eller OPG)</strong> för att bekräfta att roten är i sinus.</li>
+                                <li>Suturera över alveolen (kryssutur/lambå) för att stänga kommunikationen akut.</li>
+                                <li>Sätt in patienten på antibiotikaprofylax (Amoxicillin) och nässpray (Nezeril) + ge snytförbud.</li>
+                                <li><strong>Remiss Käkkirurg</strong> för avlägsnande av roten (ofta via Caldwell-Luc operation). <em>En rot lämnas aldrig i sinus pga risk för kronisk aspergillosis/sinuit.</em></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div id="kir24-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: T81.8 Dislokation av rot tand [XX] till [Sinus/Munbotten].
+Status: Under extraktion dislocerades [palatinala] roten. 
+Rot ej längre synlig i alveolen. 
+Rtg bekräftar rotfragment beläget i [sinus maxillaris]. 
+Test: Valsalva positivt (luftpassage bekräftad).
+Åtgärd: Extraktionen avbröts. Alveolen suturerades med 
+kryssutur för att initialt stänga kommunikationen. 
+Farmaka: Amoxicillin 500mg x 3 i 7 dgr + Nezeril.
+Info: Pat informerad om komplikationen. Snytförbud i 14 dgr.
+Remiss: Akut/Snar remiss utfärdad till Käkkirurg för 
+avlägsnande av rot i sinus och plastikkirurgi.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning (vid komplikation)</td></tr>
+                                <tr><td><strong>011/130</strong></td><td>Röntgen (Intraoral/OPG)</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandling / Suturering / Remisshantering</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="kir25-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('kir25', 'snabb', this)">⚡ Översikt & Orsak</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir25', 'status', this)">🔬 Status & Risker (Granskad)</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir25', 'behandling', this)">🔧 Handläggning</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir25', 'journal', this)">📝 Journal & TLV</button>
+                </div>
+                <div class="inner-display">
+                    <div id="kir25-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 25: Nervpåverkan (Parestesi/Anestesi)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> KIR-25-NERV</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Bedövningen har fortfarande inte släppt / Det sticker i läppen"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> T81.8 (Komplikation till ingrepp), G50.1 (Atypisk ansiktssmärta/nervskada)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Berörda Nerver & Orsaker (Granskad)</h5>
+                            <ul>
+                                <li><strong>N. alveolaris inferior:</strong> Känselbortfall underläpp och haka.</li>
+                                <li><strong>N. lingualis:</strong> Tunga och smak (chorda tympani).</li>
+                                <li><strong>N. mentalis:</strong> Haka och läpp (vid foramen mentale).</li>
+                            </ul>
+                            <h5 style="margin-top:10px;">Varför släpper inte bedövningen? (Tidslinje)</h5>
+                            <ul>
+                                <li><strong>Nej, släppte aldrig:</strong> Mekaniskt Trauma (kanyl, borr, rotspets) skadade nerven vid ingreppet.</li>
+                                <li><strong>Ja (inom timmar):</strong> Kompression. Ett hematom (blödning) eller ödem trycker på nerven. Återhämtar sig oftast.</li>
+                                <li><strong>Ja (efter dagar):</strong> Infektion. Toxiner från en sen infektion påverkar nerven.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="kir25-status" class="content-panel">
+                        <h3>🔬 Diagnostik & Radiologiska Risker (Granskad)</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 PREOPERATIV RISK (Rood & Shehab radiologiska tecken)</strong>
+                            <p style="margin-top:5px;">Inför extraktion av visdomständer (UK) ska röntgen analyseras för nervnära relation. Klassiska risktecken (All Kirurgi 1):</p>
+                            <ul>
+                                <li>Rötterna mörknar när de passerar kanalen.</li>
+                                <li>Mandibularkanalen smalnar av vid rötterna.</li>
+                                <li>Rötterna böjer av/krokar runt kanalen.</li>
+                                <li>Avbrott i kanalens kortikala begränsning (vita linjen försvinner).</li>
+                            </ul>
+                            <p><em>(Vid dessa tecken: Remiss Käkkirurg eller överväg Coronectomi).</em></p>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 VARNING: "Elektrisk stöt" vid injektion!</strong>
+                            <p style="margin-top:5px;">Om patienten känner en blixtrande, elektrisk stöt ner i tungan eller läppen under anläggande av mandibularblockad: <strong>Dra omedelbart tillbaka kanylen något! Injicera INTE mer bedövning på den exakta punkten.</strong> Du ligger intraneuralt (inuti nerven) och trycket från vätskan kan spränga nervfibrerna permanent.</p>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 RÖD FLAGG: "Numb Chin Syndrome"</strong>
+                            <p style="margin-top:5px;">Känselbortfall i hakan <strong>utan</strong> föregående tandvård eller lokalt trauma är ett illavarslande tecken. Uteslut malignitet eller metastas i käken. Kräver OMEDELBAR medicinsk utredning/remiss.</p>
+                        </div>
+                    </div>
+                    <div id="kir25-behandling" class="content-panel">
+                        <h3>🔧 Handläggning & Invaliditet (Granskad)</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Akut och långsiktig hantering</div>
+                            <ul>
+                                <li><strong>Akut:</strong> Kartlägg utbredningen med en trubbig sond. Känner patienten beröring? Vasst/Trubbigt? Dokumentera noggrant (karta i journalen).</li>
+                                <li><strong>Info:</strong> Varna för bitskador och brännskador (varmt kaffe) eftersom skyddsreflexen saknas. Informera om att parestesier (stickningar) ofta betyder att nerven "hittar tillbaka".</li>
+                                <li><strong>Remiss:</strong> Vid misstanke om total nervavslitning (t.ex. nerven syntes trasig vid extraktion), remiss Käkkirurg inom 24-48h för mikrokirurgisk nervsutur. Annars exspektans och uppföljning var 4:e vecka.</li>
+                            </ul>
+                            <h5 style="margin-top:15px; color:#b71c1c;">Slutbedömning & Invaliditet</h5>
+                            <p>Om skadan inte har läkt ut görs en medicinsk invaliditetsbedömning, vilket vanligtvis sker <strong>2 år efter skadetillfället</strong> (Patientförsäkringen LÖF).</p>
+                        </div>
+                    </div>
+                    <div id="kir25-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: T81.8 Komplikation till ingrepp (Parestesi/Hypestesi).
+Anamnes: Efter Op av 48 för [2 dgr] sedan har känseln ej 
+återkommit i höger underläpp/haka. Ingen smärta.
+Status: Sensibilitetstest utfört. Hypestesi (nedsatt känsel) 
+i hela höger underläpp och haka (N. alveolaris inf). 
+Tungan normal känsel (N. lingualis intakt). 
+Känner djupt tryck men ej vasst (sond). Ingen infektion/svullnad.
+Bedömning: Postoperativ parestesi, sannolikt pga [kärlkramp/
+hematom/trauma under op].
+Åtgärd: Utbredning kartlagd och inritad. Pat lugnad (oftast 
+reversibelt på veckor/månader). 
+Varnad för bitskador/brännskador (kaffe).
+Planering: Telefonuppföljning 1 vecka. Rtg/Remiss vid utebliven 
+bättring. (Vid permanent skada >2 år: försäkringsärende).</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning / Konsultation</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandling / Kartläggning / Rådgivning</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="kir27-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('kir27', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir27', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('kir27', 'journal', this)">📝 Journal & TLV</button>
+                </div>
+                <div class="inner-display">
+                    <div id="kir27-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 27: Tuberfraktur</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> KIR-27-TUBER</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Benfragment lossnar vid extraktion av sista molaren i överkäken"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> S02.4 (Fraktur på överkäken/alveolarutskottet), T81.8</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Etiologi & Patofysiologi</h5>
+                            <p>Tuber maxillae är det beniga utskottet bakom sista molaren i ÖK. Om en molar (oftast visdomstand) sitter hårt fast (t.ex. divergerande rötter, ankylos) och benet är tunt p.g.a. stor sinusutbredning, kan själva benet knäckas vid luxation istället för att tanden lossnar ur alveolen. Hela benblocket rör sig då med tanden.</p>
+                        </div>
+                    </div>
+                    <div id="kir27-behandling" class="content-panel">
+                        <h3>🔧 Behandling (Baserat på storlek)</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 STOPP! Fortsätt inte bryta!</strong>
+                            <p>Om du känner att benet rör sig med tanden – bryt inte mer! Att riva ut en stor benbit kan orsaka massiva blödningar (a. palatina) och lämna en enorm sinuskommunikation.</p>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Liten Fraktur (Går ej in i sinus)</div>
+                            <ul>
+                                <li>Lossa tanden försiktigt från mjukvävnaden med en skalpell/raspartorium.</li>
+                                <li>Ta ut tanden med benfragmentet fäst på rötterna.</li>
+                                <li>Suturera mjukvävnaden (lambån) tätt.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Stor Fraktur (Involverar sinus / Känns stort)</div>
+                            <ol>
+                                <li><strong>Reponera:</strong> Tryck tillbaka tanden och benfragmentet in i alveolen.</li>
+                                <li><strong>Stabilisera:</strong> Om tanden stör bettet, låt pat bita ihop noga så det reponeras rätt. Ev. kan en kompositsplint fästas mot granntanden.</li>
+                                <li><strong>Avvakta:</strong> Låt frakturen läka i <strong>4–6 veckor</strong>.</li>
+                                <li><strong>Definitiv åtgärd:</strong> Därefter görs en operativ extraktion (friläggning och borrning av ben) för att ta ut tanden utan att benet följer med. Ev. remiss till käkkirurg.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div id="kir27-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: S02.4 Tuberfraktur vid extraktion av [28].
+Status: Vid luxation av 28 noterades att benet (tuber maxillae) 
+rörde sig med tanden. Kraftigt bendebris/motstånd.
+Åtgärd: Extraktionen avbröts direkt. Tanden och benfragmentet 
+reponerades på plats med digitalt tryck. Ocklusion kontrollerad u.a. 
+[Alt: Liten fraktur: Tanden och fragmentet lossades från 
+gingivan och extraherades. Alveol suturerades].
+Info: Pat informerad om frakturen. Skonkost (mycket mjuk mat) 
+i 2-4 veckor. Undvik att gapa stort.
+Planering: Läkningskontroll 2 veckor. Tanden planeras för 
+operativt avlägsnande (borrning) om 4-6 veckor [eller remiss].</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning vid komplikation</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandling (Reponering) / <strong>401</strong> (om extr gjordes)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><div class="right-sidebar">
+            <div class="sidebar-card">
+                <h4 class="sidebar-title">🔪 Kirurgi — Snabbval</h4>
+                
+                <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    <button class="sidebar-btn" onclick="selectScenario('kir07')">🦴 Alveolit (07)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('kir21')">🩸 Postop Blödning (21)</button>
+                    <button class="sidebar-btn" onclick="selectScenario('kir22')">👃 Sinuskommunikation (22)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('kir23')">🤒 Postop Infektion (23)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('kir24')">🦷 Dislocerad Rot (24)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('kir25')">⚡ Nervpåverkan (25)</button>
+                    <button class="sidebar-btn" onclick="selectScenario('kir27')">💥 Tuberfraktur (27)</button>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>🚨 Nervskada (Röd flagg)</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        "Elektrisk stöt" vid UK-injektion:<br>
+                        <strong>Dra tillbaka! Injicera EJ!</strong><br>
+                        <em>Numb Chin:</em> Uteslut malignitet.
+                    </p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>💊 Alveolit & Infektion</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        <strong>Alveolit (07):</strong> Packa tamponad. Skrapa ALDRIG. Ingen PcV.<br>
+                        <strong>Infektion (23):</strong> Incidera, håll ÖPPET. Strama: PcV vid feber/allmänpåverkan.
+                    </p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>🩸 Hemostas (Blödning)</h4>
+                    <p style="font-size:0.85rem; text-align:left;">
+                        Använd LA <strong>utan adrenalin</strong>. Sug ut koaglet. Cyklokapron + Kryssutur. <strong>Ingen NSAID/Ipren.</strong>
+                    </p>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>📋 Kom ihåg</h4>
+                    <p style="font-size: 0.85rem;">Beslutsstöd — ersätter inte kliniskt omdöme. PSL 2010:659.</p>
+                </div>
+            </div>
+        </div>
+
+    </div></div><script>
+    /* === SCENARIO DATA === */
+    const scenarioData = {
+        'kir07': { img: 'alveolit.png', fallback: 'https://placehold.co/120x100/fff3e0/e65100?text=ALV', title: 'Alveolit (Dry Socket)' },
+        'kir21': { img: 'blodning.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=BLÖD', title: 'Postoperativ blödning' },
+        'kir22': { img: 'sinus.png', fallback: 'https://placehold.co/120x100/e3f2fd/1565c0?text=SINUS', title: 'Sinuskommunikation' },
+        'kir23': { img: 'infektion.png', fallback: 'https://placehold.co/120x100/ffcdd2/b71c1c?text=INF', title: 'Postoperativ infektion' },
+        'kir24': { img: 'rot.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=ROT', title: 'Dislocerad tand/rot' },
+        'kir25': { img: 'nerv.png', fallback: 'https://placehold.co/120x100/fff8e1/ff6f00?text=NERV', title: 'Nervpåverkan (Parestesi)' },
+        'kir27': { img: 'tuber.png', fallback: 'https://placehold.co/120x100/e8f5e9/2e7d32?text=TUBER', title: 'Tuberfraktur' }
+    };
+
+    /* === SELECT SCENARIO === */
+    function selectScenario(id) {
+        document.querySelectorAll('.scenario-trigger-card').forEach(c => c.classList.remove('active'));
+        const trigger = document.getElementById('trigger-' + id);
+        if (trigger) trigger.classList.add('active');
+
+        document.querySelectorAll('.scenario-display-wrapper').forEach(w => w.classList.remove('active'));
+        const display = document.getElementById(id + '-display');
+        if (display) display.classList.add('active');
+
+        const header = document.getElementById('dynamic-header');
+        header.classList.remove('centered');
+        header.classList.add('scenario-mode');
+
+        const data = scenarioData[id];
+        if (data) {
+            document.getElementById('dynamic-header-title').textContent = data.title;
+            const avatar = document.getElementById('story-avatar');
+            avatar.src = data.img;
+            avatar.onerror = function() { this.src = data.fallback; };
+            avatar.classList.add('pop');
+            setTimeout(() => avatar.classList.remove('pop'), 600);
+        }
+
+        const wrapper = document.getElementById(id + '-display');
+        if (wrapper) {
+            wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const firstPanel = wrapper.querySelector('.content-panel');
+            const firstBtn = wrapper.querySelector('.tab-btn');
+            if (firstPanel) firstPanel.classList.add('active');
+            if (firstBtn) firstBtn.classList.add('active');
+        }
+
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    /* === TAB SWITCHING === */
+    function openInnerTab(scenarioId, tabName, btn) {
+        const wrapper = document.getElementById(scenarioId + '-display');
+        if (!wrapper) return;
+
+        wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+        const target = document.getElementById(scenarioId + '-' + tabName);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    /* === COPY TO CLIPBOARD === */
+    function copyText(btn) {
+        const pre = btn.nextElementSibling;
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            const orig = btn.innerText;
+            btn.innerText = '✅ Kopierat!';
+            setTimeout(() => { btn.innerText = orig; }, 1500);
+        });
+    }
+
+    /* === SEARCH === */
+    function searchCards() {
+        const input = document.getElementById('mainSearch').value.toLowerCase();
+        document.querySelectorAll('.scenario-trigger-card').forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(input) ? 'flex' : 'none';
+        });
+    }
+
+    /* === SCROLL ANIMATIONS === */
+    function triggerScrollAnimations() {
+        document.querySelectorAll('.scroll-animate').forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', triggerScrollAnimations);
+</script>
+
+
+    <button class="sources-btn" onclick="document.getElementById('sourcesModalKir').classList.add('active')">📚 Källor</button>
+    <div class="sources-modal-overlay" id="sourcesModalKir" onclick="if(event.target===this)this.classList.remove('active')">
+        <div class="sources-modal">
+            <button class="close-modal" onclick="document.getElementById('sourcesModalKir').classList.remove('active')">✕ Stäng</button>
+            <h2>📚 Källförteckning — Kirurgi & Komplikationer</h2>
+            <ul>
+                <li><strong>Internetodontologi.</strong> Komplikationer vid dento-alveolär kirurgi. internetodontologi.se/kakkirurgi/komplikationer-vid-dento-alveolar-kirurgi</li>
+                <li><strong>Internetodontologi.</strong> Antibiotikabehandling av odontogena infektioner (uppdaterad 25 april 2025). internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Blödningskomplikationer vid tandbehandling (uppdaterad 21 oktober 2024).</li>
+                <li><strong>FTV Region Uppsala.</strong> Behandling av dentoalveolära kirurgiska tillstånd.</li>
+                <li><strong>Rood & Shehab 1990.</strong> Radiologiska riskkriterier inför UK-visdomstandsextraktion.</li>
+                <li><strong>Socialstyrelsen.</strong> ICD-10-SE. Koder: T81.8, J34.8, K10.8.</li>
+                <li><strong>LÖF — Patientförsäkringen.</strong> patientforsakringen.se</li>
+                <li><strong>Patientsäkerhetslagen (PSL) 2010:659.</strong></li>
+                <li><strong>FASS.</strong> Mepivakain (Carbocain), Tranexamsyra (Cyklokapron). fass.se</li>
+                <li><strong>Strama.</strong> Antibiotikariktlinjer — odontogena infektioner.</li>
+                <li><strong>TLV.</strong> Aktuell tandvårdstaxa — verifiera koder på kusp.tlv.se</li>
+            </ul>
+            <p style="color:#888; font-size:0.85rem; margin-top:20px;">Senast granskad: Mars 2026. Ansvarig granskare: Nedaa Abujazar.</p>
+        </div>
+    </div>
+</body>
+</html>

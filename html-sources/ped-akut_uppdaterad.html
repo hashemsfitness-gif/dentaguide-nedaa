@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedodonti Akutscenarier - Smärta & Blödning</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<button class="back-btn" onclick="history.back()">← TILLBAKA</button>
+
+<div class="container">
+    <div class="hero">
+        <h1>Pedodonti: Akutscenarier</h1>
+        <p class="hero-subtitle">Kliniskt beslutsstöd för smärta, infektion och blödning hos barn</p>
+    </div>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="mainSearch" placeholder="Sök diagnos eller symtom..." onkeyup="searchCards()">
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+
+        <div class="scenario-nav">
+
+            <div class="scenario-trigger-card" id="trigger-pedo39" onclick="selectScenario('pedo39')">
+                <span class="trigger-tag">SCENARIO 39</span>
+                <div class="trigger-avatar-container">
+                    <img src="mih.png" alt="MIH" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff3e0/e65100?text=MIH'">
+                </div>
+                <h2 class="trigger-title">MIH (Hypomineralisering)</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Gul/trasig 6-årsmolar, hypersensibel.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo50" onclick="selectScenario('pedo50')">
+                <span class="trigger-tag">SCENARIO 50</span>
+                <div class="trigger-avatar-container">
+                    <img src="karies.png" alt="Karies" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e8eaf6/283593?text=KARIES'">
+                </div>
+                <h2 class="trigger-title">Djup karies mjölktand</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Vägrar äta, reversibel pulpit. Selektiv exkavering.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo51" onclick="selectScenario('pedo51')">
+                <span class="trigger-tag red">SCENARIO 51</span>
+                <div class="trigger-avatar-container">
+                    <img src="pulpit.png" alt="Pulpit Mjölktand" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=PULPIT'">
+                </div>
+                <h2 class="trigger-title">Akut pulpit mjölktand</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Irreversibel pulpit, spontansmärta. Extraktion.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo52" onclick="selectScenario('pedo52')">
+                <span class="trigger-tag red">SCENARIO 52</span>
+                <div class="trigger-avatar-container">
+                    <img src="apex.png" alt="Pulpit Permanent" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=APEX'">
+                </div>
+                <h2 class="trigger-title">Pulpit ung permanent tand</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Öppet apex. Pulpotomi / Apexogenes (MTA).</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo53" onclick="selectScenario('pedo53')">
+                <span class="trigger-tag red">SCENARIO 53</span>
+                <div class="trigger-avatar-container">
+                    <img src="abscess.png" alt="Abscess" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffcdd2/b71c1c?text=ABSCESS'">
+                </div>
+                <h2 class="trigger-title">Abscess mjölktand</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Fistel/finne, nekrotisk pulpa. Extraktion.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo54" onclick="selectScenario('pedo54')">
+                <span class="trigger-tag red">SCENARIO 54</span>
+                <div class="trigger-avatar-container">
+                    <img src="cellulit.png" alt="Cellulit" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffcdd2/b71c1c?text=CELLUL'">
+                </div>
+                <h2 class="trigger-title">Cellulit / Spridd infektion</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Allmänpåverkan, feber, trismus. Akut remiss.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo55" onclick="selectScenario('pedo55')">
+                <span class="trigger-tag">SCENARIO 55</span>
+                <div class="trigger-avatar-container">
+                    <img src="periko.png" alt="Perikoronit" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffcdd2/b71c1c?text=PERIKO'">
+                </div>
+                <h2 class="trigger-title">Perikoronit hos barn</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Ont bak vid frambrytande 6:a eller 7:a. Spolning.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo56" onclick="selectScenario('pedo56')">
+                <span class="trigger-tag red">SCENARIO 56</span>
+                <div class="trigger-avatar-container">
+                    <img src="postex.png" alt="Postex blödning" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=POSTEX'">
+                </div>
+                <h2 class="trigger-title">Postextraktionsblödning</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Blödning efter dragning. Leverkoagel. Sutur & Cyklokapron.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo57" onclick="selectScenario('pedo57')">
+                <span class="trigger-tag red">SCENARIO 57</span>
+                <div class="trigger-avatar-container">
+                    <img src="spontanblod.png" alt="Spontan blödning" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=BLÖD'">
+                </div>
+                <h2 class="trigger-title">Spontan gingival blödning</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Oprovocerad blödning. Misstanke hematologi.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo58" onclick="selectScenario('pedo58')">
+                <span class="trigger-tag red">SCENARIO 58</span>
+                <div class="trigger-avatar-container">
+                    <img src="leukemi.png" alt="Systemisk risk" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=RISK'">
+                </div>
+                <h2 class="trigger-title">Systemisk risk / Leukemi</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Gingivahyperplasi, blekhet, petekier. Akut till Barnmedicin.</div>
+            </div>
+
+        </div>
+
+        <div class="main-content-panel">
+
+            <div id="dynamic-header" class="header-container centered">
+                <div class="avatar-wrapper">
+                    <img id="story-avatar" class="character-img" src="start.png" alt="Pedodonti" onerror="this.src='https://placehold.co/300x300/fff3e0/e65100?text=PEDO'">
+                </div>
+                <div class="header-text-block">
+                    <h2 id="dynamic-header-title">Pedodonti: Akuta Scenarier</h2>
+                    <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario i menyn till vänster för att starta guiden.</p>
+                </div>
+            </div>
+
+            <div id="pedo39-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo39', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo39', 'anamnes', this)">❓ Anamnes & Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo39', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo39', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo39', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo39-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 39: MIH (Molar Incisor Hypomineralization)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-39-MIH</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det ilar och gör ont när jag tuggar, och den nya kindtanden ser gul och trasig ut"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K00.4 (Störningar i tandbildningen). Sekundärt: K02.1.</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Ca 18% av barn. Ålder: 6–11 år.</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Definition & Etiologi</h5>
+                            <p>Kvalitativ mineraliseringsstörning under tandbildningens maturationsfas. Drabbar 1-4 första permanenta molarer och ofta incisiver. Etiologin är multifaktoriell och inte fullt klarlagd — störning i emaljens maturationsfas under första levnadsåret, sannolikt orsakad av perinatala/systemiska faktorer (t.ex. syrebrist vid födseln, infektioner). Teorin om "stamcellsmigration" saknar vetenskapligt stöd och ska inte användas.</p>
+                        </div>
+                    </div>
+                    <div id="pedo39-anamnes" class="content-panel">
+                        <h3>❓ Anamnes & Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Anamnes</h5>
+                            <ul>
+                                <li>Hypersensibilitet vid tandborstning och kyla.</li>
+                                <li>Svårt att tugga pga isningar.</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk indikation & Status</h5>
+                            <ul>
+                                <li>Används vid misstanke om gravt mineraliseringsskadade permanenta molarer/incisiver.</li>
+                                <li>Opaka fläckar (vita, gula, bruna).</li>
+                                <li>Post-eruptivt emaljsönderfall (PEB). Tanden kan spricka kort efter frambrott.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo39-behandling" class="content-panel">
+                        <h3>🔧 Behandling (Steg för Steg)</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">1. Prevention & Symtomlindring (Mild-Måttlig MIH)</div>
+                            <ul>
+                                <li><strong>Fluorlack (Duraphat):</strong> Appliceras regelbundet för desensibilisering.</li>
+                                <li>Optimerad munhygien. Information till förälder.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">2. Restorativ behandling (Grav MIH / Sönderfall)</div>
+                            <ul>
+                                <li><strong>GIC-förband (Glasjonomer):</strong> Temporär fyllning/tätning om tanden ej är helt frambruten.</li>
+                                <li><strong>Kompositfyllning:</strong> Vid karies/fraktur. Kräver ofta extra noggrann ets/bonding då emaljen är porös.</li>
+                                <li><strong>Prefabricerad Stålkrona (SSC):</strong> Vid omfattande sönderfall. Mycket bra långtidsprognos.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">3. Extraktion</div>
+                            <p> I samråd med ortodontist. Optimal tidpunkt är när <strong>7:ans bifurkation precis börjar mineraliseras radiologiskt</strong> (vanligen 8–9 år) — inte enbart åldersberoende. Röntgenkriterium: bifurkation synlig men ej fullmineraliserad. Syfte: 7:an vandrar mesialuppåt och ersätter 6:an optimalt. Remiss ortodontist ALLTID innan beslut. Källa: Internetodontologi — MIH; Socialstyrelsen NR Tandvård 2022 (Prioritet 2)</p>
+                        </div>
+                    </div>
+                    <div id="pedo39-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K00.4 Emaljhypomineralisering (MIH). Ev K02.1.
+Status: Tand [nr] frambruten med opaka gul/bruna fläckar.
+Post-eruptivt sönderfall ocklusalt. Kraftig sensibilitet/ilningar vid kall luft (OBS: blästra försiktigt och aldrig direkt på dessa tänder)
+Åtgärd: [Fluorlackning / Exkavering och GIC / Stålkrona / 
+Remiss ortodontist för extr-bedömning].
+Info till pat/förälder om diagnos och prognos.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>301/302</strong></td><td>Desensibilisering/Fluorlackbehandling</td></tr>
+                                <tr><td><strong>701-703</strong></td><td>Kompositfyllning 1-3 ytor</td></tr>
+                                <tr><td><strong>302/301/303</strong></td><td>GIC-förband (Provisorisk fyllning)</td></tr>
+                                <tr><td><strong>800</strong></td><td>Prefabricerad stålkrona</td></tr>
+                                <tr><td><strong>401/402</strong></td><td>Extraktion sexårsmolar (enkel/komplicerad)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo39-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC39 MIH</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+                                
+                                <li><strong>Jälevik et al. 2001:</strong> Prevalensstudie — nästan vart femte barn hade MIH</li>
+                               <li><strong>Socialstyrelsen Nationella riktlinjer:</strong> </li>
+<li><strong>Internetodontologi:</strong> MIH — Molar Incisor Hypomineralization. <a href="https://www.internetodontologi.se/pedodonti/molar-incisor-hypomineralization-mih/" target="_blank">internetodontologi-MIH.se</a>
+</li>
+                               
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo50-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo50', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo50', 'anamnes', this)">❓ Anamnes & Diff</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo50', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo50', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo50', 'flaggor', this)">🚨 Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo50', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo50-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 50: Karies med pulpapåverkan i mjölktand</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-50-KARIESPULP</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnet vägrar äta och sover dåligt - djup karies"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K02.1 (Karies i dentin), K04.0 (Pulpit - reversibel)</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> 2–6 år</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk betydelse</h5>
+                            <p>Primära tänder har stora pulparum och tunt dentin; karies når pulpan snabbt. Målet är att <strong>undvika pulpaexponering</strong> och bevara tanden med selektiv exkavering när pulpan bedöms som reversibelt inflammerad.</p>
+                        </div>
+                    </div>
+                    <div id="pedo50-anamnes" class="content-panel">
+                        <h3>❓ Anamnes & Diff-Diagnostik</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära frågor</h5>
+                            <ul>
+                                <li><strong>❓ Har barnet ont spontant (utan att äta)?</strong><br><em>Nej = Reversibel pulpit. Ja → Irreversibel pulpit (Gå till Scenario 51).</em></li>
+                                <li><strong>❓ Vaknar barnet på natten?</strong><br><em>Nej = Reversibel. Ja = Irreversibel.</em></li>
+                                <li><strong>❓ Finns "finne" eller svullnad på tandköttet?</strong><br><em>Nej = Karies. Ja = Abscess (Gå till Scenario 53).</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo50-behandling" class="content-panel">
+                        <h3>🔧 Behandling: Selektiv Exkavering</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Behandlingsgång (Socialstyrelsen Förstahandsval)</div>
+                            <ol>
+                                <li><strong>Smärtkontroll:</strong> Adekvat lokalanestesi( Ytanestesi-Lidokain salva ca 5min, Citanest Dental Octapressin,förstahandspreparat; vid mandibular blockad obs Anatomiska skillnader vid Mandibularblockad .</li>
+                                <li><strong>Torrläggning:</strong> Bomullsrullar eller Kofferdam.</li>
+                                <li><strong>Exkavering:</strong> Avlägsna karies perifert (från väggarna) till hårt dentin för att få god förslutning(använd gärna keramborr). <strong>Lämna mjuk karies i pulpalväggen</strong> för att undvika pulpaexponering.</li>
+                                <li><strong>Fyllning:</strong> Tätslutande fyllning är överlägsen fullständig exkavering. Använd GIC, Komposit eller Stålkrona (t.ex. Hall technique).</li>
+                                <li><strong>Hall Technique (tillägg):</strong> Direkt placering av prefabricerad stålkrona (SSC) utan kariesborttagning — evidensbaserat med god prognos upp till 5 år. Indikation: djup karies, låg kooperation, tidspress. Ingen lokalanestesi ofta nödvändig. Källa:Socialstyrelsen NR Tandvård</li>
+                            </ol>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Uppföljning</h5>
+                            <p>Klinisk kontroll efter 3 månader. Kriterier för lyckat resultat: Symtomfri, ingen periapikal patologi, fyllning intakt. Vid försämring (spontansmärta) → Extraktion krävs.</p>
+                        </div>
+                    </div>
+                    <div id="pedo50-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K02.1 Karies i dentin, K04.0 Reversibel pulpit.
+Anamnes: Svårt att äta, men ingen spontansmärta/nattsmärta.
+Status: Djup karies tand [nr]. Ingen fistel/svullnad.
+Åtgärd: LA [preparat]. Selektiv exkavering utförd för att 
+undvika pulpaexponering. Tätslutande fyllning med 
+[GIC/Komposit/Stålkrona].
+Planering: Kontroll om 3 mån. Info till förälder att 
+kontakta omedelbart vid feber, svullnad eller spontansmärta.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>121/127</strong></td><td>Röntgen (Periapikal)</td></tr>
+                                <tr><td><strong>701-703</strong></td><td>Fyllning (GIC/komposit) 1-3 ytor</td></tr>
+                                <tr><td><strong>800</strong></td><td>Prefabricerad stålkrona</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo50-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate"><strong>🚨 Spontansmärta / Nattsmärta</strong><br>Betyder irreversibel pulpit → EXTRAKTION av mjölktand.</div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Fistel / Svullnad</strong><br>Betyder abscess → EXTRAKTION av mjölktand.</div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Snabb progress i flera tänder</strong><br>Riskbedömning, pedodontist-konsult.</div>
+                    </div>
+                    <div id="pedo50-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC50 Kariespulpit</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+                                <li><strong>SBU:</strong> Selektiv exkavering — systematisk genomgång</li>
+                                <li><strong>Socialstyrelsen NR Tandvård 2022:</strong> Selektiv exkavering som förstahandsval</li>
+                                <li><strong>Maltz et al. 2018:</strong> Täthet viktigare än fullständig exkavering</li>
+                                <li><strong>Internetodontologi:</strong> Pedodonti — Karies. <a href="https://www.internetodontologi.se" target="_blank">internetodontologi.se</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo51-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo51', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo51', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo51', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo51', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo51', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo51-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 51: Akut Pulpit i Mjölktand</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-51-PULPITMJOLK</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnet har våldsam tandvärk - skriker, kan inte sova"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K04.01 (Irreversibel pulpit) — observera: K04.00 = reversibel pulpit, K04.01 = irreversibel pulpit. Ange alltid dekadkod för korrekt differentiering.</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> 2–6 år</div>
+                            </div>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ Klinisk grundregel för Barn:</strong>
+                            <br>Tvinga ALDRIG fram smärtsam behandling utan adekvat bedövning/sedering. Om behandling ej kan genomföras under smärtfria former, avbryt och överväg remiss till specialist.
+                        </div>
+                    </div>
+                    <div id="pedo51-anamnes" class="content-panel">
+                        <h3>❓ Anamnes & Diagnostik</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Kliniska Tecken</h5>
+                            <ul>
+                                <li>Spontansmärta (gör ont utan att barnet äter).</li>
+                                <li>Barnet vaknar på natten gråtande av smärta.</li>
+                                <li>Smärtan kvarstår länge efter temperaturprovokation.</li>
+                                <li>Karies har invaderat pulpan.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo51-behandling" class="content-panel">
+                        <h3>🔧 Behandling Mjölktand</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Extraktion är FÖRSTAHANDSVAL!</div>
+                            <ul>
+                                <li>Prognosen för vitalbevarande behandling i mjölkbettet är mycket dålig vid irreversibel pulpit.</li>
+                                <li>Akut smärtlindring prioriteras. Tanden dras under god lokalanestesi (LA).</li>
+                                <li>Pulpektomi/Rotbehandling utförs mycket sällan på primära tänder i Sverige.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo51-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K04.01 Irreversibel pulpit. (K04.00 = reversibel, K04.01 = irreversibel per ICD-10-SE)
+Status: Nattlig spontansmärta tand [nr]. Djup karies i pulpa.
+Åtgärd: LA [preparat]. Extraktion av tand [nr]. 
+Hemostas kontrollerad. Patient smärtfri efter behandling.
+Info: Mjuk/kall kost resten av dagen. Paracetamol v.b.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>401</strong></td><td>Enkel extraktion</td></tr>
+                                <tr><td><strong>402</strong></td><td>Komplicerad extraktion (t.ex. rotfraktur)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo51-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC51 Akut pulpit mjölktand</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+                                <li><strong>Internetodontologi:</strong> Pedodonti; Extraktion som förstahandsval vid irreversibel pulpit</li>
+                                <li><strong>Socialstyrelsen NR Tandvård 2022</strong></li>
+                                <li><strong>ICD-10-SE:</strong> K04.00 (reversibel pulpit), K04.01 (irreversibel pulpit)</li>
+                                <li><strong>PSL 2010:659:</strong> Patientlagen — informed consent, ej tvångsingrepp</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo52-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo52', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo52', 'diagnos', this)">🔬 Diagnostik</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo52', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo52', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo52', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo52-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 52: Irreversibel Pulpit (Ung Permanent Tand)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-52-APEXOGENES</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Den nya tanden värker och pulserar"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K04.0 (Irreversibel pulpit)</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> 6–12 år (under rotutveckling)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pedo52-diagnos" class="content-panel">
+                        <h3>🔬 Diagnostik & Indikation</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Öppet Apex</h5>
+                            <p>Irreversibel pulpit pga trauma eller djup karies, men tanden har ett <strong>öppet apex</strong> (ej färdigutvecklad rot radiologiskt). Målet är att bevara rotpulpan vital så att roten kan växa klart. Om roten rotfylls direkt blir den tunn, kort och skör.</p>
+                        </div>
+                    </div>
+                    <div id="pedo52-behandling" class="content-panel">
+                        <h3>🔧 Behandling: Pulpotomi (Apexogenes)</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Arbetsgång</div>
+                            <ol>
+                                <li><strong>Anestesi & Isolering:</strong> Artikain/Mepivakain. KOFFERDAM ÄR OBLIGATORISKT vid pulpa-arbete.</li>
+                                <li><strong>Trepanation:</strong> Kronpulpan (som är inflammerad/nekrotisk) avlägsnas ner till rotkanalsmynningarna med steril borr.</li>
+                                <li><strong>Hemostas:</strong> Uppnås med steril koksaltpellet (1-5 min tryck). Kontrollera att det blöder friskt och ljust från kanalerna (vitalitetstecken). <em>Om blödning ej upphör → inflammationen/nekrosen går djupare ner i roten (risk för apexifikation istället, ofta specialist).</em></li>
+                                <li><strong>Förband:</strong> MTA (Mineral Trioxide Aggregate) eller Biodentine appliceras direkt mot rotpulpan i kanalmynningen.</li>
+                                <li><strong>Förslutning:</strong> Om MTA används → placera <strong>fuktad bomullspellet</strong> direkt ovanpå MTA → täck med temporär GIC. Slutlig komposit läggs vid <strong>återbesök 24–48 h</strong> (MTA behöver fukt för att härda korrekt — komposit direkt riskerar uttorkning av MTA-ytan). Biodentine kan täckas direkt. Källa: IADT 2020; MTA-protokoll (Dentsply Sirona)</li>
+                            </ol>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Uppföljning</h5>
+                            <p>Klinisk & radiologisk uppföljning efter 3, 6 och 12 månader för att bekräfta att roten fortsätter utvecklas och apex sluts. Lyckat resultat: Symtomfrihet och fortsatt rotutveckling.</p>
+                        </div>
+                    </div>
+                    <div id="pedo52-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K04.01 Irreversibel pulpit. (K04.00 = reversibel, K04.01 = irreversibel per ICD-10-SE)
+Status: Spontansmärta tand [nr]. Öppet apex radiologiskt.
+Åtgärd: LA [Artikain]. Kofferdam applicerad. Trepanation.
+Kronpulpa avlägsnad till kanalmynning. Hemostas uppnådd med 
+steril koksaltpellet (vital blödning bekräftad).
+MTA/Biodentine applicerad mot rotpulpan. 
+Tätslutande temporär GIC / Slutlig komposit placerad.
+Planering: Rtg-kontroll 3, 6, 12 mån för att följa 
+rotutveckling och apexslutning.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>121/127</strong></td><td>Röntgen periapikal</td></tr>
+                               <tr><td><strong>521Akut trepanation och kavumexstirpation</strong></td><td> alt. 302 - Sjukdoms- eller smärtbehandling</td></tr>
+
+                                <tr><td><strong>701-703</strong></td><td>Slutlig fyllning komposit</td></tr>
+                                <tr><td><strong>302/303</strong></td><td>Provisorisk fyllning GIC</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo52-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC52 Apexogenes</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+                                <li><strong>IADT 2020:</strong> Bourguignon C et al. Dental Traumatology 2020;36(4):314–330</li>
+                                <li><strong>Internetodontologi:</strong> Endodonti — Pulpotomi öppet apex</li>
+                                <li><strong>Cvek M. 1978:</strong> Partiell pulpotomi — original beskrivning</li>
+                                <li><strong>Socialstyrelsen NR Tandvård 2022:</strong> Prioritet 2 — partiell pulpotomi permanenta tänder</li>
+                                <li><strong>MTA-protokoll:</strong> Dentsply Sirona ProRoot MTA; Septodont Biodentine — fuktad pellet + återbesök 24–48h</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo53-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo53', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo53', 'strama', this)">💊 STRAMA (Viktigt!)</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo53', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo53', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo53', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo53-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 53: Dentoalveolär Abscess (Mjölktand)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-53-ABSCESS</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det har kommit en finne på tandköttet / öm att tugga på"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K04.4 (Akut apikal parodontit), K04.6 (Periapikal abscess med fistel)</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> 2–8 år</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk Diagnostik</h5>
+                            <p>Pulpan har gått i nekros. Fistel ("finne") eller lokal svullnad syns på gingivan. Tanden är ofta perkussionsöm. Infektionen hotar det underliggande permanenta tandanlaget som ligger precis under rötterna.</p>
+                        </div>
+                    </div>
+                    <div id="pedo53-strama" class="content-panel">
+                        <h3>💊 STRAMA: Antibiotikariktlinjer (Gäller hela barntandvården)</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Grundregel från Strama</strong>
+                            <p>Antibiotika ges BARA vid tecken på <strong>systemisk påverkan</strong> eller snabb spridning.</p>
+                            <ul style="margin-top:10px;">
+                                <li>Feber >38 grader</li>
+                                <li>Allmänpåverkan (slö, äter/dricker dåligt)</li>
+                                <li>Svullnad som sträcker sig mot öga eller hals (Gapsvårigheter)</li>
+                            </ul>
+                            <p style="margin-top:10px;">En lokal fistel ("finne") eller svullnad SKA INTE behandlas med penicillin. Den ska enbart behandlas med lokal infektionssanering (dränage/extraktion).</p>
+                        </div>
+                    </div>
+                    <div id="pedo53-behandling" class="content-panel">
+                        <h3>🔧 Behandling Mjölktand</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Extraktion = Primär Behandling</div>
+                            <ul>
+                                <li>ALDRIG rotbehandling på primära tänder med apikal parodontit.</li>
+                                <li>Extrahera tanden för att få dränage av var (pus) och för att ta bort infektionskällan definitivt.</li>
+                                <li>Vid extraktion, kontrollera noga att hela roten följer med (inget får lämnas kvar vid en infektion).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo53-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K04.6 Periapikalabscess med fistel.
+Status: Fistel buckalt tand [nr]. Tanden är rörlig och öm. 
+Ingen feber. Normal gapförmåga.
+Åtgärd: LA [preparat]. Extraktion tand [nr]. 
+Pus dränerat. Ingen antibiotika förskriven (följer Strama).
+Info: Mjuk kost, Paracetamol v.b. Kontakta oss om barnet 
+får feber eller om svullnaden ökar.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>121/127/opg 124</strong></td><td>Röntgen (obligatorisk före extr)</td></tr>
+                                <tr><td><strong>401/402</strong></td><td>Extraktion av tand (enkel / komplicerad) — OBS: 701/702 avser fyllning, INTE extraktion</td></tr>
+                            </table>
+                        </div>
+                        <div class="info-card scroll-animate" style="border-left:4px solid #f9a825;background:#fff8e1;">
+                            <h5>⚠️ Viktigt efter extraktion av mjölktand — Platsbevarare</h5>
+                            <p>Vid tidig extraktion av mjölktand (mer än ~1 år före beräknad eruption av permanent efterträdare) kan tandvandring ge platsbrist. Överväg remiss till ortodontist för platsbevarare.</p>
+                            <ul>
+                                <li><strong>Indikation remiss:</strong> Extraktion &gt;1 år innan permanent tand förväntas eruera (gäller ej framtänder eller 6-årständer)</li>
+                                <li><strong>Typer:</strong> Bandad loop (fast), Hawley (avtagbar)</li>
+                                <li><strong>Smärtlindring:</strong> Paracetamol <strong>15 mg/kg x 4</strong> (max 60 mg/kg/dygn). EJ ibuprofen vid blödningsrisk. Källa: FASS — Alvedon barn</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo53-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC53 Abscess mjölktand</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+                                <li><strong>Läkemedelsverket 2014:</strong> Rekommendationer för antibiotikabehandling i tandvården</li>
+                                <li><strong>Strama:</strong> <a href="https://www.strama.se" target="_blank">strama.se</a> — dränage före antibiotika</li>
+                                <li><strong>Internetodontologi:</strong> Antibiotikabehandling av odontogena infektioner</li>
+                                <li><strong>TLV debiteringskoder:</strong> <a href="https://kusp.tlv.se" target="_blank">kusp.tlv.se</a> — 401 (enkel extraktion), 402 (komplicerad)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo54-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo54', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo54', 'status', this)">🔬 Status & Symtom</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo54', 'behandling', this)">🔧 Behandling / Remiss</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo54', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo54', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo54-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 54: Cellulit / Spridd Infektion</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-54-CELLULIT</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnets ansikte/kind har svullnat upp enormt och hen har feber"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> L03.2 (Cellulit i ansiktet), K04.6 (Abscess)</div>
+                            </div>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 LIVSHOTANDE TILLSTÅND</strong>
+                            <p>Infektioner hos barn kan sprida sig extremt snabbt i vävnadsrummen. Trismus (gapsvårigheter), sväljningssvårigheter eller svullnad mot ögat kräver omedelbar sjukhusvård.</p>
+                        </div>
+                    </div>
+                    <div id="pedo54-status" class="content-panel">
+                        <h3>🔬 Status & Allmänsymtom</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Diagnostiska tecken på systemisk spridning:</h5>
+                            <ul>
+                                <li><strong>Feber:</strong> Över 38°C.</li>
+                                <li><strong>Trismus:</strong> Svårt att gapa (infektionen har nått tuggmuskulaturen).</li>
+                                <li><strong>Extraoral svullnad:</strong> Syns tydligt utanpå kinden, asymmetri i ansiktet. Svullnad som engagerar nedre ögonlocket eller halsen/svalget.</li>
+                                <li><strong>Allmänpåverkan:</strong> Slöhet, trötthet, dehydrering.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo54-behandling" class="content-panel">
+                        <h3>🔧 Behandling & Akut Remiss</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Handläggning (Akut)</div>
+                            <ol>
+                                <li><strong>Eliminera orsak (om möjligt direkt):</strong> Extraktion av den skyldiga tanden för att säkra dränage av pus, ifall patientens gapförmåga och kooperation tillåter.</li>
+                                <li><strong>Antibiotika (Strama):</strong> Sätt in antibiotika omedelbart. 
+                                    <br>- <em>PcV (Fenoximetylpenicillin/Kåvepenin)</em> — <strong>barndos: 12,5 mg/kg x 3 (max 1 g x 3), kur 7 dagar.</strong> Vid pc-allergi: Klindamycin 5–6 mg/kg x 3 (max 300 mg x 3), 7 dagar. Källa: FASS — Kåvepenin; Läkemedelsverket 2014
+                                    <br>- <em>Vid pc-allergi:</em> Klindamycin.
+                                </li>
+                                <li><strong>AKUT REMISS:</strong> Vid sväljningssvårigheter, ögonengagemang, uttalad trismus eller om barnet är gravt allmänpåverkat → Skicka akut remiss till Käkkirurg / Barnakut / Sjukhus för IV-antibiotika. <strong>Ring in remissen!</strong></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div id="pedo54-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: L03.2 Cellulit ansikte (utgående från tand XX).
+Status: Kraftig extraoral svullnad [vänster kind]. 
+Svullnad sträcker sig mot [ögat/halsen]. 
+Trismus (gapförmåga [X] mm). Feber [XX] grader. 
+Slött och allmänpåverkat barn.
+Åtgärd: [Akut extraktion tand XX för dränage].
+Telefonkontakt med Käkkirurgen/Barnakuten kl [Tid].
+Barnet remitterat akut till sjukhus för inläggning 
+och IV-antibiotika pga spridningsrisk.
+Kopia av rtg medskickad/länkad.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>301/302</strong></td><td>Sjukdomsbehandlande åtgärd grad 1/2</td></tr>
+                                <tr><td><strong>403</strong></td><td>Incision/dränage abscess (om utförd)</td></tr>
+                                <tr><td><strong>401/402</strong></td><td>Extraktion (om utförd) — OBS: 701/702 avser fyllning</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo54-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC54 Cellulit</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+                                <li><strong>Läkemedelsverket 2014:</strong> Antibiotikabehandling odontogena infektioner</li>
+                                <li><strong>FASS — Kåvepenin:</strong> PcV barndos 12,5 mg/kg x 3 (max 1 g x 3), 7 dagar</li>
+                                <li><strong>FASS — Klindamycin:</strong> 5–6 mg/kg x 3 (max 300 mg x 3) vid pc-allergi</li>
+                                <li><strong>Strama:</strong> <a href="https://www.strama.se" target="_blank">strama.se</a></li>
+                                <li><strong>TLV:</strong> 301/302 (sjukdomsbehandlande åtgärd), 403 (incision/dränage abscess)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo55-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo55', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo55', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo55', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo55', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo55-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 55: Perikoronit (Barn/Ungdom)</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-55-PERIKO</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Det gör ont längst bak vid den nya tanden"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K05.2 (Akut perikoronit)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Diagnostik</h5>
+                            <p>Inflammation i mjukvävnaden (operculum) runt en delvis frambruten tand. Sker oftast kring 6-års molarer eller 12-års molarer (7:or) hos barn. Plack och debris samlas under slemhinnefliken.</p>
+                        </div>
+                    </div>
+                    <div id="pedo55-behandling" class="content-panel">
+                        <h3>🔧 Behandling</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Lokalsanering</div>
+                            <ol>
+                                <li><strong>Spolning:</strong> Spola försiktigt under operculum med fysiologiskt Koksaltlösning (i trubbig kanyl/spruta) för att avlägsna debris och plack.</li>
+                                <li><strong>Avlastning:</strong> Kontrollera ocklusion. Om en motstående tand (antagonist) i överkäken biter och traumatiserar den svullna fliken i underkäken → slipa antagonisten ur ocklusion för avlastning.</li>
+                                <li><strong>Smärtlindring:</strong> Applicera Xylocain gel lokalt. Rekommendera baddning med fysiologisk koksalt med tops för små barn) hemma 2 ggr/dag tills tanden erupterat.</li>
+                            </ol>
+                            <p><em>Antibiotika ges EJ vid okomplicerad perikoronit. (Ges endast om feber/trismus uppstår → se Scenario 54).</em></p>
+                        </div>
+                    </div>
+                    <div id="pedo55-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K05.2 Akut perikoronit.
+Status: Svullet, rodnat operculum regio [nr]. Debris under fliken. 
+Antagonist [biter / biter ej] på fliken. Gapförmåga ua. Ingen feber.
+Åtgärd: Spolning under operculum med klorhexidin. Debris avlägsnat.
+[Antagonist slipad ur ocklusion].
+Ordinerat: Skonkost, Paracetamol v.b. Xylocain gel, 
+Klorhexidinsköljning 2 ggr/dag.
+Planering: Tanden förväntas eruptera klart. Kontakta vid försämring.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>301/302</strong></td><td>Sjukdomsbehandling (Spolning/Inslipning)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo55-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC55 Perikoronit</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+                                <li><strong>Internetodontologi:</strong> Perikoronit</li>
+                                <li><strong>Läkemedelsverket 2014:</strong> Antibiotika ej vid okomplicerad perikoronit</li>
+                                <li><strong>ICD-10:</strong> K05.2 (Akut perikoronit)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo56-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo56', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo56', 'anamnes', this)">❓ Orsaker & Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo56', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo56', 'fass', this)">💊 FASS (Varning)</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo56', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo56', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo56-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 56: Postextraktionsblödning hos Barn</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-56-POSTEXBLOD</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Vi drog ut en tand i morse, och nu är kudden full av blod"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> T81.0 (Blödning som komplikation till ingrepp)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pedo56-anamnes" class="content-panel">
+                        <h3>❓ Orsaker & Anamnes</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Vanligaste orsakerna hos friska barn</h5>
+                            <ul>
+                                <li><strong>Mekanisk:</strong> Barnet har "pillat" med tungan eller sugit på såret (skapar undertryck).</li>
+                                <li><strong>Leverkoagel:</strong> Ett stort, ineffektivt geléaktigt koagel som byggts upp ovanpå alveolen men som läcker underifrån.</li>
+                                <li><strong>Farmakologisk:</strong> NSAID-användning (Ibuprofen/Ipren).</li>
+                                <li><strong>Sällsynt:</strong> Odiagnostiserad koagulationsrubbning (von Willebrand, Hemofili). Ta alltid en snabb koagulationsanamnes (Lätt för blåmärken? Näsblod ofta?).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo56-behandling" class="content-panel">
+                        <h3>🔧 Behandling (Klinik)</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Åtgärdsplan</div>
+                            <ol>
+                                <li><strong>Anestesi:</strong> Lägg LA <em>utan</em> adrenalin (t.ex. Mepivakain) för att inte maskera blödningen genom kärlsammandragning.</li>
+                                <li><strong>Rensning:</strong> Sug ut eventuellt "leverkoagel". Rent blod och ben måste ses i alveolen för att primär hemostas ska kunna starta om.</li>
+                                <li><strong>Lokal hemostas:</strong> Klipp en bit Spongostan, dränk i Cyklokapron (Tranexamsyra) och applicera lokalt i alveolen.</li>
+                                <li><strong>Sutur:</strong> Lägg en kryssutur (t.ex. Vicryl 4-0 resorb) över alveolen för att hålla spongostan på plats och dra ihop papillerna.</li>
+                                <li><strong>Kompression:</strong> Låt barnet bita på en fuktad kompress i 30 minuter på kliniken. Kontrollera stillad blödning innan hemgång.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div id="pedo56-fass" class="content-panel">
+                        <h3>💊 FASS: NSAID & Blödning (Varning)</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ Smärtstillande vid Blödningstillstånd</strong>
+                            <p style="margin-top:10px;"><strong>Ibuprofen (Ipren, Brufen, NSAID)</strong> hämmar den primära hemostasen (trombocytaggregationen). Det ökar blödningsrisken radikalt.</p>
+                            <ul style="margin-top:10px;">
+                                <li>Vid postextraktionsblödning: <strong>GE ALDRIG NSAID.</strong></li>
+                                <li>Använd <strong>PARACETAMOL</strong> (Alvedon, Panodil) istället!</li>
+                                <li>Informera föräldrarna om att de inte får ge Ipren hemma.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo56-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: T81.0 Blödning som komplikation till ingrepp.
+Anamnes: Tand [nr] extraherad kl [tid]. Kvarstående blödning.
+[Pillat med tungan/Leverkoagel/Smärtstillande: Ipren].
+Koagulationsanamnes: Inga kända blödningssjukdomar.
+Status: Sivande blödning / Leverkoagel från alveol tand [nr].
+Åtgärd: Skölj sårområdet med tranexamsyra i ca 5 min.
+Spongostan + Cyklokapron i alveol. Kryssutur Vicryl 4-0.
+Kompression 20 min. Blödning stillad.
+Info: Hög huvudända. Kall mat. Paracetamol v.b. (EJ Ipren!).</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>301/302/303</strong></td><td>Sjukdomsbehandling (Stillande av blödning / suturering)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo56-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC56 Postextraktionsblödning</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+                                <li><strong>FASS:</strong> Cyklokapron (tranexamsyra) — Lokal hemostas vid tandextraktionsblödning. <a href="https://fass.se/health/product/19931217000065/smpc" target="_blank">fass.se</a></li>
+                              <li><strong>FASS:</strong> Citanest — Utan vasokonstriktor vid blödning. <a href="https://fass.se/health/product/19860829000098" target="_blank">fass.se</a></li>
+                                <li><strong>FASS:</strong> Ibuprofen — Hämmar trombocytaggregation — kontraindicerat vid blödning. <a href="https://fass.se/health/product/20150103000019/pl" target="_blank">fass.se</a></li>
+                              <li><strong>Tandvårdens läkemedel:</strong> 2024–2025. <a href="https://kunskapsstyrningvard.se/download/18.51a2292e1900c66f385a1c1f/1719314391519/Tandvardens-Lakemedel-2024-2025.pdf" target="_blank">PDF</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo57-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo57', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo57', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo57', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo57', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo57-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 57: Spontan Gingival Blödning</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-57-SPONTANBLOD</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnets tandkött blöder utan anledning"</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk Differentiering</h5>
+                            <p>Spontan, oförklarad blödning från tandköttet (utan tydlig närvaro av grav plack-gingivit eller trauma) är en varningssignal. Det kan vara första tecknet på en koagulationsrubbning (trombocytopeni) eller malignitet.</p>
+                        </div>
+                    </div>
+                    <div id="pedo57-behandling" class="content-panel">
+                        <h3>🔧 Behandling (Akut Hantering)</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Åtgärd</div>
+                            <ul>
+                                <li><strong>INGA INGREPP i munnen.</strong> Sondéring eller tandstensskrapning är kontraindicerat på grund av kraftig blödningsrisk och risk för infektion (om neutropeni föreligger).</li>
+                                <li><strong>Lokal stillning:</strong> Applicera lokalt tryck med kompress fuktad med Cyklokapron (Tranexamsyra) på de blödande områdena i munnen.</li>
+                                <li><strong>Utredning:</strong> Fråga efter andra blåmärken, näsblod eller trötthet (Gå till Scenario 58). Remittera för medicinsk utredning (blodprov).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo57-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: Spontan blödning UNS (misstanke hematologi).
+Status: Spontan gingival blödning, oproportionerlig till 
+plackmängd. 
+Åtgärd: INGA orala ingrepp utförda (pga blödningsrisk). 
+Lokalt tryck med Cyklokapron-kompress anlagd. Blödning minskad.
+Remiss skriven till Barnmedicin för medicinsk utredning och 
+blodprovstagning.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/108</strong></td><td>Akut undersökning</td></tr>
+                                <tr><td><strong>301/302</strong></td><td>Sjukdomsbehandling (Blödningsstillande / Remisshantering)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo57-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC57 Spontan gingival blödning</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                        <li><strong>National Library of Medicine:</strong> Pediatric dentistry: a clinical approach (Koch, Poulsen m.fl.). <a href="https://www.ncbi.nlm.nih.gov/nlmcatalog/?term=Pediatric+dentistry+a+clinical+approach" target="_blank">ncbi.nlm.nih.gov</a></li>
+<li><strong>Sfhem:</strong> Riktlinjer. <a href="https://www.sfhem.se/riktlinjer" target="_blank">sfhem.se</a></li>
+<li><strong>Tandvårdens läkemedel:</strong> 2024–2025. <a href="https://kunskapsstyrningvard.se/download/18.51a2292e1900c66f385a1c1f/1719314391519/Tandvardens-Lakemedel-2024-2025.pdf" target="_blank">PDF</a></li>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo58-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo58', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo58', 'behandling', this)">🚨 Akut Remiss</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo58', 'journal', this)">📝 Journal & Koder</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo58', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo58-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 58: Systemisk Risk / Leukemimisstanke</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-58-LEUKEMI</div>
+                                <div class="symptom-item">🗣️ <strong>Klinisk Bild:</strong> Gingivahyperplasi, blårött tandkött, blekhet, oförklarliga blåmärken (petekier).</div>
+                            </div>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 RÖD FLAGGA: Misstanke om Leukemi / Svår Blödningssjukdom</strong>
+                            <p style="margin-top:10px;">Gingival hyperplasi som är blåröd och "rullgardinsliknande", kombinerat med allmänsymtom:</p>
+                            <ul style="margin-top:10px;">
+                                <li>Trött, blekt barn.</li>
+                                <li>Petekier i slemhinna eller hud (små röd/lila prickar, blåmärken utan förklaring).</li>
+                                <li>Feber utan känd orsak / svullna lymfkörtlar.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo58-behandling" class="content-panel">
+                        <h3>🚨 Akut Handläggning & Remiss</h3>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Medicinsk Akutåtgärd</div>
+                            <ul>
+                                <li><strong>INGA INGREPP i munnen</strong> (livshotande blödnings- och infektionsrisk vid neutropeni/trombocytopeni).</li>
+                                <li>Endast lokalt tryck med Cyklokapron vid massiv aktiv blödning.</li>
+                                <li><strong>AKUT TELEFONKONTAKT med Barnmedicin / Barnakut.</strong> Berätta om de kliniska fynden (gingival hyperplasi + petekier).</li>
+                                <li>Skicka remiss för <strong>akut blodprovstagning</strong> (B-status, TPK, LPK diff).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo58-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: Gingival hyperplasi + Petekier (Misstanke hematologi/Leukemi).
+Status: Spontan gingival blödning och uttalad gingivahyperplasi.
+Patienten trött och blek. Petekier synliga i [slemhinna/hud].
+Åtgärd: INGA orala ingrepp utförda. 
+Akut telefonkontakt med Barnakut/Barnmedicin kl [tid], 
+talat med [namn/funktion].
+Patient remitterad/skickad akut för blodstatus (TPK/LPK).
+Planering: Avvakta tandvårdsbehandling tills medicinsk 
+diagnos klar. Informera föräldrar att åka direkt till akuten.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut undersökning/Kompletterande eller akut undersökning, utförd av tandläkare.
+</td></tr>
+                                <tr><td><strong>301/302</strong></td><td>Sjukdomsbehandling</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo58-kallor" class="content-panel">
+                        <h3>📚 Källor & Evidensunderlag — SC58 Leukemimisstanke</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Primära källor</h5>
+                            <ul>
+ <li><strong>National Library of Medicine:</strong> Pediatric dentistry: a clinical approach (Koch, Poulsen m.fl.). <a href="https://www.ncbi.nlm.nih.gov/nlmcatalog/?term=Pediatric+dentistry+a+clinical+approach" target="_blank">ncbi.nlm.nih.gov</a></li>
+
+                                <li><strong>Internetodontologi:</strong> Orofacial medicin — Leukemi</li>
+                        <li><strong>Svenska Barnläkarföreningen (PHO):</strong> Febril neutropeni (PM 141021). <a href="https://pho.barnlakarforeningen.se/wp-content/uploads/sites/20/2019/03/PM-PHO-Febril-neutropeni-141021.pdf" target="_blank">PDF</a></li>
+<li><strong>Tandvårdens läkemedel:</strong> 2024–2025. <a href="https://kunskapsstyrningvard.se/download/18.51a2292e1900c66f385a1c1f/1719314391519/Tandvardens-Lakemedel-2024-2025.pdf" target="_blank">PDF</a></li>
+
+                                                           </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><div class="right-sidebar">
+            <div class="sidebar-card">
+                <h4 class="sidebar-title">👶 Pedodonti — Snabbval</h4>
+                
+                <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    <button class="sidebar-btn" onclick="selectScenario('pedo39')">🟡 MIH (Scen 39)</button>
+                    <button class="sidebar-btn" onclick="selectScenario('pedo50')">🦷 Karies Mjölktand (50)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo51')">💥 Pulpit Mjölktand (51)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo52')">💎 Pulpit Permanent (52)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo53')">🦠 Abscess Mjölktand (53)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo54')">🏥 Cellulit/Infektion (54)</button>
+                    <button class="sidebar-btn" onclick="selectScenario('pedo55')">🦷 Perikoronit (55)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo56')">🩸 Postex Blödning (56)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo57')">🩸 Spontan Blödning (57)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo58')">🚨 Systemisk Risk (58)</button>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>💊 STRAMA (Antibiotika)</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        Endast indicerat vid:
+                        <br>• Feber / Allmänpåverkan
+                        <br>• Spridning mot öga/hals (Trismus)
+                        <br>Fistel ("finne") kräver EJ antibiotika, extrahera tanden!
+                    </p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>⚠️ NSAID (FASS)</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        Ipren/Ibuprofen <strong>hämmar hemostasen</strong>. 
+                        Vid blödning (post-op), ge ENDAST Paracetamol.
+                    </p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>🚨 Leukemivarning</h4>
+                    <p style="font-size:0.85rem; text-align:left;">Spontan gingival blödning + trötthet + blåmärken (petekier) = <strong>Akut medicinremiss</strong> (B-status, LPK, TPK).</p>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>📋 Kom ihåg</h4>
+                    <p style="font-size: 0.85rem;">Beslutsstöd — ersätter inte kliniskt omdöme. PSL 2010:659.</p>
+                </div>
+            </div>
+        </div>
+
+    </div></div><script>
+    /* === SCENARIO DATA (10 UNIKA SCENARIER) === */
+    const scenarioData = {
+        'pedo39': { img: 'mih.png', fallback: 'https://placehold.co/120x100/fff3e0/e65100?text=MIH', title: 'MIH (Hypomineraliserade molarer)' },
+        'pedo50': { img: 'karies.png', fallback: 'https://placehold.co/120x100/e8eaf6/283593?text=KARIES', title: 'Djup karies mjölktand' },
+        'pedo51': { img: 'pulpit.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=PULPIT', title: 'Akut pulpit i mjölktand' },
+        'pedo52': { img: 'apex.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=APEX', title: 'Pulpit ung permanent tand' },
+        'pedo53': { img: 'abscess.png', fallback: 'https://placehold.co/120x100/ffcdd2/b71c1c?text=ABSCESS', title: 'Abscess utgående från mjölktand' },
+        'pedo54': { img: 'cellulit.png', fallback: 'https://placehold.co/120x100/ffcdd2/b71c1c?text=CELLUL', title: 'Cellulit / Spridd infektion' },
+        'pedo55': { img: 'periko.png', fallback: 'https://placehold.co/120x100/ffcdd2/b71c1c?text=PERIKO', title: 'Akut perikoronit' },
+        'pedo56': { img: 'postex.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=POSTEX', title: 'Postextraktionsblödning' },
+        'pedo57': { img: 'spontanblod.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=BLÖD', title: 'Spontan gingival blödning' },
+        'pedo58': { img: 'leukemi.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=RISK', title: 'Systemisk risk / Leukemi' }
+    };
+
+
+    /* === SELECT SCENARIO === */
+    function selectScenario(id) {
+        document.querySelectorAll('.scenario-trigger-card').forEach(c => c.classList.remove('active'));
+        const trigger = document.getElementById('trigger-' + id);
+        if (trigger) trigger.classList.add('active');
+
+        document.querySelectorAll('.scenario-display-wrapper').forEach(w => w.classList.remove('active'));
+        const display = document.getElementById(id + '-display');
+        if (display) display.classList.add('active');
+
+        const header = document.getElementById('dynamic-header');
+        header.classList.remove('centered');
+        header.classList.add('scenario-mode');
+
+        const data = scenarioData[id];
+        if (data) {
+            document.getElementById('dynamic-header-title').textContent = data.title;
+            const avatar = document.getElementById('story-avatar');
+            avatar.src = data.img;
+            avatar.onerror = function() { this.src = data.fallback; };
+            avatar.classList.add('pop');
+            setTimeout(() => avatar.classList.remove('pop'), 600);
+        }
+
+        const wrapper = document.getElementById(id + '-display');
+        if (wrapper) {
+            wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const firstPanel = wrapper.querySelector('.content-panel');
+            const firstBtn = wrapper.querySelector('.tab-btn');
+            if (firstPanel) firstPanel.classList.add('active');
+            if (firstBtn) firstBtn.classList.add('active');
+        }
+
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    /* === TAB SWITCHING === */
+    function openInnerTab(scenarioId, tabName, btn) {
+        const wrapper = document.getElementById(scenarioId + '-display');
+        if (!wrapper) return;
+
+        wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+        const target = document.getElementById(scenarioId + '-' + tabName);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    /* === COPY TO CLIPBOARD === */
+    function copyText(btn) {
+        const pre = btn.nextElementSibling;
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            const orig = btn.innerText;
+            btn.innerText = '✅ Kopierat!';
+            setTimeout(() => { btn.innerText = orig; }, 1500);
+        });
+    }
+
+    /* === SEARCH === */
+    function searchCards() {
+        const input = document.getElementById('mainSearch').value.toLowerCase();
+        document.querySelectorAll('.scenario-trigger-card').forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(input) ? 'flex' : 'none';
+        });
+    }
+
+    /* === SCROLL ANIMATIONS === */
+    function triggerScrollAnimations() {
+        document.querySelectorAll('.scroll-animate').forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', triggerScrollAnimations);
+</script>
+
+</body>
+</html>

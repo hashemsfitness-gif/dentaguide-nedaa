@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Protetik & Bettfunktion (Scenario 15–21)</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .sources-btn { position: fixed; bottom: 24px; right: 24px; z-index: 1000; background: linear-gradient(135deg, #00695c, #00897b); color: white; border: none; border-radius: 50px; padding: 12px 22px; font-size: 0.95rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(0,105,92,0.4); display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .sources-btn:hover { transform: translateY(-2px); }
+        .sources-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .sources-modal-overlay.active { display: flex; }
+        .sources-modal { background: white; border-radius: 16px; padding: 30px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .sources-modal h2 { color: #00695c; margin-bottom: 15px; }
+        .sources-modal ul { padding-left: 20px; }
+        .sources-modal li { margin-bottom: 10px; line-height: 1.6; }
+        .sources-modal .close-modal { float: right; background: #eee; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: bold; }
+        .correction-badge { display: inline-block; background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; border-radius: 6px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+        .addition-badge { display: inline-block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 6px; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; margin-left: 8px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<button class="back-btn" onclick="history.back()">← TILLBAKA</button>
+
+<div class="container">
+    <div class="hero">
+        <h1>Protetik & Bettfunktion</h1>
+        <p class="hero-subtitle">Kliniskt beslutsstöd — Akuta protetiska komplikationer (Scenario 15–21)</p>
+    </div>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="mainSearch" placeholder="Sök diagnos eller symtom..." onkeyup="searchCards()">
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+
+        <div class="scenario-nav">
+
+            <div class="scenario-trigger-card" id="trigger-sc15" onclick="selectScenario('sc15')">
+                <span class="trigger-tag">SCENARIO 15</span>
+                <div class="trigger-avatar-container">
+                    <img src="provisorium.png" alt="Provisorium" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff3e0/e65100?text=PROV'">
+                </div>
+                <h2 class="trigger-title">"Min tillfälliga krona har trillat loss"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Lossnad temporär ersättning. Risk tandvandring + pulpit.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc16" onclick="selectScenario('sc16')">
+                <span class="trigger-tag red">SCENARIO 16</span>
+                <div class="trigger-avatar-container">
+                    <img src="implantat.png" alt="Implantat" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e3f2fd/1565c0?text=IMPL'">
+                </div>
+                <h2 class="trigger-title">"Min implantattand sitter löst / glappar"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Implantatkomplikationer: lossnad skruv, fraktur, porslinschip.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc17" onclick="selectScenario('sc17')">
+                <span class="trigger-tag red">SCENARIO 17</span>
+                <div class="trigger-avatar-container">
+                    <img src="stodtand.png" alt="Stödtand" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=FRAK'">
+                </div>
+                <h2 class="trigger-title">"Kronan har lossnat och tanden sitter kvar inuti"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Fraktur av stödtand/pelare. Spara eller extrahera?</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc18" onclick="selectScenario('sc18')">
+                <span class="trigger-tag">SCENARIO 18</span>
+                <div class="trigger-avatar-container">
+                    <img src="decubitus.png" alt="Trycksår" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff3e0/e65100?text=SÅR'">
+                </div>
+                <h2 class="trigger-title">"Protesen skaver och det gör ont när jag äter"</h2>
+                <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Trycksår/skavsår (decubitus). Slipning, rebasering.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc19" onclick="selectScenario('sc19')">
+                <span class="trigger-tag">SCENARIO 19</span>
+                <div class="trigger-avatar-container">
+                    <img src="protesfrak.png" alt="Protesfraktur" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e3f2fd/1565c0?text=FRAK'">
+                </div>
+                <h2 class="trigger-title">"Min protes har gått sönder"</h2>
+                <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Fraktur avtagbar protes. Bas, klammer, lossnad tand.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc20" onclick="selectScenario('sc20')">
+                <span class="trigger-tag">SCENARIO 20</span>
+                <div class="trigger-avatar-container">
+                    <img src="chipoff.png" alt="Chip-off" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fce4ec/880e4f?text=CHIP'">
+                </div>
+                <h2 class="trigger-title">"En bit av porslinet har lossnat"</h2>
+                <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Porslinsfraktur (chip-off). Puts, reparation, omgörning.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-sc21" onclick="selectScenario('sc21')">
+                <span class="trigger-tag red">SCENARIO 21</span>
+                <div class="trigger-avatar-container">
+                    <img src="lossnad_krona.png" alt="Lossnad krona" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=LOSS'">
+                </div>
+                <h2 class="trigger-title">"Min krona har trillat loss"</h2>
+                <div style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">Lossnad krona/bro. Recementering + cementval per material.</div>
+            </div>
+
+        </div>
+
+        <div class="main-content-panel">
+
+            <div id="dynamic-header" class="header-container centered">
+                <div class="avatar-wrapper">
+                    <img id="story-avatar" class="character-img" src="start.png" alt="Start" onerror="this.src='https://placehold.co/300x300/fff3e0/e65100?text=PROT'">
+                </div>
+                <div class="header-text-block">
+                    <h2 id="dynamic-header-title">Protetik & Bettfunktion</h2>
+                    <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario i menyn till vänster för att starta guiden.</p>
+                </div>
+            </div>
+
+            <div id="sc15-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc15', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc15', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc15', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc15', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc15', 'material', this)">🦷 Materialval</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc15', 'journal', this)">📝 Journal</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc15-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PROT-15-PROV</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Min tillfälliga krona har trillat loss"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> Z46.3 (Justering tandprotes), K08.5 (Ofullständig tandfunktion)</div>
+                                <div class="symptom-item">⚠️ <strong>Risk:</strong> Tandvandring (elongation/tippning) inom dagar → permanent krona passar ej</div>
+                                <div class="symptom-item">⚠️ <strong>Risk:</strong> Pulpit p.g.a. läckage vid öppen dentinyta</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Används när en patient söker akut för att ett provisorium lossnat eller gått sönder innan den permanenta konstruktionen har cementerats. Syftet är att skydda den preparerade tanden och säkra utrymmet för den kommande kronan.</p>
+                        </div>
+                    </div>
+                    <div id="sc15-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Obligatoriska frågor</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Tidsperspektiv (Avgörande för passform)</h5>
+                            <ul>
+                                <li><strong>❓ När lossnade den?</strong><br><em>Nyligen (timmar/1 dygn): God prognos för recementering.<br>Länge sedan (>3–4 dagar): Stor risk för tandvandring/supraeruption. Den permanenta kronan kanske inte passar.</em></li>
+                                <li><strong>❓ Har du kvar provisoriet?</strong><br><em>Ja: Be patienten ta med det (helst inte i servett, risk att kasta).<br>Nej/Trasigt: Nytt måste framställas.</em></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Symtom</h5>
+                            <ul>
+                                <li><strong>❓ Ilar det i tanden?</strong><br><em>Öppen dentinyta/risk för pulpit</em></li>
+                                <li><strong>❓ Kan du bita ihop som vanligt?</strong><br><em>Om nej, kan tanden ha elongerat</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc15-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>1. Inspektion av tand (preparerade)</h5>
+                            <ul>
+                                <li>🔍 <strong>Status:</strong> Finns karies? Är preparationen hel eller har en flisa gått ur (fraktur)?</li>
+                                <li>🔍 <strong>Rengöring:</strong> Sitter gammalt cement kvar? Måste avlägsnas försiktigt (ultraljud/sond) utan att skada preparationen.</li>
+                                <li>🔍 <strong>Gingiva:</strong> Är tandköttet svullet/hyperplastiskt och täcker preparationsgränsen? (Kan kräva gingivektomi/elektrotom).</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Inspektion av provisorium</h5>
+                            <ul>
+                                <li>🔍 <strong>Passform:</strong> Sätt tillbaka provisoriet. Glipar det? Är det för högt?</li>
+                                <li>🔍 <strong>Retention:</strong> Är det helt eller spräckt?</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>3. Ocklusionskontroll</h5>
+                            <p>✅ <strong>Höjd:</strong> Om provisoriet känns "högt" efter återplacering kan tanden ha elongerat eller cementrester finnas kvar.</p>
+                        </div>
+                    </div>
+                    <div id="sc15-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">ALTERNATIV A: Recementering (Om provisoriet passar)</div>
+                            <p><strong>Indikation:</strong> Provisoriet är helt och tanden har ej vandrat.</p>
+                            <ol>
+                                <li><strong>Rengöring:</strong> Avlägsna gamla cementrester från både tand och provisorium. Tvätta tanden med klorhexidin/sprit.</li>
+                                <li><strong>Inprovning:</strong> Kontrollera att det går ner helt. Justera approximala kontakter om det är trångt.</li>
+                                <li><strong>Val av cement:</strong>
+                                    <ul>
+                                        <li><strong>Standard:</strong> Zinkoxid-eugenolcement (t.ex. TempBond).</li>
+                                        <li><strong>Om permanent krona ska bondas (helkeram):</strong> Använd Eugenolfritt cement (t.ex. TempBond NE), då eugenol kan hämma härdningen av kompositcementet.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Cementering:</strong> Fyll kronan, tryck på plats, låt patienten bita på bomullsrulle. Avlägsna överskott noga (särskilt approximalt).</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALTERNATIV B: Nyframställning (Klinikframställd)</div>
+                            <p><strong>Indikation:</strong> Provisoriet är borta, trasigt, eller passar inte längre.</p>
+                            <ol>
+                                <li><strong>Avtryck:</strong> Om "före-avtryck" (putty/alginat) finns sparat, använd detta. Annars använd prefabricerad kronform (t.ex. Directa/Frasaco) eller bygg upp på fri hand.</li>
+                                <li><strong>Material:</strong> Bis-akrylat (t.ex. Luxatemp/Protemp).</li>
+                                <li><strong>Anpassning:</strong> Fyll formen, placera på tanden (pensla vaselin på tanden innan). Låt stelna, trimma kanter. Polera för att minska plackretention.</li>
+                                <li><strong>Cementering:</strong> Enligt Alternativ A.</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALTERNATIV C: Långtidsprovisorium (Tandtekniker)</div>
+                            <p><strong>Indikation:</strong> Vid större broar eller om behandlingstiden förlängs avsevärt (t.ex. parodontal sanering/läkning). Kräver avtryck och återbesök.</p>
+                        </div>
+                    </div>
+                    <div id="sc15-material" class="content-panel">
+                        <h3>🦷 Materialval & Cementering (Beslutsstöd)</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ Valet styrs av den planerade permanenta terapin. Kontrollera journalen: Ska den definitiva kronan/bron bondas eller cementeras konventionellt?</strong>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">KATEGORI A: Permanent ersättning ska BONDAS (Helkeram, Skalfasader, E-max)</div>
+                            <div class="warning-box" style="margin: 10px 0;">
+                                <strong>🚨 Eugenol (nejlikolja) hämmar härdningen av det permanenta kompositcementet. Eugenol får EJ användas.</strong>
+                            </div>
+                            <h5>Material för ny temporär ersättning:</h5>
+                            <ul>
+                                <li><strong>Bis-akrylatkomposit:</strong> (T.ex. Luxatemp, Protemp). Förstahandsval.</li>
+                                <li><strong>Celluloidkronor:</strong> Fylls med bis-akrylat. Lämplig för enstaka tänder.</li>
+                                <li><strong>Clip:</strong> Ljushärdande enkomponentsmaterial. Främst för fasader.</li>
+                            </ul>
+                            <h5>Temporärt cement:</h5>
+                            <ul>
+                                <li>✅ <strong>Eugenolfria cement:</strong> T.ex. TempBond NE, TempBond Clear eller Temposil.</li>
+                                <li>🚨 <strong>OBS – Modifier:</strong> Om du använder TempBond NE, får du INTE blanda i "Modifier" — den innehåller eugenol även om bascementet är eugenolfritt.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">KATEGORI B: Permanent ersättning ska CEMENTERAS (MK, Guld, Zirkonia*)</div>
+                            <p>Eugenol tillåts — kan ha lugnande effekt på pulpan. *Zirkonia: om bondning planeras, gäller Kategori A.</p>
+                            <h5>Material för ny temporär ersättning:</h5>
+                            <ul>
+                                <li><strong>Bis-akrylat:</strong> (T.ex. Luxatemp). Standardval.</li>
+                                <li><strong>Directakronor (Polykarbonat):</strong> Prefabricerade plastkronor.</li>
+                                <li><strong>Aluminiumhättor:</strong> Används posteriort vid dålig retention.</li>
+                            </ul>
+                            <h5>Temporärt cement:</h5>
+                            <ul>
+                                <li>✅ <strong>Zinkoxid-eugenol (ZOE):</strong> T.ex. TempBond (original).</li>
+                                <li>✅ <strong>Nobetec:</strong> Högvisköst eugenolcement. Vid dålig retention.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">KATEGORI C: Tanden saknar pelare (Rotfylld tand)</div>
+                            <ul>
+                                <li>Kanalen fylls med Calasept (kalciumhydroxid).</li>
+                                <li>Kavum förseglas med IRM eller Coltosol.</li>
+                                <li>Vid behov av retention: Använd temporärt stift (t.ex. Para-Post aluminiumstift) som bakas in i bis-akrylat.</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Sammanfattning — Materialval</h5>
+                            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                                <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:8px;">Permanent Ersättning</th><th style="padding:8px;">Provisorium</th><th style="padding:8px;">Temporärt Cement</th><th style="padding:8px;">Notering</th></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Helkeram / Fasad (Bondas)</td><td style="padding:8px;">Bis-akrylat eller Clip</td><td style="padding:8px;">TempBond NE (utan modifier), Temposil</td><td style="padding:8px; color:#b91c1c; font-weight:700;">ALDRIG EUGENOL!</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">MK-krona / Guld (Cementeras)</td><td style="padding:8px;">Bis-akrylat, Directakrona, Al-hätta</td><td style="padding:8px;">Nobetec, TempBond</td><td style="padding:8px;">Nobetec bra vid dålig retention</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Zirkonia (Bondas)</td><td style="padding:8px;">Bis-akrylat</td><td style="padding:8px;">TempBond NE</td><td style="padding:8px;">Undvik eugenol</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px;">Onlay / Inlay</td><td style="padding:8px;">Clip eller Fosfatcement</td><td style="padding:8px;">Clip (behöver ej cement)</td><td style="padding:8px;">Clip elastiskt, bra små kaviteter</td></tr>
+                                <tr><td style="padding:8px;">Långtidsprovisorium</td><td style="padding:8px;">Labframställd akrylat</td><td style="padding:8px;">TempBond NE eller GIC</td><td style="padding:8px;">Ska sitta >6 månader</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sc15-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Orsak: Lossnat provisorium regio [XX]. 
+Anamnes: Lossnade igår i samband med måltid. Inga isningar. 
+Status: Prep ua, inga frakturer. Provisorium helt. 
+Åtgärd: Rengöring av prep och provisorium. Inprovning ok. 
+Recementering med TempBond NE (eugenolfritt). 
+Ocklusionskontroll ua. 
+Info: Pat uppmanad att vara försiktig med seg/hård mat. 
+Ordinarie tid för utlämning [Datum].</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width:100%; font-size:0.85rem; margin-top:8px;">
+                                <tr><td style="padding:4px 8px;"><strong>103</strong></td><td>Kompletterande undersökning/akutbesök</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>809</strong></td><td>Långtidstemporär laboratorieframställd krona (om >6 mån)</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>811</strong></td><td>Cementering av lossnad protetisk konstruktion, per stöd</td></tr>
+                            </table>
+                            <p style="font-size:0.8rem; margin-top:10px; color: var(--text-secondary);">OBS: Åtgärder för temporära ersättningar under pågående protetisk behandling ingår ofta i arvodet för den permanenta konstruktionen (800-koder) och debiteras ej separat.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc16-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc16', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc16', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc16', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc16', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc16', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc16', 'flaggor', this)">🚨 Röda Flaggor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc16-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PROT-16-IMPKOMP</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Min implantattand sitter löst / glappar"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> T85.6 (Mekanisk komplikation av tandimplantat)</div>
+                                <div class="symptom-item">⚠️ <strong>Risk:</strong> Aspiration av komponenter (kronan/skruven)</div>
+                                <div class="symptom-item">⚠️ <strong>Risk:</strong> Skruvfraktur eller implantatfraktur vid fortsatt belastning</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Används när en patient med implantat söker för mobilitet eller fraktur i konstruktionen. Syftet är att återställa stabilitet och funktion samt förhindra skada på implantatet och de inre gängorna.</p>
+                            <p style="margin-top:10px;"><strong>Viktigt att skilja:</strong> Protetiska problem (lossnad skruv) från biologiska problem (periimplantit) eller totalförlust (lossnad fixtur).</p>
+                        </div>
+                    </div>
+                    <div id="sc16-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Obligatoriska frågor</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Symtomkaraktär</h5>
+                            <ul>
+                                <li><strong>❓ Rör sig tanden eller har den trillat ut?</strong></li>
+                                <li><strong>❓ Gör det ont?</strong><br><em>Smärta vid belastning kan tyda på periimplantit eller förlust av osseointegrering.<br>Ingen smärta talar starkt för lossnad skruv (teknisk komplikation).</em></li>
+                                <li><strong>❓ När installerades implantatet?</strong><br><em>Lossnade skruvar vanligare det första året ("settling in").</em></li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ Implantatdata (Kritisk info)</strong>
+                            <p style="margin-top:5px;"><strong>❓ Vet du vilket implantatsystem det är?</strong> (Straumann, Nobel, Astra, etc.). Utan rätt skruvmejsel kan du inte hjälpa patienten. Kontrollera journalen/daganteckningar noga.</p>
+                        </div>
+                    </div>
+                    <div id="sc16-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>1. Inspektion & Palpation</h5>
+                            <ul>
+                                <li>🔍 <strong>Mobilitet:</strong> Vicka på konstruktionen.
+                                    <ul>
+                                        <li>Glappar endast kronan? → Sannolikt lossnad skruv eller cementering.</li>
+                                        <li><strong>Rör sig hela implantatet?</strong> → Varning! Fixturförlust (lossnad osseointegrering). Implantatet är förlorat.</li>
+                                    </ul>
+                                </li>
+                                <li>🔍 <strong>Rotation:</strong> Kan kronan roteras? (Tyder på lossnad skruv/distans).</li>
+                                <li>🔍 <strong>Perkussion:</strong>
+                                    <ul>
+                                        <li>Stumt/hårt ljud: Implantatet sitter fast (bra).</li>
+                                        <li>Dovt ljud/smärta: Implantatet kan vara löst eller skadat.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Röntgen (Obligatoriskt)</h5>
+                            <ul>
+                                <li>📸 <strong>Spalt:</strong> Syns en glipa mellan implantat och distans? Bekräftar att skruven gängat upp sig.</li>
+                                <li>📸 <strong>Ben:</strong> Är bennivån stabil? (Uteslut periimplantit).</li>
+                                <li>📸 <strong>Fraktur:</strong> Ser du en frakturlinje på skruven eller implantatkroppen?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc16-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">ALT A: Lossnad Skruv (Screw Loosening)</div>
+                            <p><strong>Diagnos:</strong> Kronan rör sig, ingen smärta, implantatet sitter fast. Spalt syns på röntgen.</p>
+                            <ol>
+                                <li><strong>Avlägsna fyllning:</strong> Borra försiktigt upp kompositen som täcker skruvhålet (access hole).</li>
+                                <li><strong>Kontrollera skruven:</strong> Om hel: dra åt. Om deformerad/sträckt: byt till ny originalskruv.</li>
+                                <li><strong>Momentdragning (Torque):</strong> Dra alltid åt med <strong>just detta systems tillverkarspecifikation</strong> — kontrollera IFU/journal. Moment varierar mellan system (Astra EV 25 Ncm, Nobel ofta 35 Ncm). Generella spann 15–35 Ncm men <strong>ALDRIG utan verifiering mot IFU</strong>. <span class="correction-badge">JUSTERAT — Generellt spann kan vara vilseledande</span></li>
+                                <li><strong>Försegling:</strong> Teflontejp/bomullspellet över skruvhuvudet → komposit. Putsa och kontrollera ocklusionen.</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALT B: Lossnad Cementerad Krona</div>
+                            <p><strong>Diagnos:</strong> Kronan lossnar från distansen, distansen sitter kvar på implantatet.</p>
+                            <ol>
+                                <li>Rengöring: Avlägsna gammalt cement från krona och distans.</li>
+                                <li>Kontroll: Sitter distansen fast? (Om distansskruven lös → dra åt först).</li>
+                                <li>Recementering: Var extremt noga med att ta bort cementöverskott subgingivalt (undvik periimplantit).</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALT C: Frakturerad Skruv</div>
+                            <p><strong>Diagnos:</strong> Kronan har trillat av eller är mycket lös. Skruven har gått av inuti implantatet.</p>
+                            <ol>
+                                <li>Försök rotera ut den kvarvarande skruvbiten med sondspets eller ultraljud (moturs).</li>
+                                <li><strong>Varning:</strong> Borra inte ner i skruven om du riskerar att skada implantatets inre gängor — då blir implantatet obrukbart.</li>
+                                <li>Om fragmentet sitter hårt: remittera till specialist med skruvutdragningskit.</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALT D: Porslinsfraktur (Chip-off)</div>
+                            <ul>
+                                <li><strong>Liten fraktur:</strong> Putsa vasst/rått porslin. Polera.</li>
+                                <li><strong>Större fraktur:</strong> Reparera med komposit (sandblästra, silanisera, bonda).</li>
+                                <li><strong>Omfattande:</strong> Kronan måste göras om (kräver avtryck).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc16-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: T85.6 Lossnad implantatskruv [Tandposition]. 
+Anamnes: Söker för att implantatkronan känns lös/glappar sedan [Tid]. 
+Ingen smärta. 
+Status: Kronan [nr] rörlig, implantatfixtur stabil (stumt ljud, 
+ingen perk-ömhet). Rtg visar spalt mellan fixtur och distans. 
+Inga tecken på fraktur. 
+Åtgärd: Avlägsnat fyllning i skruvhål. Skruv hel men lös. 
+Dragit åt skruv med moment [XX] Ncm. 
+Återfyllt med teflon och komposit. 
+Ocklusionsjustering (lättat i artikulation). 
+Info: Om det lossnar igen bör skruven bytas.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width:100%; font-size:0.85rem; margin-top:8px;">
+                                <tr><td style="padding:4px 8px;"><strong>103</strong></td><td>Akut undersökning</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>897</strong></td><td>Åtgärdande av tekniska implantatkomplikationer</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>881</strong></td><td>Reparation av fast implantatstödd konstruktion, mindre</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandling (ocklusionsjustering/puts)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sc16-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Implantatmobilitet</strong>
+                            <p style="margin-top:10px;">Om hela implantatet rör sig (inte bara kronan) = förlust av implantat (failure). Det går inte att skruva fast. Implantatet måste explanteras.</p>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Aspirationsrisk</strong>
+                            <p style="margin-top:10px;">Implantatkomponenter är små och hala. Använd alltid svalgskydd eller säkra verktyg/kronor med tandtråd när du arbetar i munnen.</p>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Smärta vid åtdragning</strong>
+                            <p style="margin-top:10px;">Om det gör ont när du drar åt skruven kan det finnas mjukvävnad i kläm eller en spricka i implantatet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc17-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc17', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc17', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc17', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc17', 'beslut', this)">📋 Spara/Extrahera?</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc17', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc17', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc17', 'flaggor', this)">🚨 Röda Flaggor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc17-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PROT-17-STODFRAK</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Kronan har lossnat och tanden sitter kvar inuti"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> S02.5 (Kron-rotfraktur), K08.5 (Ofullständig tandfunktion)</div>
+                                <div class="symptom-item">⚠️ <strong>Risk:</strong> Infektion i roten, aspiration av lösa delar</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Används när en permanent fastsittande konstruktion lossnar p.g.a. material- eller tandfraktur. Kronan/bron har inte bara lossnat i cementet — en del av tanden (klinisk krona/pelare) sitter kvar inuti den lossnade ersättningen. Kvar i munnen finns ofta en rotrest i nivå med eller under tandköttskanten.</p>
+                        </div>
+                    </div>
+                    <div id="sc17-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Differentierande frågor</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Symtom</h5>
+                            <ul>
+                                <li><strong>❓ Har du haft ont i tanden innan den lossnade?</strong><br><em>Ja: Kan tyda på vertikal rotfraktur, abscess eller karies som försvagat tanden.<br>Nej: Talar mer för utmattningsbrott i materialet eller stiftet.</em></li>
+                                <li><strong>❓ Är tanden rotfylld?</strong><br><em>Nästan alltid ja vid denna typ av fraktur.</em></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Konstruktionens ålder</h5>
+                            <ul>
+                                <li><strong>❓ Hur gammal är kronan?</strong><br><em>Äldre konstruktioner kan ha sekundärkaries som orsakat frakturen.</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc17-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>1. Inspektion av den lossnade delen</h5>
+                            <p>🔍 <strong>Innehåll — Vad finns inuti kronan?</strong></p>
+                            <ul>
+                                <li><strong>Bara cement:</strong> Se "Lossnad krona" (Scenario 21).</li>
+                                <li><strong>Tandsubstans/Fyllning:</strong> Fraktur av stödtand.</li>
+                                <li><strong>Metallstift/Pelare:</strong> Fraktur av rotstift eller lossnad pelare.</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Inspektion av roten (Intraoralt)</h5>
+                            <ul>
+                                <li>🔍 <strong>Frakturnivå:</strong> Ligger brottsytan supragingivalt (ovan tandkött) eller subgingivalt?</li>
+                                <li>🔍 <strong>Karies:</strong> Finns det mjukt dentin kvar på rotytan?</li>
+                                <li>🔍 <strong>Ferrule (Omkramning):</strong> Finns det minst 1,5–2 mm frisk tandsubstans kvar vertikalt runt omkretsen? <strong>Avgörande för prognosen.</strong></li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>3. Sondering</h5>
+                            <p>✅ <strong>Fickdjup:</strong> Sondera runt hela roten. En djup, smal ficka kan indikera en <strong>vertikal rotfraktur</strong> (prognoslös).</p>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>4. Röntgen (Periapikal)</h5>
+                            <ul>
+                                <li>📸 <strong>Rotfyllningskvalitet:</strong> Är den tät? (Krävs för ny stiftpelare).</li>
+                                <li>📸 <strong>Apikal status:</strong> Finns tecken på infektion?</li>
+                                <li>📸 <strong>Benstöd:</strong> Är det värt att spara roten?</li>
+                                <li>📸 <strong>Stift:</strong> Sitter ett avbrutet stift kvar i kanalen?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="sc17-beslut" class="content-panel">
+                        <h3>📋 Beslutsstöd: Spara eller Extrahera?</h3>
+                        <div class="info-card scroll-animate">
+                            <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+                                <tr style="border-bottom:2px solid rgba(196,127,100,0.3);"><th style="text-align:left; padding:10px;">Kriterium</th><th style="padding:10px; color:#059669;">SPARA ROTEN (Ny pelare + Krona)</th><th style="padding:10px; color:#dc2626;">EXTRAHERA (Tanden förlorad)</th></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">Frakturnivå</td><td style="padding:8px;">Supragingivalt eller grunt subgingivalt (möjliggör friläggning).</td><td style="padding:8px;">Djupt subgingivalt (når ej att preparera).</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">Ferrule</td><td style="padding:8px;">> 1,5–2 mm tandsubstans kan skapas.</td><td style="padding:8px;">Ingen ferrule möjlig (risk för ny fraktur är 100%).</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">Rotfyllning</td><td style="padding:8px;">Tät, 4 mm guttaperka apikalt kan sparas.</td><td style="padding:8px;">Otät, kort eller oblitererad (går ej att revidera).</td></tr>
+                                <tr style="border-bottom:1px solid #eee;"><td style="padding:8px; font-weight:700;">Parodontium</td><td style="padding:8px;">Stabilt benstöd.</td><td style="padding:8px;">Vertikal benficka (vertikal rotfraktur) eller parodontit.</td></tr>
+                                <tr><td style="padding:8px; font-weight:700;">Strategiskt värde</td><td style="padding:8px;">Viktig stödtand för bro/protes.</td><td style="padding:8px;">Ingen strategisk betydelse/kan ersättas av implantat.</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sc17-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">ALT A: Roten bedöms som sparbar (Akut åtgärd)</div>
+                            <p><strong>Mål:</strong> Skydda roten från infektion och täcka kanalöppningen.</p>
+                            <ol>
+                                <li><strong>Rengöring:</strong> Avlägsna mjuk karies och gamla cementrester.</li>
+                                <li><strong>Försegling:</strong> Om kanalen är öppen, applicera täckförband (t.ex. IRM eller Cavit).</li>
+                                <li><strong>Temporär lösning:</strong>
+                                    <ul>
+                                        <li><strong>Enstaka krona:</strong> Ofta svårt att fästa provisorium på en rotrest. Lämna hellre roten täckt med fyllning.</li>
+                                        <li><strong>Bro:</strong> Om intakt kan den ibland fästas provisoriskt vid övriga stödtänder.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Planering:</strong> Tid för pelarprep och avtryck (eller remiss för rotfyllningsrevision).</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALT B: Tanden måste extraheras (Akut åtgärd)</div>
+                            <p><strong>Mål:</strong> Avlägsna infektionshärd och smärta.</p>
+                            <ol>
+                                <li><strong>Extraktion:</strong> Avlägsna roten (ofta lambå eller separation nödvändig — inget grepp för tång).</li>
+                                <li><strong>Temporär ersättning:</strong>
+                                    <ul>
+                                        <li>Om fronttand: Etsbro (komposit) eller skedprotes (avtagbar) akut.</li>
+                                        <li><strong>Spara den gamla kronan!</strong> Den kan ibland användas som "pontic" i temporär etsbro.</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">ALT C: Reparation av befintlig bro (Temporärt)</div>
+                            <p><strong>Indikation:</strong> Stödtand i större bro frakturerat men bron måste sitta kvar.</p>
+                            <ol>
+                                <li>Ta bort frakturerade fragment ur kronan och från roten.</li>
+                                <li>Bygg upp en pelare direkt i munnen med komposit (ev. med prefabricerat stift).</li>
+                                <li>Cementera tillbaka den gamla bron provisoriskt.</li>
+                            </ol>
+                            <p><em>OBS: Nödlösning med osäker prognos, ofta för att köpa tid för terapiplanering.</em></p>
+                        </div>
+                    </div>
+                    <div id="sc17-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: S02.5 Kronrotfraktur tand [XX]. (Eller K08.5). 
+Anamnes: Kronan lossnade i samband med tuggning. Ingen smärta. 
+Status: Kronan [nr] lossnat. I kronan sitter gjuten pelare och 
+tandsubstans. Roten [nr] sitter kvar, fraktur i nivå med gingivan. 
+Ingen karies. Sondering ua, ingen vertikal fraktur misstänks. 
+Rtg visar god rotfyllning apikalt. 
+Bedömning: Tanden bedöms möjlig att spara med ny pelare och krona, 
+men kräver gingivektomi/kronförlängning för ferrule. 
+Åtgärd: Rensning av kanalöppning. Täckförband IRM. 
+Info om kostnad och behandlingsgång. 
+Planering: Tid för pelarprep [Datum].</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV)</div>
+                            <table style="width:100%; font-size:0.85rem; margin-top:8px;">
+                                <tr><td style="padding:4px 8px;"><strong>103</strong></td><td>Akut undersökning</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>301/302</strong></td><td>Sjukdomsbehandling (täckförband, enklare uppbyggnad)</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>812</strong></td><td>Reparation av krona/bro (om provisorisk recementering)</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>404</strong></td><td>Incision/Gingivektomi (vid friläggning av rot)</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>701/702</strong></td><td>Extraktion (om roten inte går att rädda)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sc17-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Vertikal rotfraktur</strong>
+                            <p style="margin-top:10px;">Smal, djup ficka + diffus smärta + radiolucens längs rotytan (J-formad). Tanden måste extraheras.</p>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Perforering</strong>
+                            <p style="margin-top:10px;">Om stiftpreparationen går snett ("via falsa"). Blödning från kanalen. Prognos beror på nivå, men ofta dålig.</p>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Sinuskommunikation</strong>
+                            <p style="margin-top:10px;">Vid extraktion av premolarer/molarer i överkäken, kontrollera att inte sinus öppnats (Valsalva-test).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc18-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc18', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc18', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc18', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc18', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc18', 'rebasering', this)">🦷 Rebasering</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc18', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc18', 'flaggor', this)">🚨 Röda Flaggor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc18-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate"><div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PROT-18-DECUB</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Protesen skaver och det gör ont när jag äter"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K12.0 (Recidiverande sår i munhålan), Z46.3 (Justering tandprotes)</div>
+                                <div class="symptom-item">⚠️ <strong>Orsak:</strong> Överextension av proteskanter, ojämnheter i protesbasen, instabilitet (vickning) eller traumatiserande ocklusion</div>
+                        </div></div>
+                        <div class="info-card scroll-animate"><h5>2. Klinisk indikation</h5><p>Används när patient med avtagbar protes söker för smärta och sår i slemhinnan. Syftet är att avlägsna irritamentet för att såret ska läka och förhindra sekundärinfektion.</p></div>
+
+                    </div>
+                    <div id="sc18-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Obligatoriska frågor</h3>
+                        <div class="info-card scroll-animate"><h5>Protesens historik</h5><ul>
+                                <li><strong>❓ Är protesen ny eller gammal?</strong><br><em>Ny: Behöver ofta justeras ("inslipning").<br>Gammal: Kan ha blivit instabil p.g.a. käkbensresorption (kräver ev. rebasering).</em></li>
+                                <li><strong>❓ När gör det ont?</strong><br><em>Hela tiden: Tyder på överextension (kanten skär in) eller konstant tryck.<br>Vid tuggning: Tyder på instabilitet eller ocklusionsfel (protesen tippar/glider).</em></li>
+                        </ul></div>
+                        <div class="warning-box scroll-animate"><strong>⚠️ Har du haft såret länge?</strong><p style="margin-top:5px;">Viktigt för att utesluta malignitet — sår ska läka på 2 veckor efter åtgärd.</p></div>
+
+                    </div>
+                    <div id="sc18-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate"><h5>1. Inspektion av slemhinna (utan protes)</h5><ul>
+                                <li>🔍 <strong>Lokalisation:</strong> Identifiera såret. Vanligt i omslagsveck (vestibulum), vid frenula, eller på cristan.</li>
+                                <li>🔍 <strong>Utseende:</strong> Traumatiskt sår (decubitus) ofta täckt av fibrinpålagring (gult/vitt) med omgivande rodnad och svullnad.</li>
+                                <li>🔍 <strong>Palpation:</strong> Känn på såret. Är det mjukt? Om det är <strong>hårt/indurerat</strong> → Varning för malignitet.</li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>2. Inspektion av protes</h5><ul>
+                                <li>🔍 <strong>Kanterna:</strong> Är de vassa eller för långa?</li>
+                                <li>🔍 <strong>Insidan:</strong> Finns pärlor/ojämnheter i akrylatet?</li>
+                                <li>🔍 <strong>Stabilitet:</strong> Vickar protesen när du trycker på den i munnen?</li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>3. Identifiering av tryckställe (Markering)</h5><p>✅ <strong>Metod:</strong> Applicera färg/pasta (t.ex. zinkpasta, tryckindikatorpasta eller märkpenna) direkt på såret i munnen. Sätt in protesen försiktigt och tryck till. Ta ut protesen. Färgen har nu fastnat på protesens insida och visar exakt var du ska slipa.</p></div>
+
+                    </div>
+                    <div id="sc18-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsstrategi</h3>
+                        <div class="treatment-box scroll-animate"><div class="treatment-title">Steg 1: Justering av protes (Slipning)</div><ul>
+                                <li><strong>Slipning:</strong> Använd fräs (akrylborr) för att slipa ur protesen vid markeringen.</li>
+                                <li><strong>Vid kantskav:</strong> Korta av kanten eller gör plats för frenulum.</li>
+                                <li><strong>Vid skav på cristan:</strong> Slipa ur insidan (lätta).</li>
+                                <li><strong>Polering:</strong> Mycket viktigt att polera ytan slät efter slipning så att den inte skaver igen.</li>
+                        </ul></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">Steg 2: Ocklusionskontroll</div><p>Om protesen "rider" eller tippar vid bitning uppstår sår. Kontrollera med ocklusionsfolie. Slipa in ocklusionen så att belastningen fördelas jämnt (gruppkontakt, ingen hörntandslyftning på helproteser).</p></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">Steg 3: Mjukbasning (Vid behov)</div><p>Om protesen är mycket instabil eller slemhinnan kraftigt inflammerad: Gör en temporär mjukbasning (t.ex. Visco-gel eller Coe-Soft). Fungerar som en "kudde" och låter vävnaden läka.</p><p><em>OBS: Temporär lösning. Permanent rebasering görs när såret läkt.</em></p></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">Steg 4: Farmakologisk stödbehandling</div><ul>
+                                <li><strong>Klorhexidin:</strong> Om sekundärinfekterat eller dålig hygien. Sköljning eller gel (0,1–0,2%) på protesen.</li>
+                                <li><strong>Benzydamin (Andolex):</strong> Smärtlindring vid uttalade besvär (antiinflammatorisk munsköljning).</li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>Råd till patienten</h5><ul>
+                                <li><strong>Protesvila:</strong> Ta ut protesen så mycket som möjligt (gärna nattetid) tills såret läkt.</li>
+                                <li><strong>Hygien:</strong> Noga rengöring av både protes och slemhinna för att undvika svamp/infektion.</li>
+                                <li><strong>Mat:</strong> Ät mjuk mat i några dagar för att minska belastningen.</li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc18-rebasering" class="content-panel">
+                        <h3>🦷 Material & Rebasering</h3>
+                        <div class="treatment-box scroll-animate"><div class="treatment-title">1. Temporär Mjukbasning (Tissue Conditioner)</div><p><strong>Material:</strong> Mjukbasningsmaterial (t.ex. Ufi Gel, Visco-gel, Coe-Soft) + adhesiv.</p>
+                            <h5>Arbetsgång (Klinisk):</h5><ol>
+                                <li><strong>Förberedelse:</strong> Rugga upp insidan av protesbasen med fräs för fäste.</li>
+                                <li><strong>Rengöring & Adhesiv:</strong> Tvätta ytan och applicera tillhörande adhesiv.</li>
+                                <li><strong>Applicering:</strong> Applicera mjukbasningsmaterialet i protesen och placera i munnen.</li>
+                                <li><strong>Formning (Funktionell):</strong> Låt patienten bita ihop (i rätt ocklusion) ca 1 minut. Be patienten tugga, göra sidorörelser, aktivera läppar/tunga i 5 minuter.</li>
+                                <li><strong>Härdning:</strong> Ta ut protesen — vänta ca 10 minuter.</li>
+                                <li><strong>Justering:</strong> Skär bort överskott med skalpell (inte fräs — materialet är segt). Kontrollera att protesen inte vickar.</li>
+                        </ol></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">2. Permanent Rebasering (Hård)</div><p>Utförs när protesens passform är dålig p.g.a. käkbensresorption men tänder/ocklusion fortfarande bra. Slemhinnan måste vara kliniskt frisk.</p>
+                            <h5>Arbetsgång:</h5><ol>
+                                <li><strong>Ocklusionskontroll:</strong> Kontrollera och justera ocklusion/artikulation INNAN avtryck. Bettet får inte ändras av rebaseringen.</li>
+                                <li><strong>Preparation av protes:</strong> Slipa bort underskär i sadlarna. Korta av överextenderade kanter. Om kanterna för korta: trimma med Kerr-massa. Rugga upp hela slemhinnesidan med fräs.</li>
+                                <li><strong>Avtryck:</strong> Applicera adhesiv (för silikon) på insidan. Fyll med Lightbody A-silikon. Protesen = individuell avtryckssked.
+                                    <ul>
+                                        <li><strong>Helprotes ÖK:</strong> Patienten biter ihop under avtryckstagningen (stängd mun) medan läppar/kinder aktiveras.</li>
+                                        <li><strong>Helprotes UK:</strong> Tandläkaren håller protesen på plats medan patienten rör tunga/läppar.</li>
+                                        <li><strong>Partialprotes:</strong> Tandläkaren håller protesen för att säkerställa att ocklusala stöd och klamrar ligger rätt.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Lab:</strong> Skicka till tandtekniker för permanent rebasering.</li>
+                        </ol></div>
+
+                    </div>
+                    <div id="sc18-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate"><button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K12.0 Traumatiskt sår (Decubitus) p.g.a. protes. 
+Anamnes: Söker för smärta i omslagsvecket regio [XX]. 
+Smärtar vid tuggning. Haft besvär i 3 dagar. 
+Status:
+- Slemhinna: Fibrintäckt sår ca 3x3 mm i omslagsvecket regio [XX]. 
+  Omgivande rodnad. Mjukt vid palpation.
+- Protes: Överextenderad kant vid [XX]. Instabil vid palpation. 
+Åtgärd: Markering av öm punkt med zinkpasta. 
+Urslipning av proteskant med fräs. Polering. 
+Ocklusionskontroll och lätt inslipning. 
+Info: Pat uppmanad att vila munnen från protes nattetid. 
+Åb om ej bra om 1 vecka.</pre></div>
+                        <div class="billing-codes scroll-animate"><div class="billing-codes-title">💳 Debiteringskoder (TLV)</div><table style="width:100%; font-size:0.85rem; margin-top:8px;">
+                                <tr><td style="padding:4px 8px;"><strong>103</strong></td><td>Akut/kompletterande undersökning</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>831</strong></td><td>Justering av avtagbar protes (inkl. slipning)</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandling mindre omfattande</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>833</strong></td><td>Rebasering</td></tr>
+                        </table></div>
+                        <div class="info-card scroll-animate"><h5>Uppföljning</h5><ul>
+                                <li><strong>Tid:</strong> Återbesök rekommenderas efter 2–3 dagar för kontroll.</li>
+                                <li><strong>Mål:</strong> Smärtfri, tydliga tecken på läkning.</li>
+                                <li><strong>Läkningstid:</strong> Traumatiskt sår ska vara utläkt inom 2 veckor efter justering.</li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc18-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate"><strong>🚨 Sår som inte läker</strong><p style="margin-top:10px;">Om såret kvarstår efter 14 dagar trots justering → <strong>Remiss till käkkirurg/oralmedicin för utredning/biopsi.</strong> Malignitet (skivepitelcancer) kan se ut som skavsår!</p></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Induration</strong><p style="margin-top:10px;">Om såret känns <strong>hårt i kanterna</strong> eller är fixerat vid underlaget → <strong>Misstänk malignitet.</strong></p></div>
+                        <div class="info-card scroll-animate"><h5>Ansvarsfriskrivning</h5><p>Ersätter inte kliniskt omdöme. PSL 2010:659.</p></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc19-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc19', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc19', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc19', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc19', 'kallakrylat', this)">🛠️ Akut lagning</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc19', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc19', 'flaggor', this)">🚨 Röda Flaggor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc19-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate"><div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PROT-19-PROTFRAK</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Min protes har gått sönder / Jag tappade tänderna i golvet"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> Z46.3 (Justering tandprotes), K08.5 (Ofullständig tandfunktion)</div>
+                        </div></div>
+                        <div class="info-card scroll-animate"><h5>Huvudtyper</h5><ul>
+                                <li><strong>Protesbasfraktur:</strong> Protesen i två eller fler delar (ofta mittitufraktur på helprotes eller sadelfraktur).</li>
+                                <li><strong>Klammerfraktur:</strong> En retinerande klammer på en partialprotes har gått av.</li>
+                                <li><strong>Tandfraktur/Lossnad tand:</strong> En protestand har lossnat ur basen eller gått sönder.</li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc19-anamnes" class="content-panel">
+                        <h3>❓ Anamnes</h3>
+                        <div class="info-card scroll-animate"><h5>Händelseförlopp</h5><ul>
+                                <li><strong>❓ Hur gick det till?</strong><br><em>Tappad i golvet? (Slagfraktur — ofta god prognos om delarna passar).<br>Gick sönder vid tuggning? (Utmattningsfraktur — dålig passform/resorption. Risk att den spricker igen).</em></li>
+                                <li><strong>❓ Finns alla bitar kvar?</strong><br><em>Kritiskt för att kunna laga utan nytt avtryck.</em></li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>Protesens status</h5><ul>
+                                <li><strong>❓ Hur gammal är protesen?</strong></li>
+                                <li><strong>❓ Satt den bra innan den gick sönder?</strong><br><em>Om den satt dåligt/vickade → rebasering krävs i samband med lagning, annars bryts den snart igen.</em></li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>Klinisk Status</h5><ul>
+                                <li>🔍 <strong>Passform av fragment:</strong> Pussla ihop delarna. Passar de exakt? → Kan ofta lagas via tekniker utan avtryck. Glipar det? → Kräver oftast avtryck/nyproduktion.</li>
+                                <li>🔍 <strong>Klammer:</strong> Är metallen avmattad eller deformerad?</li>
+                                <li>🔍 <strong>Slemhinna:</strong> Finns trycksår eller hyperplasier som orsakat spänningar i protesen?</li>
+                                <li>🔍 <strong>Restbett (delprotes):</strong> Är stödtanden där klammern satt intakt?</li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc19-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate"><div class="treatment-title">VARIANT A: Protesbasfraktur (Delarna passar ihop)</div><p><strong>Action:</strong> Reparation via tandtekniker (Rekommenderat).</p><ul>
+                                <li><strong>Fixering:</strong> Sätt ihop delarna exakt. Fixera med <strong>sticky-wax</strong> för att hålla ihop fragmenten inför laboratoriet. <strong>OBS: Superlim (cyanoakrylat) rekommenderas INTE</strong> — limrester måste fräsas bort och försvårar riktig reparation. <span class="correction-badge">JUSTERAT — Intern inkonsekvens löst</span> och ev. metallförstärkning temporärt.</li>
+                                <li><strong>Lab:</strong> Skicka till tandtekniker för sammanfogning med varmpolymerisat (starkast).</li>
+                                <li><strong>Akut (Om tekniker ej finns):</strong> Temporär lagning med kallpolymerisat — svagare lösning.</li>
+                        </ul></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">VARIANT B: Lossnad protestand</div><p><strong>Action:</strong> Klinisk reparation (ofta möjligt).</p><ol>
+                                <li>Borra retention (underskär/gropar) i protesbasen och i tanden.</li>
+                                <li>Blästra eller rugga ytorna.</li>
+                                <li>Vät med monomer. Blanda kallakrylat (PMMA). Applicera och tryck dit tanden.</li>
+                                <li>Håll på plats tills stelnat. Justera ocklusion och polera skarven.</li>
+                        </ol></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">VARIANT C: Frakturerad Klammer</div><p><strong>Action:</strong> Ny klammer via tandtekniker.</p><ol>
+                                <li>Placera protesen i munnen.</li>
+                                <li>Ta alginatavtryck över protesen (pick-up/"utlyftning").</li>
+                                <li>Lab: Teknikern böjer/gjuter ny klammer.</li>
+                                <li><strong>Akut:</strong> Slipa bort vassa stumpen så patienten kan använda protesen (sämre retention) tills reparation.</li>
+                        </ol></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">VARIANT D: Protesbasfraktur (Dålig passform/Delar saknas)</div><p>Om protesen vickar har den brutits av utmattning. Enbart lagning räcker inte.</p><ul>
+                                <li><strong>Alt 1:</strong> Laga frakturen först, sedan rebasering.</li>
+                                <li><strong>Alt 2:</strong> Om frakturen komplex eller protesen gammal → Nyframställning.</li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc19-kallakrylat" class="content-panel">
+                        <h3>🛠️ Temporär lagning med kallakrylat (Klinik)</h3>
+                        <p style="margin-bottom:15px;">Används vid akuta behov när tandtekniker ej är tillgänglig (t.ex. jourtid).</p>
+                        <div class="treatment-box scroll-animate"><div class="treatment-title">Arbetsgång</div><ol>
+                                <li><strong>Fixera:</strong> Pussla ihop delarna och fixera med sticky wax på den polerade sidan (utsidan).</li>
+                                <li><strong>Slipa ur:</strong> Fräs ur ett V-format dike längs frakturlinjen på slemhinnesidan (insidan) men spara "stoppklackar" i ändarna så relationen bibehålls.</li>
+                                <li><strong>Blanda:</strong> Blanda kallpolymeriserande akrylat (pulver/vätska).</li>
+                                <li><strong>Applicera:</strong> Fyll diket med akrylatet (överskott).</li>
+                                <li><strong>Härda:</strong> Låt stelna (gärna i tryckkärl med varmt vatten för mindre porositeter).</li>
+                                <li><strong>Puts:</strong> Slipa bort överskott på slemhinnesidan. Polera noga.</li>
+                        </ol><p style="margin-top:10px;"><em>Info till patient: Temporär lagning — porösare och svagare än lab-lagning. Kan missfärgas och dra till sig plack lättare.</em></p></div>
+
+                    </div>
+                    <div id="sc19-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate"><button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K08.5 Ofullständig tandfunktion (Frakturerad protes). 
+Anamnes: Tappade protesen i handfatet i morse. 
+Spruckit i två delar mitt i. 
+Status: Ren fraktur regio 31-41. Delarna passar exakt ihop. 
+Ingen materialförlust. 
+Åtgärd: Delarna desinficerade och fixerade med sticky wax. 
+Skickas till tandtekniker för lagning. 
+Utlämning planerad [Datum]. 
+Info: Pat informerad om att vara försiktig vid rengöring 
+(ha vatten i handfatet eller handduk under för att dämpa fall).</pre></div>
+                        <div class="billing-codes scroll-animate"><div class="billing-codes-title">💳 Debiteringskoder</div><table style="width:100%; font-size:0.85rem; margin-top:8px;">
+                                <tr><td style="padding:4px 8px;"><strong>103</strong></td><td>Akut undersökning</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>832</strong></td><td>Lagning protes/tillsättning tand (enklare)</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>834</strong></td><td>Lagning protes där avtryck krävs</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>836</strong></td><td>Komplicerad lagning av protes</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>839</strong></td><td>Inmontering av förankringselement</td></tr>
+                        </table></div>
+
+                    </div>
+                    <div id="sc19-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate"><strong>🚨 Passformen</strong><p style="margin-top:10px;">Om du lagar en protes som passar dåligt (vickar) kommer den att gå sönder igen mycket snart. Kontrollera alltid behovet av rebasering efter lagning.</p></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Sväljningsrisk</strong><p style="margin-top:10px;">En protes med en lös tand eller klammer utgör en aspirationsrisk. Åtgärda akut eller ta protesen ur bruk.</p></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Superlim (Cyanoakrylat)</strong><p style="margin-top:10px;">Patienter försöker ofta laga själva med superlim. Detta försvårar för teknikern — limmet bygger på tjocklek och är giftigt. Limrester måste fräsas bort innan riktig lagning.</p></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc20-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc20', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc20', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc20', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc20', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc20', 'flaggor', this)">🚨 Röda Flaggor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc20-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate"><div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PROT-20-CHIP</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "En bit av porslinet har lossnat / Tanden känns vass"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K08.5 (Ofullständig tandfunktion), T85.6 (Mekanisk komplikation, implantat)</div>
+                                <div class="symptom-item">🤕 <strong>Symtom:</strong> Vassa kanter som skaver mot tunga/kind. Estetisk störning. Ofta ingen smärta.</div>
+                        </div></div>
+                        <div class="info-card scroll-animate"><h5>2. Klinisk indikation</h5><p>Används när patient söker för en trasig krona/bro där konstruktionen fortfarande sitter fast, men ytskiktet är skadat. Syftet är att återställa form, funktion och estetik samt förhindra mjukvävnadsskada.</p></div>
+                        <div class="info-card scroll-animate"><h5>3. Anamnes</h5><ul>
+                                <li><strong>❓ Hur hände det?</strong> (Tuggade på något hårt, trauma, eller spontant?)</li>
+                                <li><strong>❓ Har du tandgnissling/pressning?</strong> (Parafunktioner = vanlig orsak till materialutmattning).</li>
+                                <li><strong>❓ Hur gammal är kronan?</strong> (Garanti? Materialutmattning?).</li>
+                                <li><strong>❓ Ilar det?</strong> (Kan tyda på blottat dentin eller läckage).</li>
+                                <li><strong>❓ Skaver det?</strong> (Viktigt att åtgärda snabbt — sår på tunga/kind).</li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc20-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate"><h5>1. Inspektion</h5><ul>
+                                <li>🔍 <strong>Omfattning:</strong> Är frakturen i den estetiska zonen?</li>
+                                <li>🔍 <strong>Djup:</strong> Syns metallen eller innerkärnan (oxidkeram)?</li>
+                                <li>🔍 <strong>Yta:</strong> Är brottytan ren eller finns karies under? (Fraktur kan orsakas av sekundärkaries).</li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>2. Ocklusionsanalys</h5><p>✅ Kontrollera med ocklusionsfolie. Ligger frakturen i en kontaktpunkt? Om reparationen utsätts för tunga skjuvkrafter är prognosen dålig.</p></div>
+                        <div class="info-card scroll-animate"><h5>3. Röntgen (vid behov)</h5><p>📸 Om misstanke om patologi (karies, apikal parodontit) eller för att bedöma stödtandens status.</p></div>
+
+                    </div>
+                    <div id="sc20-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate"><div class="treatment-title">ALT A: Putsning (Mindre fraktur / Icke-estetisk zon)</div><p><strong>Indikation:</strong> Liten flisa, vassa kanter, ej estetiskt störande.</p><p>Avrunda vassa kanter och polera ytan. Ofta den mest hållbara lösningen — eliminerar brottanvisningar utan svaga skarvar.</p></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">ALT B: Reparation med komposit (Medelstor fraktur)</div><p><strong>Indikation:</strong> Estetiskt störande. Patient informerad om "halvpermanent" lösning. Prognos: ofta kort livslängd, risk missfärgning i skarven.</p>
+                            <h5>Arbetsgång (steg för steg):</h5><ol>
+                                <li><strong>Mekanisk retention:</strong> Om metall blottad, borra retentionshål/underskär i metallen och porslinet. <em>Ofta den viktigaste faktorn för hållbarhet.</em> Rugga upp ytan med diamant.</li>
+                                <li><strong>Isolering:</strong> Torrlägg noga (kofferdam eller bomullsrullar).</li>
+                                <li><strong>Ets:</strong> Applicera 37% fosforsyra.</li>
+                                <li><strong>Silan/Primer:</strong> Applicera primer/silan (kopplingsvätska) på porslins- och metallytor. Låt verka och luftblästra.</li>
+                                <li><strong>Bonding:</strong> Applicera adhesiv/bonding och ljushärda.</li>
+                                <li><strong>Komposit:</strong> Applicera komposit (opaker först om metall lyser igenom) i lämplig färg. Ljushärda.</li>
+                                <li><strong>Puts & Polering:</strong> Justera ocklusion/artikulation (viktigt att inte ha för hård belastning på lagningen). Polera med diamanter (fina) och polersystem (Grön → Blå → Rosa trissor + diamantpasta).</li>
+                        </ol></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">ALT C: Omgörning (Omfattande fraktur)</div><p><strong>Indikation:</strong> Stor del av porslinet borta, kontaktpunkter förlorade, estetiskt oacceptabelt.</p><p>Avlägsna gammal krona (slitsa med diamant/Burings hammare), prep, avtryck och ny krona.</p></div>
+
+                    </div>
+                    <div id="sc20-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate"><button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K08.5 Porslinsfraktur (Chip-off) tand [XX]. 
+Anamnes: Bitit på [Hårt föremål/Okänt]. 
+Vass kant mot tungan. Ingen smärta. 
+Status: Chip-off mesio-incisalt ca 2x2 mm. 
+Metall ej blottad. Ingen karies. 
+Åtgärd: Putsning av vassa kanter med trissa. Polering.
+(Eller: Reparation med komposit efter uppruggning, 
+ets, silanisering, bonding och ljushärdning). 
+Info: Pat informerad om att reparationen har begränsad 
+hållfasthet och kan lossna igen. 
+Vid recidiv rekommenderas ny krona.</pre></div>
+                        <div class="billing-codes scroll-animate"><div class="billing-codes-title">💳 Debiteringskoder</div><table style="width:100%; font-size:0.85rem; margin-top:8px;">
+                                <tr><td style="padding:4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandling (vid enbart putsning)</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>812</strong></td><td>Reparation krona/bro utan tandteknisk insats</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>881</strong></td><td>Reparation implantatstödd konstruktion (mindre)</td></tr>
+                        </table></div>
+
+                    </div>
+                    <div id="sc20-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate"><strong>🚨 Bruxism</strong><p style="margin-top:10px;">Om patienten gnisslar tänder och frakturen beror på överbelastning, kommer reparationen sannolikt att gå sönder igen om inte grundorsaken åtgärdas (t.ex. bettskena).</p></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Implantat — dold skruvlossning</strong><p style="margin-top:10px;">En "chip-off" på en implantatkrona kan ibland dölja en lossnad skruv (mobilitet har orsakat frakturen). <strong>Kontrollera alltid om kronan rör sig innan du lagar porslinet.</strong></p></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="sc21-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('sc21', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc21', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc21', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc21', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc21', 'cement', this)">🦷 Cementval</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc21', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('sc21', 'flaggor', this)">🚨 Röda Flaggor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="sc21-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate"><div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PROT-21-LOSS</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Min krona har trillat loss / Det glappar när jag biter"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K08.5 (Ofullständig tandfunktion)</div>
+                                <div class="symptom-item">⚠️ <strong>Orsaker:</strong> Sekundärkaries, retentionsbrist, cementutmattning, traumatisk ocklusion, rotfraktur</div>
+                        </div></div>
+                        <div class="info-card scroll-animate"><h5>2. Klinisk indikation</h5><p>Används när en patient inkommer med en lossnad ersättning som potentiellt kan återcementeras. Målet är att återställa funktion och skydda kvarvarande tandsubstans.</p></div>
+
+                    </div>
+                    <div id="sc21-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Obligatoriska frågor</h3>
+                        <div class="info-card scroll-animate"><h5>Händelseförlopp</h5><ul>
+                                <li><strong>❓ När och hur lossnade den?</strong><br><em>Vid måltid, trauma, eller spontant?</em></li>
+                                <li><strong>❓ Gör det ont?</strong><br><em>Ilningar: Tanden vital (bråttom att skydda).<br>Ingen smärta: Tanden kan vara rotfylld eller dentinet sklerotiserat.</em></li>
+                                <li><strong>❓ Hur gammal är kronan?</strong><br><em>Äldre kronor: oftare karies eller cementutmattning.</em></li>
+                                <li><strong>❓ Har den lossnat tidigare?</strong><br><em>Indikerar dålig retention eller ocklusala problem.</em></li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc21-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate"><h5>1. Inspektion av tanden (Stödtanden)</h5><ul>
+                                <li>🔍 <strong>Karies:</strong> Finns mjukt dentin? (Vanligaste orsaken till lossnade kronor).</li>
+                                <li>🔍 <strong>Fraktur:</strong> Sitter en del av tanden/pelaren kvar i kronan?</li>
+                                <li>🔍 <strong>Retention:</strong> Är preparationen tillräckligt hög och parallell?</li>
+                                <li>🔍 <strong>Vitalitet:</strong> Sensibilitetstest om tanden ej rotfylld.</li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>2. Inspektion av kronan/bron</h5><ul>
+                                <li>🔍 <strong>Insidan:</strong> Finns cementrester kvar? Om cementet sitter kvar i kronan har släppet skett mot tanden (adhesivt brott) — ofta p.g.a. dålig retention eller förorening vid cementering.</li>
+                                <li>🔍 <strong>Skador:</strong> Är porslinet helt?</li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>3. Inprovning</h5><ul>
+                                <li>✅ <strong>Passform:</strong> Går kronan att sätta tillbaka helt utan glipor?</li>
+                                <li>✅ <strong>Ocklusion:</strong> Är kronan för hög? (Kan bero på tandvandring om den varit loss länge).</li>
+                                <li>✅ <strong>Bro:</strong> Om en bro "vickar" kan den ha lossnat på ett stöd men sitta fast på ett annat. <strong>Varning:</strong> Risk för snabb kariesutveckling på det lossnade stödet.</li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc21-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate"><div class="treatment-title">ALT A: Recementering möjlig (Enkel)</div><p><strong>Förutsättning:</strong> Ingen karies, god passform, ingen fraktur.</p><p><strong>Åtgärd:</strong> Rengöring och permanent cementering (se SOP-steg nedan).</p></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">ALT B: Recementering efter åtgärd</div><p><strong>Förutsättning:</strong> Mindre kariesangrepp eller retentionsbrist.</p><p><strong>Åtgärd:</strong> Kariesexkavering och fyllning (ev. uppbyggnad) följt av recementering. Vid dålig retention: byt cementtyp (t.ex. bondingcement) eller gör om preparationen.</p></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">ALT C: Ej möjlig att recementera</div><p><strong>Förutsättning:</strong> Omfattande karies, tandfraktur, eller kronan passar ej längre.</p><p><strong>Åtgärd:</strong> Ny terapiplanering (ny krona, stiftpelare eller extraktion). Temporär lösning (täckförband/provisorisk krona) krävs akut.</p></div>
+                        <div class="info-card scroll-animate"><h5>Arbetsgång vid Permanent Recementering (SOP-steg)</h5>
+                            <h5>Steg 1: Rengöring (Kritiskt moment)</h5><ul>
+                                <li><strong>Tanden:</strong> Avlägsna allt gammalt cement och plack. Ultraljud/handinstrument. Putsa med pimpsten.</li>
+                                <li><strong>Kemisk tvätt:</strong> Tvätta med 3% väteperoxid (H₂O₂), sedan Tubulicid (blå) för att rengöra dentintubuli.</li>
+                                <li><strong>Kronan:</strong> Blästra insidan eller ultraljud. Tvätta med Ivoclean eller fosforsyra (beroende på material).</li>
+                        </ul></div>
+
+                    </div>
+                    <div id="sc21-cement" class="content-panel">
+                        <h3>🦷 Cementval & Materialprotokoll</h3>
+                        <div class="warning-box scroll-animate"><strong>⚠️ Val av cement och förbehandling styrs av kronans material och möjligheten att torrlägga.</strong></div>
+                        <div class="treatment-box scroll-animate"><div class="treatment-title">A. Metallkeramik (MK) & Guld</div>
+                            <p><strong>Cement:</strong> Zinkfosfatcement (förstahandsval) eller Glasjonomer.</p>
+                            <h5>Förbehandling krona:</h5><ol>
+                                <li>Tvätta/gnugga insidan med 35–40% fosforsyra.</li>
+                                <li>Skölj med vatten och blästra torrt.</li>
+                        </ol></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">B. Zirkonia (Oxidkeram)</div>
+                            <p><strong>Cement:</strong> Dualhärdande kompositcement (t.ex. Variolink) — förstahandsval. Alt: Zinkfosfatcement om god retention.</p>
+                            <div class="warning-box" style="margin:10px 0;"><strong>🚨 Zirkonia får INTE rengöras med fosforsyra vid bonding — det blockerar ytan för bindning!</strong></div>
+                            <h5>Förbehandling krona (vid bonding):</h5><ol>
+                                <li>Rengör insidan med <strong>Ivoclean</strong> i 20 sekunder.</li>
+                                <li>Skölj med vatten, torrblästra noga.</li>
+                                <li>Gnugga insidan med <strong>Monobond Plus</strong> i 60 sekunder. Luftblästra lätt.</li>
+                        </ol></div>
+                        <div class="treatment-box alternative scroll-animate"><div class="treatment-title">C. Glaskeram (E-max/Porslin)</div>
+                            <p><strong>Cement:</strong> Dualhärdande kompositcement (t.ex. Variolink) + emalj-dentin bondingsystem.</p>
+                            <p><em>Viktigt: Skörare material — måste bondas för att få styrka från tanden. Fosfatcement rekommenderas ej.</em></p>
+                            <h5>Förbehandling krona:</h5><ol>
+                                <li>Keramens insida ska vara etsad med <strong>fluorvätesyra (HF)</strong> (utförs oftast på labb).</li>
+                                <li>Tvätta med 35% fosforsyra 20 sek (rengöring av den etsade ytan). Skölj, blås torrt.</li>
+                                <li>Silanisering: Applicera <strong>Monobond Plus</strong> 60 sek. Luftblästra.</li>
+                        </ol></div>
+                        <div class="info-card scroll-animate"><h5>Förbehandling av Tanden</h5>
+                            <h5>Vid Fosfatcement:</h5><ul>
+                                <li>Putsa med pimpsten och vatten.</li>
+                                <li>Tvätta med 3% H₂O₂. Skölj och torka.</li>
+                                <li>Tvätta med Tubulicid (blå). Skölj och torka.</li>
+                        </ul>
+                            <h5>Vid Bonding (Variolink):</h5><ul>
+                                <li>Torrläggning (Kofferdam rekommenderas).</li>
+                                <li>Etsa emalj/dentin med 35% fosforsyra ca 15 sek.</li>
+                                <li>Applicera adhesiv (t.ex. Adhesiv Universal Viva Pen) och gnugga 20 sek.</li>
+                                <li>Blästra lätt men ljushärda INTE innan cementering (härdning sker genom kronan).</li>
+                        </ul></div>
+                        <div class="info-card scroll-animate"><h5>Eugenol-regeln för temporära cement</h5><p>Om en permanent konstruktion ska <strong>bondas</strong> i framtiden, får det temporära cementet INTE innehålla eugenol. Eugenol hämmar härdningen av kompositcement. Använd eugenolfria cement som TempBond NE (utan modifier) eller TempBond Clear.</p></div>
+
+                    </div>
+                    <div id="sc21-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate"><button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K08.5 Ofullständig tandfunktion (Lossnad krona tand XX). 
+Anamnes: Kronan lossnade i samband med [Tuggning/Flossning]. 
+Ingen smärta/Ilningar. 
+Status: Tand [XX] vital/rotfylld. Ingen karies 
+(eller: karies exkaverad). Preparationen har god retention. 
+Kronan hel. 
+Åtgärd: Rengöring av preparation och krona (H₂O₂ + Tubulicid). 
+Torrläggning. Recementering med [Zinkfosfat/Variolink]. 
+Överskott avlägsnat. Ocklusion kontrollerad och ua. 
+Info: Pat informerad om att undvika belastning 1 timme.</pre></div>
+                        <div class="billing-codes scroll-animate"><div class="billing-codes-title">💳 Debiteringskoder</div><table style="width:100%; font-size:0.85rem; margin-top:8px;">
+                                <tr><td style="padding:4px 8px;"><strong>103</strong></td><td>Akut undersökning</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>811</strong></td><td>Cementering av lossnad konstruktion, per stöd</td></tr>
+                                <tr><td style="padding:4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandling (om kariesåtgärd samtidigt)</td></tr>
+                        </table></div>
+
+                    </div>
+                    <div id="sc21-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate"><strong>🚨 Aspirationsrisk</strong><p style="margin-top:10px;">En lös krona är hal och liten. Säkra alltid luftvägarna om du provar kronan utan att cementera.</p></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Rotfraktur</strong><p style="margin-top:10px;">Om tanden är rotfylld med stift, och kronan lossnat med stiftet — kontrollera noga att roten inte är sprucken. En djup smal ficka kan indikera <strong>vertikal rotfraktur</strong> (= extraktion).</p></div>
+                        <div class="warning-box scroll-animate"><strong>🚨 Partiellt lossnad bro</strong><p style="margin-top:10px;">Om en bro lossnat på ett stöd men sitter fast på ett annat ("sviktar") måste den oftast sågas loss eller knackas loss försiktigt. Att låta den sitta kvar innebär <strong>stor kariesrisk</strong> på det lösa stödet.</p></div>
+                        <div class="info-card scroll-animate"><h5>Ansvarsfriskrivning</h5><p>Ersätter inte kliniskt omdöme. PSL 2010:659.</p></div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div><div class="right-sidebar">
+            <div class="sidebar-card">
+                <h4 class="sidebar-title">👑 Protetik — Snabbval</h4>
+                <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    <button class="sidebar-btn" onclick="selectScenario('sc15')">🦷 Lossnat provisorium</button>
+                    <button class="sidebar-btn" onclick="selectScenario('sc16')">🔩 Implantatkomplikation</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('sc17')">💔 Fraktur stödtand</button>
+                    <button class="sidebar-btn" onclick="selectScenario('sc18')">🩹 Trycksår/Skavsår</button>
+                    <button class="sidebar-btn" onclick="selectScenario('sc19')">🔨 Protesfraktur</button>
+                    <button class="sidebar-btn" onclick="selectScenario('sc20')">💎 Porslinsfraktur</button>
+                    <button class="sidebar-btn" style="background:var(--accent-terracotta-dark);" onclick="selectScenario('sc21')">👑 Lossnad krona/bro</button>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>⚠️ Eugenol-regel</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        <strong>Bondad protetik</strong> (helkeram, fasad):<br>
+                        → ALDRIG eugenol<br><br>
+                        <strong>Konventionell</strong> (MK, guld):<br>
+                        → Eugenol OK
+                    </p>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>🔩 Implantat</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        Kronan lös: skruvproblem<br>
+                        Hela impl. löst: failure<br>
+                        Aspiration: svalgskydd!
+                    </p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>🚨 Cancer-varning</h4>
+                    <p style="font-size:0.85rem; text-align:left;">Sår som ej läker inom 14 dagar trots åtgärd → remiss oralmedicin/biopsi</p>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>📋 Kom ihåg</h4>
+                    <p style="font-size: 0.85rem;">Beslutsstöd — ersätter inte kliniskt omdöme. PSL 2010:659.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Sammanslagen Scenario Data
+    const scenarioData = {
+        'sc15': { img: 'provisorium.png', fallback: 'https://placehold.co/120x100/fff3e0/e65100?text=PROV', title: '"Min tillfälliga krona har trillat loss"' },
+        'sc16': { img: 'implantat.png', fallback: 'https://placehold.co/120x100/e3f2fd/1565c0?text=IMPL', title: '"Min implantattand sitter löst"' },
+        'sc17': { img: 'stodtand.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=FRAK', title: '"Kronan lossnat och tanden sitter inuti"' },
+        'sc18': { img: 'decubitus.png', fallback: 'https://placehold.co/120x100/fff3e0/e65100?text=SÅR', title: '"Protesen skaver och det gör ont"' },
+        'sc19': { img: 'protesfrak.png', fallback: 'https://placehold.co/120x100/e3f2fd/1565c0?text=FRAK', title: '"Min protes har gått sönder"' },
+        'sc20': { img: 'chipoff.png', fallback: 'https://placehold.co/120x100/fce4ec/880e4f?text=CHIP', title: '"En bit av porslinet har lossnat"' },
+        'sc21': { img: 'lossnad_krona.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=LOSS', title: '"Min krona har trillat loss"' }
+    };
+
+    function selectScenario(id) {
+        document.querySelectorAll('.scenario-trigger-card').forEach(c => c.classList.remove('active'));
+        const trigger = document.getElementById('trigger-' + id);
+        if (trigger) trigger.classList.add('active');
+        
+        document.querySelectorAll('.scenario-display-wrapper').forEach(w => w.classList.remove('active'));
+        const display = document.getElementById(id + '-display');
+        if (display) display.classList.add('active');
+        
+        const h = document.getElementById('dynamic-header');
+        h.classList.remove('centered'); h.classList.add('scenario-mode');
+        
+        const data = scenarioData[id];
+        if (data) {
+            document.getElementById('dynamic-header-title').textContent = data.title;
+            const avatar = document.getElementById('story-avatar');
+            avatar.src = data.img;
+            avatar.onerror = function() { this.src = data.fallback; };
+            avatar.classList.add('pop');
+            setTimeout(() => avatar.classList.remove('pop'), 600);
+        }
+        
+        const wrapper = document.getElementById(id + '-display');
+        if (wrapper) {
+            wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const fp = wrapper.querySelector('.content-panel');
+            const fb = wrapper.querySelector('.tab-btn');
+            if (fp) fp.classList.add('active');
+            if (fb) fb.classList.add('active');
+        }
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    function openInnerTab(scenarioId, tabName, btn) {
+        const wrapper = document.getElementById(scenarioId + '-display');
+        if (!wrapper) return;
+        wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const target = document.getElementById(scenarioId + '-' + tabName);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    function copyText(btn) {
+        const pre = btn.nextElementSibling;
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            const orig = btn.innerText;
+            btn.innerText = '✅ Kopierat!';
+            setTimeout(() => { btn.innerText = orig; }, 1500);
+        });
+    }
+
+    function searchCards() {
+        const input = document.getElementById('mainSearch').value.toLowerCase();
+        document.querySelectorAll('.scenario-trigger-card').forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(input) ? 'flex' : 'none';
+        });
+    }
+
+    function triggerScrollAnimations() {
+        document.querySelectorAll('.scroll-animate').forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', triggerScrollAnimations);
+</script>
+
+
+    <button class="sources-btn" onclick="document.getElementById('sourcesModalProt').classList.add('active')">📚 Källor</button>
+    <div class="sources-modal-overlay" id="sourcesModalProt" onclick="if(event.target===this)this.classList.remove('active')">
+        <div class="sources-modal">
+            <button class="close-modal" onclick="document.getElementById('sourcesModalProt').classList.remove('active')">✕ Stäng</button>
+            <h2>📚 Källförteckning — Protetik & Bettfunktion</h2>
+            <ul>
+                <li><strong>Internetodontologi.</strong> Implantatkomplikationer, protetiska. internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Pelare och stift — ferrule-effekten. internetodontologi.se</li>
+                <li><strong>Internetodontologi.</strong> Orala slemhinneförändringar — decubitus.</li>
+                <li><strong>Tandläkartidningen 2/2019.</strong> Cementering av zirkonia.</li>
+                <li><strong>Sveriges Tandteknikerförbund 2023.</strong> Cementering av zirkonia-restaurationer.</li>
+                <li><strong>Ivoclar Vivadent.</strong> Protokoll: Ivoclean, Monobond Plus. ivoclar.com</li>
+                <li><strong>Kerr.</strong> Tillverkarinformation TempBond NE / Modifier.</li>
+                <li><strong>Astra Tech EV IFU.</strong> Åtdragningsmoment för implantatsystem.</li>
+                <li><strong>Randow & Glantz.</strong> Ferrule-effekten i litteraturen (≥2 mm standard).</li>
+                <li><strong>Socialstyrelsen.</strong> ICD-10-SE. Koder: Z46.3, Z46.4, K08.5, K08.8, T85.6, K13.1, K12.0.</li>
+                <li><strong>Patientsäkerhetslagen (PSL) 2010:659.</strong> §§ 4–5, information och samtycke.</li>
+                <li><strong>TLV.</strong> Aktuell tandvårdstaxa — verifiera koder på kusp.tlv.se</li>
+            </ul>
+            <p style="color:#888; font-size:0.85rem; margin-top:20px;">Senast granskad: Mars 2026. Ansvarig granskare: Nedaa Abujazar.</p>
+        </div>
+    </div>
+</body>
+</html>

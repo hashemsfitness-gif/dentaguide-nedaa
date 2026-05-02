@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dosering & Analgetika — Tandguide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --moss:#1E3028;--moss-l:#2E4036;--clay:#CC5833;--clay-l:#E06B43;
+  --cream:#F2F0E9;--cream-d:#E8E5DC;--charcoal:#1A1A1A;--gold:#C9A84C;
+  --ok:#2D6A4F;--danger:#C1121F;--warn:#E07B39;--blue:#1A4A7A;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.04;mix-blend-mode:multiply}
+
+/* HEADER */
+.hdr{background:var(--moss);padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.logo-ic{width:30px;height:30px;background:var(--clay);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.logo-tx{font-weight:800;font-size:1.05rem;color:var(--cream)}
+.logo-tx span{color:var(--clay)}
+.hdr-badge{display:flex;align-items:center;gap:.5rem;background:rgba(204,88,51,.15);border:1px solid rgba(204,88,51,.3);border-radius:2rem;padding:.35rem .875rem;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--clay);font-weight:500}
+.hdr-badge::before{content:'';width:6px;height:6px;background:var(--clay);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* PAGE HEADER */
+.page-hdr{background:var(--moss-l);padding:1.5rem 2rem;border-bottom:1px solid rgba(242,240,233,.06)}
+.page-hdr h1{font-size:1.4rem;font-weight:800;color:var(--cream)}
+.page-hdr h1 span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.8rem;color:var(--clay)}
+.page-hdr p{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:rgba(242,240,233,.45);margin-top:.3rem}
+.source-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.src-tag{font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:.2rem .6rem;border-radius:2rem;border:1px solid rgba(201,168,76,.3);color:var(--gold);background:rgba(201,168,76,.08)}
+
+/* INPUT SECTION */
+.input-section{background:white;padding:1.5rem 2rem;border-bottom:1px solid rgba(26,26,26,.07)}
+.input-wrap{max-width:900px;margin:0 auto}
+.input-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:1rem;align-items:end}
+.field-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;color:var(--clay);letter-spacing:.1em;margin-bottom:.4rem;display:block}
+.field-input{width:100%;padding:.75rem 1rem;border:2px solid rgba(26,26,26,.1);border-radius:.875rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:700;color:var(--charcoal);background:var(--cream);outline:none;transition:all .3s}
+.field-input:focus{border-color:var(--clay);background:white;box-shadow:0 0 0 4px rgba(204,88,51,.08)}
+.field-select{width:100%;padding:.75rem 1rem;border:2px solid rgba(26,26,26,.1);border-radius:.875rem;font-family:'IBM Plex Mono',monospace;font-size:.8rem;font-weight:600;color:var(--charcoal);background:var(--cream);outline:none;transition:all .3s;cursor:pointer}
+.field-select:focus{border-color:var(--clay)}
+.calc-btn{padding:.75rem 2rem;background:var(--clay);color:white;border:none;border-radius:.875rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;transition:all .3s;white-space:nowrap}
+.calc-btn:hover{background:var(--clay-l);transform:scale(1.02)}
+.calc-btn:active{transform:scale(.98)}
+.weight-display{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:rgba(26,26,26,.4);margin-top:.4rem}
+
+/* DISCLAIMER */
+.disclaimer{background:rgba(193,18,31,.06);border:1px solid rgba(193,18,31,.15);border-radius:.875rem;padding:.75rem 1rem;margin-top:1rem;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--danger);line-height:1.6}
+
+/* RESULTS */
+.results-section{padding:1.5rem 2rem}
+.results-wrap{max-width:1200px;margin:0 auto}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem}
+.placeholder-state{text-align:center;padding:4rem 2rem;opacity:.3}
+.placeholder-state .ph-icon{font-size:3rem;margin-bottom:1rem}
+.placeholder-state p{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--charcoal)}
+
+/* DRUG CARD */
+.drug-card{background:white;border-radius:1.5rem;border:1px solid rgba(26,26,26,.06);box-shadow:0 2px 12px rgba(30,48,40,.05);overflow:hidden;transition:transform .3s,box-shadow .3s}
+.drug-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(30,48,40,.1)}
+.dc-header{padding:1rem 1.25rem .75rem;border-bottom:1px solid rgba(26,26,26,.06);display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+.dc-left{}
+.dc-name{font-size:1rem;font-weight:800;color:var(--charcoal)}
+.dc-sub{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:rgba(26,26,26,.4);margin-top:.2rem}
+.dc-cat{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;padding:.2rem .6rem;border-radius:.3rem;white-space:nowrap;margin-top:.3rem;display:inline-block}
+.cat-analgetika{background:rgba(30,48,40,.08);color:var(--moss)}
+.cat-antibiotika{background:rgba(204,88,51,.1);color:var(--clay)}
+.cat-lokalanestesi{background:rgba(26,74,122,.1);color:var(--blue)}
+.cat-sedering{background:rgba(201,168,76,.12);color:var(--gold)}
+.cat-hemostas{background:rgba(45,106,79,.1);color:var(--ok)}
+.cat-hemostas-karies{background:rgba(45,106,79,.1);color:var(--ok)}
+.cat-opioid{background:rgba(193,18,31,.1);color:var(--danger)}
+
+/* DOSE RESULT */
+.dc-body{padding:1rem 1.25rem}
+.dose-main{background:linear-gradient(135deg,var(--moss),var(--moss-l));border-radius:1rem;padding:1rem 1.25rem;margin-bottom:.875rem}
+.dose-label{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:rgba(242,240,233,.5);letter-spacing:.1em;margin-bottom:.3rem}
+.dose-value{font-size:1.6rem;font-weight:800;color:var(--cream);line-height:1}
+.dose-unit{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:rgba(242,240,233,.6);margin-top:.2rem}
+.dose-alt{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:.875rem;padding:.75rem 1rem;margin-bottom:.875rem}
+.dose-alt-label{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--gold);font-weight:600;margin-bottom:.3rem}
+.dose-alt-value{font-size:.875rem;font-weight:700;color:var(--charcoal)}
+
+/* DOSE ROWS */
+.dose-rows{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.875rem}
+.dose-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem .5rem;border-radius:.5rem;background:rgba(26,26,26,.03)}
+.dr-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:rgba(26,26,26,.5)}
+.dr-value{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;color:var(--charcoal)}
+.dr-value.warn{color:var(--warn)}
+.dr-value.ok{color:var(--ok)}
+.dr-value.danger{color:var(--danger)}
+
+/* WARNINGS & TIPS */
+.dc-warnings{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.875rem}
+.warn-item{display:flex;gap:.5rem;padding:.5rem .75rem;border-radius:.625rem;font-family:'IBM Plex Mono',monospace;font-size:.65rem;line-height:1.5}
+.warn-item.red{background:rgba(193,18,31,.06);border:1px solid rgba(193,18,31,.12);color:var(--danger)}
+.warn-item.yellow{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:#7a5e00}
+.warn-item.green{background:rgba(45,106,79,.07);border:1px solid rgba(45,106,79,.15);color:var(--ok)}
+.warn-item.blue{background:rgba(26,74,122,.07);border:1px solid rgba(26,74,122,.15);color:var(--blue)}
+
+/* TIPS SECTION */
+.dc-tips{border-top:1px solid rgba(26,26,26,.06);padding-top:.875rem}
+.tips-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;color:rgba(26,26,26,.5);user-select:none;padding-bottom:.5rem}
+.tips-toggle:hover{color:var(--clay)}
+.tips-content{display:none;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:rgba(26,26,26,.6);line-height:1.7}
+.tips-content.open{display:block}
+.tip-item{padding:.25rem 0;padding-left:.75rem;position:relative}
+.tip-item::before{content:'→';position:absolute;left:0;color:var(--clay)}
+
+/* SECTION TITLE */
+.section-title{font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:600;color:rgba(26,26,26,.4);letter-spacing:.15em;margin-bottom:1rem}
+
+/* COPY BTN */
+.dc-copy{width:100%;padding:.6rem;background:rgba(30,48,40,.06);border:none;border-radius:.75rem;font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;color:var(--moss);cursor:pointer;transition:all .2s;margin-top:.5rem}
+.dc-copy:hover{background:rgba(30,48,40,.12)}
+.dc-copy.copied{background:rgba(45,106,79,.1);color:var(--ok)}
+
+/* MAX DOSE WARNING */
+.max-warn{background:rgba(193,18,31,.08);border:1px solid rgba(193,18,31,.2);border-radius:.75rem;padding:.6rem .875rem;margin-bottom:.5rem;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--danger);font-weight:600}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ok);color:white;padding:.6rem 1.25rem;border-radius:2rem;font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:600;z-index:10000;transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* CATEGORY FILTER */
+.cat-filter{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+.cat-btn{padding:.4rem .875rem;border-radius:2rem;border:1.5px solid rgba(26,26,26,.1);background:var(--cream-d);font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;color:rgba(26,26,26,.5);cursor:pointer;transition:all .2s}
+.cat-btn:hover{border-color:var(--clay);color:var(--clay)}
+.cat-btn.active{background:var(--moss);border-color:var(--moss);color:var(--cream)}
+
+/* SPECIAL SECTIONS */
+.combo-section{background:linear-gradient(135deg,rgba(30,48,40,.04),rgba(201,168,76,.06));border:1px solid rgba(201,168,76,.2);border-radius:1.25rem;padding:1.25rem;margin-top:1.5rem}
+.combo-title{font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:600;color:var(--gold);margin-bottom:.875rem;letter-spacing:.1em}
+.combo-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.combo-item{background:white;border-radius:.875rem;padding:.875rem;border:1px solid rgba(26,26,26,.07)}
+.combo-name{font-size:.875rem;font-weight:800;color:var(--charcoal);margin-bottom:.3rem}
+.combo-dose{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--moss);font-weight:600}
+.combo-note{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:rgba(26,26,26,.4);margin-top:.25rem;line-height:1.5}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(30,48,40,.2);border-radius:10px}
+
+@media(max-width:700px){
+  .input-grid{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+  .results-grid{grid-template-columns:1fr}
+  .combo-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <a href="#" class="logo"><div class="logo-ic">🦷</div><span class="logo-tx">Tandguide<span>.</span></span></a>
+  <div class="hdr-badge">💊 DOSERING & ANALGETIKA</div>
+</header>
+
+<div class="page-hdr">
+  <h1>Doseringskalky<span>lator.</span></h1>
+  <p>Evidensbaserade doser för tandvård — barn och vuxna — viktsbaserad beräkning</p>
+  <div class="source-tags">
+    <span class="src-tag">📖 Tandvårdens Läkemedel 2024–2025 (NAG/SKR)</span>
+    <span class="src-tag">💊 FASS.se</span>
+    <span class="src-tag">🏥 Strama Nationell</span>
+    <span class="src-tag">📋 Skånelistan 2025</span>
+    <span class="src-tag">⚕️ Region Västerbotten</span>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="input-section">
+  <div class="input-wrap">
+    <div class="input-grid">
+      <div>
+        <span class="field-label">PATIENTVIKT (KG)</span>
+        <input class="field-input" type="number" id="weightInput" placeholder="t.ex. 70" min="1" max="200" oninput="onWeightChange()"/>
+        <div class="weight-display" id="weightDisplay">Ange vikt för att beräkna doser</div>
+      </div>
+      <div>
+        <span class="field-label">PATIENTGRUPP</span>
+        <select class="field-select" id="patientGroup" onchange="onGroupChange()">
+          <option value="adult">Vuxen (≥18 år)</option>
+          <option value="child_big">Barn 6–17 år (≥20 kg)</option>
+          <option value="child_small">Barn 1–5 år (10–19 kg)</option>
+          <option value="elderly">Äldre (≥75 år)</option>
+          <option value="pregnant">Gravid/Ammande</option>
+        </select>
+      </div>
+      <button class="calc-btn" onclick="calculate()">⚡ Beräkna</button>
+    </div>
+    <div class="disclaimer">
+      ⚠️ <strong>Kliniskt beslutsstöd — ersätter inte klinisk bedömning.</strong>
+      Doser baserade på Tandvårdens Läkemedel 2024–2025 (NAG/SKR), FASS och Strama. Kontrollera alltid kontraindikationer individuellt. PSL 2010:659.
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section">
+  <div class="results-wrap">
+    <div class="placeholder-state" id="placeholder">
+      <div class="ph-icon">⚖️</div>
+      <p>Ange patientens vikt och klicka Beräkna<br/>för att se evidensbaserade doser</p>
+    </div>
+
+    <div id="resultsContainer" style="display:none">
+      <!-- Category filter -->
+      <div class="cat-filter" id="catFilter">
+        <button class="cat-btn active" onclick="filterCat('all',this)">Alla</button>
+        <button class="cat-btn" onclick="filterCat('analgetika',this)">Analgetika</button>
+        <button class="cat-btn" onclick="filterCat('antibiotika',this)">Antibiotika</button>
+        <button class="cat-btn" onclick="filterCat('lokalanestesi',this)">Lokalanestesi</button>
+        <button class="cat-btn" onclick="filterCat('sedering',this)">Sedering</button>
+        <button class="cat-btn" onclick="filterCat('hemostas',this)">Hemostas / Karies</button>
+      </div>
+
+      <div class="section-title" id="patientSummary"></div>
+      <div class="results-grid" id="resultsGrid"></div>
+
+      <!-- Combination recommendations -->
+      <div class="combo-section" id="comboSection"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Kopierat!</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// DRUG DATABASE
+// Källa: Tandvårdens Läkemedel 2024–2025 (NAG/SKR), FASS, Strama
+// ═══════════════════════════════════════════════════════════════════
+const DRUGS = [
+
+// ── ANALGETIKA ──────────────────────────────────────────────────────
+{
+  id:'paracetamol',
+  name:'Paracetamol',
+  sub:'Alvedon, Panodil, Pamol',
+  cat:'analgetika',
+  catLabel:'Analgetika',
+
+  calc(w, group) {
+    if (group === 'pregnant') {
+      return {
+        dose: Math.min(w * 15, 1000),
+        unit: 'mg per dos',
+        interval: 'var 6:e timme',
+        maxDay: 4000,
+        maxDayUnit: 'mg/dygn',
+        form: '500 mg tabletter (2 st = 1000 mg)',
+        note: 'Förstahandsval vid graviditet och amning',
+        special: null,
+        maxDoseWarning: false
+      };
+    }
+    if (group === 'elderly') {
+      return {
+        dose: Math.min(w * 15, 1000),
+        unit: 'mg per dos',
+        interval: 'var 6–8:e timme',
+        maxDay: 3000,
+        maxDayUnit: 'mg/dygn (reducerat för äldre)',
+        form: '500 mg tabletter',
+        note: 'Max 3 g/dygn för äldre ≥75 år (Tandvårdens Läkemedel 2024)',
+        special: null,
+        maxDoseWarning: false
+      };
+    }
+    if (group === 'adult') {
+      return {
+        dose: 1000,
+        unit: 'mg per dos',
+        interval: 'var 6:e timme (max 4 doser/dygn)',
+        maxDay: 4000,
+        maxDayUnit: 'mg/dygn',
+        form: '500 mg tabletter — 2 st per dos',
+        note: 'Förstahandsval analgetika inom tandvården',
+        special: null,
+        maxDoseWarning: false
+      };
+    }
+    // Barn
+    const dosePerKg = 15; // mg/kg per dos
+    const rawDose = w * dosePerKg;
+    const maxSingleDose = group === 'child_small' ? 500 : 1000;
+    const dose = Math.min(rawDose, maxSingleDose);
+    const maxDay = Math.min(w * 60, group === 'child_small' ? 2000 : 4000);
+    const exceeded = rawDose > maxSingleDose;
+    return {
+      dose: Math.round(dose),
+      unit: `mg per dos (${dosePerKg} mg/kg)`,
+      interval: 'var 6:e timme (max 4 doser/dygn)',
+      maxDay: Math.round(maxDay),
+      maxDayUnit: 'mg/dygn',
+      form: w < 16 ? 'Oral lösning (24 mg/ml Pamol) eller suppositorier — ALDRIG tabletter till barn <6 år'
+           : w < 25 ? 'Oral lösning 24 mg/ml eller munsönderfallande tabletter 250 mg'
+           : '500 mg tabletter eller brustabletter',
+      note: 'Dosering: 15 mg/kg × 4 gånger/dygn. Peroral lösning ger mer tillförlitlig absorption än rektalt.',
+      special: exceeded ? `Maxdos uppnådd vid ${maxSingleDose} mg — ej öka ytterligare` : null,
+      maxDoseWarning: exceeded
+    };
+  },
+
+  warnings(group) {
+    const w = [
+      {type:'green', text:'✓ Förstahandsval analgetikum — alla åldrar'},
+      {type:'green', text:'✓ Säkert vid graviditet, amning och lever frisk'},
+      {type:'yellow', text:'⚠️ Leverpåverkan vid överdos — överskrid INTE maxdos'},
+      {type:'yellow', text:'⚠️ Alkohol ökar leverpåverkan — fråga om alkoholbruk'},
+    ];
+    if (group === 'elderly') w.push({type:'yellow', text:'⚠️ Äldre: reducera maxdos till 3 g/dygn'});
+    return w;
+  },
+
+  tips: [
+    'Ge 1–2 h FÖRE tandbehandling för bäst preemptiv effekt',
+    'Kombineras med fördel med ibuprofen (alternerande dosering) vid måttlig–svår smärta',
+    'Verkningsmekanism: central smärthämning — ingen antiinflammatorisk effekt',
+    'Lösning absorberas snabbare än tabletter — föredra vid akut smärta',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 10; FASS Alvedon',
+  ]
+},
+
+{
+  id:'ibuprofen',
+  name:'Ibuprofen',
+  sub:'Ipren, Ibuprofen, Brufen',
+  cat:'analgetika',
+  catLabel:'Analgetika',
+
+  calc(w, group) {
+    if (group === 'pregnant') {
+      return {
+        dose: 0,
+        unit: '',
+        interval: '',
+        maxDay: 0,
+        maxDayUnit: '',
+        form: 'KONTRAINDICERAT',
+        note: 'Ibuprofen KONTRAINDICERAT under graviditet (>16 v) Säkert vid amning. Använd i första hand paracetamol.',
+        special: 'KONTRAINDICERAT under graviditet',
+        maxDoseWarning: true
+      };
+    }
+    if (group === 'elderly') {
+      return {
+        dose: 0,
+        unit: 'mg per dos',
+        interval: '0',
+        maxDay: 0,
+        maxDayUnit: 'mg/dygn ',
+        form: 'UNDVIK / KONTRAINDICERAT',
+        note: 'Använd inte COX-hämmare (NSAID) och acetylsalicylsyra till äldre ≥75 år. Stor risk för blödning, njur- och hjärtsvikt. Använd enbart paracetamol (max 3 g/dygn).', 
+        special: 'KONTRAINDICERAT',
+        maxDoseWarning: true
+      };
+    }
+    if (group === 'adult') {
+      return {
+        dose: 400,
+        unit: 'mg per dos',
+        interval: 'var 6–8:e timme (max 3 doser/dygn)',
+        maxDay: 1200,
+        maxDayUnit: 'mg/dygn (receptfri) / max 3200 mg/dygn (receptpliktig)',
+        form: '400 mg tabletter — 1 st per dos',
+        note: 'Antiinflammatorisk + analgetisk effekt. Förstahandsval vid odontogen smärta med inflammationskomponent.',
+        special: null,
+        maxDoseWarning: false
+      };
+    }
+    // Barn: 4-10 mg/kg per dos
+    const dosePerKg = 10;
+    const rawDose = w * dosePerKg;
+    const minAge = group === 'child_small' ? 3 : 6; // månader
+    if (w < 7) {
+      return {
+        dose: 0, unit: '', interval: '', maxDay: 0, maxDayUnit: '',
+        form: 'EJ rekommenderat under 7 kg / under 3 månaders ålder',
+        note: 'Ibuprofen ges ej till barn under 3 månader eller under 7 kg.',
+        special: 'UNDVIK — använd paracetamol', maxDoseWarning: true
+      };
+    }
+    const dose = Math.min(rawDose, 400);
+    const maxDay = Math.min(w * 40, 1200);
+    return {
+      dose: Math.round(dose),
+      unit: `mg per dos (${dosePerKg} mg/kg)`,
+      interval: 'var 6–8:e timme (max 3 doser/dygn)',
+      maxDay: Math.round(maxDay),
+      maxDayUnit: 'mg/dygn',
+      form: w < 20
+        ? `Oral suspension 40 mg/ml — ${Math.round(dose/40 * 10)/10} ml per dos`
+        : '200 mg tabletter — se beräknad dos',
+      note: 'Barn: 4-10 mg/kg per dos.(kalkylatorn räknar på 10 mg/kg) Max 30–40 mg/kg/dygn. Ges ej till barn under 3 månader eller <7 kg.',
+      special: null,
+      maxDoseWarning: rawDose > 400
+    };
+  },
+
+  warnings(group) {
+    const base = [
+      {type:'yellow', text:'⚠️ Kontraindicerat: astma, aktiv ulcus, njursvikt, hjärtsvikt'},
+      {type:'yellow', text:'⚠️ Screena ALLTID för antikoagulantia (Waran, NOAK, ASA)'},
+      {type:'blue', text:'ℹ️ Antiinflammatorisk effekt gör ibuprofen bättre än paracetamol vid odontogen smärta'},
+    ];
+    if (group === 'pregnant') return [{type:'red', text:'❌  KONTRAINDICERAT vid graviditet (>16 v). Säkert vid amning. Använd paracetamol i första hand.'}];
+    if (group === 'elderly') base.push({type:'red', text:'❌KONTRAINDICERAT för äldre ≥75 år — använd enbart paracetamol (max 3 g/dygn)'}); base.push({type:'green', text:'✓ Ta med mat eller mjölk för att minska GI-besvär'}); return base;
+  },
+
+  tips: [
+    'Kombinera med paracetamol för additiv analgetisk effekt (olika mekanismer)',
+    'Ge NSAID 1 h FÖRE extraktion/behandling som preemptiv analgesi',
+    'Naproxen 500 mg × 2 är alternativ vid längre durationssmärta (käkledsbesvär)',
+    'Kontraindikationer tandvård: astma, njursvikt, hjärtsvikt, blödningsrisk, ulcus',
+    'Vid penicillinallergi-utredning: NSAID bör undvikas (korsreaktion möjlig)',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 10; FASS Ipren; Strama',
+  ]
+},
+
+{
+  id:'naproxen',
+  name:'Naproxen',
+  sub:'Naproxen, Pronaxen, Naproxen Actavis',
+  cat:'analgetika',
+  catLabel:'Analgetika',
+
+  calc(w, group) {
+    if (group === 'pregnant') {
+      return {dose:0,unit:'',interval:'',maxDay:0,maxDayUnit:'',form:'KONTRAINDICERAT',note:'Naproxen KONTRAINDICERAT vid graviditet och Säkert vid amning men ibuprofen föredras. Använd paracetamol.',special:'KONTRAINDICERAT',maxDoseWarning:true};
+    }
+    if (group === 'elderly') {
+      return {dose:0,unit:'mg per dos',interval:'¨',maxDay:0,maxDayUnit:'mg/dygn',form:'UNDVIK / KONTRAINDICERAT',note:'Använd inte COX-hämmare (NSAID) och acetylsalicylsyra till äldre ≥75 år.  Stor risk för magblödning, njur- och hjärtsvikt.',special:'KONTRAINDICERAT',maxDoseWarning:true};
+    }
+    // Används primärt för vuxna vid käkledsbesvär/TMD
+    if (group === 'adult') {
+      return {dose:500,unit:'mg per dos',interval:'var 12:e timme (2 doser/dygn)',maxDay:1000,maxDayUnit:'mg/dygn',form:'500 mg tabletter — 1 st per dos',note:'Förstahandsval vid käkledsbesvär (TMD) och artralgi pga längre duration. Källa: Tandvårdens Läkemedel 2024, kap. 10 + bettfysiologiprotokoll.',special:null,maxDoseWarning:false};
+    }
+    // Barn: sällan indicerat i tandvård, ibuprofen föredras
+    return {dose:5,unit:`mg/kg per dos (max 250 mg)`,interval:'var 12:e timme',maxDay:Math.min(w*10,500),maxDayUnit:'mg/dygn',form:'Tabletter — ibuprofen föredras till barn i tandvård',note:'Naproxen är andrahandsval. Ibuprofen föredras till barn.',special:'Föredra ibuprofen till barn',maxDoseWarning:false};
+  },
+
+  warnings(group) {
+    return [
+      {type:'blue', text:'ℹ️ Bättre val än ibuprofen vid TMD/käkledsbesvär (längre duration)'},
+      {type:'yellow', text:'⚠️ Samma kontraindikationer som ibuprofen'},
+      {type:'yellow', text:'⚠️ Screena för NSAID-kontraindikationer innan ordination'},
+      {type:'blue', text:'ℹ️ Protokoll vid artrit: 10 dagars kur Naproxen 500 mg × 2'},
+    ];
+    if (group === 'pregnant') return [{type:'red', text:'❌ KONTRAINDICERAT vid graviditet. Säkert vid amning men ibuprofen föredras.  Använd paracetamol'}];
+    if (group === 'elderly') base.push({type:'red', text:'❌ KONTRAINDICERAT för äldre ≥75 år — använd enbart paracetamol (max 3 g/dygn)'});
+  },
+
+  tips: [
+    'Används primärt i bettfysiologiprotokoll (Bett-34-ARTRIT, Bett-30-TRAUMA)',
+    'Längre halveringstid än ibuprofen — 2 doser/dygn räcker',
+    'Kombination med paracetamol ger additiv effekt',
+    'SLIPA ALDRIG bett vid reversibel bettförändring pga artralgi',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 10; FASS Naproxen',
+  ]
+},
+
+// ── ANTIBIOTIKA ─────────────────────────────────────────────────────
+{
+  id:'pcv',
+  name:'Fenoximetylpenicillin (PcV)',
+  sub:'Kåvepenin, PcV Sandoz',
+  cat:'antibiotika',
+  catLabel:'Antibiotika',
+
+  calc(w, group) {
+    if (group === 'adult' || group === 'elderly' || group === 'pregnant') {
+      const note = group === 'pregnant'
+        ? 'Säkert vid graviditet och amning — förstahandsval'
+        : group === 'elderly' ? 'Dosen oförändrad för äldre utan njursvikt'
+        : 'Förstahandsantibiotikum i tandvård (Strama/Tandvårdens Läkemedel 2024)';
+      return {
+        dose:1600,unit:'mg per dos (1,6 g)',interval:'3 gånger dagligen i 5–7 dagar',
+        maxDay:4800,maxDayUnit:'mg/dygn',
+        form:'800 mg tabletter × 2 st per dos, eller 1 g tablett × 1,5 per dos',
+        note,special:null,maxDoseWarning:false
+      };
+    }
+    // Barn
+    const dosePerKg = 25; // mg/kg per dos (Tandvårdens Läkemedel/VGR)
+    const rawDose = w * dosePerKg;
+    const maxSingle = 1600;
+    const dose = Math.min(rawDose, maxSingle);
+    return { dose: Math.round(dose),
+      unit: 'mg per dos (25 mg/kg, max 1,6 g)',
+      interval: '3 gånger dagligen i 5–7 dagar',
+      maxDay: Math.round(Math.min(w * 75, 4800)),
+      maxDayUnit: 'mg/dygn',
+      form: w < 20
+        ? `Oral lösning 25 mg/ml — ${Math.round(dose/25 * 10)/10} ml per dos`
+        : `Tabletter 500 mg — ${Math.ceil(dose/500)} st per dos`,
+      note: 'Strama: 25 mg/kg × 3 i 5–7 dagar  vid odontogena infektioner. Tas på fastande mage eller med mat (barn). Max 1,6 g per dos.',
+      special: rawDose > 1600 ? 'Maxdos 1,6 g uppnådd — ge 1,6 g oavsett vikt' : null,
+      maxDoseWarning: false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'green', text:'✓ Förstahandsval vid odontogena infektioner (Strama 2024)'},
+      {type:'green', text:'✓ Säkert vid graviditet, amning och till barn från födseln'},
+      {type:'yellow', text:'⚠️ Tas på fastande mage för optimal absorption (vuxna)'},
+      {type:'red', text:'❌ Kontraindicerat vid penicillinallergi — välj klindamycin'},
+      {type:'blue', text:'ℹ️ Dokumentera alltid allergi-anamnes i journal före ordination'},
+    ];
+  },
+
+  tips: [
+    'Indikation: systemisk påverkan (feber) ELLER spridningstecken (trismus, lymfkörtlar, extraoral svullnad)',
+    'Antibiotika ERSÄTTER INTE kausal behandling (extraktion/trepanation)',
+    'Antibiotika vid lokal abscess utan systemisk påverkan: EJ indicerat (Strama)',
+    'Duration tandvård: 5–7 dagar. Längre kurer ej evidensbaserade',
+    'ALDRIG bredspektrum-antibiotika i förstahand (Strama)',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 2; Strama Nationell; FASS Kåvepenin',
+  ]
+},
+
+{
+  id:'klindamycin',
+  name:'Klindamycin',
+  sub:'Dalacin, Klindamycin',
+  cat:'antibiotika',
+  catLabel:'Antibiotika',
+
+  calc(w, group) {
+    const note = 'ANDRAHANDSVAL — Enbart vid verifierad penicillinallergi (Strama/Tandvårdens Läkemedel 2024)';
+    if (group === 'adult' || group === 'elderly' || group === 'pregnant') {
+      const special = group === 'elderly' ? 'Äldre: risk för C. difficile-diarré ökad' :
+                      group === 'pregnant' ? 'Används med försiktighet vid graviditet — rådgör med läkare' : null;
+      return {
+        dose:150,unit:'mg per dos',interval:'3 gånger dagligen i 5–7 dagar',
+        maxDay:450,maxDayUnit:'mg/dygn',
+        form:'150 mg kapslar — 1 st per dos',
+        note,special,maxDoseWarning:false
+      };
+    }
+    // Barn: 5 mg/kg × 3 (Strama barnrekommendation)
+    const dosePerKg = 5; // mg/kg per dos
+    const rawDose = w * dosePerKg;
+    const maxSingle = 150;
+    const dose = Math.min(rawDose, maxSingle);
+    return {
+      dose: Math.round(dose),
+      unit: `mg per dos (5 mg/kg, max 150 mg)`,
+      interval: '3 gånger dagligen i 5–7 dagar',
+      maxDay: Math.round(Math.min(w * 15, 450)),
+      maxDayUnit: 'mg/dygn',
+      form: w < 25
+        ? `Oral lösning om tillgänglig, annars kapslar 75 mg — ${Math.ceil(dose/75)} st`
+        : `150 mg kapslar — 1 st per dos`,
+      note: 'Strama barnrekommendation: 5–6 mg/kg × 3. Tandvårdens Läkemedel 2024: barn 5–6 mg/kg × 3, max 150 mg ×3 i 5–7 dagar. Max 150 mg × 3. (Källa: Tandvårdens Läkemedel 2024)', special: 'Används ENBART vid dokumenterad penicillinallergi', maxDoseWarning: false 
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'red', text:'❌ ANDRAHANDSVAL — Enbart vid verifierad pc-allergi'},
+      {type:'red', text:'❌ Klindamycin ger ökad risk för C. difficile-kolit (allvarlig diarré)'},
+      {type:'yellow', text:'⚠️ Instruera patienten: avbryt vid ihållande diarré (>24h) — kontakta läkare'},
+      {type:'yellow', text:'⚠️ ALDRIG förstahandsval — stark resistensselekterare'},
+      {type:'blue', text:'ℹ️ Källa: Strama 2024; Tandvårdens Läkemedel 2024, kap. 2'},
+    ];
+  },
+
+  tips: [
+    'Indicerat ENBART vid verifierad penicillinallergi (inte bara "osäker på allergi")',
+    'Dokumentera alltid allergityp i journalen',
+    'Bred antimikrobiell täckning — ökad risk för resistensutveckling',
+    'Patienten ska informeras om C. difficile-risk (diarré) skriftligen',
+    'Profylax endokardit: klindamycin 600 mg engångsdos 60 min före (vuxen)',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 2; FASS Dalacin; Strama',
+  ]
+},
+
+{
+  id:'metronidazol',
+  name:'Metronidazol',
+  sub:'Flagyl, Metronidazol',
+  cat:'antibiotika',
+  catLabel:'Antibiotika',
+
+  calc(w, group) {
+    if (group === 'pregnant') {
+      return {dose:0,unit:'',interval:'',maxDay:0,maxDayUnit:'',form:'Undvik i 1:a trimestern',note:'Metronidazol används med stor försiktighet vid graviditet. Rådgör med läkare. Undvik i 1:a trimestern.',special:'Graviditet — rådgör med läkare',maxDoseWarning:true};
+    }
+    if (group === 'adult' || group === 'elderly') {
+      return {
+        dose:400,unit:'mg per dos',interval:'3 gånger dagligen i 5–7 dagar',
+        maxDay:1200,maxDayUnit:'mg/dygn',
+        form:'400 mg tabletter — 1 st per dos',
+        note:'Indikation: ANUG/NUG, parodontal abscess med systemisk påverkan. Alternativt tillägg till PcV vid svår odontogen infektion. Källa: Tandvårdens Läkemedel 2024, kap. 2.',
+        special:group==='elderly'?'Äldre: reducera till 200 mg × 3 vid njurpåverkan':null,
+        maxDoseWarning:false
+      };
+    }
+    // Barn ANUG
+    const dosePerKg = 7.5 ; // 7,5 mg/kg per dos
+    const dose = Math.min(w * dosePerKg, 400);
+    return {
+      dose:Math.round(dose),unit:`mg per dos (7,5 mg/kg, max 400 mg)`,
+      interval:'3 gånger dagligen i 5–7 dagar',
+      maxDay:Math.round(Math.min(w*22.5,1200)),maxDayUnit:'mg/dygn',
+      form:'Oral lösning eller krossade tabletter',
+      note:'Barn ANUG: 7.5 mg/kg × 3, max 400 mg × 3. Källa: Tandvårdens Läkemedel 2024, kap. 2.',
+      special:null,maxDoseWarning:false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'yellow', text:'⚠️ Absolut kontraindikation: alkohol under behandling och 48h efter'},
+      {type:'yellow', text:'⚠️ Interaktion: Warfarin — förstärkt antikoagulativ effekt'},
+      {type:'blue', text:'ℹ️ Indikation: ANUG/NUG, anaeroba infektioner'},
+      {type:'yellow', text:'⚠️ Illamående vanlig biverkan — ta med mat'},
+      {type:'blue', text:'ℹ️ Källa: Tandvårdens Läkemedel 2024, kap. 2; FASS Flagyl; Strama'},
+    ];
+  },
+
+  tips: [
+    'Primär indikation i tandvård: ANUG/NUG (nekrotiserande gingivit)',
+    'Kombination med PcV vid svår odontogen infektion med anaerobt inslag',
+    'ALDRIG ta alkohol under kuren eller 48h efter (disulfiramliknande reaktion)',
+    'Warfarin-interaktion: kontrollera INR vid parallell behandling',
+    'Tandvårdens Läkemedel 2024 harmoniserade dosen med Strama: 400 mg × 3',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 2; Strama Nationell',
+  ]
+},
+
+// ── LOKALANESTESI ───────────────────────────────────────────────────
+{
+  id:'artikain',
+  name:'Artikain 40 mg/ml + adrenalin',
+  sub:'Septocaine, Ubistesin, Articaine comp.',
+  cat:'lokalanestesi',
+  catLabel:'Lokalanestesi',
+
+  calc(w, group) {
+    if (group === 'pregnant') {
+      return {
+        dose: Math.round(Math.min(w * 7, 500)),
+        unit: 'mg maxdos (7 mg/kg)',
+        interval: 'Engångsdos — per behandlingstillfälle',
+        maxDay: null,
+        maxDayUnit: `= ${Math.round(Math.min(w*7,500)/68*10)/10} cylinderampuller à 68 mg`,
+        form: 'Cylinderampull 1,8 ml (68 mg artikain + 17 µg adrenalin)',
+        note: 'Säkert vid graviditet och amning. Maxdos adrenalin: 100 µg per behandlingstillfälle (= 5–6 ampuller). Källa: Tandvårdens Läkemedel 2024, kap. 11.',
+        special: null,
+        maxDoseWarning: false
+      };
+    }
+    if (w < 20 || group === 'child_small') {
+      // Barn under 4 år: kontraindicerat
+      if (w < 20) {
+        return {dose:0,unit:'',interval:'',maxDay:null,maxDayUnit:'',form:'KONTRAINDICERAT under 4 år/20 kg',note:'Artikain (Septocaine) ska ej användas till barn under 4 år eller under 20 kg. Källa: FASS Septocaine.',special:'KONTRAINDICERAT <4 år/ <20 kg',maxDoseWarning:true};
+      }
+      const maxDose = Math.round(w * 7);
+      const ampulles = Math.round(maxDose / 68 * 10) / 10;
+      const simpleIngrepp = Math.round(w * 0.04 * 10) / 10; // 0,04 ml/kg enkelt ingrepp
+      return {
+        dose: maxDose,
+        unit: `mg maxdos (7 mg/kg)`,
+        interval: 'Engångsdos per behandlingstillfälle',
+        maxDay: null,
+        maxDayUnit: `= ${ampulles} cylinderampuller à 68 mg`,
+        form: `Enkelt ingrepp: ${simpleIngrepp} ml (0,04 ml/kg). Cylinderampull 1,8 ml à 68 mg.`,
+        note: `Barn: maxdos 7 mg/kg. Enkelt ingrepp: 0,04 ml/kg (= ${simpleIngrepp} ml för ${w} kg). Septocaine ej under 4 år. Källa: FASS Septocaine; Tandvårdens Läkemedel 2024, kap. 11.`,
+        special: null,
+        maxDoseWarning: false
+      };
+    }
+    const maxDose = Math.round(Math.min(w * 7, 500));
+    const ampulles = Math.round(maxDose / 68 * 10) / 10;
+    return {
+      dose: maxDose,
+      unit: 'mg maxdos (7 mg/kg, max 500 mg)',
+      interval: 'Per behandlingstillfälle',
+      maxDay: null,
+      maxDayUnit: `= ${ampulles} cylinderampuller à 68 mg (1,8 ml)`,
+      form: 'Cylinderampull 1,8 ml (68 mg artikain + 17 µg adrenalin)',
+      note: 'Injektionshastighet: max 1 ml/min. Adrenalinmaxdos: 100 µg per tillfälle (= ca 6 ampuller). Källa: Tandvårdens Läkemedel 2024, kap. 11; FASS Septocaine.',
+      special: null,
+      maxDoseWarning: false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'green', text:'✓ Förstahandsval lokalanestesi i tandvård'},
+      {type:'yellow', text:'⚠️ Adrenalinmaxdos: 100 µg per tillfälle (≈6 ampuller à 1,8 ml)'},
+      {type:'yellow', text:'⚠️ Screena hjärtsjukdom, tyreoidea, MAO-hämmare, betablockerare'},
+      {type:'red', text:'❌ Septocaine kontraindicerat under 4 år'},
+      {type:'blue', text:'ℹ️ Injektera ALLTID långsamt (1 ml/min) och aspirera'},
+    ];
+  },
+
+  tips: [
+    'Snabbare onset och bättre penetration än lidokain pga högt fettlöslighet',
+    'God effekt vid mandibularbedövning — kan användas som alternativ vid misslyckad lidokainblockad',
+    'Artikain bildar sulfiter — kontraindicerat vid sulfitkänslighet/sulfit-astma',
+    '1 cylinderampull = 1,8 ml = 72 mg artikain = 17 µg adrenalin',
+    'Kontraindikationer: MAOI, betablockerare (icke-selektiva), feokromocytom',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 11; FASS Septocaine',
+  ]
+},
+
+{
+  id:'mepivakain',
+  name:'Mepivakain 30 mg/ml (utan adrenalin)',
+  sub:'Carbocain, Mepivakain',
+  cat:'lokalanestesi',
+  catLabel:'Lokalanestesi',
+
+  calc(w, group) {
+    const maxDose = Math.round(Math.min(w * 4.4, 300));
+    const ampulles = Math.round(maxDose / 54 * 10) / 10; // 30mg/ml × 1,8 ml = 54 mg
+    return {
+      dose: maxDose,
+      unit: 'mg maxdos (4,4 mg/kg)',
+      interval: 'Per behandlingstillfälle',
+      maxDay: null,
+      maxDayUnit: `= ${ampulles} cylinderampuller à 54 mg (1,8 ml)`,
+      form: 'Cylinderampull 1,8 ml (54 mg mepivakain utan adrenalin)',
+      note: 'Används vid: postoperativ blödning (utan adrenalinmask), hjärtsjukdom, hypertyreos, MAOI. Kortare verkningstid utan adrenalin (30–60 min). Källa: Tandvårdens Läkemedel 2024, kap. 11.',
+      special: null,
+      maxDoseWarning: false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'blue', text:'ℹ️ Förstahandsval vid postoperativ blödning (ej maskera blödningskälla)'},
+      {type:'blue', text:'ℹ️ Välj vid kontraindikation mot adrenalin'},
+      {type:'yellow', text:'⚠️ Kortare verkningstid (30–60 min) än artikain med adrenalin'},
+      {type:'green', text:'✓ Säkert vid graviditet och amning'},
+      {type:'blue', text:'ℹ️ Inga kända kliniska interaktioner vid tandvårdens doser'},
+    ];
+  },
+
+  tips: [
+    'Primär indikation: postoperativ blödning — adrenalin maskerar blödningskälla',
+    'Alternativ vid hjärtsjukdom där adrenalin är kontraindicerat',
+    'Kortare duration utan adrenalin — komplettera vid längre ingrepp',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 11; FASS Carbocain',
+  ]
+},
+
+// ── SEDERING ────────────────────────────────────────────────────────
+{
+  id:'diazepam',
+  name:'Diazepam',
+  sub:'Stesolid, Diazepam',
+  cat:'sedering',
+  catLabel:'Sedering',
+
+  calc(w, group) {
+    if (group === 'pregnant') {
+      return {dose:0,unit:'',interval:'',maxDay:null,maxDayUnit:'',form:'KONTRAINDICERAT',note:'Diazepam kontraindicerat vid graviditet och amning.',special:'KONTRAINDICERAT',maxDoseWarning:true};
+    }
+    if (group === 'elderly') {
+      return {dose:2,unit:'mg (lägsta dos)',interval:'Engångsdos 1 h före behandling',maxDay:null,maxDayUnit:'Max 5 mg',form:'Tablett 2 mg',note:'Äldre: lägsta möjliga dos (2 mg). Ökad känslighet. Ledsagare obligatoriskt. Källa: Tandvårdens Läkemedel 2024, kap. 8.',special:'Ledsagare OBLIGATORISKT — ALDRIG bil',maxDoseWarning:false};
+    }
+    if (group === 'adult') {
+      return {dose:5,unit:'mg (standarddos)',interval:'Engångsdos 1 h före behandling',maxDay:null,maxDayUnit:'Max 10 mg',form:'Tablett 5 mg — 1 st',note:'Premedicinering vid käkledsluxation. Ledsagare obligatoriskt. Bil: ALDRIG. Källa: Tandvårdens Läkemedel 2024, kap. 8.',special:'Ledsagare OBLIGATORISKT — ALDRIG bil',maxDoseWarning:false};
+    }
+    // Barn: inte indicerat i tandvård utan specialistklinik
+    return {dose:0,unit:'',interval:'',maxDay:null,maxDayUnit:'',form:'Se specialistklinik',note:'Diazepam till barn i tandvård kräver specialistbedömning. Midazolam är alternativ på specialistklinik. Källa: Tandvårdens Läkemedel 2024, kap. 8.',special:'Kräver specialistbedömning',maxDoseWarning:false};
+  },
+
+  warnings(group) {
+    return [
+{type:'red', text:'❌ Diazepam rekommenderas generellt INTE som premedicinering i tandvården (Tandvårdens Läkemedel 2024)'},
+
+      {type:'red', text:'❌ LEDSAGARE OBLIGATORISKT — Aldrig bil dagen för behandling'},
+      {type:'red', text:'❌ Kontraindikationer: myasthenia gravis, sömnapné, leversvikt, graviditet'},
+      {type:'yellow', text:'⚠️ Interaktion: alkohol och andra CNS-depressiva (additiv sedation)'},
+      {type:'yellow', text:'⚠️ Äldre: ökad känslighet — börja med 2 mg'},
+      {type:'blue', text:'ℹ️ Källa: Tandvårdens Läkemedel 2024, kap. 8; FASS Stesolid'},
+    ];
+  },
+
+  tips: [
+    'Indication tandvård: premedicinering vid käkledsluxation + tandvårdsfobi',
+    'Ge 1 h före behandling för optimal effekt',
+    'Screena: myasthenia gravis, sömnapné, leversjukdom, graviditet',
+    'Paradoxal reaktion förekommer (agitation) — vanligare hos barn och äldre',
+    'Midazolam (specialistklinik) är alternativ med kortare verkningstid',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 8; FASS Stesolid',
+  ]
+},
+
+// ── HEMOSTAS ────────────────────────────────────────────────────────
+{
+  id:'cyklokapron',
+  name:'Tranexamsyra (Cyklokapron)',
+  sub:'Cyklokapron, Tranexamsyra',
+  cat:'hemostas',
+  catLabel:'Hemostas',
+
+  calc(w, group) {
+    if (group === 'child_small' || group === 'child_big') {
+      const dose = Math.round(Math.min(w * 25, 1000));
+      return {
+        dose, unit:`mg (25 mg/kg)`,interval:'Engångsdos eller var 8:e timme vid behov',maxDay:null,
+        maxDayUnit:`= ${Math.round(dose/100)/10} ml av lösning 100 mg/ml`,
+        form:'Munskölj 5% (50 mg/ml): skölj och spott, SVÄLJ EJ',
+        note:'Barn: 25 mg/kg. Lokalt: Cyklokapron 100 mg/ml appliceras på kompress i alveol 20–30 min. Källa: Tandvårdens Läkemedel 2024, kap. 4.',
+        special:null,maxDoseWarning:false
+      };
+    }
+    return {
+      dose:1000,unit:'mg (standarddos)',interval:'Engångsdos eller var 8:e timme',maxDay:null,
+      maxDayUnit:'Munskölj: 10 ml av 5% lösning i 2 min, sput, × 4/dag',
+      form:'Munskölj 5%: 10 ml skölj 2 min, sput. Lokalt: kompress dränkt i 100 mg/ml inj.lösn.',
+      note:'Lokal hemostas vid postextraktionsblödning. Komprimera 20–30 min med Cyklokapron-kompress. Källa: Tandvårdens Läkemedel 2024, kap. 4.',
+      special:null,maxDoseWarning:false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'green', text:'✓ Förstahandsval vid postoperativ blödning — lokal applikation'},
+      {type:'yellow', text:'⚠️ Munskölj: sput — svälj EJ (systemisk absorption annars)'},
+      {type:'blue', text:'ℹ️ Kombinera med Spongostan/Surgicel i alveolen för bäst effekt'},
+      {type:'blue', text:'ℹ️ Antikoagulantia-patienter: kontrollera INR/NOAK före extraktion'},
+    ];
+  },
+
+  tips: [
+    'Lokal applikation: kompress dränkt i Cyklokapron injektionslösning (100 mg/ml) i alveolen',
+    'Komprimera 20–30 min med bettamponad',
+    'Munskölj 5% (50 mg/ml): 10 ml, håll 2 min, sput — upprepas var 6:e timme',
+    'Kombinera med Spongostan och Vicryl-sutur vid kraftig blödning',
+    'Antikoagulantia: tranexamsyra kan tillåta extraktion utan utsättning (rådgör med läkare)',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 4; FASS Cyklokapron',
+  ]
+},
+
+// ── STARKA ANALGETIKA ────────────────────────────────────────────────
+{
+  id:'morfin',
+  name:'Morfin (Stark opioid)',
+  sub:'Morfin Meda, OxyNorm, Dolcontin',
+  cat:'analgetika',
+  catLabel:'Analgetika — Stark opioid',
+
+  calc(w, group) {
+    if (group === 'pregnant') {
+      return {
+        dose:0, unit:'', interval:'', maxDay:null, maxDayUnit:'',
+        form:'Undvik — fetalt andningsdepression',
+        note:'Morfin passerar placenta. Neonatal andningsdepression vid användning nära partus. Rådgör alltid med läkare/obstetriker.',
+        special:'Graviditet — ENBART i samråd med läkare', maxDoseWarning:true
+      };
+    }
+    if (group === 'elderly') {
+      const dose = Math.round(Math.max(w * 0.05, 2.5));
+      return {
+        dose: Math.min(dose, 5),
+        unit:'mg per os (startvärde)',
+        interval:'var 4–6:e timme — titrera noga',
+        maxDay:null, maxDayUnit:'Titrera individuellt',
+        form:'Morfin oral lösning 2 mg/ml eller tablett 5 mg',
+        note:'Äldre: starta med 2,5–5 mg. Kraftigt reducerad clearance. Risk andningsdepression, konfusion, förstoppning. Källa: Tandvårdens Läkemedel 2024, kap. 10; FASS Morfin Meda.',
+        special:'Äldre: börja lågt (2,5 mg), titrera försiktigt',
+        maxDoseWarning:false
+      };
+    }
+    if (group === 'adult') {
+      return {
+        dose:5,
+        unit:'mg per os (startvärde akut)',
+        interval:'var 4:e timme — titrera efter effekt',
+        maxDay:null, maxDayUnit:'Titrera individuellt — ingen fast maxdos',
+        form:'Tablett 5 mg (delbar) eller oral lösning 2 mg/ml',
+        note:'Svaga opioider rekommenderas EJ i tandvård (Tandvårdens Läkemedel 2024, kap. 10). Morfin enbart vid svår postoperativ smärta när NSAID+paracetamol är otillräckligt. Kortast möjliga tid.',
+        special:'Kräver recept (narkotika förteckning II)',
+        maxDoseWarning:false
+      };
+    }
+    // Barn
+    const dosePerKg = 0.2; // 0,2 mg/kg per oral dos
+    const dose = Math.round(Math.min(w * dosePerKg, 10) * 10) / 10;
+    return {
+      dose, unit:`mg per os (0,2 mg/kg)`,
+      interval:'var 4–6:e timme',
+      maxDay:null, maxDayUnit:'Max 10 mg per dos barn',
+      form:`Oral lösning 2 mg/ml — ${Math.round(dose/2*10)/10} ml per dos`,
+      note:'Morfin peroralt till barn: 0,2 mg/kg per dos. Källa: Tandvårdens Läkemedel 2024, kap. 10; ePed. Kräver specialiströrd förskrivning till barn i tandvård.',
+      special:'Kräver narkotikarecept (förteckning II)',
+      maxDoseWarning:false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'red', text:'❌ Svaga opioider rekommenderas EJ i tandvård (Tandvårdens Läkemedel 2024)'},
+      {type:'red', text:'❌ Kräver narkotikarecept (förteckning II) — dokumentera indikation'},
+      {type:'red', text:'❌ Kontraindikationer: andningsdepression, paralytisk ileus, MAO-hämmare'},
+      {type:'yellow', text:'⚠️ Risk: andningsdepression, sedering, förstoppning, beroende'},
+      {type:'yellow', text:'⚠️ Äldre och njursvikt: kraftigt reducerad clearance — starta lågt'},
+      {type:'yellow', text:'⚠️ Interaktion: bensodiazepiner (Diazepam) — additiv andningsdepression'},
+      {type:'blue', text:'ℹ️ Rekommendera laxantia vid >1 dos — morfin ger förstoppning'},
+    ];
+  },
+
+  tips: [
+    'Tandvårdens Läkemedel 2024 (kap. 10): "Svaga opioider rekommenderas inte inom tandvård"',
+    'Morfin är undantagsfall: svår postoperativ smärta när NSAID+paracetamol (kombinerat) är otillräckligt',
+    'Förskrivningsrätt: Tandläkare har rätt att förskriva morfin (narkotikaförteckning II) FASS/BfS',
+    'Narkotikarecept: Skriv på NKrecept — ange diagnos, dos, mängd, tidsbegränsning',
+    'Alternativ: OxyNorm (oxikodon) 5 mg, Targiniq (oxikodon+naloxon, minskar förstoppning)',
+    'Kortast möjliga duration — morfin ska EJ ges i onödan i tandvård',
+    'ALLTID kombinera med paracetamol och NSAID (opioidbesparande effekt)',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 10; FASS Morfin Meda; HSLF-FS 2016:34',
+  ]
+},
+
+{
+  id:'oxikodon',
+  name:'Oxikodon (Stark opioid)',
+  sub:'OxyNorm, Targiniq, Oxycodone',
+  cat:'analgetika',
+  catLabel:'Analgetika — Stark opioid',
+
+  calc(w, group) {
+    if (group === 'pregnant') {
+      return {dose:0,unit:'',interval:'',maxDay:null,maxDayUnit:'',form:'Undvik — neonatal andningsdepression',note:'Oxikodon passerar placenta. Undvik vid graviditet. Rådgör med läkare.',special:'Graviditet — ENBART i samråd med läkare',maxDoseWarning:true};
+   }
+  if (group === 'elderly') {
+    return {
+        dose: 0, 
+        unit: '', 
+        interval: '', 
+        maxDay: 0, 
+        maxDayUnit: '', 
+        form: 'UNDVIK / KONTRAINDICERAT', 
+        note: 'Använd inte COX-hämmare (NSAID) och acetylsalicylsyra till äldre ≥75 år. Stor risk för blödning, njur- och hjärtsvikt. Använd enbart paracetamol (max 3 g/dygn).', 
+        special: 'KONTRAINDICERAT', 
+        maxDoseWarning: true 
+};
+    }
+
+    if (group === 'adult') {
+      return {dose:5,unit:'mg per os (startvärde)',interval:'var 4–6:e timme',maxDay:null,maxDayUnit:'Titrera individuellt',form:'OxyNorm 5 mg kapsel eller oral lösning 5 mg/ml — 1 ml per dos',note:'Alternativ till morfin. Targiniq (oxikodon 5 mg + naloxon 2,5 mg) rekommenderas vid förväntad >1 dos — minskar förstoppning. Källa: Tandvårdens Läkemedel 2024, kap. 10.',special:'Targiniq föredras pga lägre förstoppningsrisk',maxDoseWarning:false};
+    }
+    const dose = Math.round(Math.min(w * 0.1, 5) * 10) / 10;
+    return {dose,unit:`mg per os (0,1 mg/kg)`,interval:'var 4–6:e timme',maxDay:null,maxDayUnit:'Max 5 mg per dos',form:'OxyNorm oral lösning 5 mg/ml',note:'Oxikodon till barn i tandvård: specialiströrd. 0,1 mg/kg per dos. Kräver narkotikarecept.',special:'Kräver narkotikarecept (förteckning II)',maxDoseWarning:false};
+  },
+
+  warnings(group) {
+    return [
+      {type:'red', text:'❌ Kräver narkotikarecept (förteckning II)'},
+      {type:'red', text:'❌ Svaga opioider rekommenderas EJ inom tandvård (Tandvårdens Läkemedel 2024)'},
+      {type:'yellow', text:'⚠️ Risk beroendeutveckling — kortast möjliga duration'},
+      {type:'yellow', text:'⚠️ Targiniq (oxikodon+naloxon) föredras vid >1 dos — minskar förstoppning'},
+      {type:'yellow', text:'⚠️ Interaktion: bensodiazepiner, alkohol, CNS-depressiva'},
+      {type:'blue', text:'ℹ️ Källa: Tandvårdens Läkemedel 2024, kap. 10; FASS OxyNorm/Targiniq'},
+    ];
+  },
+
+  tips: [
+    'Targiniq (oxikodon+naloxon) är att föredra om >1 dos behövs — naloxon blockerar perifert opioidreceptorer i tarmen och minskar förstoppning',
+    'OxyNorm snabbverkande: effekt inom 30–60 min, duration 4–6 h',
+    'ALLTID kombinera med paracetamol och NSAID för opioidbesparande effekt',
+    'Informera patienten: ej bil, ej alkohol, ej bensodiazepiner parallellt',
+    'Dokumentera: indikation, förväntad duration, uppföljningsplan i journalen',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 10; FASS OxyNorm; FASS Targiniq',
+  ]
+},
+
+// ── ENDOKARDITPROFYLAX ───────────────────────────────────────────────
+{
+  id:'amoxicillin_profylax',
+  name:'Amoxicillin (Endokarditprofylax)',
+  sub:'Amoxicillin, Amimox, Amoxicillin Sandoz',
+  cat:'antibiotika',
+  catLabel:'Antibiotika — Profylax',
+
+  calc(w, group) {
+    if (group === 'adult' || group === 'elderly' || group === 'pregnant') {
+      return {
+        dose:2000, unit:'mg (2 g) — ENGÅNGSDOS',
+        interval:'60 minuter före ingrepp',
+        maxDay:null, maxDayUnit:'Engångsdos — ej upprepas',
+        form:'Amoxicillin 500 mg tabletter × 4 st — intag 60 min före',
+        note:'Endokarditprofylax ENBART till högriskgrupp (reumatisk klaffsjukdom, kongenital hjärtsjukdom, tidigare endokardit, hjärttransplanterat). Bedöms av kardiolog. Källa: Tandvårdens Läkemedel 2024, kap. 3.',
+        special:'ENBART högriskgrupp — INTE alla hjärtsjuka',
+        maxDoseWarning:false
+      };
+    }
+    // Barn
+    const dose = Math.round(Math.min(w * 50, 2000));
+    return {
+      dose, unit:`mg (50 mg/kg, max 2 g) — ENGÅNGSDOS`,
+      interval:'60 minuter före ingrepp',
+      maxDay:null, maxDayUnit:'Engångsdos — ej upprepas',
+      form: w < 20 ? `Oral suspension 50 mg/ml — ${Math.round(dose/50*10)/10} ml`
+           : `Amoxicillin tabletter — ${Math.ceil(dose/500)} × 500 mg`,
+      note:'Barn endokarditprofylax: 50 mg/kg, max 2 g. Engångsdos 60 min före. ENBART högriskgrupp (kardiologs beslut). Källa: Tandvårdens Läkemedel 2024, kap. 3.',
+      special:'ENBART högriskgrupp — kardiologs beslut',
+      maxDoseWarning:false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'red', text:'❌ ENBART till kardiologs verifierade högriskpatienter'},
+      {type:'red', text:'❌ Kontraindicerat vid penicillinallergi — välj klindamycin (se nedan)'},
+      {type:'yellow', text:'⚠️ Högrisk: tidigare endokardit, reumatisk klaffsjukdom, kongenital hjärtsjukdom, hjärttransplantat'},
+      {type:'blue', text:'ℹ️ Klorhexidinsköljning 0,2% pre-op rekommenderas alltid'},
+      {type:'blue', text:'ℹ️ Vid pc-allergi: Klindamycin 600 mg vuxen / 15 mg/kg barn — 60 min före'},
+    ];
+  },
+
+  tips: [
+    'Högriskgrupper (kräver profylax): tidigare endokardit, reumatisk hjärtklaffsjukdom, komplexa kongenitala hjärtfel, hjärttransplantation med valvulopati',
+    'INTE indicerat vid: mitralklaffsprolaps, implanterat pacemaker, CABG, ej verifierat högrisk',
+    'Vid pc-allergi: Klindamycin 600 mg (vuxen) eller 15 mg/kg (barn) — 60 min före',
+    'Klorhexidinsköljning 0,2% alltid pre-op till hjärtpatienter',
+    'Dokumentera alltid hjärtdiagnos + beslut om profylax i journalen',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 3; ESC-riktlinjer endokardit 2023',
+  ]
+},
+
+// ── NYSTATIN (CANDIDA) ───────────────────────────────────────────────
+{
+  id:'nystatin',
+  name:'Nystatin (Nystimex)',
+  sub:'Nystimex, Nystatin oral lösning',
+  cat:'antibiotika',
+  catLabel:'Antimykotika',
+
+  calc(w, group) {
+    return {
+      dose:400000, unit:'IE per dos (4 ml)',
+      interval:'4 gånger dagligen i 4 veckor',
+      maxDay:null, maxDayUnit:'Fortsätt 1–2 v efter symtomfrihet',
+      form:'Nystimex oral susp. 100 000 IE/ml — skölj 4 ml, håll, svälj',
+      note:'Lokal effekt — absorberas ej systemiskt. Indikation: oral candidos. Barn: 1–2 ml × 4. Neonati: 0,5–1 ml × 4 i varje kindpåse. Källa: Tandvårdens Läkemedel 2024, kap. 12; FASS Nystimex.',
+      special:null, maxDoseWarning:false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'green', text:'✓ Förstahandsval oral candidos'},
+      {type:'green', text:'✓ Säkert vid graviditet, amning, barn och äldre (ej systemisk absorption)'},
+      {type:'blue', text:'ℹ️ Identifiera och behandla utlösande orsak (antibiotikakur, steroidinhalator, diabetes)'},
+      {type:'yellow', text:'⚠️ Flukonazol (andrahandsval): OBS interaktion Warfarin — kontrollera INR'},
+      {type:'blue', text:'ℹ️ Munvinklar (angulär cheilit): Daktacort kräm lokalt'},
+    ];
+  },
+
+  tips: [
+    'Administrering: skölj munnen med 4 ml — håll 1–2 min — svälj',
+    'Barn under 6 år: dela dosen i varje kindpåse för bättre kontakt',
+    'Identifiera alltid bakomliggande orsak: antibiotika, steroidinhalator, xerostomi, diabetes',
+    'Vid steroidinhalator: instruera sköljning med vatten efter varje inhalation',
+    'Flukonazol 50 mg × 1 i 7–14 dagar: andrahandsval — kontrollera Warfarin-interaktion via Janusmed',
+    'Källa: Tandvårdens Läkemedel 2024–2025, kap. 12; FASS Nystimex',
+  ]
+},
+
+// ── FLUORID (KARIES) ─────────────────────────────────────────────────
+{
+  id:'duraphat',
+  name:'Fluorlack (Duraphat 22 600 ppm)',
+  sub:'Duraphat, Enamel Pro Varnish',
+  cat:'hemostas',
+  catLabel:'Kariesprevention',
+
+  calc(w, group) {
+    const vol = group === 'child_small' ? '0,25 ml (liten portionsdos)' : '0,5 ml per applicering';
+    return {
+      dose: group === 'child_small' ? 0.25 : 0.5,
+      unit:'ml per applicering',
+      interval: group === 'child_small' ? '2–4 ggr/år (hög risk: 4 ggr)' : '2–4 ggr/år',
+      maxDay:null, maxDayUnit:'Appliceras av tandvårdspersonal',
+      form:`Duraphat 22 600 ppm fluorlack — ${vol}`,
+      note:'Källa: Socialstyrelsen NR Tandvård 2022; Tandvårdens Läkemedel 2024, kap. 5. Hög kariesrisk: 4 × per år. Barn under 3 år: 0,25 ml portionsdos.',
+      special:null, maxDoseWarning:false
+    };
+  },
+
+  warnings(group) {
+    return [
+      {type:'green', text:'✓ Säkert alla åldrar inkl. barn under 3 år (0,25 ml portionsdos)'},
+      {type:'green', text:'✓ Rekommenderas av Socialstyrelsen NR Tandvård 2022'},
+      {type:'yellow', text:'⚠️ Svälj ej — sput i efterhand (hög fluorkoncentration)'},
+      {type:'blue', text:'ℹ️ MIH, hypomineralisering, exponerado rötter: alltid fluorlack'},
+    ];
+  },
+
+  tips: [
+    'Starkast effekt vid hög kariesrisk — applicera 4 × per år',
+    'Barn 0–3 år: Duraphat Infant 0,25 ml portionsdos — ALDRIG hel tub',
+    'Kombination med MI Paste Plus (RecaldentTM) vid MIH/hypomineralisering',
+    'Applicera på torra tänder — appliceringspensel, tunn strimma längs gingivalranden',
+    'Källa: Tandvårdens Läkemedel 2024, kap. 5; Socialstyrelsen NR 2022',
+  ]
+}
+
+]; // END DRUGS
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+let currentWeight = null;
+let currentGroup = 'adult';
+let currentCatFilter = 'all';
+let currentResults = [];
+
+function onWeightChange() {
+  const v = parseFloat(document.getElementById('weightInput').value);
+  currentWeight = isNaN(v) || v <= 0 ? null : v;
+  const disp = document.getElementById('weightDisplay');
+  if (currentWeight) {
+    const bmi = currentGroup === 'adult' ? ` • BMI-ref: ${Math.round(currentWeight)} kg` : '';
+    disp.textContent = `${currentWeight} kg${bmi} — Klicka Beräkna`;
+  } else {
+    disp.textContent = 'Ange vikt för att beräkna doser';
+  }
+}
+
+function onGroupChange() {
+  currentGroup = document.getElementById('patientGroup').value;
+  onWeightChange();
+}
+
+function calculate() {
+  if (!currentWeight) {
+    document.getElementById('weightInput').focus();
+    document.getElementById('weightInput').style.borderColor = 'var(--danger)';
+    setTimeout(() => document.getElementById('weightInput').style.borderColor = '', 2000);
+    return;
+  }
+  currentGroup = document.getElementById('patientGroup').value;
+  currentResults = DRUGS.map(drug => ({
+    drug,
+    result: drug.calc(currentWeight, currentGroup),
+    warnings: drug.warnings(currentGroup)
+  }));
+
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('resultsContainer').style.display = 'block';
+
+  const groupLabels = {
+    adult: 'Vuxen',
+    child_big: 'Barn 6–17 år',
+    child_small: 'Barn 1–5 år',
+    elderly: 'Äldre ≥75 år',
+    pregnant: 'Gravid/Ammande'
+  };
+  document.getElementById('patientSummary').textContent =
+    `${groupLabels[currentGroup]} • ${currentWeight} kg • ${DRUGS.length} läkemedel beräknade`;
+
+  renderCards();
+  renderCombinations();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════════
+function renderCards() {
+  const grid = document.getElementById('resultsGrid');
+  const filtered = currentResults.filter(r =>
+    currentCatFilter === 'all' || r.drug.cat === currentCatFilter
+  );
+
+  grid.innerHTML = filtered.map(({drug, result, warnings}) => {
+    const isKontra = result.special === 'KONTRAINDICERAT';
+    const isUndvik = result.dose === 0 && !isKontra;
+
+    const headerColor = {
+      analgetika: '#1E3028',
+      antibiotika: '#CC5833',
+      lokalanestesi: '#1A4A7A',
+      sedering: '#C9A84C',
+      hemostas: '#2D6A4F'
+    }[drug.cat] || '#1E3028';
+
+    return `
+    <div class="drug-card" id="card-${drug.id}" data-cat="${drug.cat}">
+      <div class="dc-header" style="border-left:4px solid ${headerColor}">
+        <div class="dc-left">
+          <div class="dc-name">${drug.name}</div>
+          <div class="dc-sub">${drug.sub}</div>
+          <span class="dc-cat cat-${drug.cat}">${drug.catLabel}</span>
+        </div>
+      </div>
+      <div class="dc-body">
+
+        ${isKontra ? `
+          <div class="max-warn">❌ ${result.form}</div>
+          <div class="warn-item red">⚠️ ${result.note}</div>
+        ` : isUndvik && result.form ? `
+          <div class="max-warn" style="background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.3);color:#7a5e00">⚠️ ${result.form}</div>
+          <div class="warn-item yellow">${result.note}</div>
+        ` : `
+          <!-- MAIN DOSE -->
+          <div class="dose-main">
+            <div class="dose-label">BERÄKNAD DOS</div>
+            <div class="dose-value">${result.dose}</div>
+            <div class="dose-unit">${result.unit}</div>
+          </div>
+
+          <!-- MAX WARNING -->
+          ${result.maxDoseWarning ? `<div class="max-warn">⚠️ OBSERVERA: ${result.special || 'Maxdos uppnådd'}</div>` : ''}
+
+          <!-- DOSE ROWS -->
+          <div class="dose-rows">
+            <div class="dose-row">
+              <span class="dr-label">Interval</span>
+              <span class="dr-value">${result.interval}</span>
+            </div>
+            ${result.maxDay ? `<div class="dose-row">
+              <span class="dr-label">Max/dygn</span>
+              <span class="dr-value ${result.maxDay > 3000 ? 'warn' : ''}">${result.maxDay} ${result.maxDayUnit.split('(')[0]}</span>
+            </div>` : result.maxDayUnit ? `<div class="dose-row">
+              <span class="dr-label">Motsvarar</span>
+              <span class="dr-value">${result.maxDayUnit}</span>
+            </div>` : ''}
+            <div class="dose-row">
+              <span class="dr-label">Form</span>
+              <span class="dr-value" style="font-size:.65rem;max-width:60%">${result.form}</span>
+            </div>
+          </div>
+
+          <!-- ALT DOSE -->
+          ${result.special && !result.maxDoseWarning ? `
+          <div class="dose-alt">
+            <div class="dose-alt-label">OBS</div>
+            <div class="dose-alt-value">${result.special}</div>
+          </div>` : ''}
+
+          <!-- NOTE -->
+          <div class="warn-item blue" style="margin-bottom:.5rem">${result.note}</div>
+        `}
+
+        <!-- WARNINGS -->
+        <div class="dc-warnings">
+          ${warnings.map(w => `<div class="warn-item ${w.type}">${w.text}</div>`).join('')}
+        </div>
+
+        <!-- TIPS -->
+        <div class="dc-tips">
+          <div class="tips-toggle" onclick="toggleTips('${drug.id}')">
+            📚 Kliniska tips & källor <span id="tips-arrow-${drug.id}">▼</span>
+          </div>
+          <div class="tips-content" id="tips-${drug.id}">
+            ${drug.tips.map(t => `<div class="tip-item">${t}</div>`).join('')}
+          </div>
+        </div>
+
+        <!-- COPY -->
+        ${(drug.id === 'morfin' || drug.id === 'oxikodon') && !isKontra ? `
+        <div id="opioid-screen-${drug.id}" style="margin-top:.75rem">
+          <div style="background:rgba(193,18,31,.06);border:1.5px solid rgba(193,18,31,.2);border-radius:1rem;padding:1rem">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:600;color:var(--danger);letter-spacing:.1em;margin-bottom:.75rem">
+              ✅ INKLUSIONSCHECKLISTA — KRÄVS FÖRE FÖRSKRIVNING
+            </div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:rgba(26,26,26,.5);margin-bottom:.75rem;line-height:1.5">
+              Källa: Tandvårdens Läkemedel 2024–2025 kap. 10 · HSLF-FS 2016:34 · Läkemedelsverket
+            </div>
+            ${[
+              {id:'q1', label:'NSAID + Paracetamol i max dos har prövats och är otillräckligt'},
+              {id:'q2', label:'Kausal tandvårdsåtgärd (extraktion/RCT) är genomförd eller ej möjlig'},
+              {id:'q3', label:'Känd smärtorsak är diagnosticerad och journalförd'},
+              {id:'q4', label:'Ingen känd opioidöverkänslighet eller -beroende'},
+              {id:'q5', label:'Ingen andningsdepression, svår astma eller MAOI-behandling'},
+              {id:'q6', label:'Ingen samtidig bensodiazepinbehandling (additiv andningsdepression)'},
+              {id:'q7', label:'Max 30 tabletter förskrivs (lag: tandläkares förskrivningsrätt)'},
+              drug.id === 'oxikodon'
+                ? {id:'q8', label:'Förskrivaren har specialistkompetens i oral kirurgi (HSLF-FS 2016:34) — krävs för oxikodon'}
+                : {id:'q8', label:'Dokumentation av indikation, dos, duration och uppföljningsplan i journal'}
+            ].map(q => `
+              <label style="display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.5rem;cursor:pointer;padding:.4rem .5rem;border-radius:.5rem;transition:background .15s" onmouseover="this.style.background='rgba(193,18,31,.04)'" onmouseout="this.style.background='transparent'">
+                <input type="checkbox" id="opioid-${drug.id}-${q.id}" onchange="updateOpioidStatus('${drug.id}')"
+                  style="width:16px;height:16px;margin-top:.1rem;flex-shrink:0;cursor:pointer;accent-color:var(--ok)"/>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--charcoal);line-height:1.5">${q.label}</span>
+              </label>
+            `).join('')}
+            <div id="opioid-status-${drug.id}" style="margin-top:.75rem;padding:.6rem .875rem;border-radius:.75rem;font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;text-align:center;background:rgba(26,26,26,.05);color:rgba(26,26,26,.4)">
+              ☐ Alla kriterier måste vara uppfyllda
+            </div>
+          </div>
+        </div>` : ''}
+
+        ${!isKontra ? `<button class="dc-copy" id="copy-${drug.id}" onclick="copyDose('${drug.id}')">
+          📋 Kopiera dostext för journal
+        </button>` : ''}
+
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCombinations() {
+  const combo = document.getElementById('comboSection');
+  if (currentGroup === 'pregnant') {
+    combo.innerHTML = `
+      <div class="combo-title">💊 KOMBINATIONS­REKOMMENDATIONER — GRAVID/AMMANDE</div>
+      <div class="combo-grid">
+        <div class="combo-item">
+          <div class="combo-name">Smärta (alla grader)</div>
+          <div class="combo-dose">Paracetamol 1000 mg × 4/dag</div>
+          <div class="combo-note">Ibuprofen och NSAID: KONTRAINDICERAT</div>
+        </div>
+        <div class="combo-item">
+          <div class="combo-name">Infektion</div>
+          <div class="combo-dose">PcV 1,6 g × 3 i 5–7 dagar</div>
+          <div class="combo-note">Klindamycin: undvik om möjligt. Rådgör med läkare.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const w = currentWeight;
+  const pcvDose = currentGroup === 'adult' || currentGroup === 'elderly'
+    ? '1,6 g × 3' : `${Math.round(Math.min(w*25,1600))} mg × 3`;
+  const ibupDose = currentGroup === 'adult' ? '400 mg × 3'
+    : currentGroup === 'elderly' ? 'KONTRAINDICERAT'
+    : `${Math.round(Math.min(w*10,400))} mg × 3`;
+  const paracDose = currentGroup === 'adult' ? '1000 mg × 4'
+    : currentGroup === 'elderly' ? 'max 3 g/dygn (t.ex. 1000 mg × 3)'
+    : `${Math.round(Math.min(w*15,1000))} mg × 4`;
+
+  combo.innerHTML = `
+    <div class="combo-title">💊 KOMBINATIONSREKOMMENDATIONER (Tandvårdens Läkemedel 2024)</div>
+    <div class="combo-grid">
+      <div class="combo-item">
+        <div class="combo-name">Mild smärta (VAS 1–3)</div>
+        <div class="combo-dose">Paracetamol ${paracDose}</div>
+        <div class="combo-note">Förstahandsval. Alla åldrar. Säkert.</div>
+      </div>
+      <div class="combo-item">
+        <div class="combo-name">Måttlig smärta (VAS 4–6)</div>
+        <div class="combo-dose">Ibuprofen ${ibupDose} + Paracetamol ${paracDose}</div>
+        <div class="combo-note">Alternera var 3:e timme för kontinuerlig täckning. Bäst effekt vid odontogen smärta.</div>
+      </div>
+      <div class="combo-item">
+        <div class="combo-name">Svår smärta (VAS 7–10)</div>
+        <div class="combo-dose">Ibuprofen + Paracetamol (max dos) → Morfin 5 mg / Oxikodon 5 mg</div>
+        <div class="combo-note">Opioider ENBART när NSAID+paracetamol kombinerat är otillräckligt. Narkotikarecept krävs. Dokumentera indikation. Tandvårdens Läkemedel 2024, kap. 10.</div>
+      </div>
+      <div class="combo-item">
+        <div class="combo-name">Odontogen infektion + smärta</div>
+        <div class="combo-dose">PcV ${pcvDose} + Ibuprofen ${ibupDose} + Paracetamol ${paracDose}</div>
+        <div class="combo-note">Kausal behandling (extraktion/RCT) är primär. Antibiotika ersätter INTE åtgärd.</div>
+      </div>
+      <div class="combo-item">
+        <div class="combo-name">Preemptiv analgesi (före ingrepp)</div>
+        <div class="combo-dose">Ibuprofen ${ibupDose} + Paracetamol ${paracDose} — 1 h FÖRE</div>
+        <div class="combo-note">Ge INNAN bedövningen gått ur. Minskar postoperativ smärta signifikant.</div>
+      </div>
+      <div class="combo-item">
+        <div class="combo-name">Käkledsbesvär (TMD/Artrit)</div>
+        <div class="combo-dose">Naproxen 500 mg × 2 i 10 dagar</div>
+        <div class="combo-note">Längre duration än ibuprofen. SLIPA EJ bett vid reversibel bettförändring. Kontraindikationer screenade.</div>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════════════════════════════════
+function toggleTips(id) {
+  const el = document.getElementById(`tips-${id}`);
+  const arrow = document.getElementById(`tips-arrow-${id}`);
+  const isOpen = el.classList.contains('open');
+  el.classList.toggle('open', !isOpen);
+  arrow.textContent = isOpen ? '▼' : '▲';
+}
+
+function filterCat(cat, btn) {
+  currentCatFilter = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (currentResults.length) renderCards();
+}
+
+function copyDose(id) {
+  const r = currentResults.find(x => x.drug.id === id);
+  if (!r) return;
+  const {drug, result} = r;
+  const text = result.dose === 0 ? `${drug.name}: ${result.form} — ${result.note}` :
+    `${drug.name} (${drug.sub})
+Dos: ${result.dose} ${result.unit}
+Interval: ${result.interval}
+${result.maxDay ? `Max/dygn: ${result.maxDay} ${result.maxDayUnit}` : result.maxDayUnit ? `Motsvarar: ${result.maxDayUnit}` : ''}
+Form: ${result.form}
+${result.note}
+${result.special ? `OBS: ${result.special}` : ''}
+Källa: Tandvårdens Läkemedel 2024–2025 (NAG/SKR), FASS, Strama`.trim();
+
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById(`copy-${id}`);
+    btn.classList.add('copied');
+    btn.textContent = '✓ Kopierat!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '📋 Kopiera dostext för journal'; }, 2500);
+    showToast('✓ Dostext kopierad!');
+  });
+}
+
+function updateOpioidStatus(drugId) {
+  const checkboxes = document.querySelectorAll(`[id^="opioid-${drugId}-q"]`);
+  const allChecked = [...checkboxes].every(cb => cb.checked);
+  const checkedCount = [...checkboxes].filter(cb => cb.checked).length;
+  const statusEl = document.getElementById(`opioid-status-${drugId}`);
+  if (allChecked) {
+    statusEl.style.background = 'rgba(45,106,79,.1)';
+    statusEl.style.color = 'var(--ok)';
+    statusEl.textContent = '✓ Alla kriterier uppfyllda — förskrivning kan övervägas';
+  } else {
+    statusEl.style.background = 'rgba(193,18,31,.06)';
+    statusEl.style.color = 'var(--danger)';
+    statusEl.textContent = `✗ ${checkedCount}/8 kriterier uppfyllda — förskrivning ej motiverad`;
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Auto-calculate on Enter
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('weightInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') calculate();
+  });
+});
+</script>
+</body>
+</html>

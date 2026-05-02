@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Pedodonti — Rädsla, Smärta & Akut Sedering</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<button class="back-btn" onclick="history.back()">← TILLBAKA</button>
+
+<div class="container">
+    <div class="hero">
+        <h1>Pedodonti: Beteende & Sedering</h1>
+        <p class="hero-subtitle">Kliniskt beslutsstöd: Tandvårdsrädsla, Bedövningssvikt och Akuta Sederingskomplikationer (Scen 62–64)</p>
+    </div>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="mainSearch" placeholder="Sök diagnos eller symtom..." onkeyup="searchCards()">
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+
+        <div class="scenario-nav">
+
+            <div class="scenario-trigger-card" id="trigger-pedo62" onclick="selectScenario('pedo62')">
+                <span class="trigger-tag red">SCENARIO 62</span>
+                <div class="trigger-avatar-container"><img src="radsla.png" alt="Rädsla" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=RÄDD'"></div>
+                <h2 class="trigger-title">Akut tandvårdsrädsla & vägran</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Barnet gråter, vägrar öppna munnen. Etiska riktlinjer.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo63" onclick="selectScenario('pedo63')">
+                <span class="trigger-tag red">SCENARIO 63</span>
+                <div class="trigger-avatar-container"><img src="bedovning.png" alt="Bedövningssvikt" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=SVIKT'"></div>
+                <h2 class="trigger-title">Bedövningssvikt vid inflammerad tand</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Känner borren trots LA. Pulpit, lågt pH, hyperalgesi.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-pedo64" onclick="selectScenario('pedo64')">
+                <span class="trigger-tag red">SCENARIO 64</span>
+                <div class="trigger-avatar-container"><img src="sedering.png" alt="Sedering" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffcdd2/b71c1c?text=AKUT'"></div>
+                <h2 class="trigger-title">Akut situation under sedering/lustgas</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Kräkning, desaturation (SpO2 <92%), paradoxal reaktion.</div>
+            </div>
+
+        </div>
+
+        <div class="main-content-panel">
+
+            <div id="dynamic-header" class="header-container centered">
+                <div class="avatar-wrapper">
+                    <img id="story-avatar" class="character-img" src="start.png" alt="Pedodonti" onerror="this.src='https://placehold.co/300x300/fff3e0/e65100?text=PEDO'">
+                </div>
+                <div class="header-text-block">
+                    <h2 id="dynamic-header-title">Beteende, Smärta & Sedering</h2>
+                    <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario i menyn till vänster för att starta guiden.</p>
+                </div>
+            </div>
+
+            <div id="pedo62-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo62', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo62', 'riktlinjer', this)">📚 Riktlinjer & Etik</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo62', 'behandling', this)">🔧 Handläggning</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo62', 'journal', this)">📝 Journal & TLV</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo62', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo62-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 62: Akut tandvårdsrädsla med behandlingsvägran</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-62-RADSLA</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnet gråter, slår bort instrumenten och vägrar öppna munnen"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> Z76.8 (Kontakt med hälso- och sjukvård — används i klinisk praxis för tandvårdsrädsla/behandlingsomognad) + aktuell dental diagnos. <em>OBS: Vid etablerad odontofobi med diagnosticerat fobiskt syndrom är F40.2 (Specifik fobi) mer precis. Z76.8 accepteras som pragmatisk kod vid situationsbunden rädsla utan diagnosticerat syndrom.</em></div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Vanligt - förekommer hos ca 10-20% av barn</div>
+                            </div>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ ÖVERGRIPANDE PRINCIP (Svensk Barntandvård)</strong>
+                            <p style="margin-top:10px;">Den absolut viktigaste regeln inom barntandvård är att <strong>undvika smärta och tvång</strong>. En smärtfri och trygg upplevelse är överordnad den "perfekta fyllningen" i en akut situation. Tvångsbehandling riskerar livslång tandvårdsrädsla (odontofobi).</p>
+                        </div>
+                    </div>
+                    <div id="pedo62-riktlinjer" class="content-panel">
+                        <h3>📚 Definitioner & Etiska Riktlinjer</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Viktiga definitioner</h5>
+                            <ul>
+                                <li><strong>Behandlingsomognad:</strong> Barn &lt;2,5-3 år som inte förstår vad som förväntas. Barnet är inte rädd, utan saknar mognad.</li>
+                                <li><strong>Tandvårdsrädsla/ångest:</strong> Subjektiv rädsla inför specifika moment (sprutan, borren). Ofta efter tidigare smärtsam/obehaglig upplevelse.</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 RÖD FLAGG: TVÅNGSBEHANDLING ALDRIG TILLÅTET</strong>
+                            <p style="margin-top:10px;">Fysisk fasthållning för icke-livräddande behandling utgör ett etiskt övergrepp och är <strong>ALDRIG</strong> indicerat. Om barnet har akut smärta som ej kan behandlas: Temporär ZOE + smärtstillande + snar bokning för sedering/narkos.</p>
+                            <p style="margin-top:10px;">Enda undantaget: Livshotande infektion (Cellulit med luftvägs-/svalgpåverkan) → remitteras omedelbart till sjukhus oavsett kooperation.</p>
+                        </div>
+                    </div>
+                    <div id="pedo62-behandling" class="content-panel">
+                        <h3>🔧 Klinisk Handläggning</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Stegvis inskolning (Tell-Show-Do)</div>
+                            <ol>
+                                <li><strong>Avbryt:</strong> Om barnet gråter och värjer sig — tvinga aldrig in instrument. Stanna upp.</li>
+                                <li><strong>Tell-Show-Do (TSD):</strong> Förklara på barnets nivå, visa på handen/nageln, gör sedan i munnen.</li>
+                                <li><strong>Pausa:</strong> Låt barnet ta pauser. "Räck upp handen om du vill att jag stannar".</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Om behandlingen EJ går att genomföra (Akut situation)</div>
+                            <p><strong>Mål: Minimal invasivitet + smärtlindring</strong></p>
+                            <ul>
+                                <li>Rensa kaviteten ytligt (utan borr/bedövning) t.ex. med bomullspellet eller slö exkavator.</li>
+                                <li>Lägg ett <strong>temporärt förband</strong> med finger eller spatel: ZOE eller IRM (innehåller smärtstillande eugenol) alternativt GIC (innehåller <em>inte</em> eugenol — men är ett bra alternativ utan smak/doft). <strong>OBS: GIC innehåller INTE eugenol.</strong></li>
+                                <li>Fluorlacka tanden (Duraphat) som temporärt skydd om fyllning ej går att få dit.</li>
+                                <li>Ordinera smärtlindring hemma (Paracetamol + ev. Ibuprofen).</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Planering framåt</div>
+                            <ul>
+                                <li>Boka ny tid för försök med farmakologiskt stöd (<strong>Lustgas eller Midazolam/Dormicum</strong>). Ge förälder info om faste-rutiner.</li>
+                                <li>Om grav rädsla/stor behandlingsbörda: Remiss Pedodontist / Narkostandvård.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo62-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: Z76.8 Tandvårdsrädsla/Behandlingsomognad (alt. F40.2 vid etablerad odontofobi) + 
+[Aktuell dental diagnos, t.ex. K04.0 Pulpit].
+
+Anamnes: Akut tandvärk tand [nr]. Barnet mycket oroligt/rädd.
+
+Status: Barnet gråter, värjer sig, vägrar gapa. 
+[Går ej att inspektera / Djup karies synlig tand nr].
+
+Åtgärd: TSD (Tell-Show-Do) prövades utan framgång.
+Behandlingen avbröts för att undvika tvång och smärta.
+[Ingen smärtande åtgärd framtvingades. Fluorlackning/
+ZOE-förband inlagt som temporärt skydd.]
+
+Planering: Nytt besök om [X] dagar under [sedering/lustgas] /
+Remiss pedodontist/narkos.
+Smärtlindring hemma: Paracetamol [dos] + ev. Ibuprofen [dos].
+Info till förälder om faste-rutiner inför sedering.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Kompletterande undersökning / Akut bedömning</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd (om temporärt förband lagts)</td></tr>
+                                <tr><td><strong>205 (kortare tid)/ 206</strong></td><td>Fluorlackning</td></tr>
+                               
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo62-kallor" class="content-panel">
+                        <h3>📚 Källor — SC62 Tandvårdsrädsla</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>Internetodontologi:</strong> Tandvårdsrädsla hos barn; Klingberg &amp; Broberg 2007 — prevalens 10–20%</li>
+                            <li><strong>ICD-10-SE:</strong> Z76.8 (pragmatisk kod); F40.2 (Specifik fobi/odontofobi vid etablerad diagnos)</li>
+                            <li><strong>PSL 2010:659 + Patientlagen 2014:821:</strong> Tvångsingrepp förbjudet</li>
+                            <li><strong>Barnkonventionen (UNICEF):</strong> Barns rätt till skydd mot tvång</li>
+                            <li><strong>Material:</strong> ZOE/IRM innehåller eugenol; GIC innehåller <em>inte</em> eugenol (FASS)</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo63-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo63', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo63', 'orsaker', this)">🔬 Fysiologi & Orsaker</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo63', 'behandling', this)">🔧 Åtgärd / FASS</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo63', 'journal', this)">📝 Journal & TLV</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo63', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo63-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 63: Bedövningssvikt vid inflammerad tand</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-63-BEDSVIKT</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Hur mycket jag än bedövar så känner barnet borren"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> Aktuell dental diagnos (t.ex. K04.0 Pulpit)</div>
+                            </div>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ GRUNDPRINCIP</strong>
+                            <p style="margin-top:10px;">Att behandla med smärta är oetiskt och oacceptabelt. Det skapar snabbt svår tandvårdsrädsla hos barn. <strong>Om bedövningen inte tar: avbryt och planera om — tvinga aldrig igenom behandlingen.</strong></p>
+                        </div>
+                    </div>
+                    <div id="pedo63-orsaker" class="content-panel">
+                        <h3>🔬 Fysiologi & Orsaker till bedövningssvikt</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Vanliga orsaker hos barn:</h5>
+                            <ul>
+                                <li><strong>Vävnads-pH (Syra):</strong> Inflammerad vävnad (pulpit/apikal parodontit) är sur (lågt pH). Lokalanestesi-molekylen kräver ett normalt pH för att bli ojoniserad och kunna penetrera in i nervcellen. I sur miljö stannar den utanför nerven = ingen effekt.</li>
+                                <li><strong>Hyperalgesi/Allodyni:</strong> Ett rädd eller nervöst barn har ett uppskruvat nervsystem. De reagerar med "smärta" på normalt icke-smärtsamma stimuli (tryck/vibration tolkas som smärta av hjärnan).</li>
+                                <li><strong>Teknik / Anatomi:</strong> Missad nervgren, fel placering, eller för kort väntetid (måste ofta vänta 5-10 min vid svåra pulpiter).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="pedo63-behandling" class="content-panel">
+                        <h3>🔧 Åtgärd & Medicinering (FASS)</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">A. Stegvis klinisk hantering</div>
+                            <ol>
+                                <li>Avbryt omedelbart när barnet signalerar smärta.</li>
+                                <li>Vänta längre (ofta tar det 10 min för inflammationen att genombrytas av LA).</li>
+                                <li>Komplettera med <strong>Intraligamentär bedövning</strong> (bedövar direkt i parodontalspalten).</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">B. Om tanden FORTSATT gör ont</div>
+                            <ul>
+                                <li><strong>AVBRYT BEHANDLINGEN!</strong></li>
+                                <li>Lägg ett <strong>temporärt förband (Eugenol + IRM/ZOE)</strong> över kariesangreppet för att lindra den akuta pulpiten.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">C. Farmakologisk preparation inför nästa besök</div>
+                            <p>Instruera föräldern att ge en <strong>kombination av Paracetamol och NSAID (Ibuprofen/Ipren) 1 timme före nästa besök.</strong></p>
+                            <p><em>Varför?</em> NSAID sänker graden av prostaglandin-driven inflammation i pulpan, vilket höjer vävnadens pH, och gör att lokalanestesin fungerar mycket bättre vid nästa försök.</p>
+                            <p>Överväg även sedering (Midazolam) eller Lustgas för att sänka barnets grundspänning och hyperalgesi.</p>
+                        </div>
+                    </div>
+                    <div id="pedo63-journal" class="content-panel">
+                        <h3>📝 Journal & Koder</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: [Aktuell diagnos, t.ex. K04.0 Pulpit / Apikal parodontit].
+
+Anamnes: Akut smärta tand [nr]. Sover dåligt sedan [tid].
+Preoperativ smärtlindring: [Paracetamol X mg + Ibuprofen X mg, 
+given kl [tid] = X h innan behandling].
+
+Åtgärd: Ytanestesi applicerad, 3 min verkan. 
+Injektion: [Mandibularblockad / Infiltration] [preparat] [antal] amp. 
+Väntetid [X] min.
+Effekt: [Full domning läpp+tunga / Ofullständig].
+Vid inledande [trepanation/exkavering]: Smärtgenombrott.
+[Kompletterande: Intraligamentär [preparat] [dos]].
+Fortsatt smärtgenombrott trots adekvat anestesi.
+
+Beslut: Etiskt oförsvarbart att fortsätta under smärta. 
+Kaviteten förseglad med eugenol + IRM.
+
+Planering: Pat instruerad att ladda upp med Paracetamol + NSAID 
+1 h innan nästa besök. Åter om [2-3] dagar för nytt försök 
+under [lustgas / sedering / remiss narkos].</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd (Behandlingsförsök + temporärt förband)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo63-kallor" class="content-panel">
+                        <h3>📚 Källor — SC63 Bedövningssvikt</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>Internetodontologi:</strong> Lokalanestesi; Palm et al. 2020 — central sensitisering/hyperalgesi</li>
+                            <li><strong>FASS:</strong> Artikain, Mepivakain — farmakologi pH och jonisering</li>
+                            
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pedo64-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('pedo64', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo64', 'akut', this)">🚨 Akut Handläggning</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo64', 'flaggor', this)">⛔ Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo64', 'journal', this)">📝 Journal / Hemgång</button>
+                    <button class="tab-btn" onclick="openInnerTab('pedo64', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="pedo64-snabb" class="content-panel active">
+                        <h3>⚡ SCENARIO 64: Akut situation under sedering / lustgas</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> PEDO-64-SEDKOMP</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnet börjar kräkas, blir okontaktbart eller får syrebrist under behandling"</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> T88.5 (Komplikation till anestesi) — primärkod vid sederingskomplikation. <em>OBS: T41.1 (Förgiftning av inhalationsanestetika) ska <strong>inte</strong> användas vid vanliga komplikationer som kräkning eller paradoxal reaktion utan faktisk förgiftning/överdos. Använd T88.5 konsekvent. Källa: ICD-10-SE; klinisk kodningspraxis.</em></div>
+                            </div>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ GRUNDPRINCIP FÖR SÄKERHET</strong>
+                            <p style="margin-top:10px;">Sedering (Midazolam) och lustgas är mycket säkra metoder <em>vid korrekt utförande</em>, men <strong>akutberedskap MÅSTE finnas</strong>. Pulsoximeter, syrgas och Rubens ballong (andningsblåsa) ska alltid finnas redo på behandlingsrummet.</p>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Komplikationsfrekvens</h5>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;">
+                                <tr style="border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                                    <th style="text-align: left; padding: 8px;">Komplikation</th>
+                                    <th style="text-align: left; padding: 8px;">Frekvens</th>
+                                    <th style="text-align: left; padding: 8px;">Allvarlighetsgrad</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Paradoxal reaktion (Midazolam)</td><td style="padding: 8px;">Ca 5%</td><td style="padding: 8px;">Måttlig, självbegränsande</td></tr>
+                                <tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">Kräkning (aspirationsrisk)</td><td style="padding: 8px;">Ovanligt</td><td style="padding: 8px; font-weight:bold; color: #d32f2f;">Potentiellt livshotande</td></tr>
+                                <tr><td style="padding: 8px;">Desaturation / andningsdepression</td><td style="padding: 8px;">Sällsynt</td><td style="padding: 8px; font-weight:bold; color: #d32f2f;">Livshotande</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo64-akut" class="content-panel">
+                        <h3>🚨 Akut Handläggning (ABCDE)</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">1. Paradoxal Reaktion (Agitation/Vrede)</div>
+                            <p>Uppstår ofta vid Midazolam. Barnet blir extremt argt, okontaktbart, utåtagerande och förvirrat istället för trött.</p>
+                            <ul>
+                                <li><strong>Avbryt behandlingen!</strong> Tvinga inte fram ingreppet, det förvärrar traumat.</li>
+                                <li>Skydda barnet från att skada sig själv eller ramla ur stolen.</li>
+                                <li>Låt läkemedlet gå ur kroppen under övervakning. Sätts ut av sig själv.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">2. Kräkning (Aspirationsrisk)</div>
+                            <p>Livsfarligt om barnet är djupt sederat pga förlorade svalgreflexer.</p>
+                            <ul>
+                                <li><strong>Sänk stolens huvudända (Trendelenburg).</strong></li>
+                                <li><strong>Vänd barnet i stabilt sidoläge</strong> så att kräkningen rinner ut, inte ner i lungorna.</li>
+                                <li>Sug rent i mun och svalg med grov sug!</li>
+                                <li>Vid misstanke om aspiration (hosta, cyanos, SpO2 sjunker): <strong>RING 112</strong>. Syrgas.</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">3. Desaturation / Andningsdepression</div>
+                            <p>Om barnet andas ytligt, blir okontaktbart, eller <strong>SpO2 < 92%</strong> på pulsoximetern.</p>
+                            <ol>
+                                <li><strong>A: Fria luftvägar.</strong> Käklyft (haklyft) för att öppna luftvägen.</li>
+                                <li><strong>B: Andning.</strong> Ge 100% syrgas (O2) på mask (minst 10 L/min).</li>
+                                <li><strong>Stimulera:</strong> Prata högt, nyp barnet smärtsamt för att trigga andningsreflexen.</li>
+                                <li><strong>Ventilera:</strong> Om ingen egenandning → övertrycksventilera med Rubens ballong.</li>
+                                <li><strong>RING 112.</strong></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div id="pedo64-flaggor" class="content-panel">
+                        <h3>⛔ Röda Flaggor (Akuta Varningssignaler)</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 SpO2 sjunker under 92%</strong><br>
+                            Kräver omedelbar åtgärd! Syrgas + Haklyft.
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Barnet ej kontaktbart / Slutar svara på smärta</strong><br>
+                            Sederingen är för djup. Stimulera (smärta) + säkra fri luftväg + syrgas + 112.
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Kramper efter LA-injektion</strong><br>
+                            Toxisk lokalanestesireaktion (LAST). Om injektion råkat hamna intravasalt kan barnet krampa. Syrgas + 112.
+                        </div>
+                    </div>
+                    <div id="pedo64-journal" class="content-panel">
+                        <h3>📝 Journal & Utskrivning</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Information vid hemgång</h5>
+                            <p>Ett sederat barn får <strong>aldrig</strong> lämna kliniken utan att vara fullt vaken, orienterad och kunna gå stabilt själv. Information ska ges både muntligt och skriftligt till förälder:</p>
+                            <ul>
+                                <li>Vuxen tillsyn krävs i <strong>minst 4 timmar</strong> efter sederingen.</li>
+                                <li>Risk för trötthet och snubblighet kvarstår.</li>
+                                <li>Mjuk kost resten av dagen (extrem risk för bitsår i bedövad läpp).</li>
+                                <li>Kontakta sjukvården om barnet inte vaknar till ordentligt inom 2 timmar, andningsbesvär uppstår eller hög feber tillkommer.</li>
+                            </ul>
+                        </div>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: T88.5 Komplikation till anestesi / Sedering. (OBS: ej T41.1 om ej faktisk förgiftning)
+Anamnes: Pat sederad med Midazolam [Dos] mg oralt kl [Tid]. 
+(Alt: Lustgas inledd kl [Tid]).
+Status: Under pågående behandling uppstod [Paradoxal reaktion / 
+Kräkning / Desaturation till SpO2 X %].
+Åtgärd: Behandlingen avbröts omedelbart. 
+[Syrgas 100% på mask / Barnet lagt i sidoläge / Sugning svalg]. 
+[Ev. 112 larmat kl [Tid]].
+Barnet återhämtade sig kliniskt på [X] min.
+Vid utskrivning: SpO2 [X]%, vaken, orienterad, stabil gång.
+Utskriven kl [tid] i förälders sällskap.
+Info: Skriftlig och muntlig info om vuxen tillsyn och övervakning hemma i minst 12 timmar. 
+Paracetamol vb.
+Planering: Behandling får planeras om till narkos.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td><strong>103/107</strong></td><td>Akut bedömning</td></tr>
+                                <tr><td><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd (Akut handläggning/Sedering)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="pedo64-kallor" class="content-panel">
+                        <h3>📚 Källor — SC64 Sederingskomplikationer</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>FASS — Midazolam:</strong> Paradoxal reaktion ~5%; vuxen tillsyn 4h post-sedering</li>
+                            <li><strong>Mason &amp; Rotelle 2004:</strong> Paradoxal reaktion barn upp till 15%</li>
+                            <li><strong>ICD-10:</strong> T88.5 (komplikation till anestesi) — primärkod. T41.1 endast vid faktisk förgiftning/överdos</li>
+                            <li><strong>Socialstyrelsen:</strong> Riktlinjer sedering barn</li>
+                            <li><strong>FASS — Artikain/Mepivakain:</strong> LAST vid intravaskulär injektion</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+        </div><div class="right-sidebar">
+            <div class="sidebar-card">
+                <h4 class="sidebar-title">👶 Pedodonti — Snabbval</h4>
+                
+                <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo62')">😨 Tandvårdsrädsla (62)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo63')">💉 Bedövningssvikt (63)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('pedo64')">🚨 Sederingsakut (64)</button>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>⚠️ ETIK: INGEN TVÅNG</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        Fysisk fasthållning för icke-livräddande behandling är ett etiskt övergrepp och <strong>ALDRIG tillåtet</strong>. Avbryt, lägg temporärt förband.
+                    </p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>🌡️ Fysiologi (Svikt)</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        Vid akut pulpit/inflammation är pH-värdet lågt. Lokalanestesin kan inte penetrera nerven. <strong>Avbryt, ge NSAID + Alvedon inför nästa besök.</strong>
+                    </p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>🚨 AKUT ABCDE (Sedering)</h4>
+                    <p style="font-size:0.85rem; text-align:left;">
+                        <strong>1. Fria luftvägar</strong> (Haklyft)<br>
+                        <strong>2. Syrgas 100%</strong> på mask<br>
+                        <strong>3. Sidoläge</strong> (vid kräkning)<br>
+                        <strong>4. Larma 112</strong> vid utebliven snabb vändning.
+                    </p>
+                </div>
+                
+                <div class="sidebar-info">
+                    <h4>📋 Kom ihåg</h4>
+                    <p style="font-size: 0.85rem;">Beslutsstöd — ersätter inte kliniskt omdöme. PSL 2010:659.</p>
+                </div>
+            </div>
+        </div>
+
+    </div></div><script>
+    /* === SCENARIO DATA === */
+    const scenarioData = {
+        'pedo62': { img: 'radsla.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=RÄDD', title: 'Akut tandvårdsrädsla & vägran' },
+        'pedo63': { img: 'bedovning.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=SVIKT', title: 'Bedövningssvikt (Pulpit)' },
+        'pedo64': { img: 'sedering.png', fallback: 'https://placehold.co/120x100/ffcdd2/b71c1c?text=AKUT', title: 'Sederingskomplikationer' }
+    };
+
+    /* === SELECT SCENARIO === */
+    function selectScenario(id) {
+        document.querySelectorAll('.scenario-trigger-card').forEach(c => c.classList.remove('active'));
+        const trigger = document.getElementById('trigger-' + id);
+        if (trigger) trigger.classList.add('active');
+
+        document.querySelectorAll('.scenario-display-wrapper').forEach(w => w.classList.remove('active'));
+        const display = document.getElementById(id + '-display');
+        if (display) display.classList.add('active');
+
+        const header = document.getElementById('dynamic-header');
+        header.classList.remove('centered');
+        header.classList.add('scenario-mode');
+
+        const data = scenarioData[id];
+        if (data) {
+            document.getElementById('dynamic-header-title').textContent = data.title;
+            const avatar = document.getElementById('story-avatar');
+            avatar.src = data.img;
+            avatar.onerror = function() { this.src = data.fallback; };
+            avatar.classList.add('pop');
+            setTimeout(() => avatar.classList.remove('pop'), 600);
+        }
+
+        const wrapper = document.getElementById(id + '-display');
+        if (wrapper) {
+            wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const firstPanel = wrapper.querySelector('.content-panel');
+            const firstBtn = wrapper.querySelector('.tab-btn');
+            if (firstPanel) firstPanel.classList.add('active');
+            if (firstBtn) firstBtn.classList.add('active');
+        }
+
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    /* === TAB SWITCHING === */
+    function openInnerTab(scenarioId, tabName, btn) {
+        const wrapper = document.getElementById(scenarioId + '-display');
+        if (!wrapper) return;
+
+        wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+        const target = document.getElementById(scenarioId + '-' + tabName);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    /* === COPY TO CLIPBOARD === */
+    function copyText(btn) {
+        const pre = btn.nextElementSibling;
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            const orig = btn.innerText;
+            btn.innerText = '✅ Kopierat!';
+            setTimeout(() => { btn.innerText = orig; }, 1500);
+        });
+    }
+
+    /* === SEARCH === */
+    function searchCards() {
+        const input = document.getElementById('mainSearch').value.toLowerCase();
+        document.querySelectorAll('.scenario-trigger-card').forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(input) ? 'flex' : 'none';
+        });
+    }
+
+    /* === SCROLL ANIMATIONS === */
+    function triggerScrollAnimations() {
+        document.querySelectorAll('.scroll-animate').forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', triggerScrollAnimations);
+</script>
+
+</body>
+</html>

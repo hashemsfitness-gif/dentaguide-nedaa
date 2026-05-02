@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parodontal Klassifikation — DentalGuide Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════════ */
+:root {
+  --sand-50:  #fdf8f2;
+  --sand-100: #f5ece0;
+  --sand-200: #ead9c4;
+  --sand-300: #d9bfa0;
+  --terra:      #c4885a;
+  --terra-dark: #8f5230;
+  --terra-deep: #6e3a1e;
+  --warm-dark:  #2c1e12;
+  --text-pri:   #2c1e12;
+  --text-sec:   #6b4f36;
+  --text-mute:  #9b7b5e;
+  --glass:      rgba(253,248,242,0.62);
+  --glass-b:    rgba(196,136,90,0.22);
+  --green:      #059669;
+  --green-lt:   rgba(5,150,105,0.10);
+  --red:        #dc2626;
+  --red-lt:     rgba(220,38,38,0.08);
+  --amber:      #d97706;
+  --amber-lt:   rgba(217,119,6,0.09);
+  --blue:       #2563eb;
+  --blue-lt:    rgba(37,99,235,0.08);
+  --r: 16px;
+  --pill: 50px;
+  --sh: 0 4px 24px rgba(44,30,18,.10), 0 1px 4px rgba(44,30,18,.07);
+  --sh-h: 0 12px 40px rgba(44,30,18,.18);
+  --tr: all .25s cubic-bezier(.34,1.56,.64,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--sand-50);
+  color: var(--text-pri);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+.orb-wrap { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(70px); opacity: .38;
+  animation: orbF 13s ease-in-out infinite alternate;
+}
+.o1 { width:520px;height:520px;background:rgba(196,136,90,.20);top:-150px;left:-120px;animation-duration:15s; }
+.o2 { width:380px;height:380px;background:rgba(143,82,48,.14);bottom:5%;right:-80px;animation-duration:11s;animation-delay:-5s; }
+.o3 { width:260px;height:260px;background:rgba(176,110,66,.16);top:42%;left:58%;animation-duration:17s;animation-delay:-8s; }
+@keyframes orbF { from{transform:translate(0,0) scale(1)} to{transform:translate(28px,-28px) scale(1.07)} }
+
+/* ── BACK BTN ── */
+.back-btn {
+  position: relative; z-index:10;
+  display: inline-flex; align-items: center; gap:7px;
+  margin: 18px 24px 0;
+  padding: 8px 18px; border-radius: var(--pill);
+  background: white; border: 1.5px solid var(--sand-200);
+  font-family: 'DM Sans',sans-serif; font-size:.78rem; font-weight:600;
+  letter-spacing:.06em; color: var(--text-sec); cursor:pointer;
+  text-decoration:none; transition: all .2s;
+}
+.back-btn:hover { background: var(--terra-dark); color:white; border-color:var(--terra-dark); }
+
+/* ── CONTAINER ── */
+.page {
+  position: relative; z-index:1;
+  max-width: 1300px; margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ── HERO ── */
+.hero { text-align:center; padding:30px 20px 20px; }
+.hero h1 {
+  font-family:'Playfair Display',serif;
+  font-size:1.9rem; font-weight:700; color:var(--warm-dark); margin-bottom:6px;
+}
+.hero-sub { font-size:.9rem; color:var(--text-sec); line-height:1.6; }
+.src-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:.68rem; font-weight:600; letter-spacing:.05em;
+  padding:2px 9px; border-radius:var(--pill);
+  background:rgba(143,82,48,.11); color:var(--terra-dark);
+  border:1px solid rgba(143,82,48,.20); margin:0 2px; vertical-align:middle;
+}
+
+/* ── TWO-COLUMN LAYOUT ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 22px;
+  align-items: start;
+}
+@media(max-width:960px) {
+  .layout { grid-template-columns: 1fr; }
+  .result-col { position: static !important; }
+}
+
+/* ── PROGRESS STEPS ── */
+.progress-wrap {
+  display:flex; align-items:center; gap:0;
+  background:white; border:1px solid var(--sand-200);
+  border-radius:var(--r); padding:16px 20px; margin-bottom:18px;
+  box-shadow:var(--sh); overflow-x:auto;
+}
+.prog-step {
+  display:flex; align-items:center; gap:8px;
+  cursor:pointer; transition: all .2s; flex-shrink:0;
+}
+.prog-dot {
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.8rem; font-weight:700; border:2px solid var(--sand-200);
+  background:white; color:var(--text-mute); transition: all .2s; flex-shrink:0;
+}
+.prog-label { font-size:.78rem; font-weight:600; color:var(--text-mute); white-space:nowrap; }
+.prog-step.active .prog-dot { background:var(--terra-dark); border-color:var(--terra-dark); color:white; }
+.prog-step.active .prog-label { color:var(--terra-dark); }
+.prog-step.done .prog-dot { background:var(--green); border-color:var(--green); color:white; }
+.prog-step.done .prog-label { color:var(--green); }
+.prog-line { flex:1; height:2px; background:var(--sand-200); min-width:16px; }
+.prog-step.done + .prog-line { background:var(--green); }
+
+/* ── WIZARD CARD ── */
+.wizard-card {
+  background:var(--glass); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--glass-b); border-radius:var(--r);
+  box-shadow:var(--sh); overflow:hidden;
+}
+.wiz-header {
+  padding:20px 24px 14px;
+  border-bottom:1px solid var(--sand-200);
+  background:rgba(245,236,224,.55);
+}
+.step-label {
+  font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--terra); margin-bottom:4px;
+}
+.wiz-header h2 {
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem; font-weight:700; color:var(--warm-dark); margin-bottom:4px;
+}
+.wiz-desc { font-size:.85rem; color:var(--text-sec); line-height:1.6; }
+
+.wiz-body { padding:22px 24px; }
+
+/* ── FIELD GROUPS ── */
+.field-section { margin-bottom:22px; }
+.field-section:last-child { margin-bottom:0; }
+.field-section-title {
+  font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--terra-dark); margin-bottom:12px;
+  padding-bottom:8px; border-bottom:1px solid var(--sand-200);
+  display:flex; align-items:center; gap:8px;
+}
+.field-row { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:12px; }
+.field { display:flex; flex-direction:column; gap:5px; flex:1; min-width:150px; }
+.field label {
+  font-size:.78rem; font-weight:600; color:var(--text-sec); line-height:1.4;
+}
+.field label .hint {
+  display:block; font-size:.72rem; font-weight:400; color:var(--text-mute); margin-top:1px;
+}
+.field input[type=number], .field select {
+  padding:9px 12px; border:1.5px solid var(--sand-200);
+  border-radius:10px; font-family:'DM Sans',sans-serif;
+  font-size:.9rem; color:var(--text-pri); background:white; outline:none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field input:focus, .field select:focus {
+  border-color:var(--terra); box-shadow:0 0 0 3px rgba(196,136,90,.12);
+}
+
+/* Option buttons (radio-style) */
+.opt-group { display:flex; flex-wrap:wrap; gap:7px; margin-top:2px; }
+.opt-btn {
+  padding:8px 14px; border-radius:10px;
+  border:1.5px solid var(--sand-200); background:white;
+  font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:500;
+  color:var(--text-pri); cursor:pointer; transition:var(--tr);
+  line-height:1.3; text-align:left;
+}
+.opt-btn:hover { border-color:var(--terra); background:rgba(196,136,90,.07); transform:translateY(-1px); }
+.opt-btn.selected {
+  background:var(--terra-dark); color:white; border-color:var(--terra-dark);
+  box-shadow:0 4px 12px rgba(143,82,48,.28);
+}
+.opt-btn.sel-green { background:var(--green); border-color:var(--green); }
+.opt-btn.sel-amber { background:var(--amber); border-color:var(--amber); }
+.opt-btn.sel-red   { background:var(--red);   border-color:var(--red); }
+
+/* Toggle checkbox */
+.toggle-row {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 12px; border-radius:10px;
+  border:1.5px solid var(--sand-200); background:white;
+  cursor:pointer; transition:var(--tr); margin-bottom:6px;
+}
+.toggle-row:hover { border-color:var(--terra); background:rgba(196,136,90,.06); }
+.toggle-row.checked { border-color:var(--terra-dark); background:rgba(143,82,48,.08); }
+.toggle-check {
+  width:20px; height:20px; border-radius:6px;
+  border:2px solid var(--sand-300); background:white;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition: all .2s; font-size:.8rem;
+}
+.toggle-row.checked .toggle-check { background:var(--terra-dark); border-color:var(--terra-dark); color:white; }
+.toggle-label { font-size:.85rem; font-weight:500; color:var(--text-pri); flex:1; line-height:1.4; }
+.toggle-sub { font-size:.75rem; color:var(--text-mute); display:block; }
+
+/* Info callout */
+.callout {
+  border-radius:10px; padding:11px 14px; font-size:.82rem; line-height:1.6;
+  margin:10px 0; display:flex; gap:9px; align-items:flex-start;
+}
+.callout.info  { background:var(--blue-lt);  border-left:3px solid var(--blue); color:#1e3a8a; }
+.callout.warn  { background:var(--amber-lt); border-left:3px solid var(--amber);color:#78350f; }
+.callout.ok    { background:var(--green-lt); border-left:3px solid var(--green); color:#064e3b; }
+.callout-icon  { flex-shrink:0; font-size:1rem; margin-top:1px; }
+
+/* ── NAVIGATION BUTTONS ── */
+.wiz-nav {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 24px; border-top:1px solid var(--sand-200);
+  background:rgba(245,236,224,.40);
+}
+.nav-btn {
+  padding:10px 24px; border-radius:var(--pill);
+  font-family:'DM Sans',sans-serif; font-size:.88rem; font-weight:600;
+  cursor:pointer; transition:var(--tr); border:none;
+}
+.nav-prev {
+  background:white; border:1.5px solid var(--sand-200); color:var(--text-sec);
+}
+.nav-prev:hover { background:var(--sand-100); }
+.nav-next {
+  background:linear-gradient(135deg,var(--terra),var(--terra-dark));
+  color:white; box-shadow:0 4px 16px rgba(143,82,48,.30);
+}
+.nav-next:hover { transform:translateY(-2px); box-shadow:0 6px 22px rgba(143,82,48,.42); }
+.nav-next:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+
+/* ── STEP PANELS ── */
+.step-panel { display:none; }
+.step-panel.active { display:block; }
+
+/* ── RIGHT COLUMN — RESULT ── */
+.result-col { position: sticky; top: 16px; }
+.result-card {
+  background:var(--glass); backdrop-filter:blur(16px);
+  border:1px solid var(--glass-b); border-radius:var(--r);
+  box-shadow:var(--sh); overflow:hidden; margin-bottom:14px;
+}
+.result-header {
+  padding:16px 18px;
+  background:linear-gradient(135deg,rgba(196,136,90,.15),rgba(143,82,48,.08));
+  border-bottom:1px solid var(--glass-b);
+}
+.result-header h3 {
+  font-family:'Playfair Display',serif;
+  font-size:1rem; font-weight:700; color:var(--warm-dark); margin-bottom:2px;
+}
+.result-header p { font-size:.78rem; color:var(--text-sec); }
+
+.result-body { padding:16px 18px; }
+
+/* Big classification display */
+.classif-display {
+  display:flex; flex-direction:column; gap:10px; margin-bottom:14px;
+}
+.classif-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 14px; border-radius:12px;
+  background:var(--sand-100); border:1px solid var(--sand-200);
+}
+.classif-lbl { font-size:.75rem; font-weight:700; color:var(--text-mute); text-transform:uppercase; letter-spacing:.08em; }
+.classif-val {
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem; font-weight:700; color:var(--warm-dark);
+  transition: all .3s;
+}
+.classif-val.updated { animation: valPop .4s ease; }
+@keyframes valPop { 0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+
+/* Full classification badge */
+.full-classif {
+  text-align:center; padding:14px 16px;
+  background:linear-gradient(135deg,rgba(143,82,48,.12),rgba(196,136,90,.08));
+  border:1.5px solid rgba(143,82,48,.25); border-radius:14px;
+  margin-bottom:14px;
+}
+.full-classif-label { font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-mute); margin-bottom:5px; }
+.full-classif-text {
+  font-family:'Playfair Display',serif;
+  font-size:1.05rem; font-weight:700; color:var(--terra-deep);
+  line-height:1.4;
+}
+.full-classif-text.empty { color:var(--text-mute); font-style:italic; font-size:.9rem; }
+
+/* Stage indicator */
+.stage-meter {
+  display:flex; gap:4px; margin:12px 0 6px;
+}
+.stage-seg {
+  flex:1; height:8px; border-radius:4px;
+  background:var(--sand-200); transition: all .4s ease;
+}
+.stage-seg.active-1 { background:#7aab8a; }
+.stage-seg.active-2 { background:var(--amber); }
+.stage-seg.active-3 { background:#e07c4a; }
+.stage-seg.active-4 { background:var(--red); }
+.stage-labels { display:flex; justify-content:space-between; font-size:.68rem; color:var(--text-mute); margin-bottom:10px; }
+
+/* Grade indicator */
+.grade-meter {
+  display:flex; gap:4px; margin:8px 0 4px;
+}
+.grade-seg {
+  flex:1; height:8px; border-radius:4px;
+  background:var(--sand-200); transition: all .4s ease;
+}
+.grade-seg.active-A { background:var(--green); }
+.grade-seg.active-B { background:var(--amber); }
+.grade-seg.active-C { background:var(--red); }
+.grade-labels { display:flex; justify-content:space-between; font-size:.68rem; color:var(--text-mute); margin-bottom:10px; }
+
+/* Reasoning chain */
+.reasoning {
+  font-size:.78rem; color:var(--text-sec); line-height:1.7;
+  border-top:1px solid var(--sand-200); padding-top:12px; margin-top:12px;
+}
+.reasoning h5 { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text-mute); margin-bottom:8px; }
+.reason-item { display:flex; gap:7px; align-items:flex-start; margin-bottom:4px; }
+.reason-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:6px; }
+.r-green { background:var(--green); }
+.r-amber { background:var(--amber); }
+.r-red   { background:var(--red); }
+.r-gray  { background:var(--sand-300); }
+
+/* Journal template */
+.journal-card {
+  background:white; border:1px solid var(--sand-200);
+  border-radius:var(--r); overflow:hidden; margin-bottom:14px;
+}
+.journal-card-header {
+  padding:10px 14px;
+  background:var(--sand-100); border-bottom:1px solid var(--sand-200);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.journal-card-header span { font-size:.8rem; font-weight:700; color:var(--warm-dark); }
+.copy-btn {
+  padding:4px 12px; border-radius:var(--pill);
+  background:var(--terra-dark); color:white;
+  border:none; font-family:'DM Sans',sans-serif;
+  font-size:.72rem; font-weight:600; cursor:pointer; transition: all .2s;
+}
+.copy-btn:hover { background:var(--terra-deep); }
+.journal-text {
+  padding:12px 14px;
+  font-family:monospace; font-size:.76rem;
+  color:var(--text-sec); line-height:1.8;
+  white-space:pre-wrap; background:white;
+}
+
+/* Reset button */
+.reset-btn {
+  width:100%; padding:10px; border-radius:var(--pill);
+  background:var(--sand-100); border:1.5px solid var(--sand-200);
+  font-family:'DM Sans',sans-serif; font-size:.83rem; font-weight:600;
+  color:var(--text-sec); cursor:pointer; transition: all .2s;
+}
+.reset-btn:hover { background:var(--sand-200); }
+
+/* ── SCROLL ANIMATIONS ── */
+.sa { opacity:0; transform:translateY(14px); transition:opacity .35s, transform .35s; }
+.sa.v { opacity:1; transform:translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px) {
+  .field-row { flex-direction:column; }
+  .opt-group { flex-direction:column; }
+  .wiz-nav { flex-direction:column; gap:8px; }
+  .nav-btn { width:100%; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb-wrap" aria-hidden="true">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+</div>
+
+<a class="back-btn" href="index.html" onclick="history.back();return false;">← TILLBAKA</a>
+
+<div class="page">
+  <div class="hero">
+    <h1>🦷 Parodontal Klassifikation</h1>
+    <p class="hero-sub">Interaktivt verktyg för klassifikation enligt World Workshop on Periodontology 2017<br>
+      <span class="src-badge">Sahlgrenska / GU</span>
+      <span class="src-badge">J Clin Periodontol 2018</span>
+      <span class="src-badge">STM20211201</span>
+    </p>
+  </div>
+
+  <div class="layout">
+
+    <!-- ══════════════════════════
+         LEFT — WIZARD
+    ══════════════════════════ -->
+    <div>
+      <!-- Progress bar -->
+      <div class="progress-wrap sa" id="progressWrap">
+        <div class="prog-step" id="prog-0" onclick="goStep(0)">
+          <div class="prog-dot" id="dot-0">✦</div>
+          <span class="prog-label">Inklusion</span>
+        </div>
+        <div class="prog-line" id="line-0"></div>
+        <div class="prog-step" id="prog-1" onclick="goStep(1)">
+          <div class="prog-dot" id="dot-1">1</div>
+          <span class="prog-label">Patient</span>
+        </div>
+        <div class="prog-line" id="line-1"></div>
+        <div class="prog-step" id="prog-2" onclick="goStep(2)">
+          <div class="prog-dot" id="dot-2">2</div>
+          <span class="prog-label">Svårighetsgrad</span>
+        </div>
+        <div class="prog-line" id="line-2"></div>
+        <div class="prog-step" id="prog-3" onclick="goStep(3)">
+          <div class="prog-dot" id="dot-3">3</div>
+          <span class="prog-label">Komplexitet</span>
+        </div>
+        <div class="prog-line" id="line-3"></div>
+        <div class="prog-step" id="prog-4" onclick="goStep(4)">
+          <div class="prog-dot" id="dot-4">4</div>
+          <span class="prog-label">Progression</span>
+        </div>
+        <div class="prog-line" id="line-4"></div>
+        <div class="prog-step" id="prog-5" onclick="goStep(5)">
+          <div class="prog-dot" id="dot-5">5</div>
+          <span class="prog-label">Utbredning</span>
+        </div>
+      </div>
+
+      <!-- WIZARD CARD -->
+      <div class="wizard-card sa">
+
+        <!-- ═══ STEP 0 — INKLUSION / MINIMIKRITERIA ═══ -->
+        <div class="step-panel active" id="panel-0">
+          <div class="wiz-header">
+            <div class="step-label">Minimikriteria för parodontit-klassifikation</div>
+            <h2>Inklusionsscreening</h2>
+            <p class="wiz-desc">För att klassificeras som ett parodontitfall krävs att <strong>båda</strong> nedanstående kriterier är uppfyllda. Visdomständer (18, 28, 38, 48) exkluderas alltid. <span class="src-badge">J Clin Periodontol 2018</span></p>
+          </div>
+          <div class="wiz-body">
+
+            <div class="callout info" style="margin-bottom:20px;">
+              <span class="callout-icon">ℹ️</span>
+              <span>Klassifikationen kräver att fästeförlusten påvisas på <strong>minst 2 icke-angränsande tänder</strong>. Utan detta kan tänderna ha gingivit eller lokal parodontit men patienten uppfyller inte kriterierna för parodontit-stadie.</span>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">🩸 Kriterium 1 — Blödning vid sondering (BoP)</div>
+              <p style="font-size:.85rem; color:var(--text-sec); margin-bottom:12px; line-height:1.6;">
+                Föreligger blödning vid sondering (BoP) på <strong>mer än 2 icke-angränsande tänder</strong>?<br>
+                <span style="font-size:.78rem; color:var(--text-mute);">Angränsande = direkt grannstänger räknas ej som separata fynd. Visdomständer exkluderas.</span>
+              </p>
+              <div class="opt-group" id="opts-inc-bop">
+                <button class="opt-btn" data-grp="inc-bop" data-val="yes" onclick="selectOpt(this); checkInclusion()">
+                  ✅ Ja — BoP på &gt;2 icke-angränsande tänder
+                </button>
+                <button class="opt-btn" data-grp="inc-bop" data-val="no" onclick="selectOpt(this); checkInclusion()">
+                  ⛔ Nej — Kriteriet ej uppfyllt
+                </button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">📏 Kriterium 2 — Approximala fickor</div>
+              <p style="font-size:.85rem; color:var(--text-sec); margin-bottom:12px; line-height:1.6;">
+                Finns fickor (PPD ≥ 4 mm med BoP, eller CAL) på <strong>mer än 2 approximala ytor på icke-angränsande tänder</strong>?<br>
+                <span style="font-size:.78rem; color:var(--text-mute);">Dessa ytor ska inte vara på direkt angränsande tänder — det är ett krav för att skilja lokala från generella fynd. Visdomständer exkluderas.</span>
+              </p>
+              <div class="opt-group" id="opts-inc-pocket">
+                <button class="opt-btn" data-grp="inc-pocket" data-val="yes" onclick="selectOpt(this); checkInclusion()">
+                  ✅ Ja — Fickor på &gt;2 approximala ytor, icke-angränsande tänder
+                </button>
+                <button class="opt-btn" data-grp="inc-pocket" data-val="no" onclick="selectOpt(this); checkInclusion()">
+                  ⛔ Nej — Kriteriet ej uppfyllt
+                </button>
+              </div>
+            </div>
+
+            <!-- Inclusion result box -->
+            <div id="inclusion-result" style="display:none; margin-top:16px;">
+              <!-- filled by JS -->
+            </div>
+
+          </div>
+          <div class="wiz-nav">
+            <span style="font-size:.8rem; color:var(--text-mute);">Båda kriterier måste vara uppfyllda för att fortsätta</span>
+            <button class="nav-btn nav-next" id="btn-inc-next" onclick="goStep(1)" disabled style="opacity:.4;cursor:not-allowed;">
+              Nästa: Patientuppgifter →
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ STEP 1 — PATIENT ═══ -->
+        <div class="step-panel active" id="panel-1">
+          <div class="wiz-header">
+            <div class="step-label">Steg 1 av 5</div>
+            <h2>Patientuppgifter &amp; Riskfaktorer</h2>
+            <p class="wiz-desc">Ange patientens ålder och modifierande faktorer. Dessa påverkar Grade-bedömningen.</p>
+          </div>
+          <div class="wiz-body">
+
+            <div class="field-section">
+              <div class="field-section-title">👤 Grunduppgifter</div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Patientens ålder <span class="hint">Används för benförlust/ålder-kvot (Grade)</span></label>
+                  <input type="number" id="f-age" min="10" max="99" placeholder="t.ex. 45" oninput="calcAge()" onchange="calcAge()">
+                </div>
+                <div class="field">
+                  <label>Antal kvarvarande tänder <span class="hint">Exkl. visdomständer</span></label>
+                  <input type="number" id="f-teeth" min="0" max="28" placeholder="t.ex. 24" onchange="calcAll()">
+                </div>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">🚬 Rökning</div>
+              <div class="opt-group" id="opts-smoking">
+                <button class="opt-btn" data-grp="smoking" data-val="none" onclick="selectOpt(this)">Icke-rökare</button>
+                <button class="opt-btn" data-grp="smoking" data-val="lt10" onclick="selectOpt(this)">&lt; 10 cigaretter/dag</button>
+                <button class="opt-btn" data-grp="smoking" data-val="ge10" onclick="selectOpt(this)">≥ 10 cigaretter/dag</button>
+                <button class="opt-btn" data-grp="smoking" data-val="snus" onclick="selectOpt(this)">Snusare / e-cig</button>
+              </div>
+              <div class="callout info" style="margin-top:8px;">
+                <span class="callout-icon">ℹ️</span>
+                <span>Rökning &lt;10 cig/dag → minst Grad B. Rökning ≥10 cig/dag → Grad C. Snus/e-cig noteras som riskfaktor.</span>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">🩸 Diabetes</div>
+              <div class="opt-group" id="opts-diabetes">
+                <button class="opt-btn" data-grp="diabetes" data-val="none" onclick="selectOpt(this)">Ingen diabetes / normalt blodsocker</button>
+                <button class="opt-btn" data-grp="diabetes" data-val="controlled" onclick="selectOpt(this)">Diabetes — HbA1c &lt; 53 mmol/mol (&lt; 7%)</button>
+                <button class="opt-btn" data-grp="diabetes" data-val="uncontrolled" onclick="selectOpt(this)">Diabetes — HbA1c ≥ 53 mmol/mol (≥ 7%)</button>
+              </div>
+              <div class="callout info" style="margin-top:8px;">
+                <span class="callout-icon">ℹ️</span>
+                <span>HbA1c &lt;53 mmol/mol → minst Grad B. HbA1c ≥53 mmol/mol → Grad C. Notera om HbA1c mäts i mmol/mol (Sverige) eller % (MonoS).</span>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">💊 Övriga medicinska riskfaktorer <span style="font-weight:400; font-size:.7rem;">(valfri notering)</span></div>
+              <div class="callout warn">
+                <span class="callout-icon">⚠️</span>
+                <span>Kalciumkanalblockerare, cyklosporin A och viss epilepsimediciering kan ge läkemedelsinducerad gingival överväxt. Koagulationshämmande kan påverka behandlingen.</span>
+              </div>
+            </div>
+
+          </div>
+          <div class="wiz-nav">
+            <span style="font-size:.8rem; color:var(--text-mute);">Fyll i patientuppgifter</span>
+            <button class="nav-btn nav-next" onclick="goStep(2)">Nästa: Svårighetsgrad →</button>
+          </div>
+        </div>
+
+        <!-- ═══ STEP 2 — SEVERITY ═══ -->
+        <div class="step-panel" id="panel-2">
+          <div class="wiz-header">
+            <div class="step-label">Steg 2 av 5</div>
+            <h2>Svårighetsgrad — Fästeförlust &amp; Benförlust</h2>
+            <p class="wiz-desc">Anger sjukdomens allvarlighetsgrad. Välj det VÄRSTA uppmätta värdet för hela bettet.</p>
+          </div>
+          <div class="wiz-body">
+
+            <div class="field-section">
+              <div class="field-section-title">📏 Klinisk fästeförlust (CAL) — värsta approximala site</div>
+              <div class="opt-group" id="opts-cal">
+                <button class="opt-btn" data-grp="cal" data-val="1" onclick="selectOpt(this)">1–2 mm → Stadie I</button>
+                <button class="opt-btn" data-grp="cal" data-val="2" onclick="selectOpt(this)">3–4 mm → Stadie II</button>
+                <button class="opt-btn" data-grp="cal" data-val="3" onclick="selectOpt(this)">≥ 5 mm → Stadie III/IV</button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">📐 Radiografisk benförlust — andel av rotlängd</div>
+              <div class="opt-group" id="opts-bone">
+                <button class="opt-btn" data-grp="bone" data-val="1" onclick="selectOpt(this)">Koronal 1/3 — &lt;15% → Stadie I</button>
+                <button class="opt-btn" data-grp="bone" data-val="2" onclick="selectOpt(this)">Koronal 1/3 — 15–33% → Stadie II</button>
+                <button class="opt-btn" data-grp="bone" data-val="3" onclick="selectOpt(this)">Överstiger koronal 1/3 — &gt;33% → Stadie III/IV</button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">🦷 Tandförlust p.g.a. parodontit</div>
+              <div class="opt-group" id="opts-toothloss">
+                <button class="opt-btn" data-grp="toothloss" data-val="0" onclick="selectOpt(this)">Ingen tandförlust p.g.a. parodontit</button>
+                <button class="opt-btn" data-grp="toothloss" data-val="3" onclick="selectOpt(this)">≤ 4 tänder förlorade → Stadie III</button>
+                <button class="opt-btn" data-grp="toothloss" data-val="4" onclick="selectOpt(this)">≥ 5 tänder förlorade → Stadie IV</button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">📊 Benförlust för Grade-beräkning</div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Benförlust värsta tanden — % av rotlängd
+                    <span class="hint">Används för benförlust/ålders-kvot. T.ex. 30 = 30%</span>
+                  </label>
+                  <input type="number" id="f-bonepct" min="0" max="100" placeholder="t.ex. 30" onchange="calcAll()">
+                </div>
+              </div>
+              <div class="callout info">
+                <span class="callout-icon">ℹ️</span>
+                <span>Kvot = benförlust% / ålder. &lt;0.25 → Grad A &nbsp;|&nbsp; 0.25–1.0 → Grad B &nbsp;|&nbsp; &gt;1.0 → Grad C</span>
+              </div>
+            </div>
+
+          </div>
+          <div class="wiz-nav">
+            <button class="nav-btn nav-prev" onclick="goStep(1)">← Tillbaka</button>
+            <button class="nav-btn nav-next" onclick="goStep(3)">Nästa: Komplexitet →</button>
+          </div>
+        </div>
+
+        <!-- ═══ STEP 3 — COMPLEXITY ═══ -->
+        <div class="step-panel" id="panel-3">
+          <div class="wiz-header">
+            <div class="step-label">Steg 3 av 5</div>
+            <h2>Komplexitetsfaktorer</h2>
+            <p class="wiz-desc">Faktorer som kan uppgradera stadiet. Kryssa i allt som gäller för patienten.</p>
+          </div>
+          <div class="wiz-body">
+
+            <div class="field-section">
+              <div class="field-section-title">📏 Maximalt sonderingsdjup (PPD) — djupaste fickan</div>
+              <div class="opt-group" id="opts-ppd">
+                <button class="opt-btn" data-grp="ppd" data-val="1" onclick="selectOpt(this)">PPD ≤ 4 mm → Stadie I-komplexitet</button>
+                <button class="opt-btn" data-grp="ppd" data-val="2" onclick="selectOpt(this)">PPD ≤ 5 mm → Stadie II-komplexitet</button>
+                <button class="opt-btn" data-grp="ppd" data-val="3" onclick="selectOpt(this)">PPD ≥ 6 mm → Stadie III-komplexitet</button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">📐 Angulära bendefekter</div>
+              <div class="opt-group" id="opts-angular">
+                <button class="opt-btn" data-grp="angular" data-val="0" onclick="selectOpt(this)">Inga angulära bendefekter ≥ 3 mm</button>
+                <button class="opt-btn" data-grp="angular" data-val="3" onclick="selectOpt(this)">Angulära bendefekter ≥ 3 mm → Stadie III</button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">🔱 Furkationsinvolvering (värst drabbad tand)</div>
+              <div class="opt-group" id="opts-furk">
+                <button class="opt-btn" data-grp="furk" data-val="0" onclick="selectOpt(this)">Ingen / Grad I — Horisontell förlust &lt; 1/3 av tandens bredd</button>
+                <button class="opt-btn" data-grp="furk" data-val="3" onclick="selectOpt(this)">Grad II — Partiell genomträngning (&gt; 1/3 men ej genomgående) → Stadie III</button>
+                <button class="opt-btn" data-grp="furk" data-val="3b" onclick="selectOpt(this)">Grad III — Genomgående förlust → Stadie III</button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">⚠️ Stadie IV-komplexitet (kryssa i det som gäller)</div>
+              <div class="callout warn" style="margin-bottom:12px;">
+                <span class="callout-icon">⚠️</span>
+                <span>Minst ett av dessa kriterier → Stadie IV, utöver Stadie III-komplexiteten.</span>
+              </div>
+
+              <div class="toggle-row" id="tog-chew" onclick="toggleCheck(this,'chew')">
+                <div class="toggle-check" id="chk-chew"></div>
+                <span class="toggle-label">Nedsatt tuggfunktion <span class="toggle-sub">Patienten rapporterar tydlig nedsatt förmåga att tugga</span></span>
+              </div>
+              <div class="toggle-row" id="tog-mob" onclick="toggleCheck(this,'mob')">
+                <div class="toggle-check" id="chk-mob"></div>
+                <span class="toggle-label">Tandmobilitet ≥ Grad 2 <span class="toggle-sub">Horisontell rörlighet &gt; 1 mm</span></span>
+              </div>
+              <div class="toggle-row" id="tog-bite" onclick="toggleCheck(this,'bite')">
+                <div class="toggle-check" id="chk-bite"></div>
+                <span class="toggle-label">Bettkolaps <span class="toggle-sub">Vertikaldimensionen reducerad</span></span>
+              </div>
+              <div class="toggle-row" id="tog-drift" onclick="toggleCheck(this,'drift')">
+                <div class="toggle-check" id="chk-drift"></div>
+                <span class="toggle-label">Tandvandring / Fläktning <span class="toggle-sub">Märkbar förändring av tändernas läge</span></span>
+              </div>
+              <div class="toggle-row" id="tog-few" onclick="toggleCheck(this,'few')">
+                <div class="toggle-check" id="chk-few"></div>
+                <span class="toggle-label">&lt; 20 kvarvarande tänder / &lt; 10 antagonistpar <span class="toggle-sub">Kraftigt reducerat bett</span></span>
+              </div>
+            </div>
+
+          </div>
+          <div class="wiz-nav">
+            <button class="nav-btn nav-prev" onclick="goStep(2)">← Tillbaka</button>
+            <button class="nav-btn nav-next" onclick="goStep(4)">Nästa: Progression →</button>
+          </div>
+        </div>
+
+        <!-- ═══ STEP 4 — GRADE ═══ -->
+        <div class="step-panel" id="panel-4">
+          <div class="wiz-header">
+            <div class="step-label">Steg 4 av 5</div>
+            <h2>Progressionsbedömning (Grad A–C)</h2>
+            <p class="wiz-desc">Välj det starkaste tillgängliga beviset för progressionshastighet. Direkt bevis väger tyngst.</p>
+          </div>
+          <div class="wiz-body">
+
+            <div class="field-section">
+              <div class="field-section-title">📂 Direkt bevis på progression (dokumenterade data)</div>
+              <div class="callout info" style="margin-bottom:10px;">
+                <span class="callout-icon">ℹ️</span>
+                <span>Välj om du har tillgång till äldre journaldata / röntgenbilder som visar progression över 5 år. Om ej tillgängligt → välj "Saknas".</span>
+              </div>
+              <div class="opt-group" id="opts-direct">
+                <button class="opt-btn" data-grp="direct" data-val="none" onclick="selectOpt(this)">Saknas / Inte tillämpbart</button>
+                <button class="opt-btn" data-grp="direct" data-val="A" onclick="selectOpt(this)">Ingen CAL/benförlust dokumenterad över 5 år → Grad A</button>
+                <button class="opt-btn" data-grp="direct" data-val="B" onclick="selectOpt(this)">&lt; 2 mm CAL/benförlust över 5 år → Grad B</button>
+                <button class="opt-btn" data-grp="direct" data-val="C" onclick="selectOpt(this)">≥ 2 mm CAL/benförlust över 5 år → Grad C</button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">🔬 Indirekt bedömning — Case Phenotype</div>
+              <div class="callout info" style="margin-bottom:10px;">
+                <span class="callout-icon">ℹ️</span>
+                <span>Förhållandet mellan mängden plack/tandsten och graden av stödjevävnadsförlust. Välj det alternativ som bäst beskriver patienten.</span>
+              </div>
+              <div class="opt-group" id="opts-phenotype">
+                <button class="opt-btn" data-grp="phenotype" data-val="A" onclick="selectOpt(this)">
+                  <strong>Grad A (möjlig)</strong> — Stor mängd plack/tandsten men liten stödjevävnadsförlust. Plack förklarar ej sjukdomen.
+                </button>
+                <button class="opt-btn" data-grp="phenotype" data-val="B" onclick="selectOpt(this)">
+                  <strong>Grad B (möjlig)</strong> — Mängd plack/tandsten och sjukdomstecken korrelerar väl med stödjevävnadsförlusten.
+                </button>
+                <button class="opt-btn" data-grp="phenotype" data-val="C" onclick="selectOpt(this)">
+                  <strong>Grad C (möjlig)</strong> — Stödjevävnadsförlust stor i förhållande till plack/tandsten. Snabb progression misstänks. Ev. molar/incisiv-lokalisation.
+                </button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">🧮 Beräknad benförlust/ålders-kvot</div>
+              <div id="bone-age-result" class="callout info">
+                <span class="callout-icon">⏳</span>
+                <span>Fyll i ålder (Steg 1) och benförlust % (Steg 2) för automatisk beräkning.</span>
+              </div>
+            </div>
+
+          </div>
+          <div class="wiz-nav">
+            <button class="nav-btn nav-prev" onclick="goStep(3)">← Tillbaka</button>
+            <button class="nav-btn nav-next" onclick="goStep(5)">Nästa: Utbredning →</button>
+          </div>
+        </div>
+
+        <!-- ═══ STEP 5 — EXTENT ═══ -->
+        <div class="step-panel" id="panel-5">
+          <div class="wiz-header">
+            <div class="step-label">Steg 5 av 5</div>
+            <h2>Utbredning</h2>
+            <p class="wiz-desc">Hur stor andel av tänderna uppvisar parodontit (BoP + stödjevävnadsförlust)?</p>
+          </div>
+          <div class="wiz-body">
+
+            <div class="field-section">
+              <div class="field-section-title">📊 Sjukdomens utbredning</div>
+              <div class="opt-group" id="opts-extent">
+                <button class="opt-btn" data-grp="extent" data-val="lok" onclick="selectOpt(this)">
+                  <strong>Lokaliserad</strong> — &lt; 30% av tänderna affekterade
+                </button>
+                <button class="opt-btn" data-grp="extent" data-val="gen" onclick="selectOpt(this)">
+                  <strong>Generaliserad</strong> — ≥ 30% av tänderna affekterade
+                </button>
+                <button class="opt-btn" data-grp="extent" data-val="mol" onclick="selectOpt(this)">
+                  <strong>Molar/Incisiv-mönster</strong> — Specifikt utbredningsmönster som kan indikera Grad C
+                </button>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">📌 Blödning vid sondering (BoP) — totalt</div>
+              <div class="field-row">
+                <div class="field">
+                  <label>BoP% (% av alla sonderade ytor som blöder)
+                    <span class="hint">Gräns parodontal hälsa: ≤ 10% BoP</span>
+                  </label>
+                  <input type="number" id="f-bop" min="0" max="100" placeholder="t.ex. 45" onchange="calcAll()">
+                </div>
+                <div class="field">
+                  <label>Plackindex (%)
+                    <span class="hint">% av tandytor med plack i cervikala 1/3</span>
+                  </label>
+                  <input type="number" id="f-plaque" min="0" max="100" placeholder="t.ex. 35" onchange="calcAll()">
+                </div>
+              </div>
+            </div>
+
+            <div class="field-section">
+              <div class="field-section-title">🎯 Slutlig kontroll — Stödbehandlingsintervall</div>
+              <div class="callout ok">
+                <span class="callout-icon">✅</span>
+                <span>Baserat på Grade ges stödbehandlingsintervall: <strong>Grad A:</strong> 7–12 mån &nbsp;|&nbsp; <strong>Grad B:</strong> 5–6 mån &nbsp;|&nbsp; <strong>Grad C:</strong> 3–4 mån</span>
+              </div>
+              <div class="callout warn" style="margin-top:8px;">
+                <span class="callout-icon">⚠️</span>
+                <span>Diagnos på tandnivå: Tänder med BoP och stödjevävnadsförlust → Parodontit. Tänder med BoP men utan stödjevävnadsförlust → Gingivit. Tänder utan BoP → Frisk (oavsett tidigare förlust).</span>
+              </div>
+            </div>
+
+          </div>
+          <div class="wiz-nav">
+            <button class="nav-btn nav-prev" onclick="goStep(4)">← Tillbaka</button>
+            <button class="nav-btn nav-next" onclick="finalize()" style="background:linear-gradient(135deg,#059669,#047857);">✅ Generera klassifikation</button>
+          </div>
+        </div>
+
+      </div><!-- /wizard-card -->
+    </div>
+
+    <!-- ══════════════════════════
+         RIGHT — LIVE RESULT
+    ══════════════════════════ -->
+    <div class="result-col">
+
+      <!-- Live Classification -->
+      <div class="result-card sa">
+        <div class="result-header">
+          <h3>📋 Parodontal klassifikation</h3>
+          <p>Uppdateras i realtid</p>
+        </div>
+        <div class="result-body">
+
+          <!-- Full classification text -->
+          <div class="full-classif">
+            <div class="full-classif-label">Klassifikation</div>
+            <div class="full-classif-text empty" id="full-classif-text">Fyll i stegen för att generera klassifikation</div>
+          </div>
+
+          <!-- Stage -->
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:.75rem;font-weight:700;color:var(--text-mute);text-transform:uppercase;letter-spacing:.08em;">Stadie</span>
+              <span class="classif-val" id="stage-val">—</span>
+            </div>
+            <div class="stage-meter">
+              <div class="stage-seg" id="seg-s1"></div>
+              <div class="stage-seg" id="seg-s2"></div>
+              <div class="stage-seg" id="seg-s3"></div>
+              <div class="stage-seg" id="seg-s4"></div>
+            </div>
+            <div class="stage-labels"><span>I</span><span>II</span><span>III</span><span>IV</span></div>
+          </div>
+
+          <!-- Grade -->
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:.75rem;font-weight:700;color:var(--text-mute);text-transform:uppercase;letter-spacing:.08em;">Grad</span>
+              <span class="classif-val" id="grade-val">—</span>
+            </div>
+            <div class="grade-meter">
+              <div class="grade-seg" id="seg-gA"></div>
+              <div class="grade-seg" id="seg-gB"></div>
+              <div class="grade-seg" id="seg-gC"></div>
+            </div>
+            <div class="grade-labels"><span>A (Låg risk)</span><span>B (Måttlig)</span><span>C (Hög risk)</span></div>
+          </div>
+
+          <!-- Extent -->
+          <div class="classif-row" style="margin-bottom:12px;">
+            <span class="classif-lbl">Utbredning</span>
+            <span style="font-size:.9rem;font-weight:600;color:var(--warm-dark);" id="extent-val">—</span>
+          </div>
+
+          <!-- Support interval -->
+          <div class="classif-row">
+            <span class="classif-lbl">Stödbehandling</span>
+            <span style="font-size:.88rem;font-weight:600;color:var(--terra-dark);" id="support-val">—</span>
+          </div>
+
+          <!-- Reasoning -->
+          <div class="reasoning" id="reasoning-box">
+            <h5>Beslutskedja</h5>
+            <div id="reasoning-items" style="color:var(--text-mute);font-style:italic;font-size:.78rem;">Välj kriterier för att se resonemang</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Journal Template -->
+      <div class="journal-card sa">
+        <div class="journal-card-header">
+          <span>📝 Journalmall</span>
+          <button class="copy-btn" onclick="copyJournal()">📋 Kopiera</button>
+        </div>
+        <div class="journal-text" id="journal-text">— Genereras efter klassifikation —</div>
+      </div>
+
+      <!-- Reset -->
+      <button class="reset-btn sa" onclick="resetAll()">🔄 Återställ &amp; börja om</button>
+
+    </div>
+  </div><!-- /layout -->
+</div><!-- /page -->
+
+<script>
+/* ════════════════════════════════════
+   STATE
+════════════════════════════════════ */
+const state = {
+  age: null, teeth: null, bop: null, plaque: null, bonePct: null,
+  smoking: null, diabetes: null,
+  cal: null, bone: null, toothloss: null,
+  ppd: null, angular: null, furk: null,
+  chew: false, mob: false, bite: false, drift: false, few: false,
+  direct: null, phenotype: null,
+  extent: null,
+  'inc-bop': null, 'inc-pocket': null
+};
+
+let currentStep = 0;
+const TOTAL = 5; // steps 1-5; step 0 is screening
+
+/* ════════════════════════════════════
+   STEP NAVIGATION
+════════════════════════════════════ */
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach((p,i) => {
+    // panel-0 = index 0, panel-1 = index 1, etc.
+    p.classList.toggle('active', i === n);
+  });
+  currentStep = n;
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+  calcAll();
+}
+
+function updateProgress() {
+  // Step 0 — special screening indicator
+  const prog0 = document.getElementById('prog-0');
+  const dot0  = document.getElementById('dot-0');
+  const line0 = document.getElementById('line-0');
+  prog0.className = 'prog-step';
+  if (currentStep === 0) { prog0.classList.add('active'); dot0.textContent = '✦'; }
+  else                   { prog0.classList.add('done');   dot0.textContent = '✓'; }
+  if (line0) line0.style.background = currentStep > 0 ? 'var(--green)' : 'var(--sand-200)';
+
+  // Steps 1-5
+  for (let i = 1; i <= TOTAL; i++) {
+    const prog = document.getElementById('prog-'+i);
+    const dot  = document.getElementById('dot-'+i);
+    const line = document.getElementById('line-'+i);
+    if (!prog) continue;
+    prog.className = 'prog-step';
+    if (i < currentStep)  { prog.classList.add('done');   dot.textContent = '✓'; }
+    if (i === currentStep){ prog.classList.add('active');  dot.textContent = i; }
+    if (i > currentStep)  { dot.textContent = i; }
+    if (line) line.style.background = i < currentStep ? 'var(--green)' : 'var(--sand-200)';
+  }
+}
+
+/* ════════════════════════════════════
+   OPT BUTTONS (radio)
+════════════════════════════════════ */
+function selectOpt(btn) {
+  const grp = btn.dataset.grp;
+  document.querySelectorAll(`.opt-btn[data-grp="${grp}"]`).forEach(b => b.classList.remove('selected','sel-green','sel-amber','sel-red'));
+  btn.classList.add('selected');
+  state[grp] = btn.dataset.val;
+  calcAll();
+}
+
+/* ════════════════════════════════════
+   TOGGLE CHECKBOXES
+════════════════════════════════════ */
+function toggleCheck(row, key) {
+  state[key] = !state[key];
+  row.classList.toggle('checked', state[key]);
+  const chk = row.querySelector('.toggle-check');
+  chk.textContent = state[key] ? '✓' : '';
+  calcAll();
+}
+
+/* ════════════════════════════════════
+   INPUT READERS
+════════════════════════════════════ */
+function calcAge() {
+  const v = parseInt(document.getElementById('f-age').value);
+  state.age = isNaN(v) ? null : v;
+  calcAll();
+}
+
+/* ════════════════════════════════════
+   MAIN CALCULATION
+════════════════════════════════════ */
+function calcAll() {
+  // Read inputs
+  state.teeth   = parseInt(document.getElementById('f-teeth').value) || null;
+  state.bonePct = parseFloat(document.getElementById('f-bonepct').value);
+  state.bop     = parseFloat(document.getElementById('f-bop').value);
+  state.plaque  = parseFloat(document.getElementById('f-plaque').value);
+  state.age     = parseInt(document.getElementById('f-age').value) || null;
+
+  const { stage, reasons: stageReasons } = calcStage();
+  const { grade, reasons: gradeReasons, boneAgeRatio } = calcGrade();
+  const extent = calcExtent();
+
+  updateBoneAgeDisplay(boneAgeRatio);
+  updateUI(stage, grade, extent, [...stageReasons, ...gradeReasons]);
+  updateJournal(stage, grade, extent);
+}
+
+function calcStage() {
+  let stage = 0; // 0 = not determined
+  const reasons = [];
+
+  // ── CAL ──
+  const calMap = {1:1, 2:2, 3:3};
+  if (state.cal) {
+    const s = calMap[state.cal];
+    if (s > stage) { stage = s; reasons.push({txt:`CAL: ${['','1–2mm → Stadie I','3–4mm → Stadie II','≥5mm → Stadie III+'][state.cal]}`, level: s}); }
+    else { reasons.push({txt:`CAL bidrar till Stadie ${toRoman(s)} (ej uppgradering)`, level:0}); }
+  }
+
+  // ── Bone loss ──
+  const boneMap = {1:1, 2:2, 3:3};
+  if (state.bone) {
+    const s = boneMap[state.bone];
+    if (s > stage) { stage = s; reasons.push({txt:`Benförlust: ${['','<15% → Stadie I','15–33% → Stadie II','>33% → Stadie III+'][state.bone]}`, level:s}); }
+    else { reasons.push({txt:`Benförlust: bidrar till Stadie ${toRoman(s)}`, level:0}); }
+  }
+
+  // ── Tooth loss ──
+  if (state.toothloss && state.toothloss !== '0') {
+    const s = parseInt(state.toothloss);
+    if (s > stage) { stage = s; reasons.push({txt:`Tandförlust: ${state.toothloss==='3' ? '≤4 tänder → Stadie III' : '≥5 tänder → Stadie IV'}`, level:s}); }
+  } else if (state.toothloss==='0') {
+    reasons.push({txt:'Ingen tandförlust p.g.a. parodontit', level:0});
+  }
+
+  // ── PPD complexity ──
+  const ppdMap = {1:1, 2:2, 3:3};
+  if (state.ppd) {
+    const s = ppdMap[state.ppd];
+    if (s > stage) { stage = s; reasons.push({txt:`PPD: ${['','≤4mm → Stadie I','≤5mm → Stadie II','≥6mm → Stadie III+'][state.ppd]}`, level:s}); }
+    else { reasons.push({txt:`PPD bidrar till Stadie ${toRoman(s)}`, level:0}); }
+  }
+
+  // ── Angular defects ──
+  if (state.angular === '3') {
+    if (3 > stage) { stage = 3; }
+    reasons.push({txt:'Angulära bendefekter ≥3mm → Stadie III', level:3});
+  }
+
+  // ── Furcation ──
+  if (state.furk === '3' || state.furk === '3b') {
+    const label = state.furk === '3' ? 'Furkation Grad II → Stadie III' : 'Furkation Grad III → Stadie III';
+    if (3 > stage) { stage = 3; }
+    reasons.push({txt:label, level:3});
+  }
+
+  // ── Stage IV complexity ──
+  const ivFactors = [];
+  if (state.chew)  ivFactors.push('Nedsatt tuggfunktion');
+  if (state.mob)   ivFactors.push('Tandmobilitet ≥ Grad 2');
+  if (state.bite)  ivFactors.push('Bettkolaps');
+  if (state.drift) ivFactors.push('Tandvandring/fläktning');
+  if (state.few)   ivFactors.push('<20 kvarv. tänder / <10 antagonistpar');
+
+  if (ivFactors.length > 0) {
+    stage = 4;
+    reasons.push({txt:`Stadie IV: ${ivFactors.join(', ')}`, level:4});
+  }
+
+  // Minimum stage: if we have any diagnosis, stage ≥ 1
+  if ((state.cal || state.bone || state.ppd) && stage < 1) stage = 1;
+
+  return { stage, reasons };
+}
+
+function calcGrade() {
+  let gradeNum = 0; // 0=unknown, 1=A, 2=B, 3=C
+  const reasons = [];
+  let boneAgeRatio = null;
+
+  // ── Direct evidence ──
+  if (state.direct && state.direct !== 'none') {
+    const dMap = {A:1, B:2, C:3};
+    const d = dMap[state.direct];
+    if (d > gradeNum) { gradeNum = d; }
+    reasons.push({txt:`Direkt bevis: ${{A:'Ingen progression → Grad A', B:'<2mm 5år → Grad B', C:'≥2mm 5år → Grad C'}[state.direct]}`, level:d});
+  }
+
+  // ── Bone/age ratio ──
+  if (state.bonePct >= 0 && state.age > 0) {
+    boneAgeRatio = state.bonePct / state.age;
+    let ratioGrade = 0;
+    if (boneAgeRatio < 0.25)                          { ratioGrade = 1; }
+    else if (boneAgeRatio >= 0.25 && boneAgeRatio <= 1.0) { ratioGrade = 2; }
+    else if (boneAgeRatio > 1.0)                      { ratioGrade = 3; }
+    if (ratioGrade > gradeNum) { gradeNum = ratioGrade; }
+    const ratioLbl = ['','Grad A','Grad B','Grad C'][ratioGrade];
+    reasons.push({txt:`Benförlust/ålder: ${state.bonePct}%/${state.age}år = ${boneAgeRatio.toFixed(2)} → ${ratioLbl}`, level:ratioGrade});
+  }
+
+  // ── Phenotype ──
+  if (state.phenotype) {
+    const phMap = {A:1, B:2, C:3};
+    const p = phMap[state.phenotype];
+    if (p > gradeNum) { gradeNum = p; }
+    reasons.push({txt:`Case phenotype: Grad ${state.phenotype}`, level:p});
+  }
+
+  // ── Modifying factors (can only UPGRADE) ──
+  if (state.smoking === 'lt10' && gradeNum < 2) { gradeNum = 2; reasons.push({txt:'Rökning <10/dag → uppgraderar till minst Grad B', level:2}); }
+  if (state.smoking === 'ge10' && gradeNum < 3) { gradeNum = 3; reasons.push({txt:'Rökning ≥10/dag → uppgraderar till Grad C', level:3}); }
+  if (state.smoking === 'snus')  reasons.push({txt:'Snus/e-cig → notera som riskfaktor', level:0});
+  if (state.diabetes === 'controlled'   && gradeNum < 2) { gradeNum = 2; reasons.push({txt:'Diabetes HbA1c <7% → minst Grad B', level:2}); }
+  if (state.diabetes === 'uncontrolled' && gradeNum < 3) { gradeNum = 3; reasons.push({txt:'Diabetes HbA1c ≥7% → Grad C', level:3}); }
+
+  // Molar/incisiv pattern → suggests Grade C
+  if (state.extent === 'mol' && gradeNum < 3) {
+    gradeNum = 3;
+    reasons.push({txt:'Molar/incisiv-mönster → indikerar Grad C', level:3});
+  }
+
+  const gradeLetters = ['—','A','B','C'];
+  return { grade: gradeNum > 0 ? gradeLetters[gradeNum] : null, gradeNum, reasons, boneAgeRatio };
+}
+
+function calcExtent() {
+  const map = { lok:'Lokaliserad', gen:'Generaliserad', mol:'Molar/Incisiv-mönster' };
+  return state.extent ? map[state.extent] : null;
+}
+
+/* ════════════════════════════════════
+   UI UPDATES
+════════════════════════════════════ */
+function updateUI(stage, grade, extent, reasons) {
+  // Stage display
+  const stageNames = ['—','I','II','III','IV'];
+  const stageVal = document.getElementById('stage-val');
+  const newStageTxt = stage > 0 ? 'Stadie ' + stageNames[stage] : '—';
+  if (stageVal.textContent !== newStageTxt) {
+    stageVal.textContent = newStageTxt;
+    stageVal.classList.remove('updated'); void stageVal.offsetWidth; stageVal.classList.add('updated');
+  }
+
+  // Stage meter
+  for (let i = 1; i <= 4; i++) {
+    const seg = document.getElementById('seg-s'+i);
+    seg.className = 'stage-seg';
+    if (stage >= i) seg.classList.add('active-'+i);
+  }
+
+  // Grade display
+  const gradeVal = document.getElementById('grade-val');
+  const newGradeTxt = grade ? 'Grad ' + grade : '—';
+  if (gradeVal.textContent !== newGradeTxt) {
+    gradeVal.textContent = newGradeTxt;
+    gradeVal.classList.remove('updated'); void gradeVal.offsetWidth; gradeVal.classList.add('updated');
+  }
+
+  // Grade meter
+  const gradeMap = {A:1, B:2, C:3};
+  const gradeNum = grade ? gradeMap[grade] : 0;
+  ['A','B','C'].forEach((g,i) => {
+    const seg = document.getElementById('seg-g'+g);
+    seg.className = 'grade-seg';
+    if (gradeNum >= i+1) seg.classList.add('active-'+g);
+  });
+
+  // Extent
+  document.getElementById('extent-val').textContent = extent || '—';
+
+  // Support interval
+  const supportMap = {A:'7–12 månader', B:'5–6 månader', C:'3–4 månader'};
+  document.getElementById('support-val').textContent = grade ? supportMap[grade] : '—';
+
+  // Full classification text
+  const ftEl = document.getElementById('full-classif-text');
+  if (stage > 0 && grade) {
+    const extLbl = extent ? extent.split(' ')[0].toLowerCase() + ' ' : '';
+    ftEl.textContent = `${extLbl}Parodontit stadie ${stageNames[stage]} grad ${grade}`;
+    ftEl.classList.remove('empty');
+  } else {
+    ftEl.textContent = 'Fyll i stegen för att generera klassifikation';
+    ftEl.classList.add('empty');
+  }
+
+  // Reasoning
+  updateReasoning(reasons);
+}
+
+function updateReasoning(reasons) {
+  const el = document.getElementById('reasoning-items');
+  if (!reasons.length) {
+    el.innerHTML = '<span style="color:var(--text-mute);font-style:italic;">Välj kriterier för att se resonemang</span>';
+    return;
+  }
+  const levelColor = ['r-gray','r-green','r-amber','r-amber','r-red'];
+  el.innerHTML = reasons.map(r => {
+    const lc = levelColor[Math.min(r.level, levelColor.length-1)] || 'r-gray';
+    return `<div class="reason-item"><div class="reason-dot ${lc}"></div><span>${r.txt}</span></div>`;
+  }).join('');
+}
+
+function updateBoneAgeDisplay(ratio) {
+  const el = document.getElementById('bone-age-result');
+  if (ratio === null || isNaN(ratio)) {
+    el.className = 'callout info';
+    el.innerHTML = '<span class="callout-icon">⏳</span><span>Fyll i ålder (Steg 1) och benförlust % (Steg 2) för automatisk beräkning.</span>';
+    return;
+  }
+  let cls, txt, grade;
+  if (ratio < 0.25)       { cls='ok';   grade='A'; txt=`Kvot: ${ratio.toFixed(2)} — Låg progressionshastighet → <strong>Grad A</strong>`; }
+  else if (ratio <= 1.0)  { cls='warn'; grade='B'; txt=`Kvot: ${ratio.toFixed(2)} — Måttlig progressionshastighet → <strong>Grad B</strong>`; }
+  else                     { cls='';    grade='C'; txt=`Kvot: ${ratio.toFixed(2)} — Hög progressionshastighet → <strong>Grad C</strong>`; el.style.background='var(--red-lt)'; el.style.borderLeftColor='var(--red)'; el.style.color='#7f1d1d'; }
+  el.className = 'callout ' + cls;
+  if (grade === 'C') { el.style.background='var(--red-lt)'; el.style.borderLeftColor='var(--red)'; el.style.color='#7f1d1d'; }
+  const icon = {A:'✅', B:'⚠️', C:'🔴'}[grade];
+  el.innerHTML = `<span class="callout-icon">${icon}</span><span>${txt}</span>`;
+}
+
+/* ════════════════════════════════════
+   JOURNAL
+════════════════════════════════════ */
+function updateJournal(stage, grade, extent) {
+  const stageNames = ['—','I','II','III','IV'];
+  const stageTxt = stage > 0 ? stageNames[stage] : '—';
+  const gradeTxt = grade || '—';
+  const extTxt   = extent || '—';
+  const supportMap = {A:'7–12 mån', B:'5–6 mån', C:'3–4 mån'};
+  const support = grade ? supportMap[grade] : '—';
+  const today = new Date().toLocaleDateString('sv-SE');
+
+  let smokeTxt = {none:'Icke-rökare', lt10:'Rökare <10 cig/dag', ge10:'Rökare ≥10 cig/dag', snus:'Snus/e-cig', null:'Ej angivet'}[state.smoking];
+  let diabTxt  = {none:'Ingen diabetes', controlled:'Diabetes, HbA1c <53 mmol/mol', uncontrolled:'Diabetes, HbA1c ≥53 mmol/mol', null:'Ej angivet'}[state.diabetes];
+
+  const bopTxt = !isNaN(state.bop) && state.bop >= 0 ? state.bop + '%' : 'Ej angivet';
+  const plaqTxt = !isNaN(state.plaque) && state.plaque >= 0 ? state.plaque + '%' : 'Ej angivet';
+
+  document.getElementById('journal-text').textContent =
+`PARODONTAL KLASSIFIKATION — ${today}
+
+DIAGNOS:
+${extTxt} parodontit stadie ${stageTxt} grad ${gradeTxt}
+
+SVÅRIGHETSGRAD:
+  CAL (djupaste site): ${calLabel(state.cal)}
+  Radiografisk benförlust: ${boneLabel(state.bone)}
+  Tandförlust (paro-orsakad): ${toothlossLabel(state.toothloss)}
+
+KOMPLEXITET:
+  Max PPD: ${ppdLabel(state.ppd)}
+  Angulära bendefekter: ${state.angular === '3' ? 'Ja, ≥3mm' : 'Nej'}
+  Furkation: ${furkLabel(state.furk)}
+  Stadie IV-faktorer: ${stageIVfactors()}
+
+RISKFAKTORER:
+  Rökning: ${smokeTxt || 'Ej angivet'}
+  Diabetes: ${diabTxt || 'Ej angivet'}
+
+MUNHYGIENSTATUS:
+  BoP: ${bopTxt}
+  Plackindex: ${plaqTxt}
+
+UTBREDNING: ${extTxt}
+
+STÖDBEHANDLINGSINTERVALL: ${support}
+
+Ansvarig tandläkare: _______________
+`;
+}
+
+function calLabel(v) { return {1:'1–2mm (Stadie I)', 2:'3–4mm (Stadie II)', 3:'≥5mm (Stadie III/IV)', null:'Ej angiven'}[v] || '—'; }
+function boneLabel(v) { return {1:'<15% (Stadie I)', 2:'15–33% (Stadie II)', 3:'>33% (Stadie III/IV)', null:'Ej angiven'}[v] || '—'; }
+function toothlossLabel(v) { return {0:'Ingen', 3:'≤4 tänder', 4:'≥5 tänder', null:'Ej angiven'}[v] || '—'; }
+function ppdLabel(v) { return {1:'≤4mm', 2:'≤5mm', 3:'≥6mm', null:'Ej angivet'}[v] || '—'; }
+function furkLabel(v) { return {0:'Ingen/Grad I', 3:'Grad II', '3b':'Grad III', null:'Ej registrerad'}[v] || '—'; }
+function stageIVfactors() {
+  const f = [];
+  if (state.chew)  f.push('Nedsatt tuggfunktion');
+  if (state.mob)   f.push('Mobilitet ≥ Grad 2');
+  if (state.bite)  f.push('Bettkolaps');
+  if (state.drift) f.push('Tandvandring');
+  if (state.few)   f.push('<20 tänder');
+  return f.length ? f.join(', ') : 'Inga';
+}
+function toRoman(n) { return ['—','I','II','III','IV'][n] || '—'; }
+
+/* ════════════════════════════════════
+   FINALIZE (Step 5 done)
+════════════════════════════════════ */
+function finalize() {
+  calcAll();
+  // Scroll to result on mobile
+  document.querySelector('.result-col').scrollIntoView({behavior:'smooth', block:'start'});
+  // Add highlight pulse to full classif
+  const el = document.getElementById('full-classif-text');
+  el.style.animation='none'; void el.offsetWidth;
+  el.style.animation='valPop .5s ease';
+}
+
+function checkInclusion() {
+  const bop    = state['inc-bop'];
+  const pocket = state['inc-pocket'];
+  const resEl  = document.getElementById('inclusion-result');
+  const nextBtn = document.getElementById('btn-inc-next');
+  resEl.style.display = 'block';
+
+  if (!bop || !pocket) {
+    resEl.innerHTML = '';
+    nextBtn.disabled = true;
+    nextBtn.style.opacity = '.4';
+    nextBtn.style.cursor = 'not-allowed';
+    return;
+  }
+
+  if (bop === 'yes' && pocket === 'yes') {
+    resEl.innerHTML = `
+      <div class="callout ok">
+        <span class="callout-icon">✅</span>
+        <span><strong>Minimikriterierna är uppfyllda.</strong> Patienten kan klassificeras. Fortsätt till nästa steg för fullständig klassifikation av stadie och grad.</span>
+      </div>`;
+    nextBtn.disabled = false;
+    nextBtn.style.opacity = '1';
+    nextBtn.style.cursor = 'pointer';
+  } else {
+    const missing = [];
+    if (bop    === 'no') missing.push('BoP saknas på >2 icke-angränsande tänder');
+    if (pocket === 'no') missing.push('Fickor saknas på >2 approximala ytor hos icke-angränsande tänder');
+    resEl.innerHTML = `
+      <div class="callout warn">
+        <span class="callout-icon">⚠️</span>
+        <div>
+          <strong>Minimikriterierna för parodontit-klassifikation är EJ uppfyllda.</strong><br>
+          <span style="font-size:.8rem;">${missing.join(' &amp; ')}.</span><br><br>
+          <span style="font-size:.82rem;">Möjliga diagnoser: <strong>Gingivit</strong> (BoP utan stödjevävnadsförlust) eller lokal parodontit som ej uppfyller utbredningskrav. Dessa kräver annan diagnostisk handläggning.</span>
+        </div>
+      </div>`;
+    nextBtn.disabled = true;
+    nextBtn.style.opacity = '.4';
+    nextBtn.style.cursor = 'not-allowed';
+  }
+}
+
+
+function copyJournal() {
+  const txt = document.getElementById('journal-text').textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = '✅ Kopierat!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+/* ════════════════════════════════════
+   RESET
+════════════════════════════════════ */
+function resetAll() {
+  Object.keys(state).forEach(k => {
+    if (typeof state[k] === 'boolean') state[k] = false;
+    else state[k] = null;
+  });
+  document.querySelectorAll('input[type=number]').forEach(i => i.value = '');
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected','sel-green','sel-amber','sel-red'));
+  document.querySelectorAll('.toggle-row').forEach(r => { r.classList.remove('checked'); r.querySelector('.toggle-check').textContent=''; });
+  // Reset inclusion screen
+  const resEl = document.getElementById('inclusion-result');
+  if (resEl) { resEl.style.display='none'; resEl.innerHTML=''; }
+  const nextBtn = document.getElementById('btn-inc-next');
+  if (nextBtn) { nextBtn.disabled=true; nextBtn.style.opacity='.4'; nextBtn.style.cursor='not-allowed'; }
+  goStep(0);
+  calcAll();
+}
+
+/* ════════════════════════════════════
+   INIT
+════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  goStep(0);
+  setTimeout(() => document.querySelectorAll('.sa').forEach((el,i) => setTimeout(() => el.classList.add('v'), i*80)), 100);
+});
+</script>
+</body>
+</html>

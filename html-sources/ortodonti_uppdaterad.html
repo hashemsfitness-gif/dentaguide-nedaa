@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+   <meta charset="UTF-8">
+    <title>Ortodonti — Kliniskt Beslutsstöd (Pro)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+         
+    <body>
+
+<div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<button class="back-btn" onclick="history.back()">← TILLBAKA</button>
+
+<div class="container">
+    <div class="hero">
+        <h1>Ortodonti: Kliniskt Beslutsstöd</h1>
+        <p class="hero-subtitle">Riktlinjer, Akutscenarier och Traumatologi</p>
+    </div>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="mainSearch" placeholder="Sök diagnos eller symtom..." onkeyup="searchCards()">
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+
+        <div class="scenario-nav">
+
+            <div class="scenario-trigger-card" id="trigger-ort01" onclick="selectScenario('ort01')">
+                <span class="trigger-tag">ORT-01</span>
+                <div class="trigger-avatar-container">
+                    <img src="canine.png" alt="Hörntand" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e8eaf6/283593?text=C3'">
+                </div>
+                <h2 class="trigger-title">Eruptionsstörning hörntänder ÖK</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Retinerad/ektopisk hörntand. 1–3 %. Prio 3.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-ort_diag" onclick="selectScenario('ort_diag')">
+                <span class="trigger-tag" style="background: var(--accent-color); color: white;">RIKTLINJER</span>
+                <div class="trigger-avatar-container">
+                    <img src="diagnoser.png" alt="Riktlinjer" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e3f2fd/0d47a1?text=DIAG'">
+                </div>
+                <h2 class="trigger-title">Diagnoser och riktlinjer</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Agenesi, korsbett, överbett, trångställning m.m.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-ort10" onclick="selectScenario('ort10')">
+                <span class="trigger-tag">SCENARIO ORT-10</span>
+                <div class="trigger-avatar-container">
+                    <img src="bracket.png" alt="Bracket" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e0f7fa/006064?text=BRKT'">
+                </div>
+                <h2 class="trigger-title">"En metallbit har lossnat från tandställningen"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Lös bracket, band eller ring. Skaver, irriterar.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-ort11" onclick="selectScenario('ort11')">
+                <span class="trigger-tag red">SCENARIO ORT-11</span>
+                <div class="trigger-avatar-container">
+                    <img src="wire.png" alt="Bågände" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=WIRE'">
+                </div>
+                <h2 class="trigger-title">"Metalltråden sticker ut och skär i kinden"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Vass bågände orsakar ulceration och akut smärta.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-ort12" onclick="selectScenario('ort12')">
+                <span class="trigger-tag">SCENARIO ORT-12</span>
+                <div class="trigger-avatar-container">
+                    <img src="retainer.png" alt="Retainer" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff8e1/ff6f00?text=RET'">
+                </div>
+                <h2 class="trigger-title">"Tråden bakom tänderna har lossnat"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Bondad retainer lossnad — risk recidiv inom dagar.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-ort13" onclick="selectScenario('ort13')">
+                <span class="trigger-tag">SCENARIO ORT-13</span>
+                <div class="trigger-avatar-container">
+                    <img src="essix.png" alt="Essix" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/e8f5e9/2e7d32?text=ESSIX'">
+                </div>
+                <h2 class="trigger-title">"Min plastskena har gått sönder"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Avtagbar retainer (Essix/vakuumpressad skena) trasig, förlorad eller fungerar ej.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-ort14" onclick="selectScenario('ort14')">
+                <span class="trigger-tag red">SCENARIO ORT-14</span>
+                <div class="trigger-avatar-container">
+                    <img src="ulcer.png" alt="Slemhinneskada" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffebee/b71c1c?text=SÅR'">
+                </div>
+                <h2 class="trigger-title">"Tandställningen har gjort ett sår i kinden som inte läker"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Ulceration, traumatiskt sår eller irritation orsakad av ortodontisk apparatur.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-ort15" onclick="selectScenario('ort15')">
+                <span class="trigger-tag red">SCENARIO ORT-15</span>
+                <div class="trigger-avatar-container">
+                    <img src="whitespots.png" alt="Karies" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/fff8e1/f57f17?text=WSL'">
+                </div>
+                <h2 class="trigger-title">"Vita fläckar har uppstått runt brackets — är det karies?"</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">Demineraliseringsfläckar eller manifest karies kring ortodontiska brackets.</div>
+            </div>
+
+            <div class="scenario-trigger-card" id="trigger-ort16" onclick="selectScenario('ort16')">
+                <span class="trigger-tag red">ORT-16</span>
+                <div class="trigger-avatar-container">
+                    <img src="trauma_overjet.png" alt="Trauma överbett" class="trigger-avatar-img" onerror="this.src='https://placehold.co/100x100/ffcdd2/b71c1c?text=TRAU'">
+                </div>
+                <h2 class="trigger-title">Akut trauma p.g.a. stort överbett</h2>
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">"Barnet slog ut framtanden — hade redan stort överbett". Prio 4.</div>
+            </div>
+
+        </div>
+
+        <div class="main-content-panel">
+
+            <div id="dynamic-header" class="header-container centered">
+                <div class="avatar-wrapper">
+                    <img id="story-avatar" class="character-img" src="start.png" alt="Story Character" onerror="this.src='https://placehold.co/300x300/fff3e0/e65100?text=ORT'">
+                </div>
+                <div class="header-text-block">
+                    <h2 id="dynamic-header-title">Ortodonti — Samlad Guide</h2>
+                    <p class="header-subtitle" id="dynamic-subtitle">Välj ett scenario i menyn till vänster för att starta guiden.</p>
+                </div>
+            </div>
+
+
+   <div id="ort01-display" class="scenario-display-wrapper active">
+            
+                <h2 style="font-size: 2.2rem; margin-top: 0;">Eruptionsstörning hörntänder ÖK</h2>
+
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort01', 'snabb', this)">⚡ Snabbfakta</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort01', 'klinik', this)">🦷 Diagnostik</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort01', 'behandling', this)">🧭 Behandlingsgång (Beslutsstöd)</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort01', 'journal', this)">📝 Journal & Farmaka</button>
+                </div>
+
+                <div id="ort01-snabb" class="content-panel active">
+                    <h3>⚡ Bakgrund, Prevalens & Riktlinjer</h3>
+                    <div class="info-card">
+                        <h5>Typfall & Prevalens</h5>
+                        <p><strong>Patient:</strong> Oftast upptäckt hos Flicka, 10–11 år (DS3M1 - Sent växelbett). Mjölkhörntanden (t.ex. 03) sitter fast.<br>
+                        <strong>Prevalens:</strong> Cirka 2 %. Dubbelt så vanligt hos flickor (2:1). Ligger palatinalt i 85% av fallen, buckalt i 15%.</p>
+                    </div>
+                    <div class="info-card">
+                        <h5>Nationella Riktlinjer (Prio 3)</h5>
+                        <p>Ett systematiskt arbetssätt för att diagnostisera eruptionsstörningar av hörntänder hos barn 9–13 år bedöms ha stor svårighetsgrad och ges <strong>Prioritet 3</strong> av Socialstyrelsen.</p>
+                        <p><strong>Klinisk risk:</strong> Stor risk för allvarlig rotresorption på permanenta framtänder (lateral/central incisiv) om tillståndet missas. I många regioner berättigar detta till avgiftsfri specialisttandvård.</p>
+                    </div>
+                </div>
+
+                <div id="ort01-klinik" class="content-panel">
+                    <h3>🦷 Diagnostik & Lägesbestämning</h3>
+                    <p>Målet är att upptäcka avvikelser innan de skadar incisivernas rötter.</p>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ålder / Steg</th>
+                                <th>Klinisk handling & Varningstecken</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong style="color:var(--accent-terra);">9–10 år</strong><br>(Palpation)</td>
+                                <td>
+                                    Börja palpera högt upp, apikalt om 2:an och rör dig distalt.<br>
+                                    <strong style="color: #ef5350;">Röda flaggor:</strong> Utbuktning saknas buckalt, palperas på fel plats (gommen), eller 2:an är distalt/buckalt tippad.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color:var(--accent-terra);">10–11 år</strong><br>(Röntgen)</td>
+                                <td>
+                                    Om hörntanden inte går att palpera buckalt <strong>MÅSTE</strong> radiologisk lägesbestämning göras via <em>Parallaxmetoden</em>.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="info-card">
+                        <h5>📸 Parallaxmetoden (SLOB-regeln)</h5>
+                        <p>Ta <strong>minst två intraorala bilder</strong> i olika projektioner (Ortoradiell + Mesialexcentrisk).</p>
+                        <ul style="margin-bottom: 0;">
+                            <li><strong>Rör sig tanden SAMMA håll som röntgenröret?</strong> -> Tanden ligger PALATINALT.</li>
+                            <li><strong>Rör sig tanden MOTSATT håll?</strong> -> Tanden ligger BUCKALT.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="ort01-behandling" class="content-panel">
+                    <h3>🧭 Tydlig Behandlingsgång</h3>
+                    <p>Följ detta flöde när du har tagit röntgenbilder och konstaterat att hörntanden ligger fel.</p>
+
+                    <div class="clinical-pathway">
+                        
+                        <div class="pathway-step">
+                            <div class="pathway-number">1</div>
+                            <div class="pathway-content">
+                                <h4 class="pathway-title">Kolla efter Kontraindikationer (Varningstecken)</h4>
+                                <p style="margin:0 0 10px 0;">Innan du gör något själv i allmäntandvården, kontrollera röntgenbilderna efter dessa 3 faktorer:</p>
+                                <ul>
+                                    <li>Ligger tanden <strong>buckalt</strong> ektopiskt?</li>
+                                    <li>Är patienten äldre (14-15 år)?</li>
+                                    <li>Finns det tecken på <strong>rotresorption</strong> på incisiverna?</li>
+                                </ul>
+                                
+                                <div class="action-box">
+                                    <div class="action-item action-stop">
+                                        <strong>🚨 OM JA PÅ NÅGOT AV OVANSTÅENDE:</strong><br>
+                                        Avbryt. Du ska <strong>inte</strong> extrahera själv. Skicka omedelbar remiss eller konsultera ortodontist.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pathway-step">
+                            <div class="pathway-number">2</div>
+                            <div class="pathway-content">
+                                <h4 class="pathway-title">Interceptiv Behandling (Utförs av dig)</h4>
+                                <p style="margin:0;">Om inga varningsklockor ringde i Steg 1, och tanden ligger <strong>palatinalt</strong>:</p>
+                                <div class="action-box">
+                                    <div class="action-item action-go">
+                                        <strong>✅ EXTRAHERA PRIMÄR HÖRNTAND (03/53/63)</strong><br>
+                                        Denna förebyggande åtgärd normaliserar ofta eruptionsvägen. Överväg att ta kontralateralen också för symmetri i bettet.
+                                        <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                                        <strong>Prognos för att tanden rättar till sig:</strong><br>
+                                        • <strong>91 %</strong> chans om permanenta 3:ans krona <em>inte</em> passerat lateralens mittlinje på röntgen.<br>
+                                        • <strong>64 %</strong> chans om den <em>har</em> passerat mittlinjen.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pathway-step">
+                            <div class="pathway-number">3</div>
+                            <div class="pathway-content">
+                                <h4 class="pathway-title">Systematisk Uppföljning</h4>
+                                <p style="margin:0;">Extraktionen är gjord. Vad händer nu?</p>
+                                <ul>
+                                    <li>Ta ny röntgen + klinisk kontroll efter <strong>6 månader</strong>.</li>
+                                    <li>Kolla igen efter <strong>12 månader</strong> (totalt 6+6 mån).</li>
+                                </ul>
+                                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid var(--glass-border); margin-top: 15px;">
+                                    <strong style="color: var(--accent-terra);">Utvärdering vid 12 månader:</strong><br>
+                                    Har hörntanden rört sig i rätt riktning? Bra, fortsätt följ. <br>
+                                    <strong style="color: #ef5350;">Har den INTE förbättrats?</strong> Dags för Plan B -> Remittera för kirurgisk friläggning och framdragning med guldkedja (Specialistvård).
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="ort01-journal" class="content-panel">
+                    <h3>📝 Journal, KUSP & Farmaka</h3>
+                    
+                    <div class="info-card" style="border-left-color: #f59e0b;">
+                        <h5 style="color: #f59e0b;">⚠️ Antibiotika & Smärtlindring (Kirurgi/Friläggning)</h5>
+                        <p><strong>Antibiotika:</strong> Enligt Strama är rutinmässig antibiotikaprofylax <strong>INTE indicerad</strong> vid friläggning av tänder hos friska patienter. Undantag: Endokarditrisk (Amoxicillin 2g, 1h före).</p>
+                        <p><strong>Smärtlindring barn:</strong> Paracetamol + Ibuprofen vb utifrån kroppsvikt. Kontrollera alltid astma-anamnes för NSAID.</p>
+                    </div>
+
+                    <h5>💳 Debitering (TLV / KUSP)</h5>
+                    <table class="data-table" style="margin-bottom: 25px;">
+                        <tr><td width="100"><strong>401</strong></td><td>Extraktion (när du tar primära hörntanden).</td></tr>
+                        <tr><td><strong>404/405</strong></td><td>Operativ friläggning av tand (Specialist/Plan B).</td></tr>
+                    </table>
+
+                    <h5>📝 Journalmall: Interceptiv extraktion</h5>
+                    <div class="journal-box">
+                        <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText); this.innerText='Kopierad!'; setTimeout(()=>this.innerText='Kopiera', 2000);">Kopiera</button>
+<pre style="margin:0; white-space: pre-wrap;">Diagnos: K01.1 Retinerad tand (53/63 ektopisk eruption).
+
+Status: Pat [Ålder] år. DS3M1. Vid palpation saknas buckal utbuktning regio [XX]. Rtg x 3 (parallax) visar palatinalt förskjuten permanent 3:a. Kronan har ej passerat lateralens mittlinje. Ingen synlig rotresorption på lateral.
+
+Åtgärd: Föräldrar informerade om läge och interceptiv behandling. Prognos för spontankorrigering bedöms god (ca 91%).
+Ytanestesi. LA: [Preparat, Mängd]. 
+Extr av primär tand [53/63] utan komplikationer. Hemostas kontrollerad. Post-op info given (Paracetamol/Ibuprofen vb).
+
+Planering: Systematisk uppföljning (klinisk + rtg) efter 6 + 6 månader. Om utebliven lägesförbättring då -> remiss Ortodonti för friläggning.</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ort_diag-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort_diag', 'snabb', this)">⚡ Översikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort_diag', 'agenesi', this)">🦷 Agenesi</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort_diag', 'korsbett', this)">❌ Korsbett</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort_diag', 'overbett', this)">📏 Överbett</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort_diag', 'underbett', this)">🔄 Underbett</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort_diag', 'trangstallning', this)">💥 Trångställning</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort_diag', 'retention', this)">🛡️ Retention</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort_diag', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+
+                    <div id="ort_diag-snabb" class="content-panel active">
+                        <h3>⚡ Översikt: Nationella Ortodontiska Riktlinjer</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Detta avsnitt sammanfattar Socialstyrelsens riktlinjer för:</h5>
+                            <ul>
+                                <li><strong>Agenesi</strong> (Medfödd avsaknad av tänder, lateraler och premolarer)</li>
+                                <li><strong>Korsbett</strong> (Barn och Vuxna, tvångsförande vs ej tvångsförande)</li>
+                                <li><strong>Överbett</strong> (Postnormala bett hos barn)</li>
+                                <li><strong>Underbett</strong> (Frontal invertering hos vuxna)</li>
+                                <li><strong>Trångställning/Glesställning</strong> (Displacering)</li>
+                                <li><strong>Retention</strong> (Efter avslutad behandling)</li>
+                            </ul>
+                            <p style="margin-top:10px;">Välj respektive flik i menyn till vänster för fullständig klinisk indikation, ICD-koder och prioriteringsgrad (Prio 3–10).</p>
+                        </div>
+                    </div>
+
+                    <div id="ort_diag-agenesi" class="content-panel">
+                        <h3>🦷 Agenesi (Avsaknad av anlag)</h3>
+                        <div class="patient-symptom-box scroll-animate" style="margin-bottom: 20px;">
+                            <h4>ORT-02: Agenesi av lateraler ÖK</h4>
+                            <div class="symptom-list" style="margin-top: 10px;">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-02-AGENLAT</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Medfödd avsaknad av överkäkens sidoframtänder (tvåor)</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K00.0 (Agenesi)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> 1,5–2 %</div>
+                                <div class="symptom-item">⭐ <strong>Nationella Riktlinjer:</strong> Prioritet 3</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk status (Lateraler)</h5>
+                            <ul>
+                                <li>Mjölktandslateraler kan persistera</li>
+                                <li>Neutral sagittal eller postnormal bettrelation i övrigt</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Behandlingsval (Lateraler)</div>
+                            <p><strong>1. Ortodontisk luckslutning — FÖRSTAHANDSVAL (Prio 3)</strong></p>
+                            <ul>
+                                <li>Bättre långtidsresultat</li>
+                                <li>Acceptabel estetik</li>
+                                <li>Lägre komplikationsrisk</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>2. Utrymmesbevarande — för framtida protetik/implantat</strong></p>
+                            <ul>
+                                <li>Högre underhållskostnad</li>
+                                <li>Implantat ej möjligt förrän tillväxt avslutad</li>
+                            </ul>
+                        </div>
+
+                        <hr style="margin: 30px 0; border: 1px solid #eee;">
+
+                        <div class="patient-symptom-box scroll-animate">
+                            <h4>ORT-03: Agenesi av andra premolaren</h4>
+                            <div class="symptom-list" style="margin-top: 10px;">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-03-AGEN5</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Avsaknad av 5:or — upptäcks vid ca 9–10 år</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K00.0 (Agenesi)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Ca 3 % i Skandinavien</div>
+                                <div class="symptom-item">⭐ <strong>Nationella Riktlinjer:</strong> Prioritet 5</div>
+                            </div>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Behandlingsval (Premolarer)</div>
+                            <p><strong>Vid normalbett utan glesställning:</strong> Extraktion av motsvarande mjölktand → spontan luckslutning → främja bettutveckling</p>
+                            <p style="margin-top: 10px;"><strong>Nationella Riktlinjer:</strong> Extraktion av mjölktand för spontan luckslutning — <strong>Prioritet 5</strong></p>
+                        </div>
+                    </div>
+
+                    <div id="ort_diag-korsbett" class="content-panel">
+                        <h3>❌ Korsbett</h3>
+                        <div class="patient-symptom-box scroll-animate" style="margin-bottom: 20px;">
+                            <h4>ORT-04: Korsbett hos prepubertala barn</h4>
+                            <div class="symptom-list" style="margin-top: 10px;">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-04-KORSBETT</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Käken glider snett"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Unilateralt/bilateralt korsbett</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K07.2 (Avvikelser i bettrelation)</div>
+                                <div class="symptom-item">⭐ <strong>Nationella Riktlinjer:</strong> Prioritet 5</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk indikation (Barn)</h5>
+                            <ul>
+                                <li>Instabil ocklusion — underkäken tvångsförs åt sidan vid sammanbitning</li>
+                                <li>Tidig behandling innan puberteten</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Behandling (Barn)</div>
+                            <p><strong>Behandling med ortodontisk apparatur — Prioritet 5</strong></p>
+                            <p>Mål: ansiktet ska växa mindre asymmetriskt.</p>
+                        </div>
+
+                        <hr style="margin: 30px 0; border: 1px solid #eee;">
+
+                        <div class="patient-symptom-box scroll-animate" style="margin-bottom: 20px;">
+                            <h4>ORT-05: Korsbett hos vuxna</h4>
+                            <div class="symptom-list" style="margin-top: 10px;">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-05-KORSB-VUX</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Korsbett hos vuxna — viktig distinktion mellan typer</div>
+                                <div class="symptom-item">⭐ <strong>Nationella Riktlinjer:</strong> Prioritet 6–10 (beroende på typ)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Behandlingsrekommendationer per typ (Vuxna)</h5>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;">
+                                <tr style="border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                                    <th style="text-align: left; padding: 12px;">Typ</th>
+                                    <th style="text-align: left; padding: 12px;">Prioritet</th>
+                                    <th style="text-align: left; padding: 12px;">Rekommendation</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px;">Enkelsidigt <strong>tvångsförande</strong></td>
+                                    <td style="padding: 10px; color: #388E3C; font-weight: bold;">Prio 6</td>
+                                    <td style="padding: 10px;">Behandla med ortodontisk apparatur</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px;">Enkelsidigt <strong>ej tvångsförande</strong></td>
+                                    <td style="padding: 10px; color: #D32F2F; font-weight: bold;">Prio 10</td>
+                                    <td style="padding: 10px;"><strong>ICKE-GÖRA</strong> — undvik ortodontisk behandling</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px;"><strong>Dubbelsidigt</strong></td>
+                                    <td style="padding: 10px; color: #D32F2F; font-weight: bold;">Prio 10</td>
+                                    <td style="padding: 10px;"><strong>ICKE-GÖRA</strong> — undvik ortodontisk behandling</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ ICKE-GÖRA (Prio 10)</strong>
+                            <p>Enkelsidigt ej tvångsförande korsbett och dubbelsidigt korsbett hos vuxna ska <strong>inte</strong> behandlas med ortodontisk apparatur enligt Nationella Riktlinjer.</p>
+                        </div>
+                    </div>
+
+                    <div id="ort_diag-overbett" class="content-panel">
+                        <h3>📏 Överbett</h3>
+                        <div class="patient-symptom-box scroll-animate" style="margin-bottom: 20px;">
+                            <h4>ORT-06: Postnormalt bett med stort överbett (barn)</h4>
+                            <div class="symptom-list" style="margin-top: 10px;">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-06-OVERBETT</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Framtänderna sticker ut"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Stor overjet, ansträngd läppslutning</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K07.2 (Avvikelser i bettrelation)</div>
+                                <div class="symptom-item">⭐ <strong>Nationella Riktlinjer:</strong> Prioritet 4</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk indikation</h5>
+                            <ul>
+                                <li>Tidig behandling under växelbettet</li>
+                                <li>Minskar incidensen av framtandstrauma</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Behandling & Riktlinjer</div>
+                            <p><strong>Tidig ortodontisk behandling i växelbettet — Prioritet 4</strong></p>
+                            <p>Minskar framtandstrauma jämfört med att vänta till permanenta bettet.</p>
+                            <p style="margin-top: 10px;">(Vuxna med stort överbett + ofullständig läppslutning: även Prio 4)</p>
+                        </div>
+                    </div>
+
+                    <div id="ort_diag-underbett" class="content-panel">
+                        <h3>🔄 Underbett</h3>
+                        <div class="patient-symptom-box scroll-animate" style="margin-bottom: 20px;">
+                            <h4>ORT-07: Frontal invertering / Underbett (vuxna)</h4>
+                            <div class="symptom-list" style="margin-top: 10px;">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-07-UNDERBETT</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Frontal invertering / Underbett hos vuxna</div>
+                                <div class="symptom-item">⭐ <strong>Nationella Riktlinjer:</strong> Prioritet 5</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Nationella Riktlinjer</h5>
+                            <p><strong>Korrigering med ortodontisk apparatur — Prioritet 5</strong></p>
+                            <p>Rekommenderas oavsett om tvångsföring föreligger eller ej.</p>
+                        </div>
+                    </div>
+
+                    <div id="ort_diag-trangstallning" class="content-panel">
+                        <h3>💥 Trångställning</h3>
+                        <div class="patient-symptom-box scroll-animate" style="margin-bottom: 20px;">
+                            <h4>ORT-08: Trångställning och glesställning (vuxna)</h4>
+                            <div class="symptom-list" style="margin-top: 10px;">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-08-TRANGST</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Trångställning och glesställning hos vuxna</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Nationella Riktlinjer</h5>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;">
+                                <tr style="border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                                    <th style="text-align: left; padding: 12px;">Typ</th>
+                                    <th style="text-align: left; padding: 12px;">Prioritet</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px;">Trångställning med displacering</td>
+                                    <td style="padding: 10px; font-weight: bold;">Prio 5</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px;">Glesställning i frontsegment med displacering</td>
+                                    <td style="padding: 10px; font-weight: bold;">Prio 8</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="ort_diag-retention" class="content-panel">
+                        <h3>🛡️ Retention</h3>
+                        <div class="patient-symptom-box scroll-animate" style="margin-bottom: 20px;">
+                            <h4>ORT-09: Retention efter avslutad fast apparatur (barn)</h4>
+                            <div class="symptom-list" style="margin-top: 10px;">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-09-RETENTION</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Behov av retention efter ortodontisk behandling</div>
+                                <div class="symptom-item">⭐ <strong>Nationella Riktlinjer:</strong> Prioritet 4–6</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Recidivorsaker</h5>
+                            <ul>
+                                <li>Parodontala fibrer</li>
+                                <li>Tryck från läppar/tunga</li>
+                                <li>Fortsatt käktillväxt</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Nationella Riktlinjer — Retentionstyper</h5>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;">
+                                <tr style="border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                                    <th style="text-align: left; padding: 12px;">Retentionstyp</th>
+                                    <th style="text-align: left; padding: 12px;">Prioritet</th>
+                                    <th style="text-align: left; padding: 12px;">Kommentar</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px;"><strong>Bondad retention</strong> (tråd bakom tänderna)</td>
+                                    <td style="padding: 10px; color: #388E3C; font-weight: bold;">Prio 4</td>
+                                    <td style="padding: 10px;">Förstahandsval</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px;"><strong>Avtagbar retention</strong> (vakuumpressad skena)</td>
+                                    <td style="padding: 10px; font-weight: bold;">Prio 6</td>
+                                    <td style="padding: 10px;">Andrahandsval — kräver kooperation, möjligen mer recidiv</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort_diag-kallor" class="content-panel">
+                        <h3>📚 Källor — Nationella Ortodontiska Riktlinjer (ORT-02–09)</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>Socialstyrelsen NR Tandvård 2022:</strong> Samtliga prioriteringsnivåer (Prio 3–10) för ortodontiska tillstånd</li>
+                            <li><strong>Cochrane — Thiruvenkatachari et al. 2013:</strong> Tidig behandling överbett minskar traumarisk</li>
+                            <li><strong>Skandinavisk epidemiologisk litteratur:</strong> Agenesi premolarer ~3%</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ort10-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort10', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort10', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort10', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort10', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort10', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort10', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort10', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="ort10-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-10-BRACKET</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "En metallbit har lossnat från tandställningen"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Lös bracket, band eller ring — skaver, irriterar</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> Z46.4 (Anpassning av ortodontisk apparatur)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Mycket vanligt (vanligaste akuta ortodontiska komplikationen)</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> Barn/ungdomar med fast apparatur</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Patient med fast ortodontisk apparatur söker akut p.g.a. att en bracket, ett band eller en ring har lossnat. Kan skava mot kind/läpp/tunga. I sig ej akut — men obehagligt och kan fördröja behandlingen.</p>
+                        </div>
+                    </div>
+                    <div id="ort10-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Obligatoriska frågor</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🔴 Primära frågor</h5>
+                            <ul>
+                                <li><strong>❓ Vad har lossnat?</strong><br><em>Bracket, band, ring eller ligatur?</em></li>
+                                <li><strong>❓ Skaver det? Har du ont?</strong><br><em>Bedöm om slemhinneskada föreligger</em></li>
+                                <li><strong>❓ Har du svalt eller andats in något?</strong><br><em>→ RÖD FLAGGA om ja! Risk aspiration/ingestion</em></li>
+                                <li><strong>❓ Vem utför din ortodontiska behandling?</strong><br><em>Kontaktuppgifter till ortodontisten</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort10-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Undersökning</h5>
+                            <ul>
+                                <li>🔍 <strong>Identifiera</strong> vad som lossnat och var</li>
+                                <li>🔍 <strong>Kontrollera</strong> att inget fragment saknas (risk aspiration)</li>
+                                <li>🔍 <strong>Slemhinneskada?</strong> Ulceration?</li>
+                                <li>🔍 <strong>Bågänden</strong> — sticker den ut? (→ scenario ORT-11)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort10-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Bracket lossnad men sitter kvar på tråden</div>
+                            <ul>
+                                <li>Lämna den — skyddas med <strong>ortodontisk vax</strong> om den skaver</li>
+                                <li>Boka tid hos ortodontist</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Bracket helt lös (hänger ej på tråd)</div>
+                            <ul>
+                                <li><strong>Ta bort den</strong></li>
+                                <li>Ge patienten den (<strong>spara!</strong>)</li>
+                                <li>Skydda tråden med vax om den skaver</li>
+                                <li>Boka tid hos ortodontist</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Band/ring lossnad</div>
+                            <ul>
+                                <li>Ta bort om möjligt (försiktigt)</li>
+                                <li>Kontrollera att cement avlägsnats</li>
+                                <li>Boka tid hos ortodontist</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Ligatur (litet gummiband/metalltråd) lossnad</div>
+                            <ul>
+                                <li>Kan tryckas tillbaka med instrument eller tandpetare</li>
+                                <li>Alternativt: avlägsna</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ Fixera ALDRIG en bracket med komposit</strong>
+                            <p>Ortodontisten behöver specifik positionering. Felplacerad bracket kan orsaka oönskad tandförflyttning.</p>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <div class="billing-codes-list">107 — Kompletterande undersökning</div>
+                        </div>
+                    </div>
+                    <div id="ort10-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: Z46.4 Anpassning ortodontisk apparatur.
+
+Status: Lossnad [bracket/band] tand [nr]. 
+Slemhinna [u.a./irriterad].
+Inget fragment saknas.
+
+Åtgärd: [Bracket avlägsnad / skyddad med vax].
+
+Patient hänvisad till ortodontist [namn/klinik].
+
+Planering: Kontakta ortodontist för ny tid.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort10-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Patient har SVALT bracket/band</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Mjukvävnadsröntgen buk vid behov</li>
+                                <li>Kontakta läkare vid symtom (buksmärta, kräkning)</li>
+                                <li>Oftast passerar GI-kanalen utan problem</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Patient har ANDATS IN fragment</strong>
+                            <ul style="margin-top: 10px;">
+                                <li><strong>Akut lungröntgen</strong></li>
+                                <li>Kontakta sjukhus omedelbart</li>
+                                <li>Risk: bronkaspiration → pneumoni/atelektas</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Ansvarsfriskrivning</h5>
+                            <p>Ersätter inte kliniskt omdöme. PSL 2010:659. Hänvisa till ortodontist vid alla fall som kräver apparaturjustering.</p>
+                        </div>
+                    </div>
+                    <div id="ort10-kallor" class="content-panel">
+                        <h3>📚 Källor — ORT-10 Lossnad bracket/band</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>ICD-10:</strong> Z46.4 (Anpassning av ortodontisk apparatur)</li>
+                            <li><strong>Klinisk konsensus:</strong> Aldrig fixera bracket med komposit — felplacering ger oönskad tandrörelse</li>
+                            <li><strong>Aspiration:</strong> Akut lungröntgen + sjukhus vid andningspåverkan</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ort11-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort11', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort11', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort11', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort11', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort11', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort11', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort11', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="ort11-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-11-BAGANDE</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Metalltråden sticker ut och skär i kinden"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Vass bågände sticker i kind/tunga/gom — akut smärta och slemhinneskada</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> Z46.4 + S00.5 (Ytlig skada munhåla)</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> Barn/ungdomar med fast apparatur</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Bågänden har glidit ut ur sista bandet/tuben och sticker ut — vanligt vid framtandsområdet eller distalt om sista molarbandet. Kan orsaka <strong>kraftig ulceration</strong> och smärta.</p>
+                        </div>
+                    </div>
+                    <div id="ort11-anamnes" class="content-panel">
+                        <h3>❓ Anamnes</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🔴 Obligatoriska frågor</h5>
+                            <ul>
+                                <li><strong>❓ Var sticker det?</strong><br><em>Kind, tunga, gom?</em></li>
+                                <li><strong>❓ Synligt sår? Blöder det?</strong><br><em>Bedöm slemhinneskada</em></li>
+                                <li><strong>❓ Sedan när?</strong><br><em>Akut efter justering eller gradvis förskjutning?</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort11-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Undersökning</h5>
+                            <ul>
+                                <li>🔍 Identifiera <strong>var tråden sticker ut</strong></li>
+                                <li>🔍 Bedöm <strong>ulceration</strong> — storlek, djup, lokalisation</li>
+                                <li>🔍 Kontrollera om bågen glidit ur <strong>tuben/bandet</strong></li>
+                                <li>🔍 Kontrollera övriga brackets och ligaturer</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort11-behandling" class="content-panel">
+                        <h3>🔧 Behandling</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Alternativ 1: Klipp av vass ände (bäst)</div>
+                            <ol>
+                                <li>Identifiera den utskjutande tråden</li>
+                                <li><strong>Klipp av</strong> med distalkap eller kraftig tångsax</li>
+                                <li>Tryck tillbaka den avklippta änden med instrument</li>
+                                <li>Kontrollera att inga vassa kanter kvarstår</li>
+                                <li>Skölj med koksalt</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Alternativ 2: Böj tillbaka</div>
+                            <ol>
+                                <li>Använd en tång (Mathieu eller liknande) för att böja tillbaka tråden</li>
+                                <li>Tryck den mot tanden / under bandet</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Alternativ 3: Temporärt skydd (om klippning ej möjlig)</div>
+                            <ol>
+                                <li>Torka tråden</li>
+                                <li>Applicera en bit <strong>ortodontisk vax</strong> eller sockerfritt tuggummi över den vassa änden</li>
+                                <li>Instruera patienten att byta vax regelbundet</li>
+                            </ol>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>💊 Sårbehandling</h5>
+                            <ul>
+                                <li><strong>Klorhexidinsköljning</strong> 0,12 % — 2 ggr/dag</li>
+                                <li><strong>Xylocain gel</strong> vid svår smärta (före mat)</li>
+                                <li><strong>Paracetamol</strong> vid behov</li>
+                                <li>Läker normalt inom <strong>5–7 dagar</strong> efter att orsaken åtgärdats</li>
+                            </ul>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd (vid klippning/böjning + sårbehandling)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort11-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: Z46.4 + S00.5 Slemhinneskada pga ortodontisk apparatur.
+
+Status: Utskjutande bågände distalt om tand [nr]. 
+Ulceration ca [X] mm på [kindslemhinna/tunga].
+
+Åtgärd: Bågände avklippt med distalkap. 
+Kanter kontrollerade — inga vassa kanter kvarstår.
+Sår rengjort. 
+
+Ordinerat: Klorhexidin 0,12% sköljning 2 ggr/dag.
+Xylocain gel vid behov.
+
+Hänvisad ortodontist [namn/klinik] för kontroll.
+
+Planering: Kontakta vid utebliven läkning >7 dagar.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort11-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Djup ulceration med sekundärinfektion</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Sår som ej läker >3 veckor trots åtgärdad orsak → <strong>biopsi</strong> (uteslut annat)</li>
+                                <li>Kraftig infektion (feber, svullnad) → utred vidare</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Avklippt trådfragment</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Säkerställ att alla avklippta bitar är insamlade</li>
+                                <li>Risk: aspiration av litet metallfragment</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort11-kallor" class="content-panel">
+                        <h3>📚 Källor — ORT-11 Vass bågände</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>ICD-10:</strong> Z46.4 + S00.5 (Ytlig skada munhåla)</li>
+                            <li><strong>Internetodontologi:</strong> Orala slemhinneförändringar — 3-veckorsregel för icke-läkande sår</li>
+                            <li><strong>VGR-riktlinjer:</strong> Biopsi vid sår &gt;3 veckor trots åtgärdad orsak</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ort12-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort12', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort12', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort12', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort12', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort12', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort12', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort12', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="ort12-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-12-RETLOSS</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Tråden bakom tänderna har lossnat — tänderna har börjat flytta sig"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Bondad lingual retainer lossnad — risk för recidiv</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> Z46.4 (Anpassning av ortodontisk apparatur)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Vanligt — tekniska komplikationer med bondade retainers frekvent</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> Barn, ungdomar och vuxna med bondad retainer</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Patient söker efter att bondad retainer (lingual ståltråd) lossnat helt eller delvis. Kan vara asymptomatisk (patienten märker det med tungan) eller symtomgivande (tråden skaver, tand har synligt flyttat).</p>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>⚠️ Klinisk betydelse</strong>
+                            <ul style="margin-top: 10px;">
+                                <li><strong>Lossnad retainer</strong> = tänder kan börja flytta sig (recidiv) inom <strong>dagar till veckor</strong></li>
+                                <li><strong>Delvis lossnad</strong> retainer som fortfarande sitter fast i en ände kan bli <strong>AKTIV</strong> → oönskade tandförflyttningar</li>
+                                <li><strong>Prioritet:</strong> Snar (inte akut, men bör åtgärdas inom dagar)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort12-anamnes" class="content-panel">
+                        <h3>❓ Anamnes — Obligatoriska frågor</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>🔴 Primära frågor</h5>
+                            <ul>
+                                <li><strong>❓ Är tråden helt lös eller lossnad från en tand?</strong><br><em>Helt lös = lägre akut risk. Delvis lös = risk aktiv förflyttning!</em></li>
+                                <li><strong>❓ Sitter den kvar men skaver? Sticker den?</strong><br><em>Slemhinneskada möjlig</em></li>
+                                <li><strong>❓ Har tänderna redan börjat flytta sig?</strong><br><em>Synlig rotation/trångställning = snar ortodontistkontakt</em></li>
+                                <li><strong>❓ Har du avtagbar retainer (Essix) som komplement?</strong><br><em>Kan användas som temporärt skydd</em></li>
+                                <li><strong>❓ Vem utförde ortodontisk behandling? Garantiperiod?</strong><br><em>Viktigt för hänvisning</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort12-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>Undersökning</h5>
+                            <ul>
+                                <li>🔍 <strong>Vilka tänder</strong> har retainern lossnat från?</li>
+                                <li>🔍 Sitter den kvar på <strong>övriga tänder</strong>? (Delvis lossnad = risk aktiv förflyttning!)</li>
+                                <li>🔍 Tänder som <strong>redan flyttat</strong>? (Rotation, trångställning)</li>
+                                <li>🔍 <strong>Slemhinneskada</strong> från lös tråd?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort12-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Alternativ A: Återlimma retainern (om kompetens finns)</div>
+                            <p><strong>Indikation:</strong> Retainern lossnad från 1–2 tänder men i övrigt intakt. Tänderna ej synligt förflyttade.</p>
+                            <h5 style="margin-top: 15px;">📦 Material:</h5>
+                            <ul>
+                                <li>🔹 Etch (37 % fosforsyra)</li>
+                                <li>🔹 Bondingmaterial (komposit)</li>
+                                <li>🔹 Ev. ny ståltråd om den gamla deformerats</li>
+                            </ul>
+                            <h5>🛠️ Metod:</h5>
+                            <ol>
+                                <li>Rengör tandens lingualyta</li>
+                                <li>Etsa → bonding → fäst retainertråden med flödande komposit</li>
+                                <li>Ljushärda</li>
+                                <li>Kontrollera att ocklusion ej störs</li>
+                                <li>Kontrollera trådens passning på samtliga tänder</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Alternativ B: Avlägsna retainern + temporärt skydd</div>
+                            <p><strong>Indikation:</strong> Retainern deformerad, kan ej återlimmas. Eller lossnad från flera tänder med risk för aktiv förflyttning.</p>
+                            <h5>🛠️ Metod:</h5>
+                            <ol>
+                                <li>Avlägsna hela retainern (borra bort komposit, dra försiktigt)</li>
+                                <li>Polera lingualytorna</li>
+                                <li>Om avtagbar retainer (Essix) finns: instruera att använda dygnet runt</li>
+                                <li>Om ingen Essix: <strong>snarast kontakt med ortodontist</strong> för ny retainer</li>
+                                <li>Alternativt: framställ vakuumpressad skena som temporärt skydd</li>
+                            </ol>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Alternativ C: Hänvisa till ortodontist</div>
+                            <p><strong>Indikation:</strong></p>
+                            <ul>
+                                <li>Tänder har redan förflyttats (recidiv)</li>
+                                <li>Komplex retainer (ÖK, multipla lossnader)</li>
+                                <li>Garantiperiod kvarstår</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort12-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <h5 class="scroll-animate">Mall 1: Retainer återlimmad</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: Z46.4 Anpassning ortodontisk apparatur (lossnad retainer).
+
+Status: Bondad retainer UK 33–43 lossnad från tand [nr].
+Retainertråd intakt. 
+Tänder ej synligt förflyttade.
+Slemhinna u.a.
+
+Åtgärd: Retainer återlimmad med komposit tand [nr]. 
+Lingualyta rengörd, etsad, bondad. 
+Ljushärdad. Ocklusion kontrollerad — u.a.
+
+Planering: Kontakta ortodontist [namn/klinik] för uppföljning.</pre>
+                        </div>
+                        <h5 class="scroll-animate" style="margin-top: 30px;">Mall 2: Retainer avlägsnad</h5>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: Z46.4 Anpassning ortodontisk apparatur (lossnad retainer).
+
+Status: Bondad retainer UK 33–43 lossnad från [antal] tänder.
+Retainertråd deformerad — ej möjlig att återlimma.
+Lätt rotation tand [nr] noterad.
+
+Åtgärd: Retainer avlägsnad i sin helhet. 
+Komposit avlägsnad. Lingualytor polerade.
+Patient har Essix-skena — instruerad att använda dygnet runt.
+
+Planering: Hänvisad ortodontist [namn/klinik] för ny retainer.
+Snarast möjligt (risk recidiv).</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort12-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Delvis lossnad retainer som fortfarande sitter fast</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Kan vara <strong>AKTIV</strong> → oönskade tandförflyttningar</li>
+                                <li>→ Avlägsna eller återlimma <strong>snarast</strong></li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Synlig tandförflyttning redan</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Patienten bör bedömas av <strong>ortodontist</strong> (inte allmäntandläkare)</li>
+                                <li>Kan kräva ny aktiv behandling</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Ansvarsfriskrivning</h5>
+                            <p>Ersätter inte kliniskt omdöme. PSL 2010:659. Retainerbehandling bör koordineras med ortodontist.</p>
+                        </div>
+                    </div>
+                    <div id="ort12-kallor" class="content-panel">
+                        <h3>📚 Källor — ORT-12 Lossnad bondad retainer</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>Klinisk konsensus:</strong> Delvis lossnad retainer kan bli aktiv bågele → oplanerad tandrörelse</li>
+                            <li><strong>Teknik:</strong> 37% fosforsyra + bondingkomposit för återlimning</li>
+                            <li><strong>Socialstyrelsen NR Tandvård 2022:</strong> Bondad retention Prioritet 4 (förstahandsval)</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ort13-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort13', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort13', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort13', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort13', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="ort13-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-13-ESSIX</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Min plastskena har gått sönder"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Avtagbar retainer (Essix/vakuumpressad skena) trasig, förlorad eller fungerar ej</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> Z46.4</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> Barn, ungdomar, vuxna</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ort13-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Trasig skena</div>
+                            <ul>
+                                <li>Kan inte repareras — <strong>ny skena behöver framställas</strong></li>
+                                <li>Om bondad retainer finns som komplement: den skyddar fronten</li>
+                                <li>Utan bondad retainer: risk recidiv → snarast ny skena</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Förlorad skena</div>
+                            <ul>
+                                <li>Ny avtryck/scan → ny skena</li>
+                                <li>Hänvisa ortodontist eller allmäntandläkare med utrustning</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">Åtgärd i allmäntandvården</div>
+                            <ol>
+                                <li>Ta alginatavtryck eller intraoral scan</li>
+                                <li>Framställ ny vakuumpressad skena (Essix-maskin)</li>
+                                <li>Alternativt: hänvisa ortodontist</li>
+                            </ol>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd (ny skena)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort13-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: Z46.4.
+
+Status: Avtagbar retainer [ÖK/UK] [trasig/förlorad].
+Tänder [ej förflyttade / lätt recidiv UK-front].
+
+Åtgärd: [Avtryck taget för ny vakuumpressad skena / 
+Hänvisad ortodontist].
+
+Planering: Ny skena levereras [datum]. 
+Instruktion: Använd dygnet runt tills ny skena är klar.
+Kontakta ortodontist [namn/klinik] för uppföljning.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort13-kallor" class="content-panel">
+                        <h3>📚 Källor — ORT-13 Trasig Essix-skena</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>Klinisk konsensus:</strong> Vakuumpressade skenor kan ej repareras — ny skena krävs</li>
+                            <li><strong>Socialstyrelsen NR Tandvård 2022:</strong> Avtagbar retention Prioritet 6 (andrahandsval)</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ort14-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort14', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort14', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort14', 'diff', this)">🔍 Diff. Diagnos</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort14', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort14', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort14', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort14', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="ort14-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-14-SLEMSKADA</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Tandställningen har gjort ett sår i kinden som inte läker"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Ulceration, traumatiskt sår eller irritation i kind/läpp/tunga orsakad av ortodontisk apparatur</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> S00.5 (Ytlig skada munhåla) + Z46.4</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Mycket vanligt — förekommer hos majoriteten under första veckorna med ny apparatur</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> Alla med fast/avtagbar ortodontisk apparatur</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Brackets, bågändar, band, ligaturer eller avtagbar apparatur orsakar mekanisk irritation → ulceration i kindslemhinna, läppinsida, tungrand eller gingiva.</p>
+                        </div>
+                    </div>
+                    <div id="ort14-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>3. Obligatorisk undersökning</h5>
+                            <ul>
+                                <li>🔍 <strong>Identifiera orsak:</strong> Vilken del av apparaturen skaver?</li>
+                                <li>🔍 <strong>Sårtyp:</strong> Ulceration, abrasion, tryckskada</li>
+                                <li>🔍 <strong>Lokalisation:</strong> Kindslemhinna (vanligast), läppinsida, tungrand</li>
+                                <li>🔍 <strong>Storlek och djup</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort14-diff" class="content-panel">
+                        <h3>🔍 Differentialdiagnos</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>4. Apparaturskada vs Aftös stomatit</h5>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem;">
+                                <tr style="border-bottom: 2px solid rgba(196, 127, 100, 0.3);">
+                                    <th style="text-align: left; padding: 12px;">Egenskap</th>
+                                    <th style="text-align: left; padding: 12px;">Apparaturskada</th>
+                                    <th style="text-align: left; padding: 12px;">Aftös stomatit</th>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px; font-weight: bold;">Sårlokalisation</td>
+                                    <td style="padding: 10px;">Sår sitter direkt mittemot skavande del</td>
+                                    <td style="padding: 10px;">Sår på typiska "afte-lokaler"</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #eee;">
+                                    <td style="padding: 10px; font-weight: bold;">Orsak</td>
+                                    <td style="padding: 10px;">Orsak identifierbar (mekanisk)</td>
+                                    <td style="padding: 10px;">Ingen mekanisk orsak</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; font-weight: bold;">Förlopp</td>
+                                    <td style="padding: 10px;">Försvinner när orsak åtgärdas</td>
+                                    <td style="padding: 10px;">Recidiverar spontant</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort14-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">5. Steg 1: Identifiera och åtgärda orsaken</div>
+                            <ul>
+                                <li><strong>Vass bracket-kant</strong> → slipa med diamantborr</li>
+                                <li><strong>Utskjutande bågände</strong> → klipp/böj (scenario ORT-11)</li>
+                                <li><strong>Lös ligatur</strong> → justera/avlägsna</li>
+                                <li><strong>Avtagbar apparatur</strong> → slipa bort skavande kant</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Steg 2: Skydda med vax</div>
+                            <ul>
+                                <li>Ortodontisk vax appliceras på den skavande delen</li>
+                                <li>Instruera patienten: byt vax regelbundet, kan sväljas ofarligt</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">Steg 3: Sårbehandling</div>
+                            <ul>
+                                <li><strong>Klorhexidin 0,12 %</strong> sköljning/baddning 2 ggr/dag</li>
+                                <li><strong>Xylocain gel/salva</strong> vid smärta (före mat)</li>
+                                <li><strong>Paracetamol</strong> vid behov</li>
+                                <li>Läker normalt inom <strong>5–7 dagar</strong> efter att orsaken åtgärdats</li>
+                            </ul>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort14-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: S00.5 + Z46.4.
+
+Status: Ulceration [X] mm [kindslemhinna/läpp/tunga] 
+mittemot [bracket tand nr / bågände / band].
+Sårtyp: [Ulceration / abrasion / tryckskada].
+Storlek: ca [X] mm diameter, [ytlig / djup].
+
+Åtgärd: [Orsak åtgärdad — kant slipad med diamantborr / 
+bågände avklippt / ligatur justerad / vax applicerat].
+
+Ordinerat: 
+- Klorhexidin 0,12% sköljning 2 ggr/dag
+- Xylocain gel vid behov (före mat)
+- Paracetamol vid behov
+
+Information: Såret bör läka inom 5–7 dagar efter att 
+orsaken åtgärdats. Kontakta vid utebliven läkning.
+
+Hänvisad ortodontist [namn/klinik] för kontroll av apparatur.</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>301</strong></td><td>Sjukdomsbehandlande åtgärd</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort14-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Sår som ej läker >3 veckor trots att orsak åtgärdats</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>→ <strong>Biopsi</strong> (uteslut annat — malignitet, vesikulobullös sjukdom)</li>
+                                <li>Remiss oral medicin / ÖNH</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Kraftig infektion (feber, svullnad)</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>→ Utred vidare</li>
+                                <li>Överväg antibiotika vid systemiska tecken</li>
+                                <li>Kontakta ortodontist angående fortsatt behandling</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Ansvarsfriskrivning</h5>
+                            <p>Ersätter inte kliniskt omdöme. PSL 2010:659. Vid osäkerhet om sårorsak — konsultera kollega eller specialist.</p>
+                        </div>
+                    </div>
+                    <div id="ort14-kallor" class="content-panel">
+                        <h3>📚 Källor — ORT-14 Slemhinneskada (ortodontisk)</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>Internetodontologi:</strong> Orofacial medicin — Traumatisk ulceration vs aftös stomatit</li>
+                            <li><strong>VGR-riktlinjer:</strong> Biopsi vid icke-läkande sår &gt;3 veckor</li>
+                            <li><strong>Ortodontisk vax:</strong> Ofarligt att svälja</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ort15-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort15', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort15', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort15', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort15', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort15', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort15', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+                    <div id="ort15-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-15-ORTKARIES</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Vita fläckar har uppstått runt brackets — är det karies?"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Vita demineraliseringsfläckar (white spots) eller manifest karies kring ortodontiska brackets</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> K02.0 (Karies i emalj, initialkaries)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Vanligt — white spots uppstår hos ca <strong>50–60 %</strong> av patienter med fast apparatur (spannet 13–75% i litteraturen speglar studieheterogenitet, ej ett kliniskt användbart tal). Källa: Lucchese &amp; Gherlone 2013; Enaia et al. 2011</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> Barn/ungdomar med fast apparatur</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Fast ortodontisk apparatur försvårar munhygien → plackackumulation kring brackets → snabb demineralisering → vita fläckar → ev. manifest karies. Ofta upptäcks vid debonding (avlägsnande av brackets).</p>
+                        </div>
+                    </div>
+                    <div id="ort15-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>3. Obligatorisk undersökning</h5>
+                            <ul>
+                                <li>🔍 <strong>White spots:</strong> Vita, opaka, kritvita fläckar runt/under bracket-bas</li>
+                                <li>🔍 <strong>Manifest karies:</strong> Mjukt, missfärgat dentin vid bracket-periferi</li>
+                                <li>🔍 <strong>Munhygien:</strong> Plack synligt? Gingivit?</li>
+                                <li>🔍 <strong>Lokalisation:</strong> Vanligast labialt på incisiver och premolarer i ÖK</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="ort15-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">A. Förebyggande (viktigast)</div>
+                            <ul>
+                                <li><strong>Intensifierad munhygieninstruktion</strong></li>
+                                <li><strong>Fluoridpreparat:</strong> fluorlack (Duraphat) 2–4 ggr/år, daglig fluoridskölj 0,2 % NaF</li>
+                                <li><strong>Casein phosphopeptide</strong> (MI Paste/Tooth Mousse) vid white spots</li>
+                                <li><strong>Överväg:</strong> diskussion med ortodontist om avbrytande av behandling vid dålig munhygien</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">B. Behandling av white spots (reversibla)</div>
+                            <ul>
+                                <li><strong>Fluorlack (Duraphat)</strong> — upprepat</li>
+                                <li><strong>MI Paste / Tooth Mousse</strong></li>
+                                <li><strong>Resin infiltration (Icon)</strong> efter debonding — estetisk förbättring</li>
+                            </ul>
+                        </div>
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">C. Manifest karies</div>
+                            <ul>
+                                <li><strong>Exkavering + fyllning</strong> (komposit)</li>
+                                <li>Ev. i samråd med ortodontist: debonding av bracket → kariesbehandling → ny bracket</li>
+                                <li>Vid omfattande karies: ortodontist kan besluta att <strong>avbryta behandling</strong></li>
+                            </ul>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>302</strong></td><td>Sjukdomsförebyggande åtgärd (fluorlack, MHI)</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>701–703</strong></td><td>Fyllning (vid manifest karies)</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort15-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: K02.0 Initialkaries (demineralisering) / K02.1 Karies i dentin.
+
+Status: White spots/karies vid bracket [tand nr].
+Demineralisering labialt [tand nr] — vita, opaka fläckar 
+runt bracket-bas. [Alternativt: Manifest karies — mjukt, 
+missfärgat dentin vid bracket-periferi tand nr.]
+Munhygien: [God / Bristfällig — synligt plack, gingivit].
+Lokalisation: [Labialt ÖK incisiver / premolarer].
+
+Åtgärd: 
+[A. Förebyggande: Fluorlack (Duraphat) applicerat. 
+Intensifierad MHI given. MI Paste rekommenderat.]
+[B. White spots: Fluorlack upprepat. Resin infiltration 
+planeras efter debonding.]
+[C. Manifest karies: Exkavering + kompositfyllning tand nr. 
+Bracket avlägsnad innan fyllning, återlimmas efter.]
+
+Kontakt med ortodontist [namn] angående 
+[fortsatt behandling / risk för avbrytande vid dålig munhygien].
+
+Planering: 
+- Ny fluorlackning om [3–6 månader]
+- Uppföljning munhygien om [4 veckor]
+- Kontakta vid symtomförändring</pre>
+                        </div>
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>302</strong></td><td>Sjukdomsförebyggande åtgärd</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>701–703</strong></td><td>Fyllning</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="ort15-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Omfattande demineralisering + dålig munhygien</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>→ Diskutera <strong>avbrytande av ortodonti</strong> med ortodontist</li>
+                                <li>Patienten riskerar permanent estetisk skada (vita fläckar som ej remineraliseras)</li>
+                                <li>Patientens/vårdnadshavarens ansvar att förbättra munhygien</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Karies som progredierar till pulpa</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>→ <strong>Endodonti</strong> trots pågående ortodonti</li>
+                                <li>Kontakta ortodontist — kan kräva debonding och behandlingsavbrott</li>
+                                <li>Dokumentera noggrant: tidpunkt för upptäckt, tidigare fluorbehandlingar, MHI-försök</li>
+                            </ul>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Ansvarsfriskrivning</h5>
+                            <p>Ersätter inte kliniskt omdöme. PSL 2010:659. Kariesförebyggande insatser under ortodonti är ett delat ansvar mellan allmäntandvård och ortodontist.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+<div id="ort_diag-ort16" class="content-panel">
+    
+    <h3>⚡ Akut trauma p.g.a. stort överbett (ORT-16)</h3>
+    <div class="patient-symptom-box scroll-animate">
+        <div class="symptom-list">
+            <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-16-TRAUMAOVERB</div>
+            <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnet slog ut framtanden — hade redan stort överbett"</div>
+            <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Akut dentoalveolärt trauma (fraktur/luxation) hos barn med stort obehandlat överbett</div>
+            <div class="symptom-item">📖 <strong>ICD-10:</strong> S02.5 (Tandfraktur) + K07.2 (Bettavvikelse)</div>
+            <div class="symptom-item">📊 <strong>Prevalens:</strong> Barn med överbett >6 mm har 2–3 gånger ökad risk för framtandstrauma</div>
+            <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> 7–12 år (växelbettet — permanenta incisiver mest utsatta)</div>
+        </div>
+    </div>
+    <div class="info-card scroll-animate">
+        <h5>Klinisk betydelse</h5>
+        <p>Detta scenario kopplar samman <strong>akut traumatologi</strong> med <strong>ortodontisk diagnostik</strong>. Traumat behandlas akut enligt traumascenarierna (scenario 41–48), men den underliggande orsaken (stort överbett) bör identifieras och remitteras för ortodontisk behandling för att <strong>förebygga framtida trauma</strong>.</p>
+    </div>
+    <div class="info-card scroll-animate">
+        <h5>2. Klinisk indikation</h5>
+        <p>Barn som söker för akut tandtrauma (framtandsfraktur, luxation, exartikulation) OCH vid undersökning visar sig ha stort horisontellt överbett (overjet >5–6 mm).</p>
+    </div>
+
+    <h3 style="margin-top: 30px;">❓ Anamnes</h3>
+    <div class="info-card scroll-animate">
+        <h5>3. Obligatoriska frågor</h5>
+        <ul>
+            <li><strong>❓ Hur skedde traumat?</strong><br><em>Fall, slag, idrottsrelaterat</em></li>
+            <li><strong>❓ Har barnet slagit i framtänderna förut?</strong><br><em>Recidivtrauma vanligt vid överbett</em></li>
+            <li><strong>❓ Har barnet svårt att stänga läpparna?</strong><br><em>Ansträngd läppslutning = riskfaktor</em></li>
+            <li><strong>❓ Pågår ortodontisk behandling? Planerad?</strong></li>
+        </ul>
+    </div>
+
+    <h3 style="margin-top: 30px;">🔬 Klinisk Status</h3>
+    <div class="info-card scroll-animate">
+        <h5>4. Undersökning</h5>
+        <ul>
+            <li>🔍 <strong>Trauma:</strong> Hantera enligt traumascenario (41–48)</li>
+            <li>🔍 <strong>Överbett:</strong> Mät horisontellt overjet (mm) — >5 mm = signifikant</li>
+            <li>🔍 <strong>Läppslutning:</strong> Ansträngd? Inadekvat? (Läpparna täcker ej tänderna)</li>
+            <li>🔍 <strong>Bettrelation:</strong> Postnormal? Angle klass II?</li>
+        </ul>
+    </div>
+
+    <h3 style="margin-top: 30px;">🔧 Behandlingsalternativ</h3>
+    <div class="treatment-box scroll-animate">
+        <div class="treatment-title">STEG 1: Akut traumabehandling</div>
+        <p>Enligt relevant traumascenario (41–48). Prioritera tandbehandling.</p>
+    </div>
+    <div class="treatment-box alternative scroll-animate">
+        <div class="treatment-title">STEG 2: Identifiera det stora överbettet</div>
+        <ul>
+            <li>Dokumentera overjet i journal</li>
+            <li>Informera förälder: överbettet ÖKAR risken för framtida trauma</li>
+            <li>Ortodontisk behandling kan MINSKA traumarisken</li>
+        </ul>
+    </div>
+    <div class="treatment-box alternative scroll-animate">
+        <div class="treatment-title">STEG 3: Remiss ortodontist</div>
+        <ul>
+            <li>Snar remiss efter att traumat stabiliserats</li>
+            <li><strong>Nationella Riktlinjer:</strong> Tidig ortodontisk behandling i växelbettet minskar incidensen av framtandstrauma (Prio 4)</li>
+        </ul>
+    </div>
+    <div class="info-card scroll-animate">
+        <h5>8. Beslutsväg — kort sammanfattning</h5>
+        <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; overflow-x: auto;">
+AKUT TRAUMA HOS BARN
+        │
+        ├─ Behandla traumat FÖRST (scenario 41–48)
+        │
+        └─ Bedöm bettrelation:
+                │
+                ├─ Overjet >5 mm? → JA
+                │       │
+                │       ├─ Ansträngd läppslutning? → Stärkt indikation
+                │       │
+                │       └─ REMISS ORTODONTIST (NR Prio 4)
+                │
+                └─ Overjet normalt → Ingen ortodontiremiss</pre>
+    </div>
+    <div class="billing-codes scroll-animate">
+        <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+        <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+            <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+            <tr><td style="padding: 4px 8px;"><strong>Övriga koder</strong></td><td>Enligt traumascenario</td></tr>
+        </table>
+    </div>
+
+    <h3 style="margin-top: 30px;">📝 Dokumentationsstöd</h3>
+    <div class="journal-box scroll-animate">
+        <button class="copy-btn" onclick="copyText(this)">COPY</button>
+        <pre>Diagnos: [S02.5 Tandfraktur / S03.2 Luxation] + K07.2 Bettavvikelse.
+
+Status: Akut trauma tand [nr]: [Beskriv skada].
+Overjet uppmätt till [X] mm. Ansträngd läppslutning.
+Postnormal bettrelation.
+
+Åtgärd: [Traumabehandling enligt protokoll].
+Info: Förälder informerad om samband överbett ↔ traumarisk.
+
+Planering: [Traumauppföljning]. 
+Remiss ortodontist för bedömning av bettavvikelse 
+efter att traumat stabiliserats.</pre>
+    </div>
+
+    <h3 style="margin-top: 30px;">🚨 Röda Flaggor</h3>
+    <div class="warning-box scroll-animate">
+        <strong>🚨 Recidivtrauma</strong>
+        <ul style="margin-top: 10px;">
+            <li>Barnet har slagit i framtänderna förut → <strong>stärkt indikation för ortodontiremiss</strong></li>
+        </ul>
+    </div>
+    <div class="warning-box scroll-animate">
+        <strong>🚨 Ansträngd läppslutning + overjet >6 mm</strong>
+        <ul style="margin-top: 10px;">
+            <li>→ Hög traumarisk — dokumentera och remittera</li>
+        </ul>
+    </div>
+    <div class="warning-box scroll-animate">
+        <strong>🚨 Behandla ALLTID traumat akut först</strong>
+        <ul style="margin-top: 10px;">
+            <li>Ortodontisk bedömning kommer <strong>efter</strong> att traumat stabiliserats</li>
+            <li>Prioritera tandbehandling, inte bettkorrigering, i akutskedet</li>
+        </ul>
+    </div>
+    <div class="info-card scroll-animate">
+        <h5>Ansvarsfriskrivning</h5>
+        <p>Ersätter inte kliniskt omdöme. PSL 2010:659. Nationella Riktlinjer Prio 4: tidig behandling av stort överbett minskar traumaincidens.</p>
+    </div>
+
+</div>
+
+                    <div id="ort15-kallor" class="content-panel">
+                        <h3>📚 Källor — ORT-15 White spots/karies vid brackets</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>Lucchese &amp; Gherlone 2013; Enaia et al. 2011:</strong> White spots ~50–60% prevalens under fast apparatur (13–75% spann = studieheterogenitet)</li>
+                            <li><strong>Paris et al. 2013:</strong> Resininfiltration (Icon) evidensbaserat för white spots post-debonding</li>
+                            <li><strong>Reynolds 1997:</strong> CPP-ACP (MI Paste/Tooth Mousse) — remineralisering</li>
+                            <li><strong>ICD-10:</strong> K02.0 (Karies i emalj, initialkaries)</li>
+                        </ul></div>
+                    </div>
+            <div id="ort16-display" class="scenario-display-wrapper">
+                <div class="inner-sidebar">
+                    <button class="tab-btn active" onclick="openInnerTab('ort16', 'snabb', this)">⚡ Snabböversikt</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort16', 'anamnes', this)">❓ Anamnes</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort16', 'status', this)">🔬 Status</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort16', 'behandling', this)">🔧 Behandling</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort16', 'journal', this)">📝 Journal</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort16', 'flaggor', this)">🚨 Röda Flaggor</button>
+                    <button class="tab-btn" onclick="openInnerTab('ort16', 'kallor', this)">📚 Källor</button>
+                </div>
+                <div class="inner-display">
+
+                    <div id="ort16-snabb" class="content-panel active">
+                        <h3>⚡ Scenarioidentifiering</h3>
+                        <div class="patient-symptom-box scroll-animate">
+                            <div class="symptom-list">
+                                <div class="symptom-item">🆔 <strong>Scenario-ID:</strong> ORT-16-TRAUMAOVERB</div>
+                                <div class="symptom-item">🗣️ <strong>Citat:</strong> "Barnet slog ut framtanden — hade redan stort överbett"</div>
+                                <div class="symptom-item">🤕 <strong>Symtomprofil:</strong> Akut dentoalveolärt trauma (fraktur/luxation) hos barn med stort obehandlat överbett</div>
+                                <div class="symptom-item">📖 <strong>ICD-10:</strong> S02.5 (Tandfraktur) + K07.2 (Bettavvikelse)</div>
+                                <div class="symptom-item">📊 <strong>Prevalens:</strong> Barn med överbett >6 mm har 2–3 gånger ökad risk för framtandstrauma</div>
+                                <div class="symptom-item">👤 <strong>Åldersgrupp:</strong> 7–12 år (växelbettet — permanenta incisiver mest utsatta)</div>
+                            </div>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>Klinisk betydelse</h5>
+                            <p>Detta scenario kopplar samman <strong>akut traumatologi</strong> med <strong>ortodontisk diagnostik</strong>. Traumat behandlas akut enligt traumascenarierna (scenario 41–48), men den underliggande orsaken (stort överbett) bör identifieras och remitteras för ortodontisk behandling för att <strong>förebygga framtida trauma</strong>.</p>
+                        </div>
+                        <div class="info-card scroll-animate">
+                            <h5>2. Klinisk indikation</h5>
+                            <p>Barn som söker för akut tandtrauma (framtandsfraktur, luxation, exartikulation) OCH vid undersökning visar sig ha stort horisontellt överbett (overjet >5–6 mm).</p>
+                        </div>
+                    </div>
+
+                    <div id="ort16-anamnes" class="content-panel">
+                        <h3>❓ Anamnes</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>3. Obligatoriska frågor</h5>
+                            <ul>
+                                <li><strong>❓ Hur skedde traumat?</strong><br><em>Fall, slag, idrottsrelaterat</em></li>
+                                <li><strong>❓ Har barnet slagit i framtänderna förut?</strong><br><em>Recidivtrauma vanligt vid överbett</em></li>
+                                <li><strong>❓ Har barnet svårt att stänga läpparna?</strong><br><em>Ansträngd läppslutning = riskfaktor</em></li>
+                                <li><strong>❓ Pågår ortodontisk behandling? Planerad?</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="ort16-status" class="content-panel">
+                        <h3>🔬 Klinisk Status</h3>
+                        <div class="info-card scroll-animate">
+                            <h5>4. Undersökning</h5>
+                            <ul>
+                                <li>🔍 <strong>Trauma:</strong> Hantera enligt traumascenario (41–48)</li>
+                                <li>🔍 <strong>Överbett:</strong> Mät horisontellt overjet (mm) — >5 mm = signifikant</li>
+                                <li>🔍 <strong>Läppslutning:</strong> Ansträngd? Inadekvat? (Läpparna täcker ej tänderna)</li>
+                                <li>🔍 <strong>Bettrelation:</strong> Postnormal? Angle klass II?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="ort16-behandling" class="content-panel">
+                        <h3>🔧 Behandlingsalternativ</h3>
+
+                        <div class="treatment-box scroll-animate">
+                            <div class="treatment-title">STEG 1: Akut traumabehandling</div>
+                            <p>Enligt relevant traumascenario (41–48). Prioritera tandbehandling.</p>
+                        </div>
+
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">STEG 2: Identifiera det stora överbettet</div>
+                            <ul>
+                                <li>Dokumentera overjet i journal</li>
+                                <li>Informera förälder: överbettet ÖKAR risken för framtida trauma</li>
+                                <li>Ortodontisk behandling kan MINSKA traumarisken</li>
+                            </ul>
+                        </div>
+
+                        <div class="treatment-box alternative scroll-animate">
+                            <div class="treatment-title">STEG 3: Remiss ortodontist</div>
+                            <ul>
+                                <li>Snar remiss efter att traumat stabiliserats</li>
+                                <li><strong>Nationella Riktlinjer:</strong> Tidig ortodontisk behandling i växelbettet minskar incidensen av framtandstrauma (Prio 4)</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>8. Beslutsväg — kort sammanfattning</h5>
+                            <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; overflow-x: auto;">
+AKUT TRAUMA HOS BARN
+        │
+        ├─ Behandla traumat FÖRST (scenario 41–48)
+        │
+        └─ Bedöm bettrelation:
+                │
+                ├─ Overjet >5 mm? → JA
+                │       │
+                │       ├─ Ansträngd läppslutning? → Stärkt indikation
+                │       │
+                │       └─ REMISS ORTODONTIST (NR Prio 4)
+                │
+                └─ Overjet normalt → Ingen ortodontiremiss</pre>
+                        </div>
+
+                        <div class="billing-codes scroll-animate">
+                            <div class="billing-codes-title">💳 Debiteringskoder (TLV/KUSP)</div>
+                            <table style="width: 100%; font-size: 0.9rem; margin-top: 8px;">
+                                <tr><td style="padding: 4px 8px;"><strong>107</strong></td><td>Kompletterande undersökning</td></tr>
+                                <tr><td style="padding: 4px 8px;"><strong>Övriga koder</strong></td><td>Enligt traumascenario</td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="ort16-journal" class="content-panel">
+                        <h3>📝 Dokumentationsstöd</h3>
+                        <div class="journal-box scroll-animate">
+                            <button class="copy-btn" onclick="copyText(this)">COPY</button>
+                            <pre>Diagnos: [S02.5 Tandfraktur / S03.2 Luxation] + K07.2 Bettavvikelse.
+
+Status: Akut trauma tand [nr]: [Beskriv skada].
+Overjet uppmätt till [X] mm. Ansträngd läppslutning.
+Postnormal bettrelation.
+
+Åtgärd: [Traumabehandling enligt protokoll].
+Info: Förälder informerad om samband överbett ↔ traumarisk.
+
+Planering: [Traumauppföljning]. 
+Remiss ortodontist för bedömning av bettavvikelse 
+efter att traumat stabiliserats.</pre>
+                        </div>
+                    </div>
+
+                    <div id="ort16-flaggor" class="content-panel">
+                        <h3>🚨 Röda Flaggor</h3>
+
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Recidivtrauma</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Barnet har slagit i framtänderna förut → <strong>stärkt indikation för ortodontiremiss</strong></li>
+                            </ul>
+                        </div>
+
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Ansträngd läppslutning + overjet >6 mm</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>→ Hög traumarisk — dokumentera och remittera</li>
+                            </ul>
+                        </div>
+
+                        <div class="warning-box scroll-animate">
+                            <strong>🚨 Behandla ALLTID traumat akut först</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Ortodontisk bedömning kommer <strong>efter</strong> att traumat stabiliserats</li>
+                                <li>Prioritera tandbehandling, inte bettkorrigering, i akutskedet</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card scroll-animate">
+                            <h5>Ansvarsfriskrivning</h5>
+                            <p>Ersätter inte kliniskt omdöme. PSL 2010:659. Nationella Riktlinjer Prio 4: tidig behandling av stort överbett minskar traumaincidens.</p>
+                        </div>
+                    </div>
+
+                    <div id="ort16-kallor" class="content-panel">
+                        <h3>📚 Källor — ORT-16 Akut trauma p.g.a. överbett</h3>
+                        <div class="info-card scroll-animate"><h5>Källor</h5><ul>
+                            <li><strong>Socialstyrelsen NR Tandvård 2022:</strong> Överbett ≥6 mm — Prioritet 4; tidig behandling minskar traumarisk</li>
+                            <li><strong>Nguyen et al. 1999; Petti 2015:</strong> Överbett &gt;6 mm ger 2–3x ökad traumarisk</li>
+                            <li><strong>Cochrane — Thiruvenkatachari et al. 2013:</strong> Tidig ortodontisk behandling i växelbettet minskar incisivtrauma</li>
+                        </ul></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            </div><div class="right-sidebar">
+            <div class="sidebar-card">
+                <h4 class="sidebar-title">📋 Ortodonti — Snabbval</h4>
+                
+                <div style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    <button class="sidebar-btn" onclick="selectScenario('ort01')">🦷 Hörntand ÖK (Prio 3)</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('ort_diag')">📑 Diagnoser & Riktlinjer</button>
+                    <button class="sidebar-btn" onclick="selectScenario('ort10')">🔩 Lossnad bracket</button>
+                    <button class="sidebar-btn" onclick="selectScenario('ort11')">✂️ Stickande bågände</button>
+                    <button class="sidebar-btn" onclick="selectScenario('ort12')">🦷 Lossnad retainer</button>
+                    <button class="sidebar-btn" onclick="selectScenario('ort13')">🦷 Trasig skena/retainer</button>
+                    <button class="sidebar-btn" onclick="selectScenario('ort14')">🩹 Slemhinneskada</button>
+                    <button class="sidebar-btn" onclick="selectScenario('ort15')">⚪ Karies/White spots</button>
+                    <button class="sidebar-btn" style="background: var(--accent-terracotta-dark);" onclick="selectScenario('ort16')">🚨 Trauma + överbett (Prio 4)</button>
+                </div>
+
+                
+                <div class="sidebar-info">
+                    <h4>⭐ Prioritetsskala</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        <strong>Prio 1–3:</strong> Hög prioritet<br>
+                        <strong>Prio 4–6:</strong> Medel prioritet<br>
+                        <strong>Prio 7–9:</strong> Låg prioritet<br>
+                        <strong>Prio 10:</strong> ICKE-GÖRA
+                    </p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>⚠️ Huvudprincip</h4>
+                    <p>Temporär åtgärd i allmäntandvården.<br><strong>Hänvisa alltid till ortodontist</strong> för definitiv behandling.</p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>🧰 Ha tillgängligt</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">
+                        • Ortodontisk vax<br>
+                        • Distalkap / tångsax<br>
+                        • Mathieu-tång
+                    </p>
+                </div>
+
+         
+               
+                <div class="sidebar-info">
+                    <h4>📚 Källa</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">Socialstyrelsens Nationella Riktlinjer för tandvård 2022</p>
+                </div>
+
+                <div class="sidebar-info">
+                    <h4>📋 Kom ihåg</h4>
+                    <p style="font-size: 0.85rem; text-align: left;">Beslutsstöd — ersätter inte kliniskt omdöme. PSL 2010:659.</p>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div></div><script>
+    /* === MERGED SCENARIO DATA === */
+    const scenarioData = {
+        'ort01': { img: 'canine.png', fallback: 'https://placehold.co/120x100/e8eaf6/283593?text=C3', title: 'Eruptionsstörning hörntänder ÖK' },
+        'ort_diag': { img: 'diagnoser.png', fallback: 'https://placehold.co/120x100/e3f2fd/0d47a1?text=DIAG', title: 'Diagnoser och Riktlinjer' },
+        'ort10': { img: 'bracket.png', fallback: 'https://placehold.co/120x100/e0f7fa/006064?text=BRKT', title: '"En metallbit har lossnat"' },
+        'ort11': { img: 'wire.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=WIRE', title: '"Metalltråden sticker ut"' },
+        'ort12': { img: 'retainer.png', fallback: 'https://placehold.co/120x100/fff8e1/ff6f00?text=RET', title: '"Tråden bakom tänderna lossnat"' },
+        'ort13': { img: 'essix.png', fallback: 'https://placehold.co/120x100/e8f5e9/2e7d32?text=ESSIX', title: '"Min plastskena har gått sönder"' },
+        'ort14': { img: 'ulcer.png', fallback: 'https://placehold.co/120x100/ffebee/b71c1c?text=SÅR', title: '"Tandställningen gjort ett sår i kinden"' },
+        'ort15': { img: 'whitespots.png', fallback: 'https://placehold.co/120x100/fff8e1/f57f17?text=WSL', title: '"Vita fläckar runt brackets"' },
+        'ort16': { img: 'trauma_overjet.png', fallback: 'https://placehold.co/120x100/ffcdd2/b71c1c?text=TRAU', title: 'Akut trauma p.g.a. stort överbett' }
+    };
+
+    /* === SELECT SCENARIO === */
+    function selectScenario(id) {
+        document.querySelectorAll('.scenario-trigger-card').forEach(c => c.classList.remove('active'));
+        const trigger = document.getElementById('trigger-' + id);
+        if (trigger) trigger.classList.add('active');
+
+        document.querySelectorAll('.scenario-display-wrapper').forEach(w => w.classList.remove('active'));
+        const display = document.getElementById(id + '-display');
+        if (display) display.classList.add('active');
+
+        const header = document.getElementById('dynamic-header');
+        header.classList.remove('centered');
+        header.classList.add('scenario-mode');
+
+        const data = scenarioData[id];
+        if (data) {
+            document.getElementById('dynamic-header-title').textContent = data.title;
+            const avatar = document.getElementById('story-avatar');
+            avatar.src = data.img;
+            avatar.onerror = function() { this.src = data.fallback; };
+            avatar.classList.add('pop');
+            setTimeout(() => avatar.classList.remove('pop'), 600);
+        }
+
+        const wrapper = document.getElementById(id + '-display');
+        if (wrapper) {
+            wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const firstPanel = wrapper.querySelector('.content-panel');
+            const firstBtn = wrapper.querySelector('.tab-btn');
+            if (firstPanel) firstPanel.classList.add('active');
+            if (firstBtn) firstBtn.classList.add('active');
+        }
+
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    /* === TAB SWITCHING === */
+    function openInnerTab(scenarioId, tabName, btn) {
+        const wrapper = document.getElementById(scenarioId + '-display');
+        if (!wrapper) return;
+
+        wrapper.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+        wrapper.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+        const target = document.getElementById(scenarioId + '-' + tabName);
+        if (target) target.classList.add('active');
+        if (btn) btn.classList.add('active');
+
+        setTimeout(triggerScrollAnimations, 100);
+    }
+
+    /* === COPY TO CLIPBOARD === */
+    function copyText(btn) {
+        const pre = btn.nextElementSibling;
+        if (!pre) return;
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+            const orig = btn.innerText;
+            btn.innerText = '✅ Kopierat!';
+            setTimeout(() => { btn.innerText = orig; }, 1500);
+        });
+    }
+
+    /* === SEARCH === */
+    function searchCards() {
+        const input = document.getElementById('mainSearch').value.toLowerCase();
+        document.querySelectorAll('.scenario-trigger-card').forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(input) ? 'flex' : 'none';
+        });
+    }
+
+    /* === SCROLL ANIMATIONS === */
+    function triggerScrollAnimations() {
+        document.querySelectorAll('.scroll-animate').forEach((el, i) => {
+            setTimeout(() => el.classList.add('visible'), i * 80);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', triggerScrollAnimations);
+
+</script>
+
+</body>
+</html>
