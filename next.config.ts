@@ -59,16 +59,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-const sentryConfig = withSentryConfig(withPWA(nextConfig), {
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
-  authToken: process.env.SENTRY_AUTH_TOKEN,
-  silent: !process.env.CI,
-  widenClientFileUpload: true,
-  tunnelRoute: "/monitoring",
-  disableLogger: true,
-  automaticVercelMonitors: true,
-  hideSourceMaps: true,
-});
-
-export default sentryConfig;
+export default withPWA(nextConfig);

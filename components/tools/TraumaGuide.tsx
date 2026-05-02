@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ChevronRight, ArrowLeft, RotateCcw, AlertTriangle, CheckCircle2, Info, Copy, Clock } from 'lucide-react';
-import { toast } from 'sonner';
+import { ChevronRight, ArrowLeft, RotateCcw, Copy, Clock } from 'lucide-react';
 
 // --- DATA: PRIMÄRA TÄNDER ---
 const PRIMARA_STEPS = {
@@ -254,6 +253,8 @@ const RESULTS_PERMANENTA = {
 
 // UI Components
 function TraumaResultCard({ result, onReset }: { result: any, onReset: () => void }) {
+  const [copied, setCopied] = useState(false);
+
   const getColors = (color: string) => {
     switch (color) {
       case 'red': return 'bg-red-100/50 border-red-500/30 text-red-900';
@@ -267,7 +268,8 @@ function TraumaResultCard({ result, onReset }: { result: any, onReset: () => voi
   const copyToClipboard = () => {
     const text = `${result.title}\n\n${result.description}`;
     navigator.clipboard.writeText(text);
-    toast.success("Kopierat till urklipp");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -291,7 +293,7 @@ function TraumaResultCard({ result, onReset }: { result: any, onReset: () => voi
           className="flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/70 border border-black/10 rounded-xl font-medium transition-colors"
         >
           <Copy className="w-4 h-4" />
-          Kopiera text
+          {copied ? '✅ Kopierat!' : 'Kopiera text'}
         </button>
         <button 
           onClick={onReset}
