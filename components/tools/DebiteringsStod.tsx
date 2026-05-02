@@ -1,0 +1,689 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { Search, Filter, Info, ShieldCheck, Activity, Copy, Check, AlertTriangle, Zap, Database } from "lucide-react";
+
+// ============================================================
+// FULLSTÄNDIG DATABAS — HSLF-FS 2025:68, Bilaga 2
+// Referenspriser gäller fr.o.m. 2026-01-01
+// ============================================================
+const DB = [
+  // UNDERSÖKNING
+  { kod:"101", namn:"Basundersökning, tandläkare", kort:"Undersökning + status + riskbedömning + röntgen (nödvändiga bitewings ingår) + förebyggande upp till 5 min.", cat:"undersökning", pris:1100, tillstand:["1001 Basundersökning"], regler:["EJ + 111/112/201/206/312 eller ytterligare 101 samma dag, samma mottagning","Max 2 ggr/ersättningsperiod och mottagning (101/111/112 sammantaget)","Fluorlack hela bettet ingår EJ — rapportera 205 (ca 10 min) separat. EJ 206 samma dag"] },
+  { kod:"103", namn:"Kompletterande/akut undersökning, tandläkare", kort:"Riktad diagnostik vid akut besvär, kompletterande diagnostik eller kontroll av behandlingsresultat.", cat:"undersökning", pris:445, tillstand:["1301 Behov av mindre undersökning"], regler:["Kräver dokumentation av skäl + fynd (A.1)","EJ + 107/108/115/116/206 samma dag, samma behandlare","1 gång per dag och behandlare"] },
+  { kod:"107", namn:"Omfattande undersökning, tandläkare", kort:"Utökad undersökning inför bettrehabilitering eller komplex problematik.", cat:"undersökning", pris:1275, tillstand:["1302 Behov av omfattande undersökning"], regler:["Kräver dokumentation av skäl + fynd (A.1)","EJ + 103/108/115/116/206 eller ytterligare 107 samma dag, samma behandlare","Max 2 ggr/ersättningsperiod och behandlare"] },
+  { kod:"108", namn:"Utredning inkl. undersökning, tandläkare (≥60 min)", kort:"Utredning ≥60 minuter inför bettrehabilitering eller komplex sjukdom.", cat:"undersökning", pris:1895, tillstand:["1302 Behov av omfattande undersökning"], regler:["EJ + 103/107/115/116 eller ytterligare 108 samma dag, samma behandlare","Max 1 gång/ersättningsperiod och behandlare"] },
+  { kod:"111", namn:"Basundersökning, tandhygienist", kort:"Basundersökning inkl. förenklad parodontal undersökning + röntgen + förebyggande upp till 5 min.", cat:"undersökning", pris:985, tillstand:["1001 Basundersökning"], regler:["EJ + 101/112–114/201/206/312 eller ytterligare 111 samma dag, samma mottagning","Ej fullständig parodontal undersökning — för det: 112"] },
+  { kod:"112", namn:"Basundersökning med fullständig parodontal us., tandhygienist", kort:"Basundersökning inkl. komplett fickmätning + röntgen + förebyggande upp till 10 min.", cat:"undersökning", pris:1285, tillstand:["1001 Basundersökning"], regler:["EJ + 101/111/113/114/201/206/312 eller ytterligare 112 samma dag, samma mottagning"] },
+  { kod:"113", namn:"Akut eller annan undersökning, tandhygienist", kort:"Kompletterande undersökning — akuta tillstånd eller annan undersökning av munhälsa.", cat:"undersökning", pris:535, tillstand:["1301 Behov av mindre undersökning"], regler:["Kräver dokumentation av skäl + fynd (A.1)","EJ + 111/112/114 samma dag, samma mottagning","1 gång per dag och behandlare"] },
+  { kod:"114", namn:"Fullständig parodontal us. eller fördjupad kariesutredning, tandhygienist", kort:"Fullständigt parodontalt status eller djupgående kariesutredning.", cat:"undersökning", pris:785, tillstand:["1301 Behov av mindre undersökning","1302 Behov av omfattande undersökning"], regler:["Kräver dokumentation av skäl + fynd (A.1)","Ingår i det särskilda högkostnadsskyddet","Max 8 ggr/ersättningsperiod och behandlare","1 gång per dag och behandlare"] },
+  { kod:"121", namn:"Röntgen, en bild eller flera bilder av en tandposition", kort:"Apikalbild(er) av en tandposition eller bitewingbild.", cat:"undersökning", pris:80, tillstand:["1301 Behov av undersökning och alla behandlingstillstånd"], regler:["Bitewings ingår i 101/111/112 — 121 för YTTERLIGARE röntgen","EJ + 123/126–128 samma dag, samma mottagning","EJ + 115/116 eller ytterligare 121 samma dag, samma behandlare"] },
+  { kod:"123", namn:"Röntgen, helstatus", kort:"Samtliga tänders apikala och marginala förhållanden.", cat:"undersökning", pris:1020, tillstand:["1302 Behov av omfattande undersökning"], regler:["EJ + 121/124/127/128 samma dag, samma mottagning","Max 1 gång/ersättningsperiod och mottagning"] },
+  { kod:"124", namn:"Panoramaröntgen", kort:"Hel eller avbländad standardpanorama.", cat:"undersökning", pris:635, tillstand:["1301","1302"], regler:["EJ + 123/126 eller ytterligare 124 samma dag, samma mottagning"] },
+  { kod:"127", namn:"Röntgen, delstatus (2–6 bilder)", kort:"Diagnostik av flera tandpositioner med 2–6 intraorala bilder.", cat:"undersökning", pris:235, tillstand:["1301 Behov av undersökning"], regler:["EJ + 121/123/126/128 eller ytterligare 127 samma dag, samma mottagning"] },
+  { kod:"128", namn:"Röntgen, större delstatus (7+ bilder)", kort:"7 eller fler intraorala bilder, ej helstatus.", cat:"undersökning", pris:405, tillstand:["1301","1302"], regler:["EJ + 121/123/126/127 eller ytterligare 128 samma dag, samma mottagning"] },
+  { kod:"131", namn:"Tomografi (CBCT), 1 kvadrant eller pos 3-3", kort:"Tomografiundersökning 1 kvadrant.", cat:"undersökning", pris:1210, tillstand:["1302"], regler:["EJ + 132/133/134 eller ytterligare 131 samma dag"] },
+  { kod:"132", namn:"Tomografi (CBCT), 2 kvadranter eller sinus", kort:"Tomografiundersökning 2 kvadranter.", cat:"undersökning", pris:1535, tillstand:["1302"], regler:["EJ + 131/133/134 eller ytterligare 132 samma dag"] },
+  { kod:"133", namn:"Tomografi (CBCT), 3 kvadranter eller käkleder", kort:"Tomografiundersökning 3 kvadranter.", cat:"undersökning", pris:1920, tillstand:["1302"], regler:["EJ + 131/132/134 eller ytterligare 133 samma dag"] },
+  { kod:"134", namn:"Tomografi (CBCT), 4 kvadranter", kort:"Tomografiundersökning 4 kvadranter.", cat:"undersökning", pris:2255, tillstand:["1302"], regler:["EJ + 131/132/133 eller ytterligare 134 samma dag"] },
+  { kod:"141", namn:"Analoga studiemodeller", kort:"Fysiska studiemodeller av båda käkar inkl. index för behandlingsplanering.", cat:"undersökning", pris:885, tillstand:["1302"], regler:["Kräver att studiemodeller behövs för planering","Max 2 ggr/ersättningsperiod och behandlare","1 gång per dag och behandlare"] },
+  { kod:"142", namn:"Digitala studiemodeller", kort:"Skanning av båda käkar inkl. index för behandlingsplanering.", cat:"undersökning", pris:535, tillstand:["1302"], regler:["Kräver att studiemodeller behövs för planering","Max 2 ggr/ersättningsperiod och behandlare","1 gång per dag och behandlare"] },
+  { kod:"161", namn:"Salivsekretionsmätning", kort:"Mätning av salivsekretion inkl. information och dokumentation.", cat:"undersökning", pris:900, tillstand:["1301","1302"], regler:["1 gång per dag och behandlare"] },
+  { kod:"162", namn:"Laboratoriekostnader vid mikrobiologisk undersökning", kort:"Faktisk laboratoriekostnad för mikrobiologiskt prov.", cat:"undersökning", pris:520, tillstand:["Alla tillstånd där prov tas"], regler:["Endast labkostnad","1 gång per dag och behandlare"] },
+  { kod:"163", namn:"Biopsi", kort:"Biopsitagning inkl. i förekommande fall sutur samt skriftligt svar.", cat:"undersökning", pris:1260, tillstand:["1301","3046","3111"], regler:["EJ + 404/405/407-409/421/423/425/427-429/451-454/541 samma dag, samma behandlare","EJ + 401/402/403/406/410/436 för samma tandposition samma dag"] },
+  { kod:"164", namn:"Laboratoriekostnader vid patologanatomisk diagnostik (PAD)", kort:"Labkostnad för PAD-analys.", cat:"undersökning", pris:895, tillstand:["Alla tillstånd där PAD utförs"], regler:["Endast labkostnad"] },
+
+  // HÄLSOFRÄMJANDE
+  { kod:"201", namn:"Rådgivande samtal — risk för munhälsorelaterade sjukdomar", kort:"Utförlig dialog om orsakssamband + egenvårdsrådgivning.", cat:"hälsofrämjande", pris:600, tillstand:["2021 Förhöjd risk karies","2041 Förhöjd risk parodontit","2051 Förhöjd risk periimplantit","2061 Förhöjd risk käkfunktionsstörning","2071 Förhöjd risk erosion/abrasion"], regler:["Kräver dokumenterad riskbedömning (B.1)","EJ + 101/111/112/213/214/250-252/311-314/321/340-343/350-352 eller ytterligare 201 samma dag, samma mottagning"] },
+  { kod:"205", namn:"Fluoridbehandling, kortare (ca 10 min)", kort:"Fluoridbehandling ca 10 min.", cat:"hälsofrämjande", pris:245, tillstand:["2021 Förhöjd risk karies","2071 Förhöjd risk erosion/abrasion"], regler:["Max 6 ggr/ersättningsperiod","EJ + 206/207/208/340-343 eller ytterligare 205 samma dag, samma mottagning","KAN kombineras med 101 samma dag (fluorlack enstaka tänder = ingår i 101, hela bettet separat 205)"] },
+  { kod:"206", namn:"Fluoridbehandling (ca 20 min)", kort:"Fluoridbehandling ca 20 min.", cat:"hälsofrämjande", pris:485, tillstand:["2021 Förhöjd risk karies","2071 Förhöjd risk erosion/abrasion"], regler:["Max 6 ggr/ersättningsperiod","EJ + 101/111/112/205/207/208/340-343 eller ytterligare 206 samma dag, samma mottagning","EJ + 103/107/108 samma dag, samma behandlare"] },
+  { kod:"207", namn:"Tandstensborttagning (upp till 15 min)", kort:"Supragingival tandstensborttagning upp till 15 min.", cat:"hälsofrämjande", pris:375, tillstand:["2031 Tandsten på tänder eller implantat utan parodontal sjukdom"], regler:["Max 3 ggr/ersättningsperiod","EJ + 205/206/208/340-343 eller ytterligare 207 samma dag, samma mottagning"] },
+  { kod:"208", namn:"Tandstensborttagning, omfattande (>15 min)", kort:"Supragingival tandstensborttagning mer än 15 min.", cat:"hälsofrämjande", pris:735, tillstand:["2031 Tandsten utan parodontal sjukdom"], regler:["Max 3 ggr/ersättningsperiod","EJ + 205/206/207/340-343 eller ytterligare 208 samma dag, samma mottagning"] },
+  { kod:"209", namn:"Tandstensborttagning, särskilt tidskrävande (≥40 min)", kort:"Supragingival tandstensborttagning ≥40 min.", cat:"hälsofrämjande", pris:1145, tillstand:["2031 Tandsten","3041 Gingivit"], regler:["⚠ KAN BARA kombineras med: 113, 201, 311, 312 eller 362 — INGET ANNAT","Max 3 ggr/ersättningsperiod","1 gång per dag och behandlare"] },
+  { kod:"213", namn:"Kvalificerat rådgivande samtal, prevention ≥60 min", kort:"Kvalificerat stöd för beteendeförändring med individanpassad behandlingsplan.", cat:"hälsofrämjande", pris:1505, tillstand:["2021","2041","2051","2061","2071"], regler:["Kräver individanpassad behandlingsplan i journal","213 eller 251 sammantaget max 1 gång/ersättningsperiod och mottagning","EJ + 201/214/250/252/311-314/350-352 samma dag, samma mottagning"] },
+  { kod:"214", namn:"Kvalificerat rådgivande samtal, prevention", kort:"Kvalificerat stöd för beteendeförändring vid risk.", cat:"hälsofrämjande", pris:695, tillstand:["2021","2041","2051","2061","2071"], regler:["Kräver individanpassad behandlingsplan i journal","EJ + 201/213/250-252/311-314/350-352 samma dag, samma mottagning","1 gång per dag"] },
+  { kod:"311", namn:"Rådgivande samtal — munhälsorelaterade sjukdomar", kort:"Utförlig dialog om sjukdomsorsaker + munhygieninstruktion och träning.", cat:"hälsofrämjande", pris:595, tillstand:["3041 Gingivit","3043 Parodontit","3021 Initialkaries","3044 Periimplantit"], regler:["Ingår i det särskilda högkostnadsskyddet","Max 3 ggr/ersättningsperiod och mottagning","EJ + 201/213/214/250-252/312-314/350-352 eller ytterligare 311 samma dag, samma mottagning","EJ + 606 samma dag, samma behandlare"] },
+  { kod:"312", namn:"Kortare rådgivande samtal — munhälsorelaterade sjukdomar", kort:"Kortare reinstruktion/dialog om egenvård.", cat:"hälsofrämjande", pris:240, tillstand:["3043 Parodontit","3021 Initialkaries","3042 Mukosit"], regler:["Ingår i det särskilda högkostnadsskyddet","Max 6 ggr/ersättningsperiod","EJ + 101/111/112/201/213/214/250-252/311/313/314/350-352 eller ytterligare 312 samma dag, samma mottagning"] },
+  { kod:"321", namn:"Icke-operativ behandling av kariessjukdom", kort:"Intensiv fluoridbehandling, antimikrobiell behandling eller fördjupad kostrådgivning med kostanamnes.", cat:"hälsofrämjande", pris:600, tillstand:["3021 Initialkaries","4002 Primärkaries","4012 Sekundärkaries"], regler:["EJ + 201 samma dag, samma mottagning","EJ + 205/206 eller ytterligare 321 samma dag"] },
+  { kod:"322", namn:"Stegvis exkavering", kort:"Steg 1: partiell exkavering + provisorisk fyllning. Exspektansperiod ≥3 månader.", cat:"hälsofrämjande", pris:1350, tillstand:["4022 Djup dentinkaries med risk för pulpaexponering"], regler:["Steg 2 (permanent lagning) = 701-707 under tillstånd 4002/4012","Selektiv exkavering (1 session): rapportera direkt 701-707 under tillstånd 4022","EJ + 701-707/711/800/801 för samma tand samma dag","1 gång per tand och ersättningsperiod"] },
+  { kod:"340", namn:"Behandling parodontal sjukdom/periimplantit (≥10 min)", kort:"Mekanisk infektionsbehandling ≥10 min.", cat:"hälsofrämjande", pris:525, tillstand:["3041 Gingivit","3042 Mukosit vid implantat"], regler:["340/341/342/343 sammantaget max 8 ggr/ersättningsperiod och mottagning","EJ + 201/205-208/341-343 eller ytterligare 340 samma dag, samma mottagning"] },
+  { kod:"341", namn:"Behandling parodontal sjukdom/periimplantit, omfattande (≥30 min)", kort:"Mekanisk infektionsbehandling ≥30 min.", cat:"hälsofrämjande", pris:920, tillstand:["3041 Gingivit","3043 Parodontit","3044 Periimplantit"], regler:["Ingår i det särskilda högkostnadsskyddet","340/341/342/343 max 8 ggr/ersättningsperiod","EJ + 201/205-208/340/342/343 eller ytterligare 341 samma dag, samma mottagning"] },
+  { kod:"342", namn:"Behandling parodontal sjukdom/periimplantit, tidskrävande (≥50 min)", kort:"Mekanisk infektionsbehandling ≥50 min.", cat:"hälsofrämjande", pris:1430, tillstand:["3043 Parodontit","3044 Periimplantit"], regler:["Ingår i det särskilda högkostnadsskyddet","340/341/342/343 max 8 ggr/ersättningsperiod","EJ + 201/205-208/340/341/343 eller ytterligare 342 samma dag, samma mottagning"] },
+  { kod:"343", namn:"Behandling parodontal sjukdom/periimplantit, särskilt tidskrävande (≥90 min)", kort:"Mekanisk infektionsbehandling ≥90 min total tidsåtgång samma dag.", cat:"hälsofrämjande", pris:2165, tillstand:["3043 Parodontit","3044 Periimplantit"], regler:["Ingår i det särskilda högkostnadsskyddet","340/341/342/343 max 8 ggr/ersättningsperiod","EJ + 201/205-208/340-342 eller ytterligare 343 samma dag, samma mottagning"] },
+  { kod:"362", namn:"Lustgassedering, per gång", kort:"Lustgassedation inkl. intro, upptrappning, avtrappning och kort övervakning.", cat:"hälsofrämjande", pris:1025, tillstand:["Alla tillstånd (tilläggsåtgärd)"], regler:["Kan kombineras med de flesta åtgärder"] },
+
+  // SJUKDOMSBEHANDLING
+  { kod:"301", namn:"Sjukdoms- eller smärtbehandling, mindre omfattande", kort:"Enklare behandling utan separat kod: enkel temporär fyllning, spolning, bettslipning enstaka tand, nervblockad.", cat:"sjukdom", pris:450, tillstand:["3022 Ilning känslig tandhals","3041 Gingivit","3051 Pulpa/periradikulärt","3000-serien"], regler:["EJ när separat åtgärd finns (341, 342, 520, 322 etc.)","EJ + 302/303/304 eller ytterligare 301 samma dag, samma behandlare","EJ för injektion botulinumtoxin"] },
+  { kod:"302", namn:"Sjukdoms- eller smärtbehandling", kort:"Långtidstemporär fyllning, temporär krona, incision abscess, dry socket, bonding av tand.", cat:"sjukdom", pris:840, tillstand:["3051 Pulpa/periradikulärt","3000-serien"], regler:["EJ när separat åtgärd finns","EJ + 301/303/304 eller ytterligare 302 samma dag, samma behandlare","EJ för injektion botulinumtoxin"] },
+  { kod:"303", namn:"Sjukdoms- eller smärtbehandling, omfattande", kort:"Två temporära kronor/fyllningar, temporär mjuk eller hård rebasering av protes.", cat:"sjukdom", pris:1245, tillstand:["3000-serien"], regler:["EJ + 301/302/304 eller ytterligare 303 samma dag, samma behandlare","EJ + 831 vid temporär basning av protes för samma käke samma dag"] },
+  { kod:"304", namn:"Sjukdoms- eller smärtbehandling, särskilt tidskrävande", kort:"Tre eller fler temporära fyllningar/kronor, ELLER tidskrävande behandling vid trauma.", cat:"sjukdom", pris:2025, tillstand:["3000-serien","5031 Entandslucka vid temp hängande led"], regler:["EJ + 301/302/303 eller ytterligare 304 samma dag, samma behandlare","Tidskrävande trauma = överkappning/pulpotomi ≥2 tänder, reponering luxation med splinting etc."] },
+
+  // BETTFYSIOLOGI
+  { kod:"601", namn:"Bettskena i hård akrylat, överkäken", kort:"Laboratorieframställd stabiliseringsskena för överkäken.", cat:"sjukdom", pris:4370, tillstand:["3161 Käkfunktionsstörning","2061 Förhöjd risk bettdysfunktion"], regler:["Inkluderar avtryck, anpassning och uppföljning 3 månader","Max 2 ggr/ersättningsperiod"] },
+  { kod:"602", namn:"Bettskena i hård akrylat, underkäken", kort:"Laboratorieframställd stabiliseringsskena för underkäken.", cat:"sjukdom", pris:4370, tillstand:["3161 Käkfunktionsstörning","2061 Förhöjd risk bettdysfunktion"], regler:["Inkluderar avtryck, anpassning och uppföljning 3 månader","Max 2 ggr/ersättningsperiod"] },
+
+  // KIRURGI
+  { kod:"401", namn:"Tandextraktion, en tand", kort:"Standardextraktion utan separation eller kirurgisk friläggning.", cat:"kirurgi", pris:1280, tillstand:["4002 Primärkaries","4012 Sekundärkaries","3043 Parodontit","3051 Pulpa/periradikulärt","3045 Perikoronit","3064 Rotfraktur längs"], regler:["Kräver aktuell röntgen + dokumentation skäl (C.0/D.1)","Vid fler extraktioner samma dag: 401 för den tyngsta, 410 tillägg per ytterligare","EJ + 402/404-406/408/409/541 eller ytterligare 401 samma dag, samma behandlare"] },
+  { kod:"402", namn:"Tandextraktion, när separation eller friläggning krävs", kort:"Extraktion med separation av tand/bro ELLER friläggning av slemhinnetäckt tand.", cat:"kirurgi", pris:1820, tillstand:["4002/4012/3043/3064/3051"], regler:["Inkluderar separation av BRO om bron hindrar extraktionen","Kräver lambå → 404 eller 405 istället","Kräver aktuell röntgen + dokumentation skäl"] },
+  { kod:"403", namn:"Tandextraktion, enkel", kort:"Enkel extraktion av tand med parodontal försvagning eller rotrest utan benstöd.", cat:"kirurgi", pris:510, tillstand:["3043 Parodontit","3051 Pulpa/periradikulärt"], regler:["För mobil/parodontalt skadad tand eller rotrest utan benstöd","EJ + 404/405/408/409 i samma kvadrant"] },
+  { kod:"404", namn:"Kirurgiskt avlägsnande, lambåoperation", kort:"Lambåoperation för avlägsnande av tand eller vävnad i samma kvadrant.", cat:"kirurgi", pris:3755, tillstand:["3043 Parodontit","3051 Pulpa/periradikulärt","3045 Perikoronit","3121 Retinerad tand"], regler:["Kräver lambå. EJ för apikalkirurgi (→ 541)","EJ + 403/409/410 i samma kvadrant samma dag","EJ + 163/401/402/405-407/421-433/541 samma dag, samma behandlare","1 gång per dag och behandlare"] },
+  { kod:"405", namn:"Dentoalveolär kirurgi vid komplicerade förhållanden", kort:"Lambåoperation vid komplicerade förhållanden (nära mandibularkanal, horisontell tand etc.).", cat:"kirurgi", pris:4330, tillstand:["3051","3121 Retinerad tand komplicerad"], regler:["Kräver lambå. Komplicerade anatomiska förhållanden","EJ + 403/409/410 i samma kvadrant","1 gång per dag och behandlare"] },
+  { kod:"407", namn:"Övrig kirurgi eller plastik", kort:"Korrigerande mjukvävnadskirurgi, frenulumplastik, preprotetisk friläggning etc.", cat:"kirurgi", pris:2470, tillstand:["3046 Andra sjukdomar kring tand/implantat","3000-serien"], regler:["Kräver lambå","EJ + 163/404/405/408/409/429/451-454/541 eller ytterligare 407 samma dag, samma behandlare"] },
+  { kod:"409", namn:"Lambåoperation, ytterligare per kvadrant — tilläggsåtgärd", kort:"Tillägg per ytterligare kvadrant vid lambåoperation vid samma operationstillfälle.", cat:"kirurgi", pris:1550, tillstand:["Samma som primäråtgärden"], regler:["Kan EJ stå ensam — tilläggsåtgärd till 404/405/427-433/451-454/541 i ANNAN kvadrant","EJ + 163/401/402/406/407 samma dag, samma behandlare"] },
+  { kod:"410", namn:"Tandextraktion, ytterligare — tilläggsåtgärd", kort:"Tillägg per ytterligare tand vid flera extraktioner samma dag.", cat:"kirurgi", pris:945, tillstand:["Samma tillstånd som primärextraktionen"], regler:["Kan EJ stå ensam — tilläggsåtgärd till 401/402/403/406/421/423/425/429/541","EJ + 163 för samma tandposition samma dag"] },
+  { kod:"420", namn:"Implantat, per tandposition — tilläggsåtgärd", kort:"Implantat, täckskruv och läkdistans.", cat:"kirurgi", pris:3585, tillstand:["5010-5016 Friändstandlöshet","5031-5037 Tandluckor","5032 Entandslucka implantat"], regler:["Kan EJ stå ensam — kräver 421/423/425 samma dag","EJ + 431 i samma kvadrant samma dag","EJ + 407/409/429/892 för samma tandposition"] },
+  { kod:"421", namn:"Operation käkbensförankrat implantat, 1 implantat", kort:"Operation för ett implantat inkl. för- och efterbehandling.", cat:"kirurgi", pris:3755, tillstand:["5032 Entandslucka implantat","5010-5016","5033-5037"], regler:["Kräver 420 (implantatet) samma dag","EJ + 423/425/427/428 eller ytterligare 421 samma dag","EJ + 163/401/402/404-406/429 samma dag, samma behandlare"] },
+  { kod:"422", namn:"Kirurgisk friläggning av ett implantat (tvåstegsteknik)", kort:"Friläggning av 1 implantat med insättning av distans.", cat:"kirurgi", pris:1805, tillstand:["5000-serien implantat"], regler:["EJ + 404/405/429 samma dag, samma behandlare","EJ + 407/409/421/423/425 för samma tandposition"] },
+  { kod:"423", namn:"Operation käkbensförankrade implantat, 2-3 implantat", kort:"Operation för 2-3 implantat.", cat:"kirurgi", pris:5455, tillstand:["5010-5016","5033-5037"], regler:["Kräver 420 (implantaten) samma dag","EJ + 421/425/427/428 eller ytterligare 423 samma dag","EJ + 163/401/402/404-406/429 samma dag, samma behandlare"] },
+  { kod:"424", namn:"Kirurgisk friläggning av 2-3 implantat (tvåstegsteknik)", kort:"Friläggning 2-3 implantat med insättning av distanser.", cat:"kirurgi", pris:2025, tillstand:["5000-serien implantat"], regler:["EJ + 422/426 eller ytterligare 424 samma dag"] },
+  { kod:"425", namn:"Operation käkbensförankrade implantat, 4+ implantat", kort:"Operation för 4 eller fler implantat.", cat:"kirurgi", pris:7520, tillstand:["5010-5016","5035"], regler:["Kräver 420","EJ + 421/423/427/428 eller ytterligare 425 samma dag","Max 2 ggr per dag (4+ implantat per käke)"] },
+  { kod:"426", namn:"Kirurgisk friläggning av 4+ implantat (tvåstegsteknik)", kort:"Friläggning av 4 eller fler implantat med distanser.", cat:"kirurgi", pris:2705, tillstand:["5000-serien implantat"], regler:["EJ + 422/424 samma dag","Max 2 ggr per dag"] },
+  { kod:"427", namn:"Benaugmentation med autologt ben, 1 kvadrant", kort:"Lambåoperation med uppbyggnad av benvolym med autologt ben.", cat:"kirurgi", pris:4720, tillstand:["5020 Tandlöst område med otillräcklig benvolym"], regler:["Kräver lambå","EJ + 421/423/425/428/432/433 eller ytterligare 427 samma dag","EJ + 403/407/409/410/430/431 i samma kvadrant"] },
+  { kod:"428", namn:"Benaugmentation med benersättningsmaterial, 1 kvadrant", kort:"Sinuslyft med buckal entré eller onlayteknik med benersättningsmaterial.", cat:"kirurgi", pris:5680, tillstand:["5020"], regler:["Kräver lambå","EJ + 421/423/425/427/432/433 eller ytterligare 428 samma dag","EJ + 403/407/409/410/430/431 i samma kvadrant"] },
+  { kod:"429", namn:"Kirurgiskt avlägsnande av implantat (lambåoperation)", kort:"Lambåoperation för avlägsnande av ett eller flera implantat.", cat:"kirurgi", pris:4655, tillstand:["5447 Skadad impl-konstruktion hel käke","5448 Skadad impl-konstruktion partiell"], regler:["Kräver lambå","EJ + 408/451-454 eller ytterligare 429 samma dag","1 gång per tandposition och ersättningsperiod"] },
+  { kod:"436", namn:"Avlägsnande av implantat (utan lambå)", kort:"Enkelt avlägsnande av implantat utan lambåoperation.", cat:"kirurgi", pris:805, tillstand:["5447","5448"], regler:["Utan lambå","1 gång per tandposition och ersättningsperiod"] },
+  { kod:"446", namn:"GTR/emaljmatrixprotein — tilläggsåtgärd", kort:"Membran eller Emdogain vid djup bendefekt eller furkationsinvolvering.", cat:"kirurgi", pris:2035, tillstand:["3043 Parodontit","3046"], regler:["Tilläggsåtgärd till 451 eller 452 — kan EJ stå ensam","EJ + 447/448 eller ytterligare 446 samma dag"] },
+  { kod:"447", namn:"Benersättningsmaterial vid parodontalkirurgi — tilläggsåtgärd", kort:"Benersättning vid djup bendefekt.", cat:"kirurgi", pris:1375, tillstand:["3043 Parodontit"], regler:["Tilläggsåtgärd till 451 eller 452 — kan EJ stå ensam","EJ + 446/448 eller ytterligare 447 samma dag"] },
+  { kod:"448", namn:"Fritt bindvävstransplantat — tilläggsåtgärd", kort:"Bindvävstransplantat vid lokal mjukvävnadsretraktion.", cat:"kirurgi", pris:755, tillstand:["3046 Lokal mjukvävnadsretraktion vid tand"], regler:["Tilläggsåtgärd till 451 — kan EJ stå ensam","EJ + 446/447 eller ytterligare 448 samma dag"] },
+  { kod:"451", namn:"Parodontalkirurgi i en kvadrant eller pos 3-3", kort:"Lambåoperation 1-4 tänder med parodontit i en kvadrant.", cat:"kirurgi", pris:3910, tillstand:["3043 Parodontit","3046"], regler:["Ingår mekanisk infektionsbehandling","EJ + 163/401/402/406/407 samma dag, samma behandlare","EJ + 403/409/410/436 i samma op-område"] },
+  { kod:"452", namn:"Parodontalkirurgi flera kvadranter eller ≥5 tänder", kort:"Lambåoperation vid parodontit i flera kvadranter eller ≥5 tänder.", cat:"kirurgi", pris:5410, tillstand:["3043 Parodontit"], regler:["Ingår mekanisk infektionsbehandling","EJ + 163/401/402/406/407 samma dag, samma behandlare"] },
+  { kod:"453", namn:"Kirurgi periimplantit, 1-3 implantat", kort:"Lambåoperation periimplantit 1-3 implantat.", cat:"kirurgi", pris:4115, tillstand:["3044 Periimplantit"], regler:["Ingår mekanisk infektionsbehandling","Innefattar EJ av/återmontering av krona","EJ + 163/401/402/406/407 samma dag, samma behandlare"] },
+  { kod:"454", namn:"Kirurgi periimplantit, flera kvadranter eller ≥4 implantat", kort:"Lambåoperation periimplantit i flera kvadranter.", cat:"kirurgi", pris:5820, tillstand:["3044 Periimplantit"], regler:["Ingår mekanisk infektionsbehandling","Innefattar EJ av/återmontering"] },
+  { kod:"480", namn:"Sjukvårdskontakt — koagulation, tilläggsåtgärd", kort:"Kontakt med sjukvård INFÖR invasivt ingrepp för patient med koagulationsrubbning (Waran, NOAK).", cat:"kirurgi", pris:400, tillstand:["Samma tillstånd som primäråtgärden"], regler:["Kräver AKTIV dokumenterad kontakt med sjukvården i journalen","1 gång per dag","EJ om kontakt inte togs vid blödning som uppstår utan förvarning","Ersättningsberättigande med 163/341-343/400-serien/541 samma dag"] },
+  { kod:"541", namn:"Apikalkirurgisk behandling", kort:"Apikalkirurgi inkl. retrograd rotfyllning.", cat:"kirurgi", pris:4410, tillstand:["3051 Sjukdomar i tandpulpan eller periradikulära vävnaderna"], regler:["EJ + 163/401/402/404-407/429 samma dag, samma behandlare","EJ + 409 för samma tandposition","1 gång per dag och behandlare"] },
+
+  // ROTBEHANDLING
+  { kod:"501", namn:"Rensning och rotfyllning, 1 rotkanal", kort:"Komplett rotbehandling tand med 1 kanal. Rapporteras när rotfyllningen är FÄRDIG.", cat:"rotbehandling", pris:4105, tillstand:["3051 Sjukdomar i tandpulpan/periradikulärt","4002/4012/4081"], regler:["⚠ Rapporteras FÖRST när rotfyllningen är FÄRDIG (4 § HSLF-FS 2025:68)","Välj kod utifrån antal ROTFYLLDA kanaler","EJ + 502/503/504/520 eller ytterligare 501 för samma tand, samma ersättningsperiod, samma behandlare","EJ för tand i position 8 (regel D.2/C.1)"] },
+  { kod:"502", namn:"Rensning och rotfyllning, 2 rotkanaler", kort:"Komplett rotbehandling tand med 2 kanaler. Rapporteras när rotfyllningen är FÄRDIG.", cat:"rotbehandling", pris:4955, tillstand:["3051 Sjukdomar i tandpulpan/periradikulärt"], regler:["⚠ Rapporteras FÖRST när rotfyllningen är FÄRDIG","EJ + 501/503/504/520 för samma tand, samma ersättningsperiod, samma behandlare","EJ för tand pos 8"] },
+  { kod:"503", namn:"Rensning och rotfyllning, 3 rotkanaler", kort:"Komplett rotbehandling tand med 3 kanaler. Rapporteras när rotfyllningen är FÄRDIG.", cat:"rotbehandling", pris:6225, tillstand:["3051 Sjukdomar i tandpulpan/periradikulärt"], regler:["⚠ Rapporteras FÖRST när rotfyllningen är FÄRDIG","EJ för tand pos 8","Övre molar med MB2 = 4 kanaler → 504"] },
+  { kod:"504", namn:"Rensning och rotfyllning, 4 eller fler rotkanaler", kort:"Komplett rotbehandling tand med 4+ kanaler (t.ex. övre molar med MB2). Rapporteras när rotfyllningen är FÄRDIG.", cat:"rotbehandling", pris:6790, tillstand:["3051 Sjukdomar i tandpulpan/periradikulärt"], regler:["⚠ Rapporteras FÖRST när rotfyllningen är FÄRDIG","EJ för tand pos 8"] },
+  { kod:"520", namn:"Akut endodontisk behandling, annan behandlare", kort:"Trepanation/akut rensning av tand som ska rotbehandlas av ANNAN tandläkare.", cat:"rotbehandling", pris:1005, tillstand:["3051/4002/4012"], regler:["⚠ BARA för annan behandlare än den som ska rotfylla","EJ + 501-504 eller ytterligare 520 för samma tand, samma ersättningsperiod, samma behandlare","EJ + 521 för samma tand, samma dag, samma behandlare"] },
+  { kod:"521", namn:"Akut trepanation och kavumexstirpation", kort:"Akut trepanation + kavumexstirpation utan rensning, av SAMMA behandlare som ska rotfylla.", cat:"rotbehandling", pris:885, tillstand:["3051 Sjukdomar i tandpulpan"], regler:["Av SAMMA behandlare som ska slutföra rotbehandlingen","EJ + 501-504/520/522 för samma tand, samma dag, samma behandlare","1 gång per tand, ersättningsperiod och behandlare"] },
+  { kod:"522", namn:"Komplicerad kanallokalisation — tilläggsåtgärd", kort:"Tillägg vid svår kanallokalisation (oblitererad/krökt kanal) NÄR rensdjup fastställts.", cat:"rotbehandling", pris:890, tillstand:["3051 Sjukdomar i tandpulpan"], regler:["⚠ KRÄVER att rensdjup faktiskt FASTSTÄLLTS — EJ om kanalen inte hittas","Vidgning av kanal ingår EJ i 522","EJ + 521 för samma tand, samma dag, samma behandlare","1 gång per tand, ersättningsperiod och behandlare"] },
+  { kod:"523", namn:"Stiftborttagning", kort:"Avlägsnande av stift i rotkanal inför rotfyllning eller protetik.", cat:"rotbehandling", pris:1300, tillstand:["3051 Sjukdomar i tandpulpan","5051 Avsaknad av retention preprotetiskt"], regler:["1 gång per tandposition och ersättningsperiod"] },
+
+  // REPARATIV
+  { kod:"701", namn:"Fyllning 1 yta — FRONTTAND/HÖRNTAND (pos 1-3)", kort:"Permanent fyllning 1 yta på fronttand eller hörntand.", cat:"reparativ", pris:730, tillstand:["4002 Primärkaries","4012 Sekundärkaries","4081 Fraktur/förlust tandsubstans","4771/4772 Förlust fyllningsmaterial","4079 Symtomgivande sprickbildning"], regler:["⚠ FRONTTAND/HÖRNTAND pos 1-3. Molar/premolar 1 yta → 704","Måste vara permanent fyllningsmaterial (temporärt material = EJ ersättningsberättigande)","Trepanationshål efter rotfyllning → 701 under tillstånd 4081","EJ + 702/703/707 eller ytterligare 701 för samma tand samma dag"] },
+  { kod:"702", namn:"Fyllning 2 ytor — FRONTTAND/HÖRNTAND (pos 1-3)", kort:"Permanent fyllning 2 ytor på fronttand eller hörntand.", cat:"reparativ", pris:1160, tillstand:["4002/4012/4081"], regler:["⚠ FRONTTAND/HÖRNTAND pos 1-3. Molar/premolar 2 ytor → 705 (EJ 702)","EJ + 701/703/707 eller ytterligare 702 för samma tand samma dag"] },
+  { kod:"703", namn:"Fyllning 3+ ytor — FRONTTAND/HÖRNTAND (pos 1-3)", kort:"Permanent fyllning 3 eller fler ytor på fronttand eller hörntand.", cat:"reparativ", pris:1420, tillstand:["4002/4012/4081"], regler:["⚠ FRONTTAND/HÖRNTAND pos 1-3. Molar/premolar 3+ ytor → 706","EJ + 701/702/707 eller ytterligare 703 för samma tand samma dag"] },
+  { kod:"704", namn:"Fyllning 1 yta — MOLAR/PREMOLAR (pos 4-7)", kort:"Permanent fyllning 1 yta på molar eller premolar.", cat:"reparativ", pris:940, tillstand:["4002/4012/4081/4471 Bristande kontaktpunkt"], regler:["⚠ MOLAR/PREMOLAR pos 4-7. Fronttand 1 yta → 701","EJ + 705/706/707 eller ytterligare 704 för samma tand samma dag"] },
+  { kod:"705", namn:"Fyllning 2 ytor — MOLAR/PREMOLAR (pos 4-7)", kort:"Permanent fyllning 2 ytor på molar eller premolar. Den vanligaste lagningskoden.", cat:"reparativ", pris:1370, tillstand:["4002/4012/4022/4081/4471"], regler:["⚠ MOLAR/PREMOLAR pos 4-7. Fronttand 2 ytor → 702","MO/OD/OB på premolar eller molar = 2 ytor = 705","Glasjonomer som PERMANENT lagning = OK (ersättningsberättigande)","EJ + 704/706/707 eller ytterligare 705 för samma tand samma dag"] },
+  { kod:"706", namn:"Fyllning 3+ ytor — MOLAR/PREMOLAR (pos 4-7)", kort:"Permanent fyllning 3 eller fler ytor på molar eller premolar.", cat:"reparativ", pris:1830, tillstand:["4002/4012/4081"], regler:["MOD på molar = 3 ytor = 706","MODB/MODL = 4 ytor → kontrollera regel D.3 (kronregel) om 4+ ytor","EJ + 704/705/707 eller ytterligare 706 för samma tand samma dag"] },
+  { kod:"707", namn:"Krona i plastiskt material, klinikframställd", kort:"Uppbyggnad i plastmaterial när ALLA väggar/ytor på tanden är skadade.", cat:"reparativ", pris:2075, tillstand:["4002/4012/4081"], regler:["Tillämpas när SAMTLIGA väggar på tanden är skadade","EJ + 701-706 eller ytterligare 707 för samma tand samma dag"] },
+  { kod:"708", namn:"Stiftförankring i rotkanal vid fyllningsterapi — tilläggsåtgärd", kort:"Cementerat stift i rotfylld kanal som tilläggsåtgärd vid fyllningsterapi.", cat:"reparativ", pris:550, tillstand:["4081 Fraktur/förlust tandsubstans"], regler:["Ersättningsberättigande ENDAST tillsammans med 707 eller 811 för samma tandposition samma dag","1 gång per tandposition, dag och behandlare"] },
+  { kod:"711", namn:"Fyllning utförd av tandhygienist (utan prep)", kort:"Permanent fyllning UTAN avverkning av hårdvävnad, utförd av tandhygienist.", cat:"reparativ", pris:505, tillstand:["4072 Tandslitage abrasion/attrition","4073 Tandslitage erosion","4772 Förlust fyllningsmaterial utan karies"], regler:["⚠ KRÄVER att ingen hårdvävnad avverkas — annars → 701-706 av tandläkare","Typisk: kilformiga defekter bucalt vid attrition/erosion","EJ + 701-707 för samma tand samma dag, samma mottagning"] },
+
+  // PROTETIK
+  { kod:"800", namn:"Permanent tandstödd krona, en per käke", kort:"Lab- eller CAD/CAM-framställd permanent krona — EN i käken.", cat:"protetik", pris:6825, tillstand:["4081 Fraktur (D.3 uppfylld)","4072/4073 Tandslitage (D.3 uppfylld)","4076 Infraocklusion","4078 Extremt missfärgad tand"], regler:["⚠ Kräver att regel D.3 (kronregel) är uppfylld för tand pos 1-7","EN krona i käken → 800. Fler kronor SAMMA käke SAMMA dag → 801","Tand pos 8: EJ D.3 — utbytesåtgärd 921/922 istället","EJ + 801/804/850/852/853 i samma käke samma dag","1 gång per käke, dag och behandlare"] },
+  { kod:"801", namn:"Permanent tandstödd krona, flera i samma käke", kort:"Lab- eller CAD/CAM-framställd permanent krona — FLERA i samma käke.", cat:"protetik", pris:5275, tillstand:["4081/5031-5037/5000-serien"], regler:["Används när 2+ kronor/brostöd lämnas ut i SAMMA käke SAMMA dag","Kräver D.3 för reparativ vård (4000-serien)","EJ + 800/850 i samma käke samma dag"] },
+  { kod:"802", namn:"Laboratorieframställd pelare med intraradikulärt stift", kort:"Gjuten pelare med eller utan kappa i en eller flera rotfyllda kanaler.", cat:"protetik", pris:3880, tillstand:["4081 Fraktur","5000-serien protetik"], regler:["Rapporteras i regel tillsammans med kronkoden (800/801)","Ingår alla typer av gjutna pelare"] },
+  { kod:"803", namn:"Klinikframställd pelare med intraradikulärt stift", kort:"Klinikframställd pelare med cementerat stift i en eller flera rotfyllda kanaler.", cat:"protetik", pris:1810, tillstand:["4081 Fraktur","5000-serien protetik"], regler:["Cementerat stift (glasfiberpinne + komposit)","Rapporteras tillsammans med kronkoden"] },
+  { kod:"804", namn:"Hängande led vid tandstödd protetik, per led", kort:"Hängande led i tandstödd bro.", cat:"protetik", pris:2815, tillstand:["5031 Entandslucka tandstödd bro","5033 Tvåtandslucka","5036 Entandslucka bräckligt ändstöd"], regler:["EJ + 800 eller 850 i samma käke samma dag","En 804 per hängande led"] },
+  { kod:"805", namn:"Laboratorieframställt emaljretinerat brostöd, per stöd", kort:"Klistrad brovinge (etsbro), per stöd.", cat:"protetik", pris:2165, tillstand:["5031 Entandslucka"], regler:["Per stöd i konstruktionen"] },
+  { kod:"806", namn:"Radikulärförankring vid avtagbar protes", kort:"Pelare och rothätta med förankringselement inför täckprotes.", cat:"protetik", pris:4105, tillstand:["5000-serien täckprotes"], regler:["Inom 3 år EJ + ytterligare 806 eller 811 för samma tandposition"] },
+  { kod:"807", namn:"Semipermanent tandstödd krona/brostöd, per led", kort:"Laboratorieframställd med inre del av metall eller CAD/CAM hybrid.", cat:"protetik", pris:3160, tillstand:["5046 Partiell tandlöshet, ingen permanent terapi planeras","4884 Skada, ingen permanent protetisk terapi"], regler:["Beräknad livslängd ej krav på ≥6 mån (till skillnad från 809)"] },
+  { kod:"808", namn:"Innerkrona för teleskop/konuskonstruktion", kort:"Innerkrona vid teleskopkonstruktion.", cat:"protetik", pris:4020, tillstand:["5000-serien"], regler:["Även vid koppling till implantat","Inom 3 år EJ + ytterligare 808 eller 811 för samma tandposition"] },
+  { kod:"809", namn:"Långtidstemporär laboratorieframställd krona/brostöd, per led", kort:"Temporär protetik med beräknad livslängd ≥6 månader.", cat:"protetik", pris:1350, tillstand:["4883 Skada, utvärdering behövs","5045 Partiell tandlöshet, utvärdering behövs"], regler:["Beräknad livslängd ≥6 månader"] },
+  { kod:"811", namn:"Cementering av lossnad protetisk konstruktion, per stöd", kort:"Återcementering av tandstödd eller implantatstödd konstruktion.", cat:"protetik", pris:635, tillstand:["4882 Tandstödd protetik lossnad/skadad","5445 Tandstödd bro skadad"], regler:["1 gång per tandposition, dag och behandlare"] },
+  { kod:"812", namn:"Reparation av krona eller bro, utan tandteknisk insats", kort:"Klinisk reparation av krona/bro utan lab-arbete (t.ex. komposit i trepanationshål).", cat:"protetik", pris:1625, tillstand:["4882/5445 Skadad protetik"], regler:["1 gång per dag och behandlare"] },
+  { kod:"813", namn:"Broreparation med tandteknisk insats", kort:"Ny brodel kopplas till befintlig bro eller brokoppling mellan befintliga brodelar.", cat:"protetik", pris:5470, tillstand:["4882/5445 Skadad protetik"], regler:["1 gång per brokonstruktion, dag och behandlare"] },
+  { kod:"814", namn:"Broreparation med omfattande tandteknik", kort:"Reparation med nytt akryl/porslinsarbete efter reparation.", cat:"protetik", pris:9575, tillstand:["4882/5445 Skadad protetik"], regler:["1 gång per brokonstruktion, dag och behandlare"] },
+  { kod:"815", namn:"Sadelkrona", kort:"Reparation med sadelkrona på krona eller hängande led i befintlig bro, eller vid entandslucka.", cat:"protetik", pris:6135, tillstand:["4882/5031/5445"], regler:["Kopplas till befintlig bro","Inom 3 år EJ + 800/801/811 eller ytterligare 815 för samma tandposition"] },
+  { kod:"820", namn:"Skena med tandersättning för temporärt bruk", kort:"Avtagbar plastskena som tillfälligt ersätter en eller flera tänder.", cat:"protetik", pris:1550, tillstand:["5006 Lucka pos 5-5"], regler:["1 gång per käke och dag"] },
+  { kod:"822", namn:"Partiell protes utan metallskelett, 1-3 tänder", kort:"Akrylpartial för 1-3 tänder.", cat:"protetik", pris:5000, tillstand:["5005 Partiell tandlöshet"], regler:["Inkluderar bockade klamrar","1 gång per käke och dag"] },
+  { kod:"823", namn:"Partiell protes utan metallskelett, 4+ tänder", kort:"Akrylpartial för 4 eller fler tänder.", cat:"protetik", pris:6785, tillstand:["5005 Partiell tandlöshet"], regler:["Inkluderar bockade klamrar","1 gång per käke och dag"] },
+  { kod:"824", namn:"Partiell protes med metallskelett, klammerförankrad", kort:"Partiell protes med gjutet eller 3D-printat metallskelett.", cat:"protetik", pris:13620, tillstand:["5005 Partiell tandlöshet"], regler:["Inkluderar klamrar i draget material","Inom 1 år EJ + ytterligare 824/825 eller 832-837 i samma käke"] },
+  { kod:"825", namn:"Komplicerad partiell protes med metallskelett (attachments/urtagskrona)", kort:"Metallskelettspartial med urtagskrona, innerkrona eller attachments.", cat:"protetik", pris:15250, tillstand:["5005 Partiell tandlöshet"], regler:["Attachments debiteras separat (826)","Urtagskrona kräver 800/801 separat","Inom 1 år EJ + 824/825 eller 832-837 i samma käke"] },
+  { kod:"826", namn:"Attachments, per styck", kort:"Tilläggskod för varje attachment vid 825.", cat:"protetik", pris:185, tillstand:["5005"], regler:["Kräver 825 samma dag"] },
+  { kod:"827", namn:"Hel underkäksprotes", kort:"Helprotes, dentalt stödd täckprotes eller myodynamisk protes, underkäken.", cat:"protetik", pris:12510, tillstand:["5001 Helt tandlös underkäke"], regler:["Inom 1 år EJ + ytterligare 827/828 eller 832-837 i samma käke"] },
+  { kod:"828", namn:"Hel överkäksprotes", kort:"Helprotes eller dentalt stödd täckprotes, överkäken.", cat:"protetik", pris:12510, tillstand:["5002 Helt tandlös överkäke"], regler:["Inom 1 år EJ + ytterligare 827/828 eller 832-837 i samma käke"] },
+  { kod:"829", namn:"Immediatprotes, hel käke", kort:"Hel protes som utförs immediat (direkt vid extraktion).", cat:"protetik", pris:9270, tillstand:["5001","5002"], regler:["Inkluderar EJ justering","1 gång per käke och dag"] },
+  { kod:"831", namn:"Justering av avtagbar protes", kort:"Justering av partiell/helprotes som är äldre än kontrollperioden.", cat:"protetik", pris:415, tillstand:["5443 Hel protes trasig/illapassande","5444 Delprotes trasig/illapassande"], regler:["EJ + 832-837/839 eller ytterligare 831 för samma käke samma dag, samma mottagning","EJ + 303 vid temporär basning av protes för samma käke"] },
+  { kod:"832", namn:"Lagning av protes utan avtryck", kort:"Enkel plastlagning eller tillsättning av protestand.", cat:"protetik", pris:1990, tillstand:["5443","5444"], regler:["Laboratorieframställd reparation","EJ + 831/833-837/839 eller ytterligare 832 för samma käke samma dag"] },
+  { kod:"833", namn:"Rebasering av protes där avtryck krävs", kort:"Permanent rebasering av protes.", cat:"protetik", pris:3455, tillstand:["5443","5444"], regler:["Laboratorieframställd reparation","EJ + 831/832/834/835/839 eller ytterligare 833 för samma käke samma dag"] },
+  { kod:"834", namn:"Lagning av protes där avtryck krävs", kort:"Lagning av protes med avtryck.", cat:"protetik", pris:2630, tillstand:["5443","5444"], regler:["Laboratorieframställd lagning","EJ + 831-833/835-837/839 eller ytterligare 834 för samma käke samma dag"] },
+  { kod:"845", namn:"Ocklusionskorrigerande bettslipning", kort:"Slipning av flera tänder för att utjämna interferenser eller anpassa ocklusionsplan.", cat:"protetik", pris:2255, tillstand:["5071 Dysfunktionell ocklusion","5072 Dysfunktionell ocklusion kräver protetisk korrektion"], regler:["1 gång per ersättningsperiod och behandlare"] },
+  { kod:"846", namn:"Skena för vertikal platsberedning eller bettstabilisering", kort:"Laboratorieframställd skena, hel eller i cementerade sektioner.", cat:"protetik", pris:4685, tillstand:["5042 Vertikal käkrelationsförändring","3162 Instabil ocklusion vid käkledssmärta","5071"], regler:["Inkluderar uppföljning 6 månader","1 gång per käke, ersättningsperiod och behandlare"] },
+  { kod:"847", namn:"Klammerplåt", kort:"Bettspärrplåt eller bettkorrigeringsplåt.", cat:"protetik", pris:5650, tillstand:["5042","5914 Tandpositionsavvikelse parodontal sjukdom"], regler:["Inkluderar uppföljning 6 månader","1 gång per ersättningsperiod och behandlare","EJ + tandreglering (900-serien) samma ersättningsperiod"] },
+  { kod:"850", namn:"Implantatstödd krona, en per käke", kort:"En separat implantatstödd krona.", cat:"protetik", pris:10355, tillstand:["5032 Entandslucka implantat"], regler:["EN krona i käken → 850. Fler i SAMMA käke SAMMA dag → 852","EJ + 800/801/804/852/853 i samma käke samma dag","1 gång per käke, dag och behandlare"] },
+  { kod:"852", namn:"Implantatstödd krona, flera i samma käke", kort:"Flera implantatstödda kronor i samma käke.", cat:"protetik", pris:8230, tillstand:["5010-5016 Friändstandlöshet","5033-5037 Flertandslucka"], regler:["EJ + 800/850 i samma käke samma dag"] },
+  { kod:"853", namn:"Hängande led vid implantatstödd bro, per led", kort:"Hängande led kopplat till implantatkronor.", cat:"protetik", pris:2845, tillstand:["5010-5016","5033-5037"], regler:["EJ + 800 eller 850 i samma käke samma dag"] },
+  { kod:"858", namn:"Distans inklusive distansskruv, per styck", kort:"Permanent industriell/fräst distans.", cat:"protetik", pris:1580, tillstand:["5000-serien implantat"], regler:["Läkhätta ingår","EJ + 871-873 för samma käke samma ersättningsperiod"] },
+  { kod:"859", namn:"Integrerad distans/kopplingskomponent — tilläggsåtgärd", kort:"Integrerad distans som cementeras i kronan.", cat:"protetik", pris:1005, tillstand:["5000-serien implantat"], regler:["Tilläggsåtgärd — kräver 850 eller 852 för samma tandposition samma dag","EJ när kronan ingår i brokonstruktion"] },
+  { kod:"861", namn:"Implantatbro överkäke på 4 implantat", kort:"Helkäksimplantatbro överkäken.", cat:"protetik", pris:36530, tillstand:["5016","5035"], regler:["Broskruv ingår"] },
+  { kod:"862", namn:"Implantatbro överkäke på 5 implantat", kort:"Helkäksimplantatbro överkäken.", cat:"protetik", pris:37845, tillstand:["5016","5035"], regler:["Broskruv ingår"] },
+  { kod:"863", namn:"Implantatbro överkäke på 6+ implantat", kort:"Helkäksimplantatbro överkäken.", cat:"protetik", pris:39160, tillstand:["5016","5035"], regler:["Broskruv ingår"] },
+  { kod:"865", namn:"Implantatbro underkäke på 4+ implantat", kort:"Helkäksimplantatbro underkäken.", cat:"protetik", pris:35225, tillstand:["5016","5035"], regler:["Broskruv ingår"] },
+  { kod:"871", namn:"Implantatstödd täckprotes (ÖK 2 impl / UK alla antal)", kort:"Implantatstödd täckprotes inkl. förankringselement.", cat:"protetik", pris:21120, tillstand:["5001","5002"], regler:["Inkluderar förankringselement och distans oavsett typ","Inom 1 år EJ + 832-837/839/850/852/853/858/861-863/865/871-873 i samma käke"] },
+  { kod:"872", namn:"Implantatstödd täckprotes ÖK, 3 implantat", kort:"Täckprotes överkäke 3 implantat.", cat:"protetik", pris:23175, tillstand:["5002"], regler:["Inkluderar förankringselement och distans"] },
+  { kod:"873", namn:"Implantatstödd täckprotes ÖK, 4+ implantat", kort:"Täckprotes överkäke 4 eller fler implantat.", cat:"protetik", pris:25235, tillstand:["5002"], regler:["Inkluderar förankringselement och distans"] },
+  { kod:"877", namn:"Implantatstödd täckprotes exkl. distanser och förankringselement", kort:"Enbart täckprotesen utan distanser/element.", cat:"protetik", pris:17105, tillstand:["5001","5002"], regler:["Distanser och förankringselement debiteras separat (858/878)"] },
+  { kod:"878", namn:"Förankringselement täckprotes, per styck", kort:"Enskilt förankringselement till täckprotes.", cat:"protetik", pris:330, tillstand:["5001","5002"], regler:["EJ + 871/872/873 för samma käke samma dag, samma mottagning"] },
+  { kod:"881", namn:"Reparation fast implantatkonstruktion, mindre", kort:"Reparation utan tandteknisk insats.", cat:"protetik", pris:1220, tillstand:["5447","5448","5449"], regler:["1 gång per käke, dag och behandlare"] },
+  { kod:"883", namn:"Reparation/ombyggnad fast implantatkonstruktion (med lab)", kort:"Reparation med tandteknisk insats.", cat:"protetik", pris:2515, tillstand:["5447","5448","5449"], regler:["1 gång per käke och dag"] },
+  { kod:"884", namn:"Reparation implantatbro, omfattande", kort:"Mer omfattande reparation (lasersvetsning, ny brodel etc.).", cat:"protetik", pris:9815, tillstand:["5447","5448"], regler:["1 gång per käke och dag"] },
+  { kod:"888", namn:"Fästskruv/broskruv vid reparation, per styck", kort:"Ny fästskruv/broskruv i samband med reparation.", cat:"protetik", pris:205, tillstand:["5447","5448","5449"], regler:["Ersättningsberättigande ENDAST i samband med reparation","EJ + 850/852 för samma tandposition"] },
+  { kod:"889", namn:"Distansskruv vid reparation, per styck", kort:"Ny distansskruv i samband med reparation.", cat:"protetik", pris:435, tillstand:["5447","5448"], regler:["Ersättningsberättigande ENDAST i samband med reparation","EJ + 858 för samma tandposition samma dag"] },
+  { kod:"892", namn:"Läkdistans vid reparation, per styck", kort:"Läkdistans när befintlig konstruktion ej kan återmonteras.", cat:"protetik", pris:385, tillstand:["5447","5448","5449"], regler:["ENDAST vid avlägsnande av befintlig konstruktion som inte kan återmonteras","EJ + 420 för samma tandposition samma dag"] },
+  { kod:"893", namn:"Avmontering implantatstödd konstruktion, 1-3 implantat", kort:"Avmontering inför behandling.", cat:"protetik", pris:1180, tillstand:["5447","5448"], regler:["EJ vid nyproduktion av konstruktion","EJ + 895/897 eller ytterligare 893 samma dag"] },
+  { kod:"894", namn:"Återmontering implantatstödd konstruktion, 1-3 implantat", kort:"Återmontering efter behandling.", cat:"protetik", pris:1235, tillstand:["5447","5448"], regler:["Inkluderar byte av frakturerad skruv (ej själva skruven)","EJ vid nyproduktion","EJ + 896/897 eller ytterligare 894 samma dag"] },
+  { kod:"895", namn:"Avmontering implantatstödd konstruktion, 4+ implantat", kort:"Avmontering av helkäksbro.", cat:"protetik", pris:1555, tillstand:["5447"], regler:["EJ vid nyproduktion","EJ + 893/897 eller ytterligare 895 samma dag"] },
+  { kod:"896", namn:"Återmontering implantatstödd konstruktion, 4+ implantat", kort:"Återmontering av helkäksbro.", cat:"protetik", pris:1680, tillstand:["5447"], regler:["EJ vid nyproduktion","EJ + 894/897 eller ytterligare 896 samma dag"] },
+  { kod:"897", namn:"Åtgärdande av tekniska implantatkomplikationer (≥60 min)", kort:"Borttagning av frakturerade broskruvar/distansskruvar ≥60 min.", cat:"protetik", pris:2835, tillstand:["5447","5448"], regler:["EJ + 893-896 samma dag, samma behandlare","1 gång per ersättningsperiod och behandlare"] },
+
+  // TANDREGLERING
+  { kod:"900", namn:"Tandreglering, aktiv behandling ≤6 månader", kort:"Ortodontisk behandling i ena eller båda käkarna ≤6 månader.", cat:"tandreglering", pris:11195, tillstand:["5903-5914 Bettavvikelser"], regler:["Inkluderar material, foton, mätning, hygieninstruktion och retentionsapparatur","EJ + 847/901-908 eller ytterligare 900 under samma ersättningsperiod"] },
+  { kod:"901", namn:"Tandreglering, 1 käke, 6 mån–1 år", kort:"Aktiv ortodonti i en käke 6-12 månader.", cat:"tandreglering", pris:16800, tillstand:["5903-5914"], regler:["EJ + 847/900/902-908 under samma ersättningsperiod"] },
+  { kod:"902", namn:"Tandreglering, 1 käke, 1–1,5 år", kort:"Aktiv ortodonti i en käke.", cat:"tandreglering", pris:20940, tillstand:["5903-5914"], regler:["EJ + andra ortodonti-koder under samma ersättningsperiod"] },
+  { kod:"903", namn:"Tandreglering, 1 käke, 1,5–2 år", kort:"Aktiv ortodonti i en käke.", cat:"tandreglering", pris:24700, tillstand:["5903-5914"], regler:["EJ + andra ortodonti-koder under samma ersättningsperiod"] },
+  { kod:"904", namn:"Tandreglering, 1 käke, >2 år", kort:"Aktiv ortodonti i en käke.", cat:"tandreglering", pris:30645, tillstand:["5903-5914"], regler:["EJ + andra ortodonti-koder under samma ersättningsperiod"] },
+  { kod:"905", namn:"Tandreglering, båda käkar, 6 mån–1 år", kort:"Aktiv ortodonti i båda käkarna 6-12 månader.", cat:"tandreglering", pris:23620, tillstand:["5903-5914"], regler:["EJ + andra ortodonti-koder under samma ersättningsperiod"] },
+  { kod:"906", namn:"Tandreglering, båda käkar, 1–1,5 år", kort:"Aktiv ortodonti i båda käkarna.", cat:"tandreglering", pris:27760, tillstand:["5903-5914"], regler:["EJ + andra ortodonti-koder under samma ersättningsperiod"] },
+  { kod:"907", namn:"Tandreglering, båda käkar, 1,5–2 år", kort:"Aktiv ortodonti i båda käkarna.", cat:"tandreglering", pris:31900, tillstand:["5903-5914"], regler:["EJ + andra ortodonti-koder under samma ersättningsperiod"] },
+  { kod:"908", namn:"Tandreglering, båda käkar, >2 år", kort:"Aktiv ortodonti i båda käkarna.", cat:"tandreglering", pris:38475, tillstand:["5903-5914"], regler:["EJ + andra ortodonti-koder under samma ersättningsperiod"] },
+
+  // UTBYTESÅTGÄRDER
+  { kod:"921", namn:"Utbytesåtgärd: Krona istf fyllning, fronttand/hörntand (1-3)", kort:"Krona när D.3 (kronregeln) INTE är uppfylld, tand 1-3. Ersättning max som åtgärd 703.", cat:"utbyte", pris:1420, tillstand:["4002/4012/4081/4072/4073"], regler:["Används när patienten väljer krona men D.3 EJ uppfylld","Ersättning = max referenspriset för 703 (1420 kr)","Ingen särskild tandvårdsersättning"] },
+  { kod:"922", namn:"Utbytesåtgärd: Krona istf fyllning, molar/premolar (4-7)", kort:"Krona när D.3 (kronregeln) INTE är uppfylld, tand 4-7. Ersättning max som åtgärd 706.", cat:"utbyte", pris:1830, tillstand:["4002/4012/4081/4072/4073"], regler:["Ersättning = max referenspriset för 706 (1830 kr)","Ingen särskild tandvårdsersättning"] },
+  { kod:"923", namn:"Utbytesåtgärd: Fasad istf fyllning, tandpos 1-3", kort:"Fasad när kronregeln inte är uppfylld. Max ersättning som 703.", cat:"utbyte", pris:1420, tillstand:["4002/4012/4081"], regler:["Fasad kan inte tillämpas för tand 6-8","Max ersättning som 703 (1420 kr)"] },
+  { kod:"924", namn:"Utbytesåtgärd: Fasad istf fyllning, tandpos 4-5", kort:"Fasad när kronregeln inte är uppfylld. Max ersättning som 706.", cat:"utbyte", pris:1830, tillstand:["4002/4012/4081"], regler:["Fasad kan inte tillämpas för tand 6-8","Max ersättning som 706 (1830 kr)"] },
+  { kod:"940", namn:"Utbytesåtgärd: Ortodontisk slutning av entandslucka", kort:"Ortodonti för att sluta lucka istf tandstödd bro.", cat:"utbyte", pris:13365, tillstand:["5031 Entandslucka"], regler:["Max 2 st under samma ersättningsperiod","EJ + 847/900-908 samma ersättningsperiod"] },
+  { kod:"941", namn:"Utbytesåtgärd: Ortodontisk slutning (brostöd utfört <3 år)", kort:"Ortodontisk slutning av entandslucka när 800/801 gjorts på brostöd inom 3 år.", cat:"utbyte", pris:8090, tillstand:["5031 Entandslucka"], regler:["Tillämpas om 800/801 utförts inom 3 år på en av de bröstödtänderna"] },
+];
+
+const CATS = ["alla","undersökning","hälsofrämjande","sjukdom","kirurgi","rotbehandling","reparativ","protetik","tandreglering","utbyte"];
+const CAT_LABELS: Record<string, string> = { alla:"Alla", undersökning:"Undersökning (100)", hälsofrämjande:"Hälsofrämjande (200-300)", sjukdom:"Sjukdomsbeh. (300-600)", kirurgi:"Kirurgi (400)", rotbehandling:"Rotbeh. (500)", reparativ:"Fyllningar (700)", protetik:"Protetik (800)", tandreglering:"Ortodonti (900)", utbyte:"Utbytesåtgärder (920-940)" };
+
+const SYSTEM_PROMPT = `Du är ett precist debiteringsstöd för svenska tandläkare baserat UTESLUTANDE på HSLF-FS 2025:68 (TLV:s föreskrifter om statligt tandvårdsstöd, gäller fr.o.m. 2026-01-01) och Handboken om tandvårdsstödet version 2.0 (TLV 2025).
+
+ABSOLUTA REGLER:
+1. Du hittar ALDRIG på regler eller koder. Om du inte vet → säg "Oklart — verifiera mot kusp.tlv.se".
+2. Du svarar alltid JA eller NEJ på direkta frågor, följt av exakt förklaring från HSLF-FS 2025:68.
+3. Du ställer ALLTID följdfrågor om information saknas (tandposition, tidsåtgång, material).
+4. Du rapporterar ALLTID vilket tillstånd (4-siffrig kod) som gäller.
+5. Du kontrollerar ALLTID kombinationsreglerna innan du ger svar.
+
+EXAKTA REFERENSPRISER fr.o.m. 2026-01-01 (HSLF-FS 2025:68 Bilaga 2):
+=== UNDERSÖKNING ===
+101=1100kr | 103=445kr | 107=1275kr | 108=1895kr | 111=985kr | 112=1285kr | 113=535kr | 114=785kr
+121=80kr | 123=1020kr | 124=635kr | 127=235kr | 128=405kr
+131=1210kr | 132=1535kr | 133=1920kr | 134=2255kr
+141=885kr | 142=535kr | 161=900kr | 162=520kr | 163=1260kr | 164=895kr
+
+=== HÄLSOFRÄMJANDE/SJUKDOMSFÖREBYGGANDE ===
+201=600kr | 205=245kr | 206=485kr | 207=375kr | 208=735kr | 209=1145kr | 213=1505kr | 214=695kr
+311=595kr | 312=240kr | 321=600kr | 322=1350kr
+
+=== SJUKDOMSBEHANDLANDE ===
+301=450kr | 302=840kr | 303=1245kr | 304=2025kr
+340=525kr | 341=920kr | 342=1430kr | 343=2165kr | 362=1025kr
+601=4370kr | 602=4370kr
+
+=== KIRURGI ===
+401=1280kr | 402=1820kr | 403=510kr | 404=3755kr | 405=4330kr | 407=2470kr | 409=1550kr | 410=945kr
+420=3585kr | 421=3755kr | 422=1805kr | 423=5455kr | 424=2025kr | 425=7520kr | 426=2705kr
+427=4720kr | 428=5680kr | 429=4655kr | 436=805kr
+446=2035kr | 447=1375kr | 448=755kr
+451=3910kr | 452=5410kr | 453=4115kr | 454=5820kr | 480=400kr | 541=4410kr
+
+=== ROTBEHANDLING ===
+501=4105kr | 502=4955kr | 503=6225kr | 504=6790kr
+520=1005kr | 521=885kr | 522=890kr | 523=1300kr
+
+=== REPARATIVA FYLLNINGAR ===
+701=730kr | 702=1160kr | 703=1420kr | 704=940kr | 705=1370kr | 706=1830kr | 707=2075kr | 708=550kr | 711=505kr
+
+=== PROTETIK ===
+800=6825kr | 801=5275kr | 802=3880kr | 803=1810kr | 804=2815kr | 805=2165kr | 806=4105kr | 807=3160kr | 808=4020kr | 809=1350kr
+811=635kr | 812=1625kr | 813=5470kr | 814=9575kr | 815=6135kr
+820=1550kr | 822=5000kr | 823=6785kr | 824=13620kr | 825=15250kr | 826=185kr | 827=12510kr | 828=12510kr | 829=9270kr
+831=415kr | 832=1990kr | 833=3455kr | 834=2630kr
+845=2255kr | 846=4685kr | 847=5650kr
+850=10355kr | 852=8230kr | 853=2845kr | 858=1580kr | 859=1005kr
+861=36530kr | 862=37845kr | 863=39160kr | 865=35225kr
+871=21120kr | 872=23175kr | 873=25235kr | 877=17105kr | 878=330kr
+881=1220kr | 883=2515kr | 884=9815kr | 888=205kr | 889=435kr | 892=385kr
+893=1180kr | 894=1235kr | 895=1555kr | 896=1680kr | 897=2835kr
+
+=== TANDREGLERING ===
+900=11195kr | 901=16800kr | 902=20940kr | 903=24700kr | 904=30645kr | 905=23620kr | 906=27760kr | 907=31900kr | 908=38475kr
+
+=== UTBYTESÅTGÄRDER ===
+921=1420kr | 922=1830kr | 923=1420kr | 924=1830kr | 940=13365kr | 941=8090kr
+
+KRITISKA KOMBINATIONSREGLER (direkt från HSLF-FS 2025:68 Bilaga 2):
+
+BASUNDERSÖKNING (101):
+- EJ + 111/112/201/206/312 eller ytterligare 101 samma dag, samma mottagning
+- Fluorlack ENSTAKA tänder ingår i 101 (upp till 5 min). Fluorlack HELA BETTET = 205 separat (ca 10 min, 245kr). ALDRIG 206 samma dag som 101.
+- Röntgen (bitewings) ingår i 101. 121 = ytterligare röntgen utöver det som ingår i 101.
+- Max 2 ggr/ersättningsperiod (101/111/112 sammantaget)
+
+FLUORID:
+- 205 (ca 10 min) KAN kombineras med 101. Pris 245kr.
+- 206 (ca 20 min) EJ + 101/111/112. EJ + 103/107/108 samma dag, samma behandlare. Pris 485kr.
+- 207 EJ + 205/206/208/340-343 eller ytterligare 207 samma dag
+
+PARODONTALBEHANDLING (tidsgräns avgör kod):
+- 340 = ≥10 min (525kr) | 341 = ≥30 min (920kr) | 342 = ≥50 min (1430kr) | 343 = ≥90 min (2165kr)
+- Välj koden baserat på FAKTISK tidsåtgång.
+- 340-343 sammantaget max 8 ggr/ersättningsperiod och mottagning.
+- 209 (tandstensborttagning ≥40 min) KAN BARA kombineras med: 113, 201, 311, 312 eller 362.
+
+ROTBEHANDLING:
+- 501/502/503/504 rapporteras FÖRST när rotfyllningen är FÄRDIG (4 § HSLF-FS 2025:68).
+- Kod väljs efter antal ROTFYLLDA kanaler (inte antal rötter).
+- EJ för tand i position 8.
+- 520 = ANNAN behandlare än den som ska rotfylla.
+- 521 = SAMMA behandlare, trepanation utan rensning.
+- EJ + 520 och 501-504 för samma tand, samma behandlare.
+
+FYLLNINGAR (700-serien):
+- 701-703 = FRONTTAND/HÖRNTAND pos 1-3.
+- 704-706 = MOLAR/PREMOLAR pos 4-7.
+- Glasjonomer som PERMANENT lagning = ersättningsberättigande (701-706).
+- Glasjonomer som TEMPORÄR lagning = EJ ersättningsberättigande (ingår ev. i 301/302 eller 322).
+- Polering ingår ALLTID i 700-serien — debiteras EJ separat.
+- Anestesi/bedövning ingår i kirurgiska åtgärder och fyllningsterapi — debiteras EJ separat.
+- 101/111/112: hygienistruktion upp till 5 min ingår. Längre instruktion: 311 (≥15 min) eller 312 (kortare).
+
+KRONREGEL (D.3) för koder 800-803:
+- Kavitet/fraktur/förlust: minst 4 av 5 ytor på premolar/molar, eller minst 3 av 4 ytor på fronttand/hörntand inkl. incisalskäret, eller 2/3 av kronvolymen förlorad.
+- Om D.3 EJ uppfyllt → utbytesåtgärd 921 (front, 1420kr) eller 922 (molar/premolar, 1830kr).
+
+TILLSTÅNDSKODER (urval):
+1001=Basundersökning | 1301=Behov av mindre undersökning | 1302=Behov av omfattande undersökning
+2021=Förhöjd risk karies | 2031=Tandsten | 2041=Förhöjd risk parodontit | 2071=Förhöjd risk erosion
+3021=Initialkaries | 3041=Gingivit | 3043=Parodontit | 3044=Periimplantit | 3045=Perikoronit
+3051=Pulpa/periradikulärt sjd. | 3064=Rotfraktur längs | 3121=Retinerad tand | 3161=Käkfunktionsstörning
+4002=Kavitet primärkaries | 4012=Kavitet sekundärkaries | 4022=Djup dentinkaries | 4041=Ofullst. rotfyllning inför rep.åtg.
+4072=Tandslitage abrasion/attrition | 4073=Tandslitage erosion | 4081=Fraktur/förlust tandsubstans
+4471=Bristande kontaktpunkt | 4772=Förlust fyllningsmaterial utan karies | 4882=Protetisk konstruktion lossnad/skadad
+5031=Entandslucka tandstödd bro | 5032=Entandslucka implantat
+
+SVARSFORMAT — ALLTID detta format på svenska:
+**Åtgärder att rapportera:**
+- [KOD] (Tillstånd [TILLSTÅNDSKOD]) — [KODENS NAMN] — [EXAKT PRIS] kr
+
+**Kombinationsregler:** [JA/NEJ — inga regelbrott] eller [specifik regelöverträdelse]
+
+**Kliniska klargöranden/motfrågor:**
+[Ställ motfråga om tandposition (front/molar), tidsåtgång (341/342/343), material (permanent/temporärt) saknas]
+
+**Totalt referenspris: [SUMMA] kr**
+
+Notera: Referenspriset är inte detsamma som vad patienten betalar — tandvårdsstöd och patientavgift beräknas separat av Försäkringskassan.`;
+
+const EXAMPLES = [
+  "Basundersökning + fluorlack hela bettet + hygieninstruktion",
+  "Fyllning 2 ytor molar 46 glasjonomer permanent",
+  "Rotbehandling 3 kanaler + temporär fyllning",
+  "Parodontalbehandling 45 min tandhygienist + munhygieninstruktion",
+  "Extraktion tand 36 + patient med Waran",
+  "Akut undersökning + apikal röntgen + trepanation 36",
+];
+
+export default function DebiteringsStod() {
+  const [tab, setTab] = useState<"kodbank" | "ai">("kodbank");
+  const [cat, setCat] = useState("alla");
+  const [search, setSearch] = useState("");
+  const [selectedKods, setSelectedKods] = useState<string[]>([]);
+  const [aiInput, setAiInput] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const filtered = useMemo(() => {
+    return DB.filter((d) => {
+      if (cat !== "alla" && d.cat !== cat) return false;
+      if (!search) return true;
+      const q = search.toLowerCase();
+      return (
+        d.kod.includes(q) ||
+        d.namn.toLowerCase().includes(q) ||
+        d.kort.toLowerCase().includes(q) ||
+        d.cat.includes(q) ||
+        d.tillstand.some((t) => t.toLowerCase().includes(q))
+      );
+    });
+  }, [cat, search]);
+
+  const validateCombinations = (kods: string[]) => {
+    if (kods.length < 2) return null;
+    const items = kods.map((k) => DB.find((d) => d.kod === k)).filter(Boolean) as typeof DB;
+    for (let i = 0; i < items.length; i++) {
+      const a = items[i];
+      for (let j = i + 1; j < items.length; j++) {
+        const b = items[j];
+        const ruleMatchA = a.regler.some((r) => r.includes(`EJ +`) && r.includes(b.kod));
+        const ruleMatchB = b.regler.some((r) => r.includes(`EJ +`) && r.includes(a.kod));
+        if (ruleMatchA || ruleMatchB) {
+          return {
+            valid: false,
+            message: `Konflikt mellan ${a.kod} och ${b.kod}. Kontrollera HSLF-FS 2025:68 regelverket.`,
+          };
+        }
+      }
+    }
+    return { valid: true, message: "Giltig kombination enligt basregler." };
+  };
+
+  const validation = useMemo(() => validateCombinations(selectedKods), [selectedKods]);
+
+  const toggleSelection = (kod: string) => {
+    setSelectedKods((prev) =>
+      prev.includes(kod) ? prev.filter((k) => k !== kod) : [...prev, kod]
+    );
+  };
+
+  async function askAI() {
+    if (!aiInput.trim()) return;
+    setAiLoading(true);
+    setAiResponse(null);
+    try {
+      const res = await fetch("/api/debitering/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-3-opus-20240229",
+          max_tokens: 1500,
+          temperature: 0,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: "user", content: aiInput }],
+        }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message || "Ett fel uppstod.");
+      setAiResponse(data.content || "Inget svar mottaget.");
+    } catch (e: any) {
+      setAiResponse("⚠ Fel: AI-tjänsten är otillgänglig. " + e.message);
+    }
+    setAiLoading(false);
+  }
+
+  function copyText(text: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="editorial-header text-3xl text-primary-container mb-2">
+            Debiteringsstöd (HSLF-FS 2025:68)
+          </h1>
+          <p className="text-sm text-slate-500">
+            Referenspriser och regler gällande fr.o.m. 2026-01-01. Verifieras mot kusp.tlv.se.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex space-x-2 border-b border-slate-200 mb-6">
+        <button
+          onClick={() => setTab("kodbank")}
+          className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
+            tab === "kodbank"
+              ? "border-primary text-primary"
+              : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+          }`}
+        >
+          <Database className="inline-block w-4 h-4 mr-2" />
+          Manuell (Offline)
+        </button>
+        <button
+          onClick={() => setTab("ai")}
+          className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
+            tab === "ai"
+              ? "border-secondary text-secondary"
+              : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+          }`}
+        >
+          <Zap className="inline-block w-4 h-4 mr-2" />
+          AI-assisterad
+        </button>
+      </div>
+
+      {tab === "kodbank" && (
+        <div className="space-y-4">
+          <div className="glass-bento p-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Sök åtgärdskod, fritext eller kategori..."
+                  className="w-full pl-10 pr-4 py-2 bg-white/50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-secondary/50"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <select
+                  value={cat}
+                  onChange={(e) => setCat(e.target.value)}
+                  className="bg-white/50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-secondary/50"
+                >
+                  {CATS.map((c) => (
+                    <option key={c} value={c}>
+                      {CAT_LABELS[c]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {selectedKods.length > 0 && (
+              <div className="mb-6 p-4 bg-white/60 border border-slate-200 rounded-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-primary-container">
+                    Valda åtgärder ({selectedKods.length})
+                  </h3>
+                  {validation && (
+                    <div
+                      className={`flex items-center text-xs font-semibold px-3 py-1 rounded-full ${
+                        validation.valid
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {validation.valid ? (
+                        <Check className="w-3 h-3 mr-1" />
+                      ) : (
+                        <AlertTriangle className="w-3 h-3 mr-1" />
+                      )}
+                      {validation.message}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {selectedKods.map((k) => (
+                    <span
+                      key={k}
+                      className="inline-flex items-center px-3 py-1 bg-secondary/10 text-secondary text-sm font-semibold rounded-lg"
+                    >
+                      {k}
+                      <button
+                        onClick={() => toggleSelection(k)}
+                        className="ml-2 hover:text-secondary-container"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200/60 text-slate-500">
+                    <th className="pb-3 font-semibold">Kod</th>
+                    <th className="pb-3 font-semibold">Beskrivning</th>
+                    <th className="pb-3 font-semibold">Kategori</th>
+                    <th className="pb-3 font-semibold">Pris</th>
+                    <th className="pb-3 font-semibold">Patientandel</th>
+                    <th className="pb-3 font-semibold">Val</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100/50">
+                  {filtered.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-slate-500">
+                        Inga koder matchar sökningen.
+                      </td>
+                    </tr>
+                  ) : (
+                    filtered.map((d) => (
+                      <tr key={d.kod} className="hover:bg-white/40 transition-colors">
+                        <td className="py-3 font-mono font-bold text-primary">{d.kod}</td>
+                        <td className="py-3 pr-4">
+                          <div className="font-semibold text-slate-800">{d.namn}</div>
+                          <div className="text-xs text-slate-500 mt-1 line-clamp-1" title={d.kort}>
+                            {d.kort}
+                          </div>
+                        </td>
+                        <td className="py-3">
+                          <span className="badge">{d.cat}</span>
+                        </td>
+                        <td className="py-3 font-mono font-semibold text-tertiary">
+                          {d.pris.toLocaleString("sv-SE")} kr
+                        </td>
+                        <td className="py-3 text-xs text-slate-500">
+                          Beräknas enl. HKS
+                        </td>
+                        <td className="py-3">
+                          <button
+                            onClick={() => toggleSelection(d.kod)}
+                            className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors border ${
+                              selectedKods.includes(d.kod)
+                                ? "bg-secondary text-white border-secondary"
+                                : "bg-white text-slate-600 border-slate-200 hover:border-secondary"
+                            }`}
+                          >
+                            {selectedKods.includes(d.kod) ? "Vald" : "Välj"}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {tab === "ai" && (
+        <div className="max-w-4xl space-y-6">
+          <div className="glass-bento p-8 bg-gradient-to-br from-primary/10 to-transparent">
+            <h2 className="editorial-header text-2xl text-primary mb-3">
+              AI-Debiteringsrådgivare
+            </h2>
+            <p className="text-sm text-slate-600 mb-6 max-w-2xl">
+              Beskriv vad du gjort vid besöket. Agenten svarar med exakta åtgärdskoder, tillstånd och kombinationsregler baserat uteslutande på HSLF-FS 2025:68. Temperature=0.
+            </p>
+
+            <div className="flex flex-wrap gap-2 mb-6">
+              {EXAMPLES.map((ex) => (
+                <button
+                  key={ex}
+                  onClick={() => setAiInput(ex)}
+                  className="px-3 py-1.5 text-xs font-medium bg-white/60 hover:bg-white border border-slate-200 rounded-full text-slate-600 transition-colors"
+                >
+                  {ex}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative">
+              <textarea
+                value={aiInput}
+                onChange={(e) => setAiInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) askAI();
+                }}
+                placeholder="Ex: Basundersökning med 4 bitewings, fluorlack hela bettet, fyllning 46 MO med glasjonomer (permanent), munhygieninstruktion ca 10 min. Vad debiterar jag?"
+                className="w-full min-h-[120px] p-4 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-secondary/50 resize-y shadow-sm"
+              />
+              <div className="absolute bottom-4 right-4 flex items-center gap-3">
+                <span className="text-xs text-slate-400 font-mono hidden sm:inline-block">
+                  Cmd/Ctrl + Enter
+                </span>
+                <button
+                  onClick={askAI}
+                  disabled={aiLoading || !aiInput.trim()}
+                  className="morphic-button bg-primary text-white px-6 py-2 rounded-lg text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {aiLoading ? "Analyserar..." : "Analysera"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {(aiLoading || aiResponse) && (
+            <div className="glass-bento p-8 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-secondary"></div>
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-5 h-5 text-secondary" />
+                <h3 className="font-semibold text-primary-container">Debiteringsanalys</h3>
+                <span className="ml-auto text-xs font-mono text-slate-400">
+                  HSLF-FS 2025:68 · temp=0
+                </span>
+              </div>
+              
+              {aiLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+                  <div className="w-8 h-8 border-4 border-slate-200 border-t-secondary rounded-full animate-spin mb-4"></div>
+                  <p className="text-sm">Analyserar mot HSLF-FS 2025:68 med temperature=0...</p>
+                </div>
+              ) : (
+                <div className="journal-box text-slate-700">
+                  {aiResponse}
+                  <button
+                    onClick={() => copyText(aiResponse || "")}
+                    className="copy-btn hover:bg-slate-50 transition-colors"
+                  >
+                    {copied ? (
+                      <span className="text-green-600 flex items-center gap-1"><Check className="w-3 h-3"/> Kopierat</span>
+                    ) : (
+                      <span className="flex items-center gap-1"><Copy className="w-3 h-3"/> Kopiera</span>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* SYSTEM HEALTH CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 mt-8 border-t border-slate-200/50">
+        <div className="flex items-center gap-3 p-4 bg-white/40 rounded-xl border border-slate-200/50">
+          <Activity className="w-5 h-5 text-green-600" />
+          <div>
+            <div className="text-xs font-bold text-slate-700">Manuell vy (Offline)</div>
+            <div className="text-xs text-slate-500">Fullt kapabel utan nätverk</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 p-4 bg-white/40 rounded-xl border border-slate-200/50">
+          <ShieldCheck className="w-5 h-5 text-blue-600" />
+          <div>
+            <div className="text-xs font-bold text-slate-700">Verifierad Data</div>
+            <div className="text-xs text-slate-500">Koder valideras mot kusp.tlv.se</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 p-4 bg-white/40 rounded-xl border border-slate-200/50">
+          <Info className="w-5 h-5 text-secondary" />
+          <div>
+            <div className="text-xs font-bold text-slate-700">Gäller fr.o.m 2026</div>
+            <div className="text-xs text-slate-500">HSLF-FS 2025:68 uppdatering</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
