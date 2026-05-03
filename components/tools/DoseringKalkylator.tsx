@@ -42,10 +42,10 @@ export function DoseringKalkylator() {
   const [group, setGroup] = useState<PatientGroup>('adult');
   const [weight, setWeight] = useState<number | ''>(70);
   const [age, setAge] = useState<number | ''>('');
-  
+
   const [result, setResult] = useState<DoseResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  
+
   // Opioid state
   const [checklist, setChecklist] = useState<boolean[]>(new Array(8).fill(false));
 
@@ -80,7 +80,7 @@ export function DoseringKalkylator() {
 
       const res = calculateDose(drug, parsedWeight, group, parsedAge, undefined);
       setResult(res);
-      
+
     } catch (err: any) {
       Sentry.captureException(err);
       setErrorMsg(err.message || 'Ett fel uppstod vid beräkningen');
@@ -115,7 +115,7 @@ OBS: ${result.note}`;
           <div className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Patientgrupp</label>
-              <select 
+              <select
                 className="w-full p-3 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-[#0E3B52]"
                 value={group}
                 onChange={(e) => setGroup(e.target.value as PatientGroup)}
@@ -129,7 +129,7 @@ OBS: ${result.note}`;
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Vikt (kg)</label>
-                <input 
+                <input
                   type="number"
                   className="w-full p-3 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-[#0E3B52]"
                   value={weight}
@@ -140,7 +140,7 @@ OBS: ${result.note}`;
               {(group === 'child_small' || group === 'child_big') && (
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Ålder (år)</label>
-                  <input 
+                  <input
                     type="number"
                     className="w-full p-3 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-[#0E3B52]"
                     value={age}
@@ -153,7 +153,7 @@ OBS: ${result.note}`;
 
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Läkemedel</label>
-              <select 
+              <select
                 className="w-full p-3 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-[#0E3B52]"
                 value={drug}
                 onChange={(e) => setDrug(e.target.value as DrugId)}
@@ -178,7 +178,7 @@ OBS: ${result.note}`;
         {/* Right column: Results */}
         <div className="md:col-span-7 p-6">
           <div className="h-full flex flex-col">
-            
+
             {/* Opioid Checklist */}
             {isOpioid && (
               <div className="mb-6 animate-in fade-in slide-in-from-top-2">
@@ -202,8 +202,8 @@ OBS: ${result.note}`;
                   <div className="space-y-2">
                     {OPIOID_CRITERIA.map((crit, idx) => (
                       <label key={idx} className="flex items-start gap-2 cursor-pointer hover:bg-white/50 p-1.5 rounded">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           className="mt-1 w-4 h-4 text-[#0E3B52] rounded focus:ring-[#0E3B52]"
                           checked={checklist[idx]}
                           onChange={(e) => {
@@ -239,9 +239,9 @@ OBS: ${result.note}`;
                 <div className="absolute top-0 right-0 p-4 opacity-5">
                   <Calculator className="w-32 h-32 text-[#0E3B52]" />
                 </div>
-                
+
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4">Beräknad Dosering</h3>
-                
+
                 <div className="grid grid-cols-2 gap-6 mb-6">
                   <div>
                     <span className="block text-xs font-bold text-slate-400 mb-1">DOS</span>
@@ -259,8 +259,8 @@ OBS: ${result.note}`;
                   )}
                   {!result.maxDay && result.maxDayUnit && (
                     <div className="col-span-2">
-                       <span className="block text-xs font-bold text-slate-400 mb-1">MAXMÄNGD</span>
-                       <div className="text-xl font-bold text-slate-700">{result.maxDayUnit}</div>
+                      <span className="block text-xs font-bold text-slate-400 mb-1">MAXMÄNGD</span>
+                      <div className="text-xl font-bold text-slate-700">{result.maxDayUnit}</div>
                     </div>
                   )}
                 </div>
@@ -289,7 +289,7 @@ OBS: ${result.note}`;
                 </div>
 
                 {(!isOpioid || checklistComplete) && (
-                  <button 
+                  <button
                     onClick={handleCopy}
                     className="w-full mt-auto py-3 bg-[#0E3B52] hover:bg-[#0E3B52]/90 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm"
                   >
@@ -302,8 +302,8 @@ OBS: ${result.note}`;
                 <div className="h-full flex flex-col items-center justify-center text-slate-400 p-8 text-center border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
                   <Calculator className="w-12 h-12 mb-4 opacity-50" />
                   <p className="font-medium">
-                    {isOpioid 
-                      ? "Fyll i checklistan för att se dosering" 
+                    {isOpioid
+                      ? "Fyll i checklistan för att se dosering"
                       : "Fyll i vikt för att beräkna dos"}
                   </p>
                 </div>
