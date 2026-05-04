@@ -98,24 +98,12 @@ export default function RootLayout({
         </a>
 
         <QueryProvider>
-          <main id="main-content" tabIndex={-1}>
+          <div id="main-content" tabIndex={-1}>
             {children}
-          </main>
+          </div>
         </QueryProvider>
 
-        {/* PSL Disclaimer — visas på varje sida */}
-        <footer className="psl-disclaimer" role="contentinfo">
-          <p>
-            <strong>⚠️ PSL 2010:659</strong> — DentaGuide-Pro är ett
-            beslutsstödssystem och ersätter inte kvalificerad klinisk
-            bedömning. Varje rekommendation måste granskas och godkännas av
-            legitimerad tandläkare innan klinisk användning.
-          </p>
-          <p>
-            © {new Date().getFullYear()} DentaGuide-Pro. Alla rättigheter
-            förbehållna.
-          </p>
-        </footer>
+        {/* PSL-fotnot hanteras per-sida i (public) och (dashboard) layouts */}
       </body>
     </html>
   );

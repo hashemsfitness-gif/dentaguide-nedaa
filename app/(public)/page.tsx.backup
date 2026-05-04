@@ -1,0 +1,628 @@
+'use client';
+
+import { motion, useScroll, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+
+/* ─────────────────────────────────────────
+   Scroll-following character
+───────────────────────────────────────── */
+function ScrollCharacter() {
+  const { scrollYProgress } = useScroll();
+  const [src, setSrc] = useState('/characters/wave.gif');
+  const [show, setShow] = useState(false);
+  const prefersReduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  useEffect(() => {
+    const t = setTimeout(() => setShow(true), 1200);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (prefersReduced) return;
+    return scrollYProgress.on('change', (v) =>
+      setSrc(v < 0.5 ? '/characters/wave.gif' : '/characters/hug.jpg')
+    );
+  }, [scrollYProgress, prefersReduced]);
+
+  if (prefersReduced) return null;
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.button
+          aria-label="Scrolla till toppen"
+          className="fixed bottom-6 right-6 z-40 border-0 bg-transparent p-0 cursor-pointer"
+          style={{ width: 128, height: 128 }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          transition={{ type: 'spring', duration: 0.6 }}
+          whileHover={{ scale: 1.25 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          <Image
+            src={src}
+            alt="DentaGuide karaktär"
+            width={128}
+            height={128}
+            className="drop-shadow-xl object-contain"
+            unoptimized
+          />
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ─────────────────────────────────────────
+   Data
+───────────────────────────────────────── */
+const plans = [
+  {
+    name: 'Gratis',
+    price: '0',
+    features: ['3 områden (10 scenarier)', 'Manuell journalmall', 'Doseringskalkylator'],
+    cta: 'Kom igång gratis',
+    href: '/registrera',
+    featured: false,
+  },
+  {
+    name: 'Kliniker',
+    price: '99',
+    features: ['Alla 82 scenarier', 'AI-journal (5/dag)', 'Alla verktyg', 'Email-support'],
+    cta: 'Prova 30 dagar gratis',
+    href: '/pricing',
+    featured: true,
+  },
+  {
+    name: 'Klinik',
+    price: '399',
+    features: ['5 användare', 'AI-journal (100/dag)', 'Admin-panel', 'Prioriterad support'],
+    cta: 'Kontakta oss',
+    href: '/pricing',
+    featured: false,
+  },
+];
+
+/* ─────────────────────────────────────────
+   Page
+───────────────────────────────────────── */
+export default function LandingPage() {
+  const featuresRef = useRef<HTMLElement>(null);
+
+  return (
+    <div data-theme="stitch-pro" className="min-h-screen" style={{ background: '#F9F7F2' }}>
+
+      {/* ══════════════ HEADER ══════════════ */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 h-20"
+        style={{ background: 'linear-gradient(135deg, #0d4a65 0%, #062f40 100%)' }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingLeft: '3rem',
+            paddingRight: '3rem',
+            height: '100%',
+          }}
+        >
+          {/* Logo */}
+          <Link
+            href="/"
+            aria-label="DentaGuide-Pro"
+            style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}
+          >
+            <Image
+              src="/logo/hexagon-2.png"
+              alt=""
+              width={40}
+              height={40}
+              aria-hidden="true"
+              style={{ display: 'block' }}
+            />
+            <span
+              style={{
+                fontFamily: 'Cormorant Garamond, Georgia, serif',
+                fontStyle: 'italic',
+                color: '#ffffff',
+                fontSize: '1.3rem',
+                fontWeight: 600,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              DentaGuide-Pro
+            </span>
+          </Link>
+
+          {/* Nav */}
+          <nav
+            aria-label="Huvudnavigation"
+            style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '2rem' }}
+          >
+            <button
+              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.88)', cursor: 'pointer', fontSize: '0.95rem', fontWeight: 500, padding: 0 }}
+              onClick={() => featuresRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Funktioner
+            </button>
+            <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.88)', textDecoration: 'none', fontSize: '0.95rem', fontWeight: 500 }}>
+              Priser
+            </Link>
+            <Link href="/login" style={{ color: 'rgba(255,255,255,0.88)', textDecoration: 'none', fontSize: '0.95rem', fontWeight: 500 }}>
+              Logga in
+            </Link>
+          </nav>
+
+          {/* CTA */}
+          <Link href="/registrera" style={{ textDecoration: 'none' }}>
+            <button
+              style={{
+                background: '#CC5833',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '0.6rem 1.5rem',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Kom igång gratis
+            </button>
+          </Link>
+        </div>
+      </header>
+
+      {/* ══════════════ HERO ══════════════ */}
+      <section
+        style={{
+          paddingTop: '5rem',
+          minHeight: '100vh',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '3rem',
+          paddingLeft: '3rem',
+          paddingRight: '3rem',
+          paddingBottom: '5rem',
+          alignItems: 'center',
+          background: 'linear-gradient(160deg, #e8f4f8 0%, #F9F7F2 60%)',
+        }}
+      >
+        {/* Left column */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85 }}
+        >
+          <h1
+            className="text-6xl font-serif italic"
+            style={{
+              fontFamily: 'Cormorant Garamond, Georgia, serif',
+              fontStyle: 'italic',
+              fontSize: 'clamp(2.4rem, 4.5vw, 3.75rem)',
+              color: '#0E3B52',
+              marginBottom: '1.5rem',
+              lineHeight: 1.18,
+            }}
+          >
+            Kliniskt beslutsstöd som tänker med dig
+          </h1>
+          <p
+            style={{
+              fontSize: '1.2rem',
+              color: '#4a5568',
+              marginBottom: '2rem',
+              lineHeight: 1.7,
+              maxWidth: '500px',
+            }}
+          >
+            82 evidensbaserade scenarier. AI-journalstöd. Allt direkt vid patientstolen.
+          </p>
+
+          {/* CTA buttons — always horizontal */}
+          <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem', alignItems: 'center' }}>
+            <Link href="/registrera" style={{ textDecoration: 'none' }}>
+              <button
+                className="px-8 py-4 bg-[#CC5833] text-white rounded-full font-bold"
+                style={{
+                  background: '#CC5833',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '9999px',
+                  padding: '1rem 2rem',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Starta gratis
+              </button>
+            </Link>
+            <button
+              className="px-8 py-4 border-2 border-[#0E3B52] text-[#0E3B52] rounded-full font-bold"
+              style={{
+                background: 'transparent',
+                color: '#0E3B52',
+                border: '2px solid #0E3B52',
+                borderRadius: '9999px',
+                padding: '1rem 2rem',
+                fontSize: '1rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+              onClick={() => featuresRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Se demo
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Right column */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.75 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.2, type: 'spring' }}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
+        >
+          <Image
+            src="/logo/hexagon-2.png"
+            alt="DentaGuide-Pro logotyp"
+            width={400}
+            height={400}
+            className="hex-logo-hero"
+            priority
+            style={{ display: 'block' }}
+          />
+          {/* Wave character — bottom-right corner of logo */}
+          <div style={{ position: 'absolute', bottom: '-1rem', right: '-1rem' }}>
+            <Image
+              src="/characters/wave.gif"
+              alt="DentaGuide vinkar välkommen"
+              width={160}
+              height={160}
+              style={{ display: 'block', filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.18))' }}
+              unoptimized
+            />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ══════════════ FEATURES ══════════════ */}
+      <section
+        ref={featuresRef}
+        id="features"
+        aria-labelledby="features-heading"
+        style={{
+          paddingTop: '5rem',
+          paddingBottom: '5rem',
+          paddingLeft: '3rem',
+          paddingRight: '3rem',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '2rem',
+          background: '#F9F7F2',
+        }}
+      >
+        {/* Card 1 */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0 }}
+          className="glass-bento hover-lift"
+          style={{
+            background: 'rgba(255,255,255,0.7)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '1.5rem',
+            padding: '2rem',
+            border: '1px solid rgba(226,232,240,0.8)',
+            boxShadow: '0 4px 24px rgba(14,59,82,0.07)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          whileHover={{ y: -6, boxShadow: '0 12px 40px rgba(14,59,82,0.13)' }}
+        >
+          <div
+            style={{
+              fontFamily: 'Newsreader, Georgia, serif',
+              fontStyle: 'italic',
+              fontSize: '3.75rem',
+              color: '#0E3B52',
+              lineHeight: 1,
+              marginBottom: '0.75rem',
+            }}
+          >
+            82
+          </div>
+          <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#0E3B52', marginBottom: '0.5rem' }}>
+            Kliniska scenarier
+          </h3>
+          <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.7 }}>
+            Evidensbaserade beslutsstöd för alla vanliga situationer i tandvården.
+          </p>
+        </motion.div>
+
+        {/* Card 2 — featured */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="glass-bento hover-lift"
+          style={{
+            background: 'rgba(255,255,255,0.85)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '1.5rem',
+            padding: '2rem',
+            border: '2px solid #CC5833',
+            boxShadow: '0 4px 32px rgba(204,88,51,0.12)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          whileHover={{ y: -6, boxShadow: '0 12px 48px rgba(204,88,51,0.18)' }}
+        >
+          <div
+            style={{
+              fontFamily: 'Newsreader, Georgia, serif',
+              fontStyle: 'italic',
+              fontSize: '3.75rem',
+              color: '#CC5833',
+              lineHeight: 1,
+              marginBottom: '0.75rem',
+            }}
+          >
+            5 min
+          </div>
+          <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#0E3B52', marginBottom: '0.5rem' }}>
+            AI-journalstöd
+          </h3>
+          <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.7 }}>
+            AI-strukturerar dina anteckningar till standardiserade journaltexter på nolltid.
+          </p>
+        </motion.div>
+
+        {/* Card 3 */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="glass-bento hover-lift"
+          style={{
+            background: 'rgba(255,255,255,0.7)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '1.5rem',
+            padding: '2rem',
+            border: '1px solid rgba(226,232,240,0.8)',
+            boxShadow: '0 4px 24px rgba(14,59,82,0.07)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          }}
+          whileHover={{ y: -6, boxShadow: '0 12px 40px rgba(14,59,82,0.13)' }}
+        >
+          <div
+            style={{
+              fontFamily: 'Newsreader, Georgia, serif',
+              fontStyle: 'italic',
+              fontSize: '3.75rem',
+              color: '#0E3B52',
+              lineHeight: 1,
+              marginBottom: '0.75rem',
+            }}
+          >
+            PWA
+          </div>
+          <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#0E3B52', marginBottom: '0.5rem' }}>
+            Mobil-först & Offline
+          </h3>
+          <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.7 }}>
+            Fungerar offline direkt vid stolen. Installera som app på din telefon.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* ══════════════ PRICING PREVIEW ══════════════ */}
+      <section
+        aria-labelledby="pricing-heading"
+        style={{
+          paddingTop: '5rem',
+          paddingBottom: '5rem',
+          paddingLeft: '3rem',
+          paddingRight: '3rem',
+          background: '#eef6fa',
+        }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          style={{ textAlign: 'center', marginBottom: '3rem' }}
+        >
+          <h2
+            id="pricing-heading"
+            style={{
+              fontFamily: 'Cormorant Garamond, Georgia, serif',
+              fontStyle: 'italic',
+              fontSize: '2.5rem',
+              color: '#0E3B52',
+              marginBottom: '0.75rem',
+            }}
+          >
+            Enkla priser
+          </h2>
+          <p style={{ color: '#6b7280' }}>Börja gratis — uppgradera när du är redo.</p>
+        </motion.div>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '2rem',
+            maxWidth: '1100px',
+            margin: '0 auto',
+          }}
+        >
+          {plans.map((plan, i) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              style={{
+                background: plan.featured ? '#ffffff' : 'rgba(255,255,255,0.7)',
+                borderRadius: '1.5rem',
+                padding: '2rem',
+                border: plan.featured ? '2px solid #CC5833' : '1px solid rgba(226,232,240,0.8)',
+                boxShadow: plan.featured
+                  ? '0 8px 40px rgba(204,88,51,0.14)'
+                  : '0 4px 24px rgba(14,59,82,0.07)',
+                position: 'relative',
+              }}
+            >
+              {plan.featured && (
+                <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
+                  <span
+                    style={{
+                      background: 'rgba(204,88,51,0.12)',
+                      color: '#CC5833',
+                      borderRadius: '9999px',
+                      padding: '0.25rem 0.9rem',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    Mest populär
+                  </span>
+                </div>
+              )}
+              <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#0E3B52', marginBottom: '0.5rem' }}>
+                {plan.name}
+              </h3>
+              <div style={{ marginBottom: '1.25rem' }}>
+                <span
+                  style={{
+                    fontFamily: 'Cormorant Garamond, Georgia, serif',
+                    fontStyle: 'italic',
+                    fontSize: '2.8rem',
+                    color: plan.featured ? '#CC5833' : '#0E3B52',
+                  }}
+                >
+                  {plan.price}
+                </span>
+                <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}> kr/mån</span>
+              </div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem 0' }}>
+                {plan.features.map((f) => (
+                  <li
+                    key={f}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontSize: '0.9rem',
+                      color: '#4a5568',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
+                    <span style={{ color: '#2D6A4F' }} aria-hidden="true">✓</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href={plan.href} style={{ display: 'block', textDecoration: 'none' }}>
+                <button
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '9999px',
+                    fontSize: '0.9rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    background: plan.featured ? '#CC5833' : 'transparent',
+                    color: plan.featured ? '#ffffff' : '#0E3B52',
+                    border: plan.featured ? 'none' : '2px solid #0E3B52',
+                  }}
+                >
+                  {plan.cta}
+                </button>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <Link href="/pricing" style={{ color: '#CC5833', fontWeight: 600, fontSize: '0.9rem' }}>
+            Se alla priser och funktioner →
+          </Link>
+        </div>
+      </section>
+
+      {/* ══════════════ FOOTER ══════════════ */}
+      <footer
+        role="contentinfo"
+        style={{
+          background: '#0E3B52',
+          color: '#ffffff',
+          paddingTop: '3rem',
+          paddingBottom: '3rem',
+          paddingLeft: '3rem',
+          paddingRight: '3rem',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.75rem' }}>
+          <Image src="/logo/hexagon-2.png" alt="" width={28} height={28} aria-hidden="true" />
+          <span
+            style={{
+              fontFamily: 'Cormorant Garamond, Georgia, serif',
+              fontStyle: 'italic',
+              color: '#ffffff',
+              fontSize: '1rem',
+              fontWeight: 600,
+            }}
+          >
+            DentaGuide-Pro
+          </span>
+        </div>
+
+        <nav aria-label="Sidfotslänkar" style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          {[['Om', '/om'], ['Kontakt', '/kontakt'], ['Integritet', '/integritet'], ['Villkor', '/villkor']].map(
+            ([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', textDecoration: 'none' }}
+              >
+                {label}
+              </Link>
+            )
+          )}
+        </nav>
+
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem' }}>
+          <p
+            role="note"
+            style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem', marginBottom: '0.5rem' }}
+          >
+            PSL 2010:659 — Ersätter inte kliniskt omdöme
+          </p>
+          <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.75rem' }}>
+            © 2026 DentaGuide-Pro. Alla rättigheter förbehållna.
+          </p>
+        </div>
+      </footer>
+
+      {/* Scroll character */}
+      <ScrollCharacter />
+    </div>
+  );
+}
