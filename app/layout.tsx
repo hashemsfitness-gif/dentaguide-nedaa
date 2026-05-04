@@ -1,19 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Newsreader, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import * as Sentry from "@sentry/nextjs";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import "./globals.css";
 
-// ── Fonts ───────────────────────────────────────────────────────
-const inter = Inter({
-  variable: "--font-geist-sans",
-  subsets: ["latin", "latin-ext"],
+// ── Fonts (matchar DESIGN_SYSTEM_v2.md) ─────────────────────────
+const newsreader = Newsreader({
+  variable: "--font-display",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-geist-mono",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 
@@ -90,7 +100,7 @@ export default function RootLayout({
   return (
     <html lang="sv" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${newsreader.variable} ${plusJakartaSans.variable} ${ibmPlexMono.variable} antialiased`}
       >
         {/* Skip to main content — WCAG 2.1 AA */}
         <a href="#main-content" className="skip-link">

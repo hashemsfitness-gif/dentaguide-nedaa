@@ -84,15 +84,15 @@ export default function ManuellJournalmall() {
     while ((match = regex.exec(text)) !== null) {
       parts.push(text.substring(lastIndex, match.index));
       
-      const pKey = \`\${placeholderIndex}_\${match[1]}\`;
+      const pKey = `${placeholderIndex}_${match[1]}`;
       const val = placeholders[pKey] || '';
       
       parts.push(
         <span 
           key={pKey}
-          className={\`cursor-pointer inline-block px-1 rounded border \${val ? 'bg-green-100 border-green-300 text-green-800' : 'bg-orange-100 border-orange-300 border-dashed text-orange-800'}\`}
+          className={`cursor-pointer inline-block px-1 rounded border ${val ? 'bg-green-100 border-green-300 text-green-800' : 'bg-orange-100 border-orange-300 border-dashed text-orange-800'}`}
           onClick={() => {
-            const newVal = prompt(\`Fyll i värde för [\${match[1]}]:\`, val);
+            const newVal = prompt(`Fyll i värde för [${match[1]}]:`, val);
             if (newVal !== null) {
               updatePlaceholder(pKey, newVal);
             }
@@ -117,7 +117,7 @@ export default function ManuellJournalmall() {
     const regex = /\[(.*?)\]/g;
     let placeholderIndex = 0;
     text = text.replace(regex, (match, p1) => {
-      const pKey = \`\${placeholderIndex}_\${p1}\`;
+      const pKey = `${placeholderIndex}_${p1}`;
       placeholderIndex++;
       return placeholders[pKey] || match;
     });
@@ -126,14 +126,14 @@ export default function ManuellJournalmall() {
       text += '\n\nTillagda åtgärder:\n';
       selectedScenario.extraAtgard.forEach(a => {
         if (activeAtgarder.has(a.id)) {
-          text += \`- \${a.text}\n\`;
+          text += `- ${a.text}\n`;
         }
       });
     }
 
     if (uppfoljning) {
       // Assuming uppföljning replaces the existing one or appends
-      text = text.replace(/Uppföljning:.*$/m, \`Uppföljning: \${uppfoljning}\`);
+      text = text.replace(/Uppföljning:.*$/m, `Uppföljning: ${uppfoljning}`);
     }
 
     return text;
@@ -149,13 +149,13 @@ export default function ManuellJournalmall() {
 
   const generateRemiss = () => {
     if (!selectedScenario) return '';
-    let text = \`REMISS - \${remissMottagare}\\n\\n\`;
-    text += \`Diagnos: \${selectedScenario.name} (\${selectedScenario.icd})\\n\\n\`;
+    let text = `REMISS - ${remissMottagare}\n\n`;
+    text += `Diagnos: ${selectedScenario.name} (${selectedScenario.icd})\n\n`;
     const plainText = getPlainText();
-    text += \`Klinisk bedömning och initial åtgärd:\\n\`;
-    text += plainText.substring(0, 300) + (plainText.length > 300 ? '...' : '') + '\\n\\n';
+    text += `Klinisk bedömning och initial åtgärd:\n`;
+    text += plainText.substring(0, 300) + (plainText.length > 300 ? '...' : '') + '\n\n';
     if (selectedScenario.lakemedel) {
-      text += \`Läkemedel: \${selectedScenario.lakemedel}\\n\`;
+      text += `Läkemedel: ${selectedScenario.lakemedel}\n`;
     }
     navigator.clipboard.writeText(text);
     alert('Remiss kopierad!');
@@ -182,7 +182,7 @@ export default function ManuellJournalmall() {
             {(['all', 'diagnos', 'behandling', 'symptom'] as SearchMode[]).map(mode => (
               <button 
                 key={mode}
-                className={\`px-3 py-1 rounded-full border \${searchMode === mode ? 'bg-slate-700 border-slate-500 text-white' : 'border-slate-700 text-slate-400 hover:border-slate-500'}\`}
+                className={`px-3 py-1 rounded-full border ${searchMode === mode ? 'bg-slate-700 border-slate-500 text-white' : 'border-slate-700 text-slate-400 hover:border-slate-500'}`}
                 onClick={() => setSearchMode(mode)}
               >
                 {mode.toUpperCase()}
@@ -236,7 +236,7 @@ export default function ManuellJournalmall() {
                 {selectedScenario.mallar.map(mall => (
                   <div 
                     key={mall.id}
-                    className={\`p-3 border rounded-lg cursor-pointer transition-colors \${selectedMall?.id === mall.id ? 'bg-orange-600 text-white border-orange-600' : 'hover:border-orange-500 bg-white text-slate-700'}\`}
+                    className={`p-3 border rounded-lg cursor-pointer transition-colors ${selectedMall?.id === mall.id ? 'bg-orange-600 text-white border-orange-600' : 'hover:border-orange-500 bg-white text-slate-700'}`}
                     onClick={() => handleSelectMall(mall)}
                   >
                     <div className="font-bold text-sm">{mall.label}</div>
@@ -253,7 +253,7 @@ export default function ManuellJournalmall() {
                 {selectedScenario.extraAtgard.map(atg => (
                   <label 
                     key={atg.id}
-                    className={\`flex items-center gap-2 p-2 border rounded-lg cursor-pointer \${activeAtgarder.has(atg.id) ? 'bg-orange-50 border-orange-300' : 'bg-white hover:bg-slate-50'}\`}
+                    className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer ${activeAtgarder.has(atg.id) ? 'bg-orange-50 border-orange-300' : 'bg-white hover:bg-slate-50'}`}
                   >
                     <input 
                       type="checkbox" 
@@ -261,7 +261,7 @@ export default function ManuellJournalmall() {
                       checked={activeAtgarder.has(atg.id)}
                       onChange={() => toggleAtgard(atg.id)}
                     />
-                    <span className={\`text-sm \${activeAtgarder.has(atg.id) ? 'text-orange-800 font-medium' : 'text-slate-600'}\`}>{atg.label}</span>
+                    <span className={cn("text-sm", activeAtgarder.has(atg.id) ? "text-orange-800 font-medium" : "text-slate-600")}>{atg.label}</span>
                   </label>
                 ))}
               </div>
@@ -285,7 +285,7 @@ export default function ManuellJournalmall() {
                 return (
                   <button 
                     key={u}
-                    className={\`px-3 py-1 rounded-full text-xs font-mono border \${uppfoljning === uText ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 hover:border-slate-400'}\`}
+                    className={`px-3 py-1 rounded-full text-xs font-mono border ${uppfoljning === uText ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 hover:border-slate-400'}`}
                     onClick={() => setUppfoljning(uText)}
                   >
                     {u}

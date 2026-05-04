@@ -185,7 +185,7 @@ export function AntibiotikaTool() {
               &larr; Tillbaka
             </button>
             <h3 className="text-2xl font-bold text-[#0E3B52] mb-2">Är infektionen svår?</h3>
-            <p className="text-slate-600 mb-8">Föreligger kraftig allmänpåverkan, feber >38°C, eller risk för spridning (ex. svullnad mot munbotten/svalg, trismus)?</p>
+            <p className="text-slate-600 mb-8">Föreligger kraftig allmänpåverkan, feber &gt;38°C, eller risk för spridning (ex. svullnad mot munbotten/svalg, trismus)?</p>
             <div className="grid gap-4 md:grid-cols-2">
               <button 
                 onClick={() => { setSevere('ja'); setStep('result'); }}
