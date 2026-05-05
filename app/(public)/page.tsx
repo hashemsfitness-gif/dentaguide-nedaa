@@ -137,24 +137,8 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Höger Kolumn: Hexagon-logo + Animerad Logga */}
-              <div className="relative flex flex-col justify-center items-center z-10 gap-6">
-
-                {/* HEXAGON-LOGO MED PULSE-ANIMATION */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3, duration: 0.8, type: 'spring' }}
-                  className="hex-logo-hero"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/logo/hexagon-2.png"
-                    alt="DentaGuide-Pro Logo"
-                    className="w-48 h-48 object-contain"
-                  />
-                </motion.div>
-
+              {/* Höger Kolumn: Animerad Logga */}
+              <div className="relative flex justify-center items-center z-10">
                 <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden border border-white/10 bg-header-from/50 shadow-2xl group">
                   <video
                     autoPlay
@@ -165,31 +149,6 @@ export default function LandingPage() {
                   >
                     <source src="/logo/logo-animated.mp4" type="video/mp4" />
                   </video>
-
-                  {/* Certifieringsbadge (Flytande) */}
-                  <motion.div
-                    animate={{ y: [0, -10, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -bottom-6 -left-6 bg-white text-dark-surface p-4 rounded-2xl shadow-xl flex items-center gap-3 max-w-[200px]"
-                  >
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse flex-shrink-0"></div>
-                    <p className="text-xs font-semibold leading-tight">Synkad med Strama & Nationella Riktlinjer 2024</p>
-                  </motion.div>
-
-                  {/* WAVE-KARAKTÄR I HÖRNET */}
-                  <motion.div
-                    initial={{ opacity: 0, x: 50, y: 50 }}
-                    animate={{ opacity: 1, x: 0, y: 0 }}
-                    transition={{ delay: 1, duration: 0.6, type: 'spring' }}
-                    className="absolute -bottom-8 -right-8 z-20"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/characters/wave.gif"
-                      alt="Välkommen till DentaGuide-Pro"
-                      className="w-32 h-32 object-contain drop-shadow-xl"
-                    />
-                  </motion.div>
                 </div>
               </div>
 
@@ -310,15 +269,6 @@ export default function LandingPage() {
                     className="absolute -bottom-4 -right-4 w-32 opacity-90 mix-blend-multiply"
                   />
                 </div>
-
-                {/* THINK.GIF integrerad snyggt nere i hörnet */}
-                <img
-                  src="/characters/think.gif"
-                  alt="Tänkande AI"
-                  className="absolute -bottom-4 -right-4 w-32 opacity-90 mix-blend-multiply"
-                />
-              </div>
-
               {/* Synkade Riktlinjer */}
               <div className="bg-white rounded-full p-6 flex items-center justify-between border border-slate-200 shadow-sm hover:border-secondary/50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-3">
