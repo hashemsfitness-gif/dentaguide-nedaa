@@ -1,10 +1,17 @@
 "use client";
 
-import { use } from "react";
+import { use, useState, useEffect, useRef } from "react";
 import { notFound } from "next/navigation";
 import { ScenarioLayout } from "@/components/scenario/ScenarioLayout";
 import { allEndodontiScenarios } from "./data";
-import { useState, useEffect } from "react";
+
+const SECTIONS = [
+  { id: "s-snabb", label: "⚡ Snabb Översikt" },
+  { id: "s-anamnes", label: "❓ Anamnes" },
+  { id: "s-status", label: "🔬 Status" },
+  { id: "s-behandling", label: "🔧 Behandling" },
+  { id: "s-journal", label: "📝 Journal" },
+];
 
 export default function EndodontiScenarioPage({
   params,
@@ -18,11 +25,51 @@ export default function EndodontiScenarioPage({
     notFound();
   }
 
+  const [activeTab, setActiveTab] = useState("s-snabb");
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveTab(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: "-20% 0px -60% 0px" }
+    );
+
+    SECTIONS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observerRef.current?.observe(el);
+    });
+
+    return () => observerRef.current?.disconnect();
+  }, []);
+
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const copyJournal = async (text: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
     }
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000);
   };
 
   return (
@@ -37,33 +84,27 @@ export default function EndodontiScenarioPage({
       isPediatric={false}
     >
       <div className="space-y-8 pb-20">
-        
+
         {/* Navigation Pills */}
         <div className="flex flex-wrap gap-3 mb-8">
-          <button onClick={() => scrollToSection('s-snabb')} className="pill-button active">
-            ⚡ Snabb Översikt
-          </button>
-          <button onClick={() => scrollToSection('s-anamnes')} className="pill-button">
-            ❓ Anamnes
-          </button>
-          <button onClick={() => scrollToSection('s-status')} className="pill-button">
-            🔬 Status
-          </button>
-          <button onClick={() => scrollToSection('s-behandling')} className="pill-button">
-            🔧 Behandling
-          </button>
-          <button onClick={() => scrollToSection('s-journal')} className="pill-button">
-            📝 Journal
-          </button>
+          {SECTIONS.map(({ id, label }) => (
+            <button
+              key={id}
+              onClick={() => scrollToSection(id)}
+              className={`pill-button${activeTab === id ? " active" : ""}`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
-        {/* Snabböversikt Card */}
-        <section id="s-snabb" className="glass-bento">
+        {/* Snabböversikt */}
+        <section id="s-snabb" className="glass-bento p-6">
           <h2 className="text-2xl mb-4 font-display italic text-primary flex items-center gap-2">
             <span className="bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center text-sm not-italic">⚡</span>
             Scenario: {scenario.title}
           </h2>
-          
+
           <div className="space-y-4">
             {scenario.isAcute && (
               <div className="bg-red-50/80 border border-red-200 text-red-800 p-4 rounded-xl flex gap-3 items-start">
@@ -74,7 +115,7 @@ export default function EndodontiScenarioPage({
                 </div>
               </div>
             )}
-            
+
             <div className="grid gap-3 mt-4">
               {scenario.snabbOversikt.map((item: any, i: number) => (
                 <div key={i} className="flex flex-col sm:flex-row gap-1 sm:gap-4 border-b border-black/5 pb-3 last:border-0">
@@ -86,13 +127,13 @@ export default function EndodontiScenarioPage({
           </div>
         </section>
 
-        {/* Anamnes Card */}
-        <section id="s-anamnes" className="glass-bento">
+        {/* Anamnes */}
+        <section id="s-anamnes" className="glass-bento p-6">
           <h2 className="text-2xl mb-6 font-display italic text-primary flex items-center gap-2">
             <span className="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center text-sm not-italic">2</span>
             Anamnes – Obligatoriska frågor
           </h2>
-          
+
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white/60 rounded-xl p-5 border border-white/80">
               <h3 className="font-bold text-sm uppercase tracking-wide text-primary mb-4">Obligatoriska frågor</h3>
@@ -125,13 +166,13 @@ export default function EndodontiScenarioPage({
           </div>
         </section>
 
-        {/* Status Card */}
-        <section id="s-status" className="glass-bento">
+        {/* Status */}
+        <section id="s-status" className="glass-bento p-6">
           <h2 className="text-2xl mb-6 font-display italic text-primary flex items-center gap-2">
             <span className="bg-teal-100 text-teal-700 w-8 h-8 rounded-full flex items-center justify-center text-sm not-italic">👁️</span>
             Status – Inspektion & Undersökning
           </h2>
-          
+
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-white/60 rounded-xl p-5 border border-white/80 flex gap-3">
               <span className="text-2xl">🧊</span>
@@ -140,7 +181,7 @@ export default function EndodontiScenarioPage({
                 <p className="font-medium text-foreground">{scenario.status.sensibilitet}</p>
               </div>
             </div>
-            
+
             <div className="bg-white/60 rounded-xl p-5 border border-white/80 flex gap-3">
               <span className="text-2xl">🔨</span>
               <div>
@@ -174,8 +215,8 @@ export default function EndodontiScenarioPage({
           </div>
         </section>
 
-        {/* Diagnostik Card */}
-        <section className="glass-bento">
+        {/* Diagnostik */}
+        <section className="glass-bento p-6">
           <h2 className="text-2xl mb-6 font-display italic text-primary flex items-center gap-2">
             <span className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center text-sm not-italic">📋</span>
             Diagnostik
@@ -215,8 +256,8 @@ export default function EndodontiScenarioPage({
           </div>
         </section>
 
-        {/* Behandling Card */}
-        <section id="s-behandling" className="glass-bento">
+        {/* Behandling */}
+        <section id="s-behandling" className="glass-bento p-6">
           <h2 className="text-2xl mb-6 font-display italic text-primary flex items-center gap-2">
             <span className="bg-orange-100 text-secondary w-8 h-8 rounded-full flex items-center justify-center text-sm not-italic">⚙️</span>
             Behandlingsprotokoll
@@ -232,9 +273,9 @@ export default function EndodontiScenarioPage({
           <div className="grid md:grid-cols-2 gap-4">
             {scenario.behandling.alternativ.map((alt: any, i: number) => (
               <div key={i} className="bg-white/70 rounded-2xl p-6 border border-white shadow-sm hover-lift relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-secondary to-orange-300"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-secondary to-orange-300" />
                 <h3 className="font-bold text-lg text-primary mb-2">{alt.title}</h3>
-                
+
                 {alt.indikation && (
                   <p className="text-sm text-muted-foreground mb-4 font-medium bg-black/5 inline-block px-2 py-1 rounded">
                     Indikation: {alt.indikation}
@@ -271,7 +312,7 @@ export default function EndodontiScenarioPage({
         {/* Uppföljning & Differentialdiagnoser */}
         <section className="grid md:grid-cols-2 gap-8">
           {scenario.uppfoljning && (
-            <div className="glass-bento">
+            <div className="glass-bento p-6">
               <h2 className="text-xl mb-4 font-display italic text-primary flex items-center gap-2">
                 <span className="text-lg not-italic">📊</span> Uppföljning
               </h2>
@@ -282,7 +323,7 @@ export default function EndodontiScenarioPage({
           )}
 
           {scenario.diffDiagnoser && (
-            <div className="glass-bento">
+            <div className="glass-bento p-6">
               <h2 className="text-xl mb-4 font-display italic text-primary flex items-center gap-2">
                 <span className="text-lg not-italic">🔍</span> Differentialdiagnoser
               </h2>
@@ -301,19 +342,24 @@ export default function EndodontiScenarioPage({
           )}
         </section>
 
-        {/* Journal Card */}
-        <section id="s-journal" className="glass-bento">
+        {/* Journal */}
+        <section id="s-journal" className="glass-bento p-6">
           <h2 className="text-2xl mb-6 font-display italic text-primary flex items-center gap-2">
             <span className="text-xl not-italic">📝</span>
             Dokumentation (Journalmallar)
           </h2>
-          
+
           <div className="space-y-6">
             {scenario.journal.map((mall: any, i: number) => (
               <div key={i}>
                 <h4 className="font-bold text-sm uppercase tracking-wide text-muted-foreground mb-2 ml-1">{mall.titel}</h4>
                 <div className="journal-box">
-                  <button className="copy-btn hover:bg-secondary hover:text-white hover:border-secondary transition-colors">Kopiera</button>
+                  <button
+                    className="copy-btn hover:bg-secondary hover:text-white hover:border-secondary transition-colors"
+                    onClick={() => copyJournal(mall.text, i)}
+                  >
+                    {copiedIndex === i ? "✓ Kopierad" : "Kopiera"}
+                  </button>
                   {mall.text}
                 </div>
               </div>

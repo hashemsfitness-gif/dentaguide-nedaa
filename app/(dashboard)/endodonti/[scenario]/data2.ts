@@ -109,8 +109,8 @@ Behandling: LA. Avlägsna fyllning. Kuspreducering. Bondad kompositfyllning med 
       text: "Utvärdera symtom efter 2-4 veckor. Smärtfri -> Permanent krona. Kvarstående smärta -> Endodonti/Extraktion."
     },
     redFlags: [
-      { title: "Risk för rotfraktur", description: "Djup smal ficka, profus blödning vid sondering", type: "local" },
-      { title: "Pulpaskada", description: "Pulpasymtom, kvarstående nattvärk efter stabilisering", type: "risk" }
+      { id: "cts-1", title: "Risk för rotfraktur", description: "Djup smal ficka, profus blödning vid sondering", severity: "warning" as const },
+      { id: "cts-2", title: "Pulpaskada", description: "Pulpasymtom, kvarstående nattvärk efter stabilisering", severity: "warning" as const }
     ],
     diffDiagnoser: [
       { namn: "Symtomatisk apikal parodontit", kod: "K04.4", skillnad: "Nekrotisk tand, spontan eller ihållande värk vid belastning." },
@@ -191,7 +191,7 @@ Info: Undvik belastning närmaste dagarna. Om ej bättre -> åter.`
       text: "Om symtom inte försvinner efter 1-2 veckor -> ny bedömning (rotbehandling om pulpan tagit permanent skada)."
     },
     redFlags: [
-      { title: "Icke-göra", description: "Dysocklusion som inte kan verifieras kliniskt ska EJ slipas (Socialstyrelsen).", type: "risk" }
+      { id: "occ-1", title: "Icke-göra", description: "Dysocklusion som inte kan verifieras kliniskt ska EJ slipas (Socialstyrelsen).", severity: "warning" as const }
     ],
     diffDiagnoser: [
       { namn: "Symtomatisk apikal parodontit", kod: "K04.4", skillnad: "Tanden nekrotisk." },
@@ -282,8 +282,8 @@ Info: Instr. mjuk borstteknik. Rek tandkräm mot ilningar. Undvik surt. Åter om
       text: "God prognos. Ilningar minskar med tiden (sclerosering). Uppföljning vid nästa revision."
     },
     redFlags: [
-      { title: "Smärtan ändrar karaktär", description: "Övergår till molande/spontan värk = Pulpit.", type: "risk" },
-      { title: "Erosionsskador", description: "Generella erosioner -> Utred orsak (reflux/ätstörning), läkarremiss.", type: "systemic" }
+      { id: "sens-1", title: "Smärtan ändrar karaktär", description: "Övergår till molande/spontan värk = Pulpit.", severity: "warning" as const },
+      { id: "sens-2", title: "Erosionsskador", description: "Generella erosioner -> Utred orsak (reflux/ätstörning), läkarremiss.", severity: "warning" as const }
     ]
   },
   "postendo-smarta": {
@@ -369,10 +369,10 @@ Plan: Telefon 3 dgr.`
       text: "Utan svullnad klingar av 2-5 dgr. Med svullnad minskar 24-48h efter dränage. Varning: Hör av dig vid andnings/sväljsvårigheter."
     },
     redFlags: [
-      { title: "Systemisk Spridning", description: "Feber >38°C, sepsis-tecken. -> Ab + dränage", type: "systemic" },
-      { title: "Trismus", description: "Gap <20-25 mm -> Käkkirurg", type: "systemic" },
-      { title: "Dysfagi/Dyspné", description: "Svårt att svälja/andas -> 112 / SJUKHUS", type: "systemic" },
-      { title: "Anatomisk spridning", description: "Munbotten (Ludwigs Angina), svullnad mot ögat -> Sjukhus", type: "local" }
+      { id: "fla-1", title: "Systemisk Spridning", description: "Feber >38°C, sepsis-tecken. -> Ab + dränage", severity: "critical" as const },
+      { id: "fla-2", title: "Trismus", description: "Gap <20-25 mm -> Käkkirurg", severity: "critical" as const },
+      { id: "fla-3", title: "Dysfagi/Dyspné", description: "Svårt att svälja/andas -> 112 / SJUKHUS", severity: "critical" as const },
+      { id: "fla-4", title: "Anatomisk spridning", description: "Munbotten (Ludwigs Angina), svullnad mot ögat -> Sjukhus", severity: "critical" as const }
     ]
   }
 };

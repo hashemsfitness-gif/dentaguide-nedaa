@@ -1,4 +1,4 @@
-import { RedFlag } from "@/components/scenario/RodaFlaggor";
+import type { RedFlag } from "@/components/scenario/ScenarioLayout";
 
 export interface ScenarioData {
   id: string;
@@ -123,9 +123,9 @@ Info: Om smärtan övergår till ihållande värk -> åter för ev. rotbehandlin
       text: "Normal läkning: Ilningar kan kvarstå några dagar till veckor efter fyllning (särskilt komposit) men ska gradvis minska.\nVid försämring (spontansmärta, nattvärk): Övergått till irreversibel pulpit. Kräver endodonti."
     },
     redFlags: [
-      { title: "Systemiska tecken", description: "Feber >38.5°C, Trismus, Svullnad som påverkar andning/sväljning", type: "systemic" },
-      { title: "Lokala tecken", description: "Snabbt progredierande smärta (timmar), spontan blödning, uttalad perkussionsömhet, fluktuation", type: "local" },
-      { title: "Riskfaktorer", description: "Immunosuppression, antikoagulantia, graviditet, bisfosfonater", type: "risk" }
+      { id: "rev-1", title: "Systemiska tecken", description: "Feber >38.5°C, Trismus, Svullnad som påverkar andning/sväljning", severity: "critical" as const },
+      { id: "rev-2", title: "Lokala tecken", description: "Snabbt progredierande smärta (timmar), spontan blödning, uttalad perkussionsömhet, fluktuation", severity: "warning" as const },
+      { id: "rev-3", title: "Riskfaktorer", description: "Immunosuppression, antikoagulantia, graviditet, bisfosfonater", severity: "warning" as const },
     ],
     diffDiagnoser: [
       { namn: "Blottade tandhalsar / Dentinhypersensitivitet", kod: "K03.1", skillnad: "Mer ytlig, synlig recession, normal rtg, perkussion u.a." },
@@ -249,9 +249,9 @@ Info: Undvik spolning/sugning i såret 24 h. Ibuprofen 400-600 mg x 3 i 2-3 dgr.
       text: "Efter akutrensning: Återbesök 7-14 dgr. Vid försämring (ökad smärta/svullnad) -> akut åter.\nEfter extraktion: Kontroll 7 dgr v.b. Varning för alveolit (dry socket)."
     },
     redFlags: [
-      { title: "Systemiska tecken", description: "Feber >38.5°C + frossa, Trismus (<20 mm), Dysfagi, Dyspné", type: "systemic" },
-      { title: "Lokala tecken", description: "Snabbt progredierande svullnad, fluktuation, cellulit", type: "local" },
-      { title: "Riskfaktorer", description: "Okontrollerad diabetes, Neutropeni, IV-bisfosfonater, Warfarin INR>4.0", type: "risk" }
+      { id: "irr-1", title: "Systemiska tecken", description: "Feber >38.5°C + frossa, Trismus (<20 mm), Dysfagi, Dyspné", severity: "critical" as const },
+      { id: "irr-2", title: "Lokala tecken", description: "Snabbt progredierande svullnad, fluktuation, cellulit", severity: "critical" as const },
+      { id: "irr-3", title: "Riskfaktorer", description: "Okontrollerad diabetes, Neutropeni, IV-bisfosfonater, Warfarin INR>4.0", severity: "warning" as const },
     ],
     diffDiagnoser: [
       { namn: "Sinuit (maxillär)", kod: "J32.0", skillnad: "Smärta flera tänder, förvärras framåtlutning, sens normal." },
@@ -364,7 +364,7 @@ Plan: Åter 7-14 dgr def rf.`
       text: "Symtomkontroll 24-48h. Dag 1-2 kan perkussionsömhet kvarstå. Dag 3-5 tydlig förbättring. Komplikationer: Svullnad/Feber -> Abscess."
     },
     redFlags: [
-      { title: "Indikerar abscess/spridd", description: "Synlig svullnad utvecklas, Feber >38°C, Trismus, Allmänpåverkan, Fluktuation", type: "systemic" }
+      { id: "aap-1", title: "Indikerar abscess/spridd", description: "Synlig svullnad utvecklas, Feber >38°C, Trismus, Allmänpåverkan, Fluktuation", severity: "critical" as const },
     ],
     diffDiagnoser: [
       { namn: "Parodontal abscess", kod: "K05.2", skillnad: "Djup ficka, svullnad lateralt, sens ofta normal." },
@@ -470,7 +470,7 @@ Plan: Åter om 2-3 dgr (ta bort drain). Akut v.b.`
       text: "Telefon 24h. Återbesök 2-3 dagar (ta bort drain). Feber ska ner på 24h, svullnad avta på 48h. Om försämrad -> Remiss."
     },
     redFlags: [
-      { title: "OMEDELBAR SJUKHUSREMISS", description: "Ludwig's angina (bilateral golvsvullnad+trismus+dysfagi), Pterygomandibulär abscess, Retropharyngeal abscess, Sepsis, Luftvägsobstruktion", type: "systemic" }
+      { id: "abs-1", title: "OMEDELBAR SJUKHUSREMISS", description: "Ludwig's angina (bilateral golvsvullnad+trismus+dysfagi), Pterygomandibulär abscess, Retropharyngeal abscess, Sepsis, Luftvägsobstruktion", severity: "critical" as const },
     ],
     diffDiagnoser: [
       { namn: "Parodontal abscess", kod: "K05.2", skillnad: "Lateral svullnad, djup ficka" },
