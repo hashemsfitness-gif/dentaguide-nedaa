@@ -56,22 +56,22 @@ export default function PedodontiPage() {
 
       <div className="max-w-[1800px] mx-auto grid grid-cols-12 gap-10">
         
-        {/* COLUMN 1: Clinical Scenarios List (2.5/12) */}
+        {/* COLUMN 1: Clinical Scenarios List (3/12) */}
         <div className="col-span-3 space-y-10">
-          <div>
+          <div className="bg-white/50 backdrop-blur-sm rounded-[40px] p-8 border border-white shadow-clay">
             <h2 className="text-xl font-display italic text-slate-800 mb-2">Clinical Scenarios</h2>
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Pediatric Trauma Host</p>
             
             {/* Category Selector (Pills) */}
-            <div className="flex flex-col gap-2 mb-10">
+            <div className="flex flex-col gap-1 mb-8">
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`text-left px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                  className={`text-left px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                     selectedCategory === cat 
-                      ? 'text-red-500 bg-red-50/50' 
-                      : 'text-slate-400 hover:text-slate-600'
+                      ? 'text-red-500 bg-red-50' 
+                      : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   {cat}
@@ -79,37 +79,37 @@ export default function PedodontiPage() {
               ))}
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
               {filteredScenarios.map(([key, scenario]) => (
                 <button
                   key={key}
                   onClick={() => setSelectedScenarioKey(key)}
-                  className={`w-full text-left flex items-center gap-4 p-4 rounded-2xl transition-all group ${
+                  className={`w-full text-left flex items-center gap-4 p-5 rounded-[24px] transition-all group border-2 ${
                     selectedScenarioKey === key 
-                      ? 'bg-[#0E2C4B] text-white shadow-xl scale-[1.02]' 
-                      : 'hover:bg-white hover:shadow-md'
+                      ? 'bg-[#0E2C4B] border-[#0E2C4B] text-white shadow-xl scale-[1.02]' 
+                      : 'bg-white border-transparent hover:border-slate-100 hover:shadow-md'
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                    selectedScenarioKey === key ? 'bg-white/10' : 'bg-slate-100'
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    selectedScenarioKey === key ? 'bg-white/10' : 'bg-slate-50'
                   }`}>
-                    <span className="text-xs">{scenario.isAcute ? '🩹' : '🦷'}</span>
+                    <span className="text-lg">{scenario.isAcute ? '🩹' : '🦷'}</span>
                   </div>
-                  <div>
-                    <span className={`text-[9px] font-black uppercase tracking-widest block mb-0.5 ${
+                  <div className="flex-1">
+                    <span className={`text-[9px] font-black uppercase tracking-widest block mb-1 ${
                       selectedScenarioKey === key ? 'text-blue-300' : 'text-slate-400'
                     }`}>
                       {scenario.id}
                     </span>
-                    <h4 className="text-xs font-bold leading-tight">{scenario.title}</h4>
+                    <h4 className="text-[13px] font-bold leading-tight tracking-tight">{scenario.title}</h4>
                   </div>
                 </button>
               ))}
             </div>
           </div>
           
-          <button className="w-full py-4 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-[1.02] transition-transform">
-             Hem Gäst
+          <button className="w-full py-5 bg-slate-900 text-white rounded-full text-[11px] font-black uppercase tracking-widest shadow-xl hover:scale-[1.05] active:scale-95 transition-all">
+             Arkiv — Signerade Protokoll
           </button>
         </div>
 
@@ -118,7 +118,7 @@ export default function PedodontiPage() {
            <ScenarioContent scenario={currentScenario} />
         </div>
 
-        {/* COLUMN 3: Clinical Tools (3.5/12) */}
+        {/* COLUMN 3: Clinical Tools (3/12) */}
         <div className="col-span-3 space-y-8">
           <PediatricDosering />
           
@@ -139,19 +139,21 @@ export default function PedodontiPage() {
                 </div>
                 <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Röda Flaggor</h3>
              </div>
-             <div className="space-y-4">
-                <div className="flex gap-3">
-                   <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
-                   <p className="text-[11px] text-slate-600 leading-relaxed">
-                      Medvetslöshet/kräkning — misstänk hjärnskakning.
-                   </p>
-                </div>
-                <div className="flex gap-3">
-                   <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
-                   <p className="text-[11px] text-slate-600 leading-relaxed">
-                      Käkbensfraktur — kontakta AKUT.
-                   </p>
-                </div>
+             <div className="space-y-6">
+                {currentScenario.redFlags.map((flag) => (
+                  <div key={flag.id} className="flex gap-4 p-4 rounded-2xl bg-red-50/50 border border-red-100">
+                     <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />
+                     <div>
+                        <h5 className="text-[11px] font-black text-red-800 uppercase tracking-wide mb-1">{flag.title}</h5>
+                        <p className="text-[10px] text-red-600 leading-relaxed font-medium">
+                           {flag.description}
+                        </p>
+                     </div>
+                  </div>
+                ))}
+                {currentScenario.redFlags.length === 0 && (
+                  <p className="text-[11px] text-slate-400 italic text-center py-4">Inga specifika varningsflaggor för detta scenario.</p>
+                )}
              </div>
           </div>
 

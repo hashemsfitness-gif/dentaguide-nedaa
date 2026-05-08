@@ -46,7 +46,7 @@ const SVFRemissForm = () => (
     <div className="space-y-2">
       <label className="text-[9px] uppercase font-bold text-white/40">Misstanke-grund</label>
       <select className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-xs text-white outline-none">
-        <option>Icke-läkande sår > 3v</option>
+        <option>Icke-läkande sår &gt; 3v</option>
         <option>Erytroplaki</option>
         <option>Leukoplaki med sår</option>
         <option>Indurerad knöl</option>

@@ -50,192 +50,185 @@ export interface PedScenario {
 }
 
 export const pedodontiScenarios: Record<string, PedScenario> = {
-  // --- TRAUMA PRIMÄRA (41-44) ---
-  "sc41": {
+  // --- TRAUMA PRIMÄRA (41-44) -  "sc41": {
     id: "PEDO-41",
-    slug: "luxationsskador-primara",
-    title: "Luxationsskador (Mjölktand)",
+    slug: "luxation-mjolktand",
+    title: "Luxation (Mjölktand)",
     category: "Trauma - Primära",
-    patientQuote: "Tanden sitter snett / är lös / har försvunnit upp",
+    patientQuote: "Barnet har slagit i tänderna - tanden sitter snett eller är lös",
     icdCode: "S03.2",
     isAcute: true,
     snabbOversikt: [
-      { label: "Grundprincip", text: "ALDRIG reponera med kraft, ALDRIG replantera primära tänder." },
-      { label: "Varning", text: "IADT 2020: Intrusion kräver rtg för att se apexriktning." }
+      { label: "Varning", text: "REPONERA ALDRIG med kraft. Risk för skada på permanent anlag." },
+      { label: "IADT 2020", text: "Spontan re-eruption kan ske oavsett apex-riktning vid intrusion." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Slog barnet i huvudet? Medvetslöshet? Kräkning?", a: "Vid ja -> misstänk hjärnskakning -> remiss barnakut direkt." },
-        { q: "Kan barnet bita ihop normalt?", a: "Bettstörning avgör om tanden måste tas bort." }
+        { q: "Huvudvärk/Vila/Kräkning?", a: "Uteslut hjärnskakning först." },
+        { q: "När och hur skedde olyckan?", a: "Viktigt för försäkring och handläggning." },
+        { q: "Kan barnet bita ihop?", a: "Bettstörning avgör behandlingsval." }
       ],
-      kompletterande: ["Stelkrampsskydd?", "Barnmisshandel-screening (stämmer storyn med skadan?)"]
+      kompletterande: ["Stelkrampsskydd?", "Barnmisshandel-screening."]
     },
     status: {
-      inspektion: ["Lacerationer i läpp?", "Tandlägesändring?", "Rörlighet?"],
-      kliniskaFynd: [
-        "Subluxation: Blödning från sulcus, ökad rörlighet.", 
-        "Intrusion: Tanden slagen uppåt. Apex palatinalt (mot anlaget) -> avvakta spontan reeruption."
-      ]
+      inspektion: ["Tand i fel läge (displaced).", "Sulcusblödning.", "Lacerationer."],
+      kliniskaFynd: ["Subluxation: Ökad rörlighet.", "Lateral/Extrusion: Displaced tand.", "Intrusion: Tand 'kortare' eller osynlig."]
     },
     behandling: {
       title: "Handläggning (IADT 2020)",
       steps: [
-        "Subluxation: Mjuk kost 1v, god hygien (Klorhexidinbaddning).",
-        "Lateral/Extrusion: Om kraftig bettstörning -> Extraktion. Annars expektans.",
-        "Intrusion: Avvakta spontan re-eruption (1-6 mån). Extrahera vid ankylering eller infektion."
+        "Observation: Vid subluxation eller luxation utan bettstörning -> Avvakta.",
+        "Intrusion: Avvakta spontan re-eruption (1-6 mån). Tidigare råd om extraktion vid apex mot anlag är borttaget.",
+        "Extraktion: Vid kraftig bettstörning, ankylos eller tecken på infektion.",
+        "Instruktion: Skonkost 1-2 veckor. Badda med Klorhexidin 0,1% på tops."
       ]
     },
-    journal: "Diagnos: S03.2 Luxation av tand. \nAnamnes: Trauma mot munnen [Tid]. Ingen medvetslöshet. \nStatus: Tand [nr] [beskriv läge/rörlighet]. Ingen bettstörning. \nÅtgärd: Info om mjuk kost. Kontroll om 1v.",
+    journal: "Diagnos: S03.2 Luxationsskada tand [nr].\nAnamnes: Fallolycka kl [tid]. Ingen medvetslöshet/kräkning.\nStatus: Tand [X] intruderad/lateralluxerad. Ingen bettstörning.\nÅtgärd: Röntgen (2 projektioner). Expektans. Info om risk för missfärgning/skada på permanent efterföljare. Uppföljning planerad.",
     redFlags: [
-      { id: "p41-1", title: "Hjärnskakning", description: "Medvetslöshet/kräkning -> Barnakut direkt.", severity: "critical" },
-      { id: "p41-2", title: "Apex mot anlag", description: "Vid intrusion: Om apex slagit in i anlaget -> Extraktion.", severity: "warning" }
+      { id: "p41-1", title: "Hjärnskakning", description: "Kräkning/slöhet -> Akut remiss sjukhus.", severity: "critical" },
+      { id: "p41-2", title: "Infektion", description: "Feber/svullnad efter trauma -> Extraktion.", severity: "warning" }
     ],
-    kallor: ["IADT Guidelines 2020", "Internetodontologi: Trauma primära tänder"]
+    kallor: ["IADT 2020", "Dental Traumatology 2020;36(4)", "Internetodontologi"]
   },
   "sc42": {
     id: "PEDO-42",
-    slug: "exartikulation-primara",
-    title: "Exartikulation (Mjölktand)",
+    slug: "utslagen-mjolktand",
+    title: "Utslagen mjölktand (Exartikulation)",
     category: "Trauma - Primära",
     patientQuote: "Tanden har slagits ut helt och hållet",
     icdCode: "S03.2",
     isAcute: true,
     snabbOversikt: [
-      { label: "Varning", text: "Replantera ALDRIG en mjölktand pga risk för skada på permanent anlag." }
+      { label: "Viktigt", text: "REPLANTERA ALDRIG en utslagen mjölktand." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Var är tanden?", a: "Viktigt att veta om den är svald, aspirerad eller hittad." }
+        { q: "Var är tanden nu?", a: "Uteslut aspiration/intrusion om tanden saknas." }
       ],
-      kompletterande: ["Vakna nätter?", "Andningsbesvär? (Aspiration?)"]
+      kompletterande: ["Stelkrampsskydd?"]
     },
     status: {
-      inspektion: ["Tom alveol.", "Röntgen för att utesluta intrusion (om tanden ej hittats)."]
+      inspektion: ["Tom alveol. Blödning."],
+      kliniskaFynd: ["Röntgen för att utesluta intrusion eller rotfragment."]
     },
     behandling: {
-      title: "Åtgärd",
+      title: "Handläggning",
       steps: [
-        "Snygga till sårkanter.",
-        "Bit i kompress vid blödning.",
-        "Information: Tanden sätts ej tillbaka. Ingen luckhållare behövs normalt i fronten."
+        "Information: Förklara varför replantation ej görs (skydda anlaget).",
+        "Sårvård: Rengör alveolen försiktigt. Hemostas via bitkompress.",
+        "Röntgen: Måste göras om tanden ej hittats (uteslut intrusion/aspiration)."
       ]
     },
-    journal: "Diagnos: S03.24 Exartikulation tand [nr]. \nÅtgärd: Ingen replantation utförd. Info om skaderisk på permanent anlag.",
+    journal: "Diagnos: S03.24 Exartikulation av tand [nr].\nÅtgärd: Röntgen utförd. Ingen tand i alveolen. Info: Ingen replantation. Kontroll av permanent efterföljare vid eruption.",
     redFlags: [
-      { id: "p42-1", title: "Aspiration", description: "Om tanden saknas och barnet hostar -> Akut lungröntgen.", severity: "critical" }
+      { id: "p42-1", title: "Saknad tand", description: "Om tanden ej hittas -> Röntgen lungor vid andningsbesvär (aspiration).", severity: "critical" }
     ],
-    kallor: ["Internetodontologi"]
+    kallor: ["IADT 2020"]
   },
   "sc43": {
     id: "PEDO-43",
-    slug: "kronfraktur-primara",
+    slug: "kronfraktur-mjolktand",
     title: "Kronfraktur (Mjölktand)",
     category: "Trauma - Primära",
     patientQuote: "En bit av tanden har gått av",
     icdCode: "S02.5",
-    isAcute: false,
+    isAcute: true,
     snabbOversikt: [
-      { label: "Mål", text: "Skydda pulpan och undvika smärta." }
+      { label: "Typ", text: "Okomplicerad (endast emalj/dentin) eller komplicerad (pulpaexponerad)." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Ilar det?", a: "Tyder på dentinblotta." },
-        { q: "Blöder det från tanden?", a: "Pulpablotta (komplicerad fraktur)." }
+        { q: "Ilningar?", a: "Blottat dentin." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Frakturlinje.", "Färg (gulaktig=dentin, röd punkt=pulpa)."]
+      inspektion: ["Frakturlinje.", "Eventuell röd punkt (pulpaexponering)."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Okomplicerad: Slipa vassa kanter. Ev. komposit om barnet koopererar.",
-        "Komplicerad: Hos små barn ofta extraktion. Vid god kooperation: Pulpotomi (Cvek) eller partiell pulpotomi."
+        "Okomplicerad: Slipa vassa kanter. Täck dentin med GIC/Komposit.",
+        "Komplicerad: Extraktion är förstahandsval. Vid hög kooperation kan partiell pulpotomi (Cvek) övervägas."
       ]
     },
-    journal: "Diagnos: S02.51 Okomplicerad kronfraktur. \nÅtgärd: Slipning av vassa kanter.",
+    journal: "Diagnos: S02.5 Kronfraktur tand [nr].\nStatus: Blottat dentin/pulpa.\nÅtgärd: Slipat/Täckt/Extraherat. Info till förälder.",
     redFlags: [],
-    kallor: ["Internetodontologi"]
+    kallor: ["IADT 2020"]
   },
   "sc44": {
     id: "PEDO-44",
-    slug: "rotfraktur-primara",
+    slug: "rotfraktur-mjolktand",
     title: "Rotfraktur (Mjölktand)",
     category: "Trauma - Primära",
-    patientQuote: "Tanden är väldigt lös och går av under tandköttet",
+    patientQuote: "Tanden är väldigt lös efter slaget",
     icdCode: "S02.5",
     isAcute: true,
     snabbOversikt: [
-      { label: "Princip", text: "Extrahera det lösa kronsegmentet. Lämna rotspetsen om den sitter djupt." }
+      { label: "Princip", text: "Extrahera det lösa kronfragmentet. Lämna rotfragmentet." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Är tanden lös?", a: "Rotfrakturer ger ofta extrem rörlighet." }
+        { q: "Går tanden att vicka på extremt mycket?", a: "Tecken på rotfraktur." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Patologisk rörlighet.", "Röntgen (visar frakturlinje på roten)."]
+      inspektion: ["Tanden rörlig. Blödning från sulcus."],
+      kliniskaFynd: ["Röntgen visar frakturlinje på roten."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Extrahera det koronala fragmentet.",
-        "Lämna rotspetsfragmentet om det sitter djupt och riskerar anlaget vid borttagning (resorberas normalt bort)."
+        "Extraktion: Avlägsna endast det koronala fragmentet.",
+        "Rotfragment: LÄMNA det apikala rotfragmentet (det resorberas oftast normalt). Att försöka ta ut det riskerar skada på det permanenta anlaget."
       ]
     },
-    journal: "Diagnos: S02.54 Rotfraktur tand [nr]. \nÅtgärd: Koronalt fragment extraherat u LA. Rotspets kvarlämnas.",
-    redFlags: [],
-    kallor: ["Internetodontologi"]
-  },
-
-  // --- TRAUMA PERMANENTA (45-48) ---
-  "sc45": {
+    journal: "Diagnos: S02.5 Rotfraktur tand [nr].\nÅtgärd: LA. Extraherat koronalt fragment. Rotspets lämna  "sc45": {
     id: "PEDO-45",
-    slug: "alveolarfraktur-permanenta",
+    slug: "alveolarfraktur-barn",
     title: "Alveolarfraktur",
     category: "Trauma - Permanenta",
     patientQuote: "Hela tandköttspartiet och flera tänder rör sig tillsammans",
     icdCode: "S02.8",
     isAcute: true,
     snabbOversikt: [
-      { label: "Definition", text: "Ett block av ben och tänder rör sig som en enhet." },
-      { label: "Prio", text: "SPECIALISTFALL (Käkkirurg/Pedodontist)." }
+      { label: "Varning", text: "Ett block av ben och tänder rör sig som en enhet. Oftast specialistfall." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Huvudskada?", a: "Kraftigt våld -> hög risk för hjärnskada." }
+        { q: "Går det att röra flera tänder samtidigt?", a: "Ja -> Alveolarfraktur." }
       ],
-      kompletterande: []
+      kompletterande: ["Hjärnskakning?"]
     },
     status: {
-      inspektion: ["Bensegment rörligt vid palpation.", "Bettstörning."]
+      inspektion: ["Gingival blödning över flera tänder.", "Bensegment rörligt vid palpation."],
+      kliniskaFynd: ["Bettstörning (segmentet är oftast displacerat)."]
     },
     behandling: {
-      title: "Akut handläggning",
+      title: "Handläggning",
       steps: [
-        "Reponera segmentet med fingertryck (u LA).",
-        "Fixera med flexibel splint 4 veckor.",
-        "Remittera omedelbart till specialist."
+        "Reponering: Reponera segmentet till ursprungsläget (kräver ofta LA).",
+        "Fixering: Flexibel splint (t.ex. TTS eller ortodontitråd + komposit) i 4 veckor.",
+        "Remiss: ALLTID remiss till specialist (Käkkirurg/Pedodontist) för uppföljning."
       ]
     },
-    journal: "Diagnos: S02.8 Fraktur av alveolarutskottet. \nÅtgärd: Reponering och splintning.",
+    journal: "Diagnos: S02.8 Alveolarfraktur i regio [nr].\nÅtgärd: LA. Manuellt reponerat segment. Fixerat med flexibel splint. Remiss skickad.",
     redFlags: [
-      { id: "p45-1", title: "Segmentrörlighet", description: "Hela blocket rör sig -> Kräver fixering.", severity: "critical" }
+      { id: "p45-1", title: "Nerver/Kärl", description: "Hög risk för nekros i alla tänder i segmentet.", severity: "warning" }
     ],
-    kallor: ["IADT Guidelines 2020"]
+    kallor: ["IADT 2020"]
   },
   "sc46": {
     id: "PEDO-46",
-    slug: "kronfraktur-permanenta",
+    slug: "kronfraktur-permanent",
     title: "Kronfraktur (Permanent)",
     category: "Trauma - Permanenta",
     patientQuote: "Barnet har slagit av en bit av den nya framtanden",
     icdCode: "S02.5",
     isAcute: true,
     snabbOversikt: [
-      { label: "Cvek-pulpotomi", text: "Guldstandard vid pulpablotta på unga tänder. Bevarar vitalitet för rotutveckling." }
+      { label: "Prio", text: "Bevara vitalitet för rotutveckling (Apexogenes)." }
     ],
     anamnes: {
       obligatoriska: [
@@ -244,127 +237,129 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
       kompletterande: []
     },
     status: {
-      inspektion: ["Pulpaexponering (röd punkt)?", "Dentinblotta?"]
+      inspektion: ["Blottat dentin eller pulpaexponering."],
+      kliniskaFynd: ["Vidöppen apex på röntgen? -> Vitalitetsbevarande extra viktigt."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Okomplicerad: Täck med komposit eller limma fragment.",
-        "Komplicerad (< 2mm blotta, < 24h): Partiell pulpotomi (Cvek) med MTA/Bioceramer.",
-        "Viktigt: Vidöppen apex -> bevara vitalitet till varje pris (Apexogenes)."
+        "Okomplicerad: Täck dentin eller limma fragment.",
+        "Komplicerad (pulpa): Partiell pulpotomi (Cvek) med MTA/Biodentine. Bevara vitalitet till varje pris vid öppet apex."
       ]
     },
-    journal: "Diagnos: S02.52 Komplicerad kronfraktur tand [nr]. \nÅtgärd: Cvek-pulpotomi med MTA. Kompositfyllning.",
+    journal: "Diagnos: S02.5 Kronfraktur tand [nr].\nÅtgärd: [Limmat fragment / Cvek-pulpotomi]. Info om kontroller.",
     redFlags: [],
-    kallor: ["IADT Guidelines"]
+    kallor: ["IADT 2020"]
   },
   "sc47": {
     id: "PEDO-47",
-    slug: "konkussion-permanenta",
-    title: "Konkussion (Permanent)",
+    slug: "luxation-permanent",
+    title: "Luxation (Permanent)",
     category: "Trauma - Permanenta",
-    patientQuote: "Tanden fick en smäll och är jätteöm, men sitter fast",
+    patientQuote: "Tanden sitter snett eller är lös efter slaget",
     icdCode: "S03.2",
-    isAcute: false,
+    isAcute: true,
     snabbOversikt: [
-      { label: "Klinik", text: "Ömhet vid perkussion, ingen ökad rörlighet, ingen lägesändring." }
+      { label: "Viktigt", text: "Permanenta tänder ska REPONERAS och SPLINTAS snarast." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Gör det ont att tugga?", a: "Ömhet är huvudsymtomet." }
+        { q: "När skedde olyckan?", a: "Prognosen försämras med tiden." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Inga synliga tecken.", "Ömhet vid horisontell/vertikal perkussion."]
+      inspektion: ["Displaced tand (lateral/extrusion/intrusion)."],
+      kliniskaFynd: ["Röntgen för att utesluta rotfraktur."]
     },
     behandling: {
-      title: "Åtgärd",
+      title: "Handläggning",
       steps: [
-        "Expektans.",
-        "Mjuk kost 1 vecka.",
-        "Uppföljning av vitalitet efter 4v."
+        "Reponering: Reponera tanden varsamt till rätt plats (u LA).",
+        "Fixering: Flexibel splint i 2 veckor (sublux/extrus/lateral).",
+        "Intrusion (Permanent): Vid öppet apex -> avvakta spontan re-eruption. Vid stängt apex -> ortodontisk eller kirurgisk reponering."
       ]
     },
-    journal: "Diagnos: S03.20 Konkussion. \nÅtgärd: Information om mjuk kost.",
-    redFlags: [],
-    kallor: ["IADT"]
+    journal: "Diagnos: S03.2 Luxationsskada tand [nr].\nÅtgärd: LA. Reponering. Flexibel splint 2v. Planerad endodontisk bedömning om 1-2v.",
+    redFlags: [
+      { id: "p47-1", title: "Resorption", description: "Hög risk för rotresorption vid kraftiga luxationer.", severity: "warning" }
+    ],
+    kallor: ["IADT 2020"]
   },
   "sc48": {
     id: "PEDO-48",
-    slug: "exartikulation-permanenta",
+    slug: "exartikulation-permanent",
     title: "Exartikulation (Permanent)",
     category: "Trauma - Permanenta",
     patientQuote: "Hela tanden har slagits ut",
     icdCode: "S03.2",
     isAcute: true,
     snabbOversikt: [
-      { label: "Tid är ALLT", text: "< 60 minuter torr tid är gränsen för god prognos." },
-      { label: "Förvaring", text: "Mjölk, saliv eller koksalt. ALDRIG torrt eller i kranvatten." }
+      { label: "Prio", text: "HYPERAKUT. Tid är avgörande." },
+      { label: "Förvaring", text: "Mjölk, saliv eller koksalt. ALDRIG kranvatten/torrt." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Hur länge har tanden varit ute?", a: "Över 60 min torr tid = dålig prognos." },
-        { q: "Var har tanden varit?", a: "Förvaring i mjölk bevarar PDL-celler." }
+        { q: "Torrtid?", a: "Över 60 minuter torr tid = dålig prognos." }
       ],
-      kompletterande: []
+      kompletterande: ["Förvaringsmedium?"]
     },
     status: {
-      inspektion: ["Tom alveol.", "Kontrollera tanden: Roten intakt? Smuts?"]
+      inspektion: ["Tom alveol.", "Tandens kondition (smutsig/intakt)."]
     },
     behandling: {
-      title: "HYPERAKUT ÅTGÄRD",
+      title: "Handläggning (Akut)",
       steps: [
-        "Rör ej roten! Håll i kronan.",
-        "Skölj varsamt med NaCl om smutsig.",
-        "Replantera direkt.",
-        "Fixera med flexibel splint 2 veckor.",
-        "Antibiotika (PcV eller Doxycyklin >12 år).",
-        "Remiss för endo inom 7-10 dagar (om stängd apex)."
+        "Replantation: Sätt tillbaka tanden omedelbart (håll endast i kronan!).",
+        "Fixering: Flexibel splint i 2 veckor.",
+        "Antibiotika: Överväg PcV i 7 dagar. Doxycyklin om >12 år.",
+        "Uppföljning: Endodonti-start inom 7-10 dagar om stängt apex."
       ]
     },
-    journal: "Diagnos: S03.24 Exartikulation permanent tand. \nÅtgärd: Replanterad efter [X] min. Splintad.",
+    journal: "Diagnos: S03.24 Exartikulation permanent tand [nr].\nÅtgärd: Replantering efter [X] min. Splintning. Recept [PcV/Doxycyklin]. Remiss Endodonti.",
     redFlags: [
-      { id: "p48-1", title: "Tidskritisk", description: "> 60 min ute -> Mycket hög risk för ersättningsresorption.", severity: "warning" }
+      { id: "p48-1", title: "Ankylos", description: "Hög risk för ersättningsresorption vid lång tid ute.", severity: "warning" }
     ],
-    kallor: ["IADT Guidelines 2020"]
+    kallor: ["IADT 2020"]
   },
 
   // --- AKUT - SMÄRTA & INFEKTION (39, 50-58) ---
   "sc39": {
     id: "PEDO-39",
-    slug: "mih",
-    title: "MIH (Molar Incisor Hypomineralization)",
+    slug: "mih-hypomineralisering",
+    title: "MIH (Hypomineralisering)",
     category: "Akut - Smärta & Infektion",
     patientQuote: "Det ilar och gör ont när jag tuggar, och den nya kindtanden ser gul och trasig ut",
     icdCode: "K00.4",
     isAcute: false,
     snabbOversikt: [
-      { label: "Prevalens", text: "Ca 18% av barn. Ålder: 6–11 år." },
-      { label: "Klinik", text: "Opaka fläckar, post-eruptivt emaljsönderfall (PEB)." }
+      { label: "Fakta", text: "Drabbar ca 18% av barn. Kvalitativ mineraliseringsstörning i 6-årsmolarer/incisiver." },
+      { label: "Prio", text: "Desensibilisering och prevention. Extraktion i samråd med ortodontist." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Hypersensibilitet vid tandborstning/kyla?", a: "Typiskt för MIH." }
+        { q: "Isar det vid tandborstning eller kall dryck?", a: "Typiskt för MIH-molarer." },
+        { q: "Har bitar av tanden lossnat nyligen?", a: "Indikerar PEB (Post-eruptivt emaljsönderfall)." }
       ],
-      kompletterande: ["Problem vid tuggning?"]
+      kompletterande: ["Problem med bedövning tidigare? (MIH-tänder är svårbedövade)"]
     },
     status: {
-      inspektion: ["Opaka vita/gula/bruna fläckar.", "PEB - tanden spricker kort efter frambrott."],
-      kliniskaFynd: ["Kraftig sensibilitet - blästra försiktigt!"]
+      inspektion: ["Opaka fläckar (vita/gula/bruna).", "Emaljsönderfall ocklusalt."],
+      kliniskaFynd: ["Kraftig hypersensibilitet (blästra försiktigt!)."]
     },
     behandling: {
-      title: "Handläggning (Steg för Steg)",
+      title: "Handläggning",
       steps: [
-        "Prevention: Fluorlack (Duraphat) regelbundet.",
-        "Restorativt: GIC-förband om ej helt frambruten. Komposit vid karies/fraktur.",
-        "Stålkrona (SSC): Vid omfattande sönderfall. Mycket bra långtidsprognos.",
-        "Extraktion: Optimalt när 7:ans bifurkation precis börjar mineraliseras (8-9 år)."
+        "Prevention: Fluorlack (Duraphat) var 3:e månad. Högdos fluortandkräm (>12 år).",
+        "Restaurering: GIC-förband om ej helt frambruten. Stålkrona vid omfattande skada.",
+        "Extraktion: Optimal tidpunkt när 7:ans bifurkation mineraliseras (ca 8-9 år). Kräver ortodonti-remiss!"
       ]
     },
-    journal: "Diagnos: K00.4 MIH. \nStatus: Tand [nr] frambruten med opaka gul/bruna fläckar. \nÅtgärd: Fluorlackning / [Stålkrona]. Remiss ortodontist vid behov.",
-    redFlags: [],
-    kallor: ["Internetodontologi", "Socialstyrelsen NR 2022"]
+    journal: "Diagnos: K00.4 MIH. \nStatus: Tand [nr] med gula fläckar och emaljsönderfall. Kraftig sensibilitet.\nÅtgärd: Fluorlackning. Info om prognos. Planerad remiss ortodontist för bedömning av ev. extraktion.",
+    redFlags: [
+      { id: "p39-1", title: "Svårbedövad", description: "MIH-tänder kräver ofta mer anestesi (Artikain + ev. lustgas).", severity: "warning" }
+    ],
+    kallor: ["Jälevik et al. 2001", "Socialstyrelsen NR 2022", "Internetodontologi"]
   },
   "sc50": {
     id: "PEDO-50",
@@ -375,32 +370,36 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     icdCode: "K02.1",
     isAcute: false,
     snabbOversikt: [
-      { label: "Princip", text: "Selektiv exkavering - lämna mjuk karies vid pulpalväggen för att undvika exponering." }
+      { label: "Princip", text: "Selektiv exkavering - lämna mjuk karies vid pulpalväggen för att undvika exponering." },
+      { label: "Mål", text: "Undvika pulpaexponering och bevara tanden vital." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Spontansmärta eller nattsmärta?", a: "Nej = Reversibel pulpit. Ja = Irreversibel (se SC51)." }
+        { q: "Har barnet ont spontant (utan att äta)?", a: "Nej = Reversibel pulpit. Ja -> Irreversibel pulpit (Se SC51)." },
+        { q: "Vaknar barnet på natten?", a: "Nej = Reversibel. Ja = Irreversibel." },
+        { q: "Finns 'finne' eller svullnad på tandköttet?", a: "Nej = Karies. Ja = Abscess (Se SC53)." }
       ],
-      kompletterande: ["Fistel/svullnad? (se SC53)"]
+      kompletterande: ["Bettstörning?", "Kostvanor?"]
     },
     status: {
-      inspektion: ["Djup karies.", "Ingen fistel/svullnad."]
+      inspektion: ["Djup karies.", "Ingen fistel/svullnad."],
+      kliniskaFynd: ["Reversibel pulpit - smärtan upphör när stimuli tas bort."]
     },
     behandling: {
-      title: "Selektiv Exkavering",
+      title: "Handläggning (Selektiv Exkavering)",
       steps: [
-        "LA (Citanest Dental Octapressin).",
-        "Ta rent perifert till hårt dentin.",
-        "Lämna mjuk karies pulpalvägg.",
-        "Tätslutande fyllning (GIC/Komposit/Stålkrona).",
-        "Hall Technique: SSC direkt utan kariesborttagning (vid låg kooperation)."
+        "Smärtkontroll: LA (Citanest Dental Octapressin förstahandsval). Ytanestesi 5 min.",
+        "Exkavering: Avlägsna karies perifert till hårt dentin (använd keramborr). LÄMNA mjuk karies i pulpalväggen.",
+        "Fyllning: Tätslutande fyllning (GIC, Komposit eller Stålkrona) är avgörande.",
+        "Hall Technique: Placering av prefabricerad stålkrona (SSC) utan kariesborttagning vid låg kooperation."
       ]
     },
-    journal: "Diagnos: K02.1 Karies i dentin. \nÅtgärd: Selektiv exkavering utförd. Tätslutande fyllning placerad.",
+    journal: "Diagnos: K02.1 Karies i dentin, K04.0 Reversibel pulpit.\nAnamnes: Svårt att äta, men ingen spontansmärta/nattsmärta.\nStatus: Djup karies tand [nr]. Ingen fistel/svullnad.\nÅtgärd: LA. Selektiv exkavering utförd för att undvika pulpaexponering. Tätslutande fyllning med [GIC/Komposit/Stålkrona].\nPlanering: Kontroll om 3 mån. Info till förälder att kontakta omedelbart vid feber, svullnad eller spontansmärta.",
     redFlags: [
-      { id: "p50-1", title: "Spontansmärta", description: "Betyder irreversibel pulpit -> EXTRAKTION.", severity: "warning" }
+      { id: "p50-1", title: "Spontansmärta", description: "Betyder irreversibel pulpit -> EXTRAKTION.", severity: "warning" },
+      { id: "p50-2", title: "Fistel/Svullnad", description: "Betyder abscess -> EXTRAKTION.", severity: "warning" }
     ],
-    kallor: ["SBU", "Socialstyrelsen NR 2022"]
+    kallor: ["SBU", "Socialstyrelsen NR 2022", "Maltz et al. 2018"]
   },
   "sc51": {
     id: "PEDO-51",
@@ -411,26 +410,29 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     icdCode: "K04.01",
     isAcute: true,
     snabbOversikt: [
-      { label: "Prio", text: "Smärtlindring via extraktion." }
+      { label: "Prio", text: "Smärtlindring via extraktion. Vitalbehandling har dålig prognos vid irreversibel pulpit i primära tänder." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Nattlig spontansmärta?", a: "Kriterium för irreversibel pulpit." }
+        { q: "Spontansmärta (utan provokation)?", a: "Typiskt för irreversibel pulpit." },
+        { q: "Nattlig smärta?", a: "Barnet vaknar gråtande -> Irreversibel." }
       ],
-      kompletterande: []
+      kompletterande: ["Smärtstillande effekt?"]
     },
     status: {
-      inspektion: ["Djupt kariesangrepp i pulpa."]
+      inspektion: ["Djupt kariesangrepp/fraktur.", "Ingen svullnad (ännu)."],
+      kliniskaFynd: ["Extrem smärta vid palpation/perkussion."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Extraktion är FÖRSTAHANDSVAL.",
-        "Undvik tvångsingrepp (PSL 2010:659).",
-        "Pulpektomi utförs sällan i primära tänder."
-      ]
+        "Anestesi: God lokalanestesi är ett krav. Tvinga ALDRIG fram ingreppet.",
+        "Extraktion: Förstahandsval för att snabbt göra barnet smärtfritt.",
+        "Info: Mjuk/kall kost resten av dagen. Paracetamol v.b."
+      ],
+      warning: "Tvinga ALDRIG fram smärtsam behandling. Vid bristande kooperation -> Överväg sedering/remiss."
     },
-    journal: "Diagnos: K04.01 Irreversibel pulpit. \nÅtgärd: LA. Extraktion av tand [nr]. Hemostas kontrollerad.",
+    journal: "Diagnos: K04.01 Irreversibel pulpit.\nAnamnes: Nattlig spontansmärta tand [nr].\nStatus: Djup karies i pulpa.\nÅtgärd: LA. Extraktion av tand [nr]. Hemostas kontrollerad. Patient smärtfri efter behandling.",
     redFlags: [],
     kallor: ["Internetodontologi", "PSL 2010:659"]
   },
@@ -443,33 +445,35 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     icdCode: "K04.01",
     isAcute: true,
     snabbOversikt: [
-      { label: "Mål", text: "Apexogenes: bevara rotens tillväxtpotential." }
+      { label: "Mål", text: "Apexogenes: bevara rotens tillväxtpotential genom vital pulpotomi." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Spontansmärta?", a: "Ja -> Irreversibel pulpit." }
+        { q: "Spontansmärta?", a: "Ja -> Irreversibel pulpit." },
+        { q: "Ålder?", a: "6-12 år (viktigt för att bedöma rotutveckling)." }
       ],
-      kompletterande: ["Öppet apex radiologiskt?"]
+      kompletterande: ["Traumahistorik?"]
     },
     status: {
-      inspektion: ["Djup karies / Trauma.", "Öppet apex på rtg."],
-      kliniskaFynd: ["Hemostas med NaCl (vitalitetstecken)."]
+      inspektion: ["Djup karies eller trauma.", "Röntgen visar öppet apex."],
+      kliniskaFynd: ["Hemostas med NaCl-pellet bekräftar vitalitet."]
     },
     behandling: {
       title: "Pulpotomi (Apexogenes)",
       steps: [
-        "Kofferdam OBLIGATORISKT.",
-        "Trepanation till kanalmynning.",
-        "Hemostas med steril koksaltpellet (1-5 min).",
-        "Applicera MTA eller Biodentine mot rotpulpan.",
-        "MTA kräver fuktad pellet + återbesök 24-48h för slutlig fyllning."
-      ]
+        "Isolering: KOFFERDAM ÄR OBLIGATORISKT.",
+        "Trepanation: Avlägsna inflammerad kronpulpa till kanalmynning med steril borr.",
+        "Hemostas: Tryck med steril koksaltpellet 1-5 min. Måste bli ljust rött blod.",
+        "MTA/Biodentine: Applicera direkt mot rotpulpan.",
+        "Förslutning: Vid MTA -> Fuktad pellet + återbesök 24-48h för slutlig fyllning. Biodentine kan täckas direkt."
+      ],
+      warning: "Om blödning ej upphör efter 5 min tryck -> inflammationen går djupare -> Apexifikation krävs (Specialistfall)."
     },
-    journal: "Diagnos: K04.01 Irreversibel pulpit tand [nr]. \nÅtgärd: Partiell pulpotomi med MTA. Kofferdam använd.",
+    journal: "Diagnos: K04.01 Irreversibel pulpit tand [nr].\nÅtgärd: LA (Artikain). Kofferdam. Partiell pulpotomi med MTA. Hemostas uppnådd (vital blödning). Tätslutande fyllning.",
     redFlags: [
-      { id: "p52-1", title: "Ofullständig hemostas", description: "Blödning upphör ej -> Nekros/inflammation djupare (Apexifikation).", severity: "warning" }
+      { id: "p52-1", title: "Ofullständig hemostas", description: "Blödning upphör ej -> Inflammation djupare (Apexifikation).", severity: "warning" }
     ],
-    kallor: ["IADT 2020", "Internetodontologi", "MTA-protokoll Dentsply"]
+    kallor: ["IADT 2020", "MTA-protokoll Dentsply"]
   },
   "sc53": {
     id: "PEDO-53",
@@ -480,196 +484,215 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     icdCode: "K04.6",
     isAcute: true,
     snabbOversikt: [
-      { label: "Princip", text: "Extrahera mjölktand för att skydda permanent anlag." }
+      { label: "Princip", text: "Extrahera mjölktand för att skydda permanent anlag och få dränage." },
+      { label: "STRAMA", text: "Antibiotika ges ENDAST vid systemisk påverkan (feber/allmänpåverkan)." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Feber eller allmänpåverkan?", a: "Indikerar systemisk spridning (se SC54)." }
+        { q: "Feber (>38C) eller allmänpåverkan?", a: "Ja -> Systemisk spridning (Se SC54)." },
+        { q: "Svårt att gapa?", a: "Trismus indikerar spridning." }
       ],
-      kompletterande: []
+      kompletterande: ["Bettstörning?"]
     },
     status: {
-      inspektion: ["Fistel ('finne') eller lokal svullnad.", "Perkussionsömhet."]
+      inspektion: ["Fistel ('finne') buckalt.", "Lokal fluktuerande svullnad."],
+      kliniskaFynd: ["Tanden rörlig och perkussionsöm."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Extraktion = Primär behandling.",
-        "Ingen antibiotika vid lokal fistel (Strama).",
-        "Incision om fluktuerande svullnad.",
-        "Platsbevarare övervägs om >1 år till eruption."
+        "Extraktion: Primär behandling för att eliminera infektionskällan.",
+        "Dränage: Säkra att pus töms vid extraktionen. Incision vid behov.",
+        "Smärtlindring: Paracetamol 15 mg/kg x 4. EJ Ibuprofen vid blödningsrisk.",
+        "Platsbevarare: Överväg remiss till ortodontist om >1 år kvar till eruption."
       ]
     },
-    journal: "Diagnos: K04.6 Periapikalabscess med fistel. \nÅtgärd: LA. Extraktion tand [nr]. Pus dränerat. Ingen antibiotika (Strama).",
-    redFlags: [],
-    kallor: ["Strama", "Läkemedelsverket 2014"]
+    journal: "Diagnos: K04.6 Periapikalabscess med fistel.\nStatus: Fistel buckalt tand [nr]. Ingen feber/trismus.\nÅtgärd: LA. Extraktion tand [nr]. Pus dränerat. Ingen antibiotika (Strama).",
+    redFlags: [
+      { id: "p53-1", title: "Systemisk påverkan", description: "Feber/trismus -> Risk för cellulit (Se SC54).", severity: "critical" }
+    ],
+    kallor: ["Läkemedelsverket 2014", "Strama", "FASS"]
   },
   "sc54": {
     id: "PEDO-54",
     slug: "cellulit-spridd-infektion",
-    title: "Cellulit / Spridd infektion",
+    title: "Cellulit / Spridd Infektion",
     category: "Akut - Smärta & Infektion",
     patientQuote: "Barnets ansikte/kind har svullnat upp enormt och hen har feber",
     icdCode: "L03.2",
     isAcute: true,
     snabbOversikt: [
-      { label: "VARNING", text: "Livshotande tillstånd. Sprider sig snabbt hos barn." }
+      { label: "Varning", text: "LIVSHOTANDE. Kan sprida sig extremt snabbt hos barn." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Svårt att svälja eller andas?", a: "JA -> Akut remiss sjukhus direkt." },
-        { q: "Trismus (svårt att gapa)?", a: "Tecken på spridning till tuggmuskler." }
+        { q: "Feber?", a: ">38C indikerar systemisk påverkan." },
+        { q: "Svårt att svälja?", a: "Tecken på hotad luftväg -> AKUT REMISS." },
+        { q: "Trismus?", a: "Infektionen har nått tuggmuskulaturen." }
       ],
-      kompletterande: ["Feber > 38C?"]
+      kompletterande: ["Allmänpåverkan (slöhet/dehydrering)?"]
     },
     status: {
-      inspektion: ["Extraoral svullnad.", "Feber.", "Slött/allmänpåverkat barn."]
+      inspektion: ["Extraoral svullnad/asymmetri.", "Svullnad mot öga eller hals."],
+      kliniskaFynd: ["Trismus.", "Hög feber."]
     },
     behandling: {
       title: "Handläggning (Akut)",
       steps: [
-        "Eliminera orsak (Extraktion/Incision) om möjligt.",
-        "Antibiotika (Strama): PcV 12.5 mg/kg x 3 (max 1g x 3) 7 dgr.",
-        "AKUT REMISS vid sväljningsbesvär, ögonsvullnad eller trismus."
+        "Eliminera orsak: Extrahera tanden direkt för dränage om möjligt.",
+        "Antibiotika: PcV 12,5 mg/kg x 3 (max 1g x 3) i 7 dagar. Vid allergi: Klindamycin 5-6 mg/kg x 3.",
+        "AKUT REMISS: Vid sväljningssvårigheter, ögonengagemang eller uttalad trismus -> Barnakut/Käkkirurg för IV-antibiotika.",
+        "Telefonkontakt: RING in remissen!"
       ]
     },
-    journal: "Diagnos: L03.2 Cellulit i ansiktet. \nÅtgärd: Akut extraktion för dränage. Telefonkontakt Käkkirurg/Barnakut. Remitterad.",
+    journal: "Diagnos: L03.2 Cellulit ansikte utgående från tand [nr].\nStatus: Kraftig extraoral svullnad, feber [X], trismus. Allmänpåverkad.\nÅtgärd: Akut extraktion. Akut telefonkontakt med [Sjukhus]. Barnet remitterat för inläggning/IV-antibiotika.",
     redFlags: [
-      { id: "p54-1", title: "Luftvägar", description: "Svårighet att svälja/andas -> Livshotande.", severity: "critical" },
-      { id: "p54-2", title: "Ögonengagemang", description: "Svullnad mot ögat -> Risk för intrakraniell spridning.", severity: "critical" }
+      { id: "p54-1", title: "Luftvägshinder", description: "Sväljningssvårigheter/andningspåverkan -> AKUT SJUKHUSVÅRD.", severity: "critical" },
+      { id: "p54-2", title: "Ögonengagemang", description: "Svullnad mot nedre ögonlocket -> Risk för orbital cellulit.", severity: "critical" }
     ],
-    kallor: ["Strama", "Läkemedelsverket 2014"]
+    kallor: ["Läkemedelsverket 2014", "FASS"]
   },
   "sc55": {
     id: "PEDO-55",
     slug: "perikoronit-barn",
-    title: "Perikoronit (Barn/Ungdom)",
+    title: "Perikoronit",
     category: "Akut - Smärta & Infektion",
     patientQuote: "Det gör ont längst bak vid den nya tanden",
     icdCode: "K05.2",
-    isAcute: true,
+    isAcute: false,
     snabbOversikt: [
-      { label: "Klinik", text: "Inflammation runt frambrytande 6:a eller 7:a." }
+      { label: "Klinik", text: "Inflammation runt delvis frambruten 6:a eller 7:a." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Gör det ont att gapa?", a: "Trismus indikerar spridning." }
+        { q: "Gör det ont att tugga?", a: "Antagonist kan bita på svullen flik." }
       ],
-      kompletterande: []
+      kompletterande: ["Feber? (Ovanligt vid perikoronit)"]
     },
     status: {
-      inspektion: ["Rodnat/svullet operculum.", "Debris under fliken."]
+      inspektion: ["Svullet operculum.", "Debris/plack under fliken."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Spolning med NaCl eller Klorhexidin.",
-        "Inslipning av antagonist om den traumatiserar fliken.",
-        "Xylocain gel lokalt.",
-        "Antibiotika ges EJ vid okomplicerad perikoronit."
+        "Spolning: Rensa under operculum med fysiologisk koksaltlösning.",
+        "Avlastning: Slipa ev. antagonist ur ocklusion om den traumatiserar fliken.",
+        "Hygien: Baddning med klorhexidin (tops för små barn).",
+        "Info: Antibiotika ges EJ vid okomplicerad perikoronit."
       ]
     },
-    journal: "Diagnos: K05.2 Akut perikoronit. \nÅtgärd: Spolning under operculum. [Antagonist slipad]. Info.",
+    journal: "Diagnos: K05.2 Perikoronit.\nStatus: Svullet operculum regio [nr].\nÅtgärd: Spolning. [Inslipning antagonist]. Info om hygien.",
     redFlags: [],
     kallor: ["Internetodontologi"]
   },
   "sc56": {
     id: "PEDO-56",
-    slug: "postextraktionsblodning-barn",
+    slug: "postexblodning-barn",
     title: "Postextraktionsblödning",
     category: "Akut - Smärta & Infektion",
     patientQuote: "Vi drog ut en tand i morse, och nu är kudden full av blod",
     icdCode: "T81.0",
     isAcute: true,
     snabbOversikt: [
-      { label: "Orsak", text: "Ofta pga 'pillande' eller sugande på såret. Uteslut koagulationsrubbning." }
+      { label: "Varning", text: "GE ALDRIG NSAID (Ipren) vid blödning. Använd Paracetamol." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Lätt för blåmärken/näsblod?", a: "Snabbkoagulationsanamnes." }
+        { q: "Has barnet pillat på såret?", a: "Sugande skapar undertryck." },
+        { q: "Tagit Ipren?", a: "Ipren hämmar hemostasen." }
       ],
-      kompletterande: ["Ibuprofen-intag?"]
+      kompletterande: ["Kända blödningssjukdomar i släkten?"]
     },
     status: {
-      inspektion: ["Leverkoagel (geléaktigt koagel).", "Läckage från alveol."]
+      inspektion: ["Sivande blödning.", "Stort leverkoagel (geléaktigt) ovanpå alveolen."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Rengör alveolen (ta bort lösa koagel).",
-        "Tryckförband (kompress med Cyklokapron) 30 min.",
-        "Suturering vid behov.",
-        "EJ NSAID (Ipren) vid blödning."
+        "Anestesi: LA UTAN adrenalin (Mepivakain) för att se den faktiska blödningen.",
+        "Rensning: Avlägsna leverkoagel (måste göras för att hemostas ska starta om).",
+        "Lokal hemostas: Spongostan dränkt i Cyklokapron (Tranexamsyra).",
+        "Fixering: Kryssutur (Vicryl 4-0 resorb).",
+        "Kompression: Bita på fuktad kompress 30 min på kliniken."
       ]
     },
-    journal: "Diagnos: T81.0 Blödning efter ingrepp. \nÅtgärd: Tryckförband 30 min. Hemostas uppnådd.",
-    redFlags: [],
-    kallor: ["Internetodontologi"]
+    journal: "Diagnos: T81.0 Blödning efter ingrepp.\nÅtgärd: LA. Rensat koagel. Spongostan + Cyklokapron. Kryssutur. Blödning stillad. Info: Paracetamol (EJ Ipren!).",
+    redFlags: [
+      { id: "p56-1", title: "Ostillbar blödning", description: "Vid misstanke om koagulationsrubbning -> Sjukhusvård.", severity: "warning" }
+    ],
+    kallor: ["FASS - Cyklokapron", "Läkemedelsverket"]
   },
-  "sc57-akut": {
-    id: "PEDO-57A",
-    slug: "spontan-gingival-blodning",
-    title: "Spontan gingival blödning",
+  "sc57": {
+    id: "PEDO-57",
+    slug: "spontan-blodning",
+    title: "Spontan Gingival Blödning",
     category: "Akut - Smärta & Infektion",
-    patientQuote: "Tandköttet börjar blöda helt utan anledning",
-    icdCode: "K05.1",
+    patientQuote: "Barnets tandkött blöder utan anledning",
+    icdCode: "K05.3",
     isAcute: true,
     snabbOversikt: [
-      { label: "Varning", text: "Kan vara första tecknet på Leukemi." }
+      { label: "Varning", text: "INGA INGREPP. Kan vara tecken på leukemi eller svår koagulationsrubbning." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Ovanligt trött / Blåmärken?", a: "JA -> Misstänk malignitet." }
+        { q: "Blöder det utan att barnet borstar?", a: "Spontanitet är varningstecken." },
+        { q: "Blåmärken utan orsak?", a: "Indikerar trombocytopeni." }
       ],
-      kompletterande: []
+      kompletterande: ["Näsblod ofta?"]
     },
     status: {
-      inspektion: ["Generaliserad svullnad.", "Spontanblödning från papiller.", "Blek slemhinna."]
+      inspektion: ["Blödning oproportionerlig till plackmängd.", "Petekier (små röda prickar) i slemhinnan."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "INGA invasiva ingrepp.",
-        "AKUT REMISS barnläkare för blodstatus (diff).",
-        "Märk remiss: 'Misstänkt malignitet'."
+        "Inga ingrepp: Ingen sondering/depuration (risk för ostillbar blödning).",
+        "Hemostas: Endast lokalt tryck med Cyklokapron-kompress.",
+        "Utredning: Remiss för akut blodprovstagning (B-status, TPK, LPK diff)."
       ]
     },
-    journal: "Diagnos: Gingivit (diff diagnos leukemi). \nÅtgärd: Akut remiss barnläkare.",
+    journal: "Diagnos: Spontan gingival blödning (misstanke hematologi).\nStatus: Spontan blödning utan trauma/karies. Petekier synliga.\nÅtgärd: Inga ingrepp. Cyklokapron-tryck. Remiss Barnmedicin.",
     redFlags: [
-      { id: "p57-1", title: "Leukemi", description: "Trötthet + blåmärken + blödning -> Akut utredning.", severity: "critical" }
+      { id: "p57-1", title: "Malignitetsmisstanke", description: "Spontan blödning + petekier -> Måste utredas omedelbart.", severity: "critical" }
     ],
-    kallor: ["Internetodontologi"]
+    kallor: ["Internetodontologi", "Sfhem"]
   },
   "sc58": {
     id: "PEDO-58",
     slug: "systemisk-risk-leukemi",
     title: "Systemisk risk / Leukemi",
     category: "Akut - Smärta & Infektion",
-    patientQuote: "Barnet är blekt och har svullet tandkött",
-    icdCode: "C91.0",
+    patientQuote: "Gingivahyperplasi, blårött tandkött, blekhet, oförklarliga blåmärken",
+    icdCode: "C95.9",
     isAcute: true,
     snabbOversikt: [
-      { label: "Klinik", text: "Gingivahyperplasi, blekhet, petekier, feber." }
+      { label: "Prio", text: "AKUT MEDICINREMISS. Livshotande tillstånd." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Nattliga svettningar?", a: "JA -> Tecken på malignitet." }
+        { q: "Är barnet ovanligt trött/blekt?", a: "Anemi är vanligt vid leukemi." },
+        { q: "Feber utan känd orsak?", a: "Neutropeni ger infektionskänslighet." }
       ],
-      kompletterande: []
+      kompletterande: ["Svullna lymfkörtlar?"]
     },
     status: {
-      inspektion: ["Peteckier i gommen.", "Svullna lymfkörtlar."]
+      inspektion: ["Gingivahyperplasi (blåröd, 'rullgardinsliknande').", "Petekier i gom/hud.", "Blekhet."],
+      kliniskaFynd: ["Spontan blödning."]
     },
     behandling: {
-      title: "Åtgärd",
+      title: "Akut Handläggning",
       steps: [
-        "Omedelbar remiss barnläkare.",
-        "Undvik alla ingrepp (neutropenirisk)."
+        "INGA INGREPP i munnen (livsfarligt pga infektions/blödningsrisk).",
+        "Akut telefonkontakt: Ring Barnakut/Barnmedicin direkt.",
+        "Remiss: Akut blodprov (B-status, TPK, LPK diff).",
+        "Info: Föräldrar ska åka direkt till akuten."
       ]
     },
-    journal: "Diagnos: Misstänkt hematologisk sjukdom. \nÅtgärd: Akut remiss.",
-    redFlags: [],
-    kallor: ["Internetodontologi"]
+    journal: "Diagnos: Gingival hyperplasi + Petekier (Misstanke Leukemi).\nStatus: Uttalad hyperplasi, blekhet, petekier. \nÅtgärd: Inga ingrepp. Telefonkontakt med Barnakut kl [Tid]. Akut remiss.",
+    redFlags: [
+      { id: "p58-1", title: "Livshotande", description: "Leukemimisstanke kräver utredning INOM TIMMAR.", severity: "critical" }
+    ],
+    kallor: ["Internetodontologi", "Svenska Barnläkarföreningen"]
   },
 
   // --- MUNSLEMHINNA & SYSTEM (57, 59-61, 65-73) ---
