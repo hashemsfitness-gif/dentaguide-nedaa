@@ -696,305 +696,282 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
   },
 
   // --- MUNSLEMHINNA & SYSTEM (57, 59-61, 65-73) ---
-  "sc57-laceration": {
-    id: "PEDO-57B",
-    slug: "traumatisk-mjukdelsblodning",
-    title: "Traumatisk mjukdelsblödning (Laceration)",
-    category: "Munslemhinna & System",
-    patientQuote: "Barnet har skurit sig i läppen/tungan",
-    icdCode: "S01.5",
-    isAcute: true,
-    snabbOversikt: [
-      { label: "Klinik", text: "Sårskada i läpp, tunga eller slemhinna." }
-    ],
-    anamnes: {
-      obligatoriska: [
-        { q: "Finns tandfragment i såret?", a: "Viktigt vid läppsår efter tandfraktur -> Palpera noga." }
-      ],
-      kompletterande: ["Stelkrampsskydd?"]
-    },
-    status: {
-      inspektion: ["Sårskadans djup.", "Går det genom läppröda gränsen? (Specialistfall för estetik)."]
-    },
-    behandling: {
-      title: "Åtgärd",
-      steps: [
-        "Rengör noga ( NaCl).",
-        "Suturera vid behov (absorberbar tråd hos barn).",
-        "Viktigt: Genomgående sår eller sår i läppröda gränsen bör sys av kirurg/plastikkirurg för optimal estetik."
-      ]
-    },
-    journal: "Diagnos: S01.5 Laceration läpp. \nÅtgärd: Rengöring. Suturering 2 stygn.",
-    redFlags: [],
-    kallor: ["Internetodontologi"]
-  },
   "sc59": {
     id: "PEDO-59",
-    slug: "eruptionscysta",
+    slug: "eruptionscysta-hematom",
     title: "Eruptionscysta / Hematom",
     category: "Munslemhinna & System",
     patientQuote: "En blå/mörk bula där tanden ska komma",
     icdCode: "K09.8",
     isAcute: false,
     snabbOversikt: [
-      { label: "Klinik", text: "Mjuk, blåskimrande svullnad över en frambrytande tand." }
+      { label: "Klinik", text: "Mjuk, blåskimrande svullnad över en frambrytande tand." },
+      { label: "Prognos", text: "Oftast helt ofarligt. Läker när tanden bryter fram." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Gör det ont?", a: "Oftast helt smärtfritt." }
+        { q: "Gör det ont när barnet tuggar?", a: "Sällan smärtfritt om det ej är sekundärinfekterat." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Blåaktig cysta på alveolarutskottet."]
+      inspektion: ["Blåaktig, fluktuerande cysta på alveolarutskottet."]
     },
     behandling: {
-      title: "Åtgärd",
+      title: "Handläggning",
       steps: [
-        "Expektans. Cystan spricker när tanden bryter igenom.",
-        "Info: Ofarligt. Inget ingrepp behövs."
+        "Expektans: Majoriteten resolvar spontant vid tanderuption.",
+        "Incision: Rekommenderas EJ (risk för infektion och återfyllning).",
+        "Info: Lugnande besked till föräldrar."
       ]
     },
-    journal: "Diagnos: K09.8 Eruptionscysta. \nÅtgärd: Information till föräldrar.",
+    journal: "Diagnos: K09.8 Eruptionscysta. \nStatus: Blåskimrande bula regio [nr]. Smärtfri.\nÅtgärd: Expektans. Info till förälder.",
     redFlags: [],
     kallor: ["Internetodontologi"]
   },
   "sc60": {
     id: "PEDO-60",
-    slug: "ektopisk-eruption-6a",
-    title: "Ektopisk eruption av 6-årsmolar",
+    slug: "ektopisk-6ar-molar",
+    title: "Ektopisk eruption av 6-molar",
     category: "Munslemhinna & System",
-    patientQuote: "6-årsmolaren verkar sitta fast under mjölktanden",
-    icdCode: "K01.1",
-    isAcute: false,
-    snabbOversikt: [
-      { label: "Klinik", text: "6:an resorberar distala roten på 5:an och fastnar." }
-    ],
-    anamnes: {
-      obligatoriska: [
-        { q: "Ont eller rörlig 5:a?", a: "Vanliga symtom." }
-      ],
-      kompletterande: []
-    },
-    status: {
-      inspektion: ["Resorption av 05:ans distala rot på rtg.", "Lutning av 6:an."]
-    },
-    behandling: {
-      title: "Handläggning",
-      steps: [
-        "Lindriga fall: Expektans (många rätar upp sig spontant).",
-        "Uttalad resorption: Mässingstråd eller separationsgummiring för att 'knuffa' tanden distalt.",
-        "Svåra fall: Extraktion av 05:an -> remiss ortodonti för platsbevarande."
-      ]
-    },
-    journal: "Diagnos: K01.1 Ektopisk eruption 16. \nÅtgärd: Expektans 6 mån.",
-    redFlags: [],
-    kallor: ["Internetodontologi"]
-  },
-  "sc61": {
-    id: "PEDO-61",
-    slug: "natal-tand",
-    title: "Natal / Neonatal tand",
-    category: "Munslemhinna & System",
-    patientQuote: "Barnet föddes med en tand eller fick en direkt efter födseln",
+    patientQuote: "Sexårsmolaren har fastnat - mjölktanden framför är lös och öm",
     icdCode: "K00.6",
     isAcute: false,
     snabbOversikt: [
-      { label: "Natal", text: "Finns vid födseln." },
-      { label: "Neonatal", text: "Kommer inom 30 dagar." }
+      { label: "Varning", text: "MÅSTE kontrolleras med röntgen (risk för resorption på 05:an)." },
+      { label: "Prio", text: "Kontrollera om premolaranlag finns (UK 5:or)!" }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Problem vid amning?", a: "Vass tand kan ge sår på barnets tunga eller mammans bröstvårta." }
+        { q: "Är 05:an öm vid tuggning?", a: "Indikerar pågående rotresorption." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Ofta rörlig tand (saknar rot).", "Sår på tungans undersida (Rigafede)."]
+      inspektion: ["6:an hakar fast under 05:ans krona.", "05:an rörlig."],
+      kliniskaFynd: ["Röntgen: Resorption av 05:ans distala rot."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Om tanden sitter fast och ej stör: Låt sitta.",
-        "Om tanden är extremt rörlig (aspirationsrisk) eller stör amning kraftigt: Extraktion.",
-        "Viktigt: Oftast en del av det normala mjölktandssetet (extraktion = glugg tills 7 år)."
+        "Expektans: Upp till 60% släpper spontant (reversibla).",
+        "Separering: Sep-gummi eller mässingstråd (brass wire).",
+        "Extraktion: Om grav resorption eller misslyckad separering. Obs! Platsförlustrisk."
       ]
     },
-    journal: "Diagnos: K00.6 Nataltand. \nÅtgärd: Information. Slipning av vass kant.",
-    redFlags: [],
-    kallor: ["Internetodontologi"]
+    journal: "Diagnos: K00.6 Ektopisk eruption + K03.3 Patologisk rotresorption.\nStatus: Tand [16/26] hakar under [55/65]. Resorption synlig på rtg.\nÅtgärd: [Sep-gummi / Exspektans / Extraktion].",
+    redFlags: [
+      { id: "p60-1", title: "Agenesi", description: "Vid agenesi av 5:or -> Konsultera ortodontist innan 05:an tas bort.", severity: "warning" }
+    ],
+    kallor: ["Bjerklin 1994", "Internetodontologi"]
+  },
+  "sc61": {
+    id: "PEDO-61",
+    slug: "natal-tand-bebis",
+    title: "Natal / Neonatal Tand",
+    category: "Munslemhinna & System",
+    patientQuote: "Bebisen är född med en tand / mamman har ont vid amning",
+    icdCode: "K00.6",
+    isAcute: false,
+    snabbOversikt: [
+      { label: "Fakta", text: "90% är ordinarie mjölktänder som kommit tidigt." },
+      { label: "Varning", text: "Kontrollera K-vitaminstatus före ev. extraktion!" }
+    ],
+    anamnes: {
+      obligatoriska: [
+        { q: "Sår på tungan (Riga-Fede)?", a: "Tanden skaver hål på barnets tunga." },
+        { q: "Problem vid amning?", a: "Sår på mammans bröstvårta." }
+      ],
+      kompletterande: []
+    },
+    status: {
+      inspektion: ["Tand synlig hos nyfödd.", "Rörlighet (ofta saknas rotutveckling)."]
+    },
+    behandling: {
+      title: "Handläggning",
+      steps: [
+        "Bevara: Slipa incisalkanten rund för att minska skav.",
+        "Extrahera: Endast vid extrem löshet (aspirationsrisk) eller oläkbara sår.",
+        "Medicinskt: Kontrollera med barnläkare att K-vitamin getts."
+      ]
+    },
+    journal: "Diagnos: K00.6 Natal tand. \nStatus: [71/81] erupterad vid födsel. [Rörlig / Fast].\nÅtgärd: [Slipat kant / Extraktion].",
+    redFlags: [
+      { id: "p61-1", title: "Aspirationsrisk", description: "Mycket lös tand kan hamna i luftvägarna.", severity: "warning" }
+    ],
+    kallor: ["Koch & Poulsen", "FASS"]
   },
   "sc65": {
     id: "PEDO-65",
-    slug: "herpes-gingivostomatit",
-    title: "Primär herpetisk gingivostomatit",
+    slug: "primar-herpes-gingivostomatit",
+    title: "Primär Herpes (Gingivostomatit)",
     category: "Munslemhinna & System",
-    patientQuote: "Hela munnen är full av blåsor och barnet vill inte äta/dricka",
+    patientQuote: "Småbarn med hög feber och ilsket rött tandkött fullt med blåsor",
     icdCode: "B00.2",
     isAcute: true,
     snabbOversikt: [
-      { label: "Klinik", text: "Hög feber, dregling, extremt rött/svullet tandkött, multipla vesikler/sår." }
+      { label: "Varning", text: "INGEN ANTIBIOTIKA (Virus). Prio är vätska och smärtlindring." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Kissar barnet?", a: "Viktigt för att utesluta dehydrering (uttorkning)." }
+        { q: "Kissar barnet normalt?", a: "Viktigt för att utesluta uttorkning." },
+        { q: "Feber?", a: "Hög feber (38-40C) är typiskt." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Generaliserad rodnad gingiva.", "Vesikler på både fast och rörlig slemhinna.", "Lymfadenopati."]
+      inspektion: ["Generell ilsken gingivit.", "Multipla små blåsor/sår i hela munnen (även gom)."]
     },
     behandling: {
       title: "Handläggning",
       steps: [
-        "Symtomlindring: Paracetamol + Ibuprofen.",
-        "Nutrition: Kall, mjuk mat. Sugrör. Glass.",
-        "Xylocain viskös före mat (penslas varsamt).",
-        "Antivirala medel (Zovirax): Endast vid mycket svåra fall och insatt tidigt (< 72h).",
-        "Varning: Vid dehydrering -> Akut remiss för dropp."
+        "Vätska: Kall dryck, glass, isglass. Viktigt att undvika uttorkning.",
+        "Smärtlindring: Xylocain salva 5% före mat. Paracetamol systemiskt.",
+        "Hygien: Klorhexidinbaddning 0,12% (med tops) vid behov."
       ]
     },
-    journal: "Diagnos: B00.2 Herpetisk gingivostomatit. \nÅtgärd: Info om nutrition. Smärtlindring ordinerad.",
+    journal: "Diagnos: B00.2 Herpetisk gingivostomatit. \nStatus: Feber, multipla sår, foetor ex ore.\nÅtgärd: Info om virus. Ordinerat Xylocain salva + Paracetamol. Info om vätska.",
     redFlags: [
-      { id: "p65-1", title: "Dehydrering", description: "Barnet slutar dricka pga smärta -> Risk för uttorkning.", severity: "critical" }
+      { id: "p65-1", title: "Uttorkning", description: "Om barnet ej kissar -> Barnakut för dropp.", severity: "critical" }
     ],
-    kallor: ["Internetodontologi"]
+    kallor: ["Internetodontologi", "Strama"]
   },
   "sc66": {
     id: "PEDO-66",
     slug: "afte-barn",
     title: "Aftös stomatit (Afte)",
     category: "Munslemhinna & System",
-    patientQuote: "Enstaka vita sår som svider",
+    patientQuote: "Smärtsamma ljusa sår på insidan av läppen",
     icdCode: "K12.0",
     isAcute: false,
     snabbOversikt: [
-      { label: "Klinik", text: "Runda sår med röd halo. Endast på rörlig slemhinna." }
+      { label: "Diff", text: "Ingen feber (skiljer från herpes). Drabbar endast rörlig slemhinna." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Feber?", a: "Nej vid afte (skiljer från herpes)." }
+        { q: "Återkommande?", a: "Afte är ofta recidiverande." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Välavgränsade fibrinbelagda sår."]
+      inspektion: ["Välavgränsat sår med gulvit fibrintäcke och röd halo."]
     },
     behandling: {
-      title: "Åtgärd",
+      title: "Handläggning",
       steps: [
-        "Aftamed (skyddande hinna).",
-        "Vid stora besvär: Lokala steroider (Kenacort i Orabase) - kräver kooperation.",
-        "Info: Självläker på 7-10 dagar."
+        "Lindring: Xylocain gel v.b. Andolex munskölj.",
+        "Prevention: Byt till SLS-fri tandkräm (t.ex. Zendium).",
+        "Info: Självläker på 7-14 dagar."
       ]
     },
-    journal: "Diagnos: K12.0 Afte. \nÅtgärd: Info.",
+    journal: "Diagnos: K12.0 Afte. \nStatus: Sår på insida läpp. Ingen feber.\nÅtgärd: Info. Rekommenderar Zendium.",
     redFlags: [],
     kallor: ["Internetodontologi"]
   },
   "sc67": {
     id: "PEDO-67",
-    slug: "anug-barn",
-    title: "ANUG hos barn (Varning)",
+    slug: "anug-barn-varning",
+    title: "ANUG hos barn (Varning!)",
     category: "Munslemhinna & System",
-    patientQuote: "Extrem smärta och det luktar väldigt illa ur munnen",
-    icdCode: "A69.1",
+    patientQuote: "Tandköttet mellan tänderna har ruttnat bort och det luktar illa",
+    icdCode: "K05.1",
     isAcute: true,
     snabbOversikt: [
-      { label: "Varning", text: "Mycket ovanligt hos barn i I-länder. Kan tyda på grav immunosuppression eller undernäring." }
+      { label: "Viktigt", text: "Extremt sällsynt hos barn i Sverige. Misstänk ALLVARLIG systemsjukdom (Leukemi/HIV)." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Andra sjukdomar?", a: "Kolla immunstatus." }
+        { q: "Andra symtom (trötthet/blåmärken)?", a: "Viktigt för leukemimisstanke." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Utstansade papiller.", "Nekrotiska grå beläggningar.", "Kraftig fetor ex ore."]
+      inspektion: ["Utstansade papiller.", "Nekrotiska beläggningar.", "Kraftig spontanblödning."]
     },
     behandling: {
-      title: "Åtgärd",
+      title: "Handläggning",
       steps: [
-        "Försiktig rengöring med H2O2.",
-        "Antibiotika: Metronidazol.",
-        "UTREDNING: Remiss till barnläkare för immunutredning."
+        "Lokal: Försiktig rengöring med väteperoxid/klorhexidin under ytanestesi.",
+        "Medicinsk: Metronidazol 10-12 mg/kg x 3 vid allmänpåverkan.",
+        "REMISS: ALLTID akut remiss till barnläkare för immunutredning/blodstatus."
       ]
     },
-    journal: "Diagnos: A69.1 ANUG. \nÅtgärd: Rengöring. Remiss barnläkare.",
+    journal: "Diagnos: K05.10 ANUG. \nStatus: Nekrotiserade papiller, extrem smärta.\nÅtgärd: Lokalvård. Metronidazol. Akut remiss Barnläkare.",
     redFlags: [
-      { id: "p67-1", title: "Immunstatus", description: "ANUG hos barn kräver medicinsk utredning.", severity: "warning" }
+      { id: "p67-1", title: "Systemsjukdom", description: "ANUG hos barn = röd flagga för immunbrist.", severity: "critical" }
     ],
-    kallor: ["Internetodontologi"]
+    kallor: ["Strama", "Internetodontologi"]
   },
   "sc68": {
     id: "PEDO-68",
-    slug: "mucocele",
+    slug: "mucocele-slemcysta",
     title: "Mucocele (Slemcysta)",
     category: "Munslemhinna & System",
-    patientQuote: "En kula i läppen som kommer och går",
+    patientQuote: "En mjuk, blåaktig kula på underläppen",
     icdCode: "K11.6",
     isAcute: false,
     snabbOversikt: [
-      { label: "Klinik", text: "Blåaktig mjuk bula, oftast i underläppen." }
+      { label: "Varning", text: "Överläpp = Remiss (uteslut tumör). Underläpp = Oftast ofarlig mucocele." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Har barnet bitit sig?", a: "Trauma mot spottkörtelutförsgång är orsaken." }
+        { q: "Has barnet bitit sig?", a: "Trauma är vanligaste orsaken." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Mjuk fluktuerande svullnad."]
+      inspektion: ["Mjuk, fluktuerande, blåskimrande bula på underläppens insida."]
     },
     behandling: {
-      title: "Åtgärd",
+      title: "Handläggning",
       steps: [
-        "Expektans (många brister och försvinner).",
-        "Vid recidiv: Kirurgisk extirpation (Specialistfall för barn)."
+        "Expektans: Många läker spontant. Avvakta 1 månad.",
+        "Remiss: Till specialist för kirurgisk extirpation vid ständiga recidiv.",
+        "Stick ej hål själv (fylls direkt på igen)."
       ]
     },
-    journal: "Diagnos: K11.6 Mucocele. \nÅtgärd: Info.",
+    journal: "Diagnos: K11.6 Mucocele. \nStatus: Fluktuerande bula [X] mm i underläpp.\nÅtgärd: Exspektans / Remiss.",
     redFlags: [],
     kallor: ["Internetodontologi"]
   },
   "sc69": {
     id: "PEDO-69",
-    slug: "brannskada-bitsar",
+    slug: "bitsar-brannskada",
     title: "Brännskada & Iatrogent bitsår",
     category: "Munslemhinna & System",
-    patientQuote: "Vitt sår på läppen dagen efter bedövning",
-    icdCode: "S00.5",
+    patientQuote: "Ett stort vitt sår på läppen efter bedövningen igår",
+    icdCode: "S01.5",
     isAcute: false,
     snabbOversikt: [
-      { label: "Diagnostisk fälla", text: "Vitt fibrinbelagt sår efter bedövning är NÄSTAN ALLTID ett bitsår, inte en infektion/var." }
+      { label: "Info", text: "Vitt sår (fibrin) är normalt läkningsstadium, ej infektion." }
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Fick barnet bedövning igår?", a: "Klassisk orsak: Barnet biter i bedövad läpp." }
+        { q: "Fått bedövning nyligen?", a: "Vanlig orsak till att barnet biter sig." }
       ],
       kompletterande: []
     },
     status: {
-      inspektion: ["Stort sår med vit fibrinbeläggning.", "Kraftig mjukdelssvullnad."]
+      inspektion: ["Sår med gulvit fibrintäckning.", "Ofta betydande svullnad i läppen."]
     },
     behandling: {
-      title: "Åtgärd",
+      title: "Handläggning",
       steps: [
-        "Information: Det är inte var, det är fibrin. Självläker på 7-14 dagar.",
-        "Xylocain gel före mat.",
-        "Vaselin för att skydda läppen."
+        "Info: Lugnande besked om fibrinbeläggning.",
+        "Lindring: Xylocain gel före mat. Vaselin för att skydda läppen.",
+        "Profylax: Alltid info om bitrisk efter bedövning (bomullsrulle med hem)."
       ]
     },
-    journal: "Diagnos: S00.5 Bitsår i underläpp. \nÅtgärd: Info om läkningsförlopp.",
+    journal: "Diagnos: S01.5 Iatrogent bitsår. \nStatus: Fibrinbelagt sår efter LA.\nÅtgärd: Info. Xylocain gel.",
     redFlags: [],
     kallor: ["Internetodontologi"]
   },
   "sc70": {
     id: "PEDO-70",
-    slug: "koagulationsrubbning",
+    slug: "blodarsjuka-koagulation",
     title: "Koagulationsrubbning",
     category: "Munslemhinna & System",
-    patientQuote: "Barnet har hemofili/blödarsjuka",
+    patientQuote: "Barn med blödarsjuka som har akut tandvärk eller sår",
     icdCode: "D66",
     isAcute: true,
     snabbOversikt: [
@@ -1104,7 +1081,7 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Har barnet ätit frukost?", a: "Viktigt om de tagit sitt insulin." }
+        { q: "Has barnet ätit frukost?", a: "Viktigt om de tagit sitt insulin." }
       ],
       kompletterande: []
     },
@@ -1205,7 +1182,7 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     ],
     anamnes: {
       obligatoriska: [
-        { q: "Fasta?", a: "Har barnet ätit? (Aspirationsrisk vid kräkning)." }
+        { q: "Fasta?", a: "Has barnet ätit? (Aspirationsrisk vid kräkning)." }
       ],
       kompletterande: []
     },
@@ -1229,7 +1206,40 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     kallor: ["Socialstyrelsen"]
   },
 
-  // --- AKUT ORTODONTI (ORT-10 till ORT-14) ---
+  // --- AKUT ORTODONTI (ORT-01, ORT-10 till ORT-14) ---
+  "scort01": {
+    id: "PEDO-ORT01",
+    slug: "eruptionsstorning-horntand",
+    title: "Eruptionsstörning hörntand",
+    category: "Akut Ortodonti",
+    patientQuote: "Hörntanden kommer inte fram och mjölktanden sitter stenhårt",
+    icdCode: "K00.6",
+    isAcute: false,
+    snabbOversikt: [
+      { label: "Prio 3", text: "Risk för rotresorption på permanenta incisiver." },
+      { label: "Diagnostik", text: "Palpationskontroll 9-10 år. Röntgen 11 år om ej kännbar." }
+    ],
+    anamnes: {
+      obligatoriska: [
+        { q: "Är barnet 10-13 år?", a: "Kritisk ålder för upptäckt." }
+      ],
+      kompletterande: []
+    },
+    status: {
+      inspektion: ["Buckal utbuktning saknas.", "Asymmetrisk eruption."],
+      kliniskaFynd: ["Röntgen: Palatinalt läge (parallax-metod)."]
+    },
+    behandling: {
+      title: "Handläggning",
+      steps: [
+        "Extraktion 03: Ger spontan korrektion i 70-80% av fallen om tanden ej passerat mittlinjen på 2:an.",
+        "Remiss: Till ortodontist vid utebliven effekt eller grav felställning."
+      ]
+    },
+    journal: "Diagnos: K00.6 Eruptionsstörning 13/23. \nStatus: Ej palpabel buckalt. Rtg visar palatinalt läge.\nÅtgärd: Ex av 03. Uppföljning 6 mån.",
+    redFlags: [],
+    kallor: ["Socialstyrelsen", "Internetodontologi"]
+  },
   "scort10": {
     id: "PEDO-ORT10",
     slug: "lossnad-bracket",
