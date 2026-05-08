@@ -44,6 +44,8 @@ export interface ScenarioLayoutProps {
   isPediatric?: boolean;
   /** Main content */
   children: ReactNode;
+  /** Custom right sidebar content (optional) */
+  rightSidebar?: ReactNode;
 }
 
 export function ScenarioLayout({
@@ -56,6 +58,7 @@ export function ScenarioLayout({
   userHasPremium = false,
   isPediatric = false,
   children,
+  rightSidebar,
 }: ScenarioLayoutProps) {
   const isLocked = isPremium && !userHasPremium;
   const themeClass = isPediatric ? "theme-pediatric" : "";
@@ -109,7 +112,7 @@ export function ScenarioLayout({
         </header>
 
         {/* ── Main Content + Red Flags Grid ────────────────────── */}
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr,320px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-6">
           {/* Main content */}
           <div className="min-w-0">
             {isLocked ? (
@@ -119,9 +122,13 @@ export function ScenarioLayout({
             )}
           </div>
 
-          {/* Red flags — ALWAYS visible on desktop (right column) */}
-          <div className="hidden xl:block" aria-label="Röda flaggor">
-            <RodaFlaggor flags={redFlags} isPediatric={isPediatric} />
+          {/* Right Column — Sidebar content */}
+          <div className="hidden lg:block space-y-6" aria-label="Klinisk Sidebar">
+            {rightSidebar ? (
+              rightSidebar
+            ) : (
+              <RodaFlaggor flags={redFlags} isPediatric={isPediatric} />
+            )}
           </div>
         </div>
 

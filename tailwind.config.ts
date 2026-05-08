@@ -36,9 +36,9 @@ export default {
         'pediatric-soft': '#FFDBD0',
 
         // Accenter
-        accent:           '#CC5833',
-        'accent-light':   '#FF7E55',
-        'accent-hover':   '#b04a29',
+        accent:           'var(--accent-primary)',
+        'accent-light':   'var(--accent-light)',
+        'accent-hover':   'var(--accent-hover, #b04a29)',
 
         // Borders
         'border-light':   '#E5E3DF',
