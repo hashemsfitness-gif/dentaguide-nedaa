@@ -46,6 +46,20 @@ export const webhookLimiter = new Ratelimit({
   analytics: true,
 });
 
+export const simulatorSessionLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  prefix: "ratelimit:sim:session",
+  analytics: true,
+});
+
+export const simulatorAnswerLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(50, "1 m"),
+  prefix: "ratelimit:sim:answer",
+  analytics: true,
+});
+
 export interface RateLimitResult {
   success: boolean;
   limit: number;
