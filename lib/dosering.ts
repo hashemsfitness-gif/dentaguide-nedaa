@@ -170,5 +170,91 @@ export function calculateDose(
     };
   }
 
+  // Morfin (Stark opioid — narkotikaförteckning II)
+  if (drug === 'morfin') {
+    if (group === 'pregnant') {
+      return contraindicated('Morfin passerar placenta — neonatal andningsdepression nära partus. Endast i samråd med läkare/obstetriker.', 'UNDVIK — samråd läkare');
+    }
+    if (group === 'child_small' || (group === 'child_big' && weight < 30)) {
+      throw new Error('Morfin till barn <30 kg rekommenderas EJ inom tandvård. Kontakta barnmedicin eller specialisttandvård.');
+    }
+    if (group === 'elderly') {
+      return {
+        dose: 2.5,
+        unit: 'mg per os (startvärde)',
+        interval: 'var 4–6:e timme — titrera försiktigt',
+        maxDay: null,
+        maxDayUnit: 'Titrera individuellt — max 30 tabletter per förskrivning',
+        form: 'Tablett 5 mg (delbar) eller oral lösning 2 mg/ml',
+        note: 'Äldre: starta 2,5 mg pga reducerad clearance. Risk andningsdepression, konfusion, förstoppning. Rekommendera laxantia. Källa: Tandvårdens Läkemedel 2024–2025 kap. 10.',
+        special: 'Narkotikarecept (förteckning II) · HSLF-FS 2021:75',
+        maxDoseWarning: false
+      };
+    }
+    if (group === 'adult') {
+      return {
+        dose: 5,
+        unit: 'mg per os (startvärde)',
+        interval: 'var 4:e timme — titrera efter effekt',
+        maxDay: null,
+        maxDayUnit: 'Max 30 tabletter per förskrivning',
+        form: 'Tablett 5 mg (delbar) eller oral lösning 2 mg/ml',
+        note: 'Endast vid svår postoperativ smärta när NSAID + paracetamol är otillräckligt. Allmäntandläkare har förskrivningsrätt (max 30 tabletter/tillfälle). Kortast möjliga duration. Kombinera alltid med paracetamol/NSAID (opioidbesparande). Källa: Tandvårdens Läkemedel 2024–2025 kap. 10.',
+        special: 'Narkotikarecept (förteckning II) · HSLF-FS 2021:75',
+        maxDoseWarning: false
+      };
+    }
+    // Barn ≥30 kg: 0,2–0,3 mg/kg
+    const dose = Math.round(Math.min(weight * 0.2, 10) * 10) / 10;
+    return {
+      dose,
+      unit: 'mg per os (0,2–0,3 mg/kg)',
+      interval: 'var 4–6:e timme',
+      maxDay: null,
+      maxDayUnit: 'Max 10 mg per dos',
+      form: `Oral lösning 2 mg/ml — ${Math.round(dose / 2 * 10) / 10} ml per dos`,
+      note: 'Barn >30 kg: 0,2–0,3 mg/kg per dos. Förskrivning till barn kräver specialisttandvård. Källa: Tandvårdens Läkemedel 2024–2025 kap. 10; ePed.',
+      special: 'Narkotikarecept (förteckning II) · HSLF-FS 2021:75',
+      maxDoseWarning: false
+    };
+  }
+
+  // Oxikodon (Stark opioid — narkotikaförteckning II)
+  // Indicerat vid kraftigt nedsatt njurfunktion när morfin är olämpligt.
+  // Förskrivning kräver specialistkompetens i käkkirurgi.
+  if (drug === 'oxikodon') {
+    if (group === 'pregnant') {
+      return contraindicated('Oxikodon passerar placenta — neonatal andningsdepression. Endast i samråd med läkare.', 'UNDVIK — samråd läkare');
+    }
+    if (group === 'child_small' || group === 'child_big') {
+      throw new Error('Oxikodon till barn rekommenderas EJ inom tandvård. Kräver specialisttandvård.');
+    }
+    if (group === 'elderly') {
+      return {
+        dose: 5,
+        unit: 'mg per os (startvärde)',
+        interval: 'var 4–6:e timme — titrera försiktigt',
+        maxDay: null,
+        maxDayUnit: 'Titrera individuellt',
+        form: 'OxyNorm 5 mg kapsel eller oral lösning 5 mg/ml (1 ml per dos)',
+        note: 'Äldre: starta lågt och titrera. Indicerat vid kraftigt nedsatt njurfunktion när morfin är olämpligt. Targiniq (oxikodon + naloxon) föredras vid >1 dos — minskar förstoppning. Förskrivning kräver specialistkompetens i käkkirurgi. Källa: Tandvårdens Läkemedel 2024–2025 kap. 10.',
+        special: 'Narkotikarecept (förteckning II) · Specialistkompetens käkkirurgi · HSLF-FS 2021:75',
+        maxDoseWarning: false
+      };
+    }
+    // Adult
+    return {
+      dose: 5,
+      unit: 'mg per os (startvärde)',
+      interval: 'var 4–6:e timme',
+      maxDay: null,
+      maxDayUnit: 'Titrera individuellt',
+      form: 'OxyNorm 5 mg kapsel eller oral lösning 5 mg/ml (1 ml per dos)',
+      note: 'Indicerat vid kraftigt nedsatt njurfunktion när morfin är olämpligt. Targiniq (oxikodon + naloxon) föredras vid >1 dos — minskar förstoppning. Förskrivning kräver specialistkompetens i käkkirurgi. Källa: Tandvårdens Läkemedel 2024–2025 kap. 10.',
+      special: 'Narkotikarecept (förteckning II) · Specialistkompetens käkkirurgi · HSLF-FS 2021:75',
+      maxDoseWarning: false
+    };
+  }
+
   return { dose: 0, unit: '', interval: '', maxDay: 0, maxDayUnit: '', form: '', note: 'Implementering saknas', special: null, maxDoseWarning: false };
 }

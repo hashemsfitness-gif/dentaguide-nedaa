@@ -89,6 +89,60 @@ describe('Naproxen', () => {
   });
 });
 
+describe('Morfin', () => {
+  test('vuxen → 5mg startvärde per os', () => {
+    const result = calculateDose('morfin', 70, 'adult');
+    expect(result.dose).toBe(5);
+    expect(result.special).toContain('HSLF-FS 2021:75');
+  });
+
+  test('äldre → 2,5mg startvärde (reducerad clearance)', () => {
+    const result = calculateDose('morfin', 70, 'elderly');
+    expect(result.dose).toBe(2.5);
+  });
+
+  test('barn ≤30 kg → kasta error (specialisttandvård)', () => {
+    expect(() => calculateDose('morfin', 25, 'child_big', 8))
+      .toThrow('Morfin till barn <30 kg rekommenderas EJ inom tandvård');
+  });
+
+  test('barn >30 kg → 0,2 mg/kg', () => {
+    const result = calculateDose('morfin', 40, 'child_big', 12);
+    expect(result.dose).toBe(8);
+  });
+
+  test('gravid → kontraindicerat', () => {
+    const result = calculateDose('morfin', 65, 'pregnant');
+    expect(result.maxDoseWarning).toBe(true);
+    expect(result.dose).toBe(0);
+  });
+});
+
+describe('Oxikodon', () => {
+  test('vuxen → 5mg startvärde (indicerat vid nedsatt njurfunktion)', () => {
+    const result = calculateDose('oxikodon', 70, 'adult');
+    expect(result.dose).toBe(5);
+    expect(result.note).toContain('nedsatt njurfunktion');
+  });
+
+  test('äldre ≥75 år → INTE kontraindicerat (5mg startvärde)', () => {
+    const result = calculateDose('oxikodon', 70, 'elderly');
+    expect(result.dose).toBe(5);
+    expect(result.maxDoseWarning).toBe(false);
+  });
+
+  test('barn → kasta error (specialisttandvård)', () => {
+    expect(() => calculateDose('oxikodon', 30, 'child_big', 10))
+      .toThrow('Oxikodon till barn rekommenderas EJ inom tandvård');
+  });
+
+  test('special-fältet anger specialistkompetens käkkirurgi', () => {
+    const result = calculateDose('oxikodon', 70, 'adult');
+    expect(result.special).toContain('käkkirurgi');
+    expect(result.special).toContain('HSLF-FS 2021:75');
+  });
+});
+
 describe('Metronidazol', () => {
   test('vuxen → 400mg × 3 i 5 dagar', () => {
     const result = calculateDose('metronidazol', 70, 'adult');

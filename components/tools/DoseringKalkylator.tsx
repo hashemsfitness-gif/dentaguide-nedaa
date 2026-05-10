@@ -193,11 +193,11 @@ OBS: ${result.note}`;
                       <AlertOctagon className="w-5 h-5 text-[#C1121F]" />
                     )}
                     <h3 className={cn("font-bold", checklistComplete ? "text-[#2D6A4F]" : "text-[#C1121F]")}>
-                      Säkerhetschecklista Opioider (HSLF-FS 2016:34)
+                      Säkerhetschecklista Opioider (HSLF-FS 2021:75)
                     </h3>
                   </div>
                   <p className="text-sm text-slate-700 mb-3">
-                    Alla kriterier måste vara uppfyllda innan doseringsförslag visas. Oxikodon kräver dessutom specialistkompetens inom oral kirurgi.
+                    Alla kriterier måste vara uppfyllda innan doseringsförslag visas. Allmäntandläkare har förskrivningsrätt för morfin (max 30 tabletter/tillfälle). Oxikodon kräver specialistkompetens i käkkirurgi.
                   </p>
                   <div className="space-y-2">
                     {OPIOID_CRITERIA.map((crit, idx) => (
