@@ -57,3 +57,55 @@ describe('Klindamycin', () => {
     expect(result.dose).toBe(120);
   });
 });
+
+describe('Naproxen', () => {
+  test('vuxen → 500mg × 2', () => {
+    const result = calculateDose('naproxen', 70, 'adult');
+    expect(result.dose).toBe(500);
+    expect(result.maxDay).toBe(1000);
+  });
+
+  test('gravid trimester 3 → kasta error', () => {
+    expect(() => calculateDose('naproxen', 65, 'pregnant', undefined, 3))
+      .toThrow('Naproxen kontraindicerat i 3:e trimestern');
+  });
+
+  test('gravid (ej trimester 3) → kontraindicerat', () => {
+    const result = calculateDose('naproxen', 65, 'pregnant', undefined, 2);
+    expect(result.maxDoseWarning).toBe(true);
+    expect(result.dose).toBe(0);
+  });
+
+  test('barn → kontraindicerat', () => {
+    const result = calculateDose('naproxen', 30, 'child_big');
+    expect(result.maxDoseWarning).toBe(true);
+    expect(result.dose).toBe(0);
+  });
+
+  test('äldre → kontraindicerat', () => {
+    const result = calculateDose('naproxen', 70, 'elderly');
+    expect(result.maxDoseWarning).toBe(true);
+    expect(result.dose).toBe(0);
+  });
+});
+
+describe('Metronidazol', () => {
+  test('vuxen → 400mg × 3 i 5 dagar', () => {
+    const result = calculateDose('metronidazol', 70, 'adult');
+    expect(result.dose).toBe(400);
+    expect(result.maxDay).toBe(1200);
+    expect(result.special).toContain('Alkohol');
+  });
+
+  test('gravid → kontraindicerat', () => {
+    const result = calculateDose('metronidazol', 65, 'pregnant');
+    expect(result.maxDoseWarning).toBe(true);
+    expect(result.dose).toBe(0);
+  });
+
+  test('barn 20kg → 150mg/dos (7.5 mg/kg)', () => {
+    const result = calculateDose('metronidazol', 20, 'child_big');
+    expect(result.dose).toBe(150);
+    expect(result.maxDay).toBe(450);
+  });
+});

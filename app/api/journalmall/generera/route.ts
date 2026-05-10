@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@/lib/supabase/server';
+import { createServerSupabase as createClient } from '@/lib/supabase';
 import { claude, CLAUDE_MODEL } from '@/lib/claude';
 import { validateJournal } from '@/lib/journal-validator';
 import { getAiLimiter, checkRateLimit, rateLimitHeaders } from '@/lib/ratelimit';

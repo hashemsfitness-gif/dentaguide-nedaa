@@ -38,7 +38,7 @@ export async function GET(req: Request) {
     const suggestions = new Set<string>();
     primary?.forEach(row => {
       if (row.trolig_diagnos) suggestions.add(row.trolig_diagnos);
-      row.differentialdiagnoser?.forEach(d => {
+      row.differentialdiagnoser?.forEach((d: string) => {
         if (d.toLowerCase().includes(query.toLowerCase())) suggestions.add(d);
       });
     });

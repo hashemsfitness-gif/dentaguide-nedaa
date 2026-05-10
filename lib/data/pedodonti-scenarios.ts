@@ -50,7 +50,8 @@ export interface PedScenario {
 }
 
 export const pedodontiScenarios: Record<string, PedScenario> = {
-  // --- TRAUMA PRIMÄRA (41-44) -  "sc41": {
+  // --- TRAUMA PRIMÄRA (41-44) ---
+  "sc41": {
     id: "PEDO-41",
     slug: "luxation-mjolktand",
     title: "Luxation (Mjölktand)",
@@ -184,7 +185,13 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
         "Rotfragment: LÄMNA det apikala rotfragmentet (det resorberas oftast normalt). Att försöka ta ut det riskerar skada på det permanenta anlaget."
       ]
     },
-    journal: "Diagnos: S02.5 Rotfraktur tand [nr].\nÅtgärd: LA. Extraherat koronalt fragment. Rotspets lämna  "sc45": {
+    journal: "Diagnos: S02.5 Rotfraktur tand [nr].\nÅtgärd: LA. Extraherat koronalt fragment. Rotspets lämnad in situ (spontan resorption förväntas). Info om uppföljning.",
+    redFlags: [
+      { id: "p44-1", title: "Infektion", description: "Feber/fistel vid rotspets -> Extraktion av rotfragment.", severity: "warning" }
+    ],
+    kallor: ["IADT 2020"]
+  },
+  "sc45": {
     id: "PEDO-45",
     slug: "alveolarfraktur-barn",
     title: "Alveolarfraktur",
@@ -312,7 +319,7 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
       steps: [
         "Replantation: Sätt tillbaka tanden omedelbart (håll endast i kronan!).",
         "Fixering: Flexibel splint i 2 veckor.",
-        "Antibiotika: Överväg PcV i 7 dagar. Doxycyklin om >12 år.",
+        "Antibiotika: PcV 12,5 mg/kg × 3 (max 1 g × 3) i 7 dagar. Doxycyklin ≥10 år (pga anti-resorptiva egenskaper).",
         "Uppföljning: Endodonti-start inom 7-10 dagar om stängt apex."
       ]
     },
@@ -558,7 +565,7 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     title: "Perikoronit",
     category: "Akut - Smärta & Infektion",
     patientQuote: "Det gör ont längst bak vid den nya tanden",
-    icdCode: "K05.2",
+    icdCode: "K05.22",
     isAcute: false,
     snabbOversikt: [
       { label: "Klinik", text: "Inflammation runt delvis frambruten 6:a eller 7:a." }
@@ -581,7 +588,7 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
         "Info: Antibiotika ges EJ vid okomplicerad perikoronit."
       ]
     },
-    journal: "Diagnos: K05.2 Perikoronit.\nStatus: Svullet operculum regio [nr].\nÅtgärd: Spolning. [Inslipning antagonist]. Info om hygien.",
+    journal: "Diagnos: K05.22 Perikoronit.\nStatus: Svullet operculum regio [nr].\nÅtgärd: Spolning. [Inslipning antagonist]. Info om hygien.",
     redFlags: [],
     kallor: ["Internetodontologi"]
   },
@@ -874,7 +881,7 @@ export const pedodontiScenarios: Record<string, PedScenario> = {
     title: "ANUG hos barn (Varning!)",
     category: "Munslemhinna & System",
     patientQuote: "Tandköttet mellan tänderna har ruttnat bort och det luktar illa",
-    icdCode: "K05.1",
+    icdCode: "K05.10",
     isAcute: true,
     snabbOversikt: [
       { label: "Viktigt", text: "Extremt sällsynt hos barn i Sverige. Misstänk ALLVARLIG systemsjukdom (Leukemi/HIV)." }

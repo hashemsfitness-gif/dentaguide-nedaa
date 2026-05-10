@@ -74,7 +74,16 @@ export default function LoginPage() {
       >
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <Image src="/logo/hexagon-2.png" alt="DentaGuide-Pro logotyp" width={72} height={72} className="hex-logo-hero mb-4" />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            aria-label="DentaGuide-Pro logotyp"
+            className="hex-logo-hero mb-4 w-[72px] h-[72px] object-cover rounded-xl"
+          >
+            <source src="/logo/logo-animated.mp4" type="video/mp4" />
+          </video>
           <h1 className="editorial-header text-3xl text-center" style={{ color: 'var(--primary)' }}>
             Välkommen tillbaka
           </h1>

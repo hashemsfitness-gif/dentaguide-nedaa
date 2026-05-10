@@ -1,7 +1,7 @@
 import ParodKlassificerare from "@/components/tools/ParodKlassificerare";
 
 export const metadata = {
-  title: "Parodontologi-klassificerare | DentaGuide Pro",
+  title: "Parodontologi-klassificerare | DentaGuide-Pro",
   description: "EFP/AAP 2018 klassificering av parodontit",
 };
 
@@ -11,7 +11,7 @@ export default function ParodKlassificeringPage() {
       {/* Header */}
       <header className="header-gradient flex items-center px-6">
         <h1 className="logo text-white italic font-serif text-2xl">
-          DentaGuide Pro
+          DentaGuide-Pro
         </h1>
         <div className="ml-8 font-mono text-sm uppercase tracking-wider opacity-80">
           Kliniska Verktyg / Parodontologi-klassificerare

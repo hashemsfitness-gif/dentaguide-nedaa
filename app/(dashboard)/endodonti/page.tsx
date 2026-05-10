@@ -1,63 +1,12 @@
 import Link from "next/link";
+import { endodontiScenarier } from "@/lib/data/endodonti-scenarios";
 
-const scenarios = [
-  {
-    slug: "reversibel-pulpit",
-    title: "Reversibel pulpit",
-    icdCode: "K04.00",
-    isAcute: false,
-    summary: "Kortvarig smärta vid retning, försvinner <30s. Vital, behandlingsbar tand.",
-  },
-  {
-    slug: "irreversibel-pulpit",
-    title: "Irreversibel pulpit",
-    icdCode: "K04.01",
-    isAcute: true,
-    summary: "Spontan, bultande värk >30s. Kräver rotbehandling eller extraktion.",
-  },
-  {
-    slug: "apikal-parodontit",
-    title: "Apikal parodontit",
-    icdCode: "K04.4/K04.5",
-    isAcute: false,
-    summary: "Perkussionsöm tand med periapikalt fynd. Nekrotisk pulpa.",
-  },
-  {
-    slug: "akut-apikal-abscess",
-    title: "Akut apikal abscess",
-    icdCode: "K04.7",
-    isAcute: true,
-    summary: "Svullnad, feber, fluktuation. Dränage + Ab vid systemtecken.",
-  },
-  {
-    slug: "cracked-tooth",
-    title: "Cracked tooth syndrome",
-    icdCode: "K03.8",
-    isAcute: false,
-    summary: "Skarp smärta vid bitupp/bitfrån. Transillumination, Fracfinder.",
-  },
-  {
-    slug: "postoperativ-kontakt",
-    title: "Postoperativ kontakt",
-    icdCode: "K07.24",
-    isAcute: false,
-    summary: "Tanden för hög efter fyllning/krona. Ocklusal justering.",
-  },
-  {
-    slug: "dentinhypersensibilitet",
-    title: "Dentinhypersensibilitet",
-    icdCode: "K03.1",
-    isAcute: false,
-    summary: "Kortvarig ilning vid kyla/luft/sött. Blottat dentin, fluoridlackning.",
-  },
-  {
-    slug: "postendo-smarta",
-    title: "Postendo-smärta / Flare-up",
-    icdCode: "K04.4",
-    isAcute: true,
-    summary: "Ökad smärta 12–48h efter rotbehandling. Ocklusal justering, dränage vid abscess.",
-  },
-];
+const scenarios = Object.values(endodontiScenarier);
+
+export const metadata = {
+  title: "Endodonti | DentaGuide-Pro",
+  description: "8 evidensbaserade kliniska scenarier för pulpa- och rotdiagnostik.",
+};
 
 export default function EndodontiPage() {
   return (
@@ -77,7 +26,7 @@ export default function EndodontiPage() {
 
       <div className="grid sm:grid-cols-2 gap-5">
         {scenarios.map((s) => (
-          <Link key={s.slug} href={`/endodonti/${s.slug}`} className="block">
+          <Link key={s.slug} href={`/dashboard/endodonti/${s.slug}`} className="block">
             <div className="glass-bento hover-lift p-6 h-full flex flex-col gap-3 cursor-pointer">
               <div className="flex items-start justify-between gap-2">
                 <h2 className="font-display italic text-xl text-primary leading-tight">{s.title}</h2>
@@ -86,7 +35,16 @@ export default function EndodontiPage() {
                   {s.isAcute && <span className="badge badge-acute">AKUT</span>}
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground font-medium leading-relaxed flex-1">{s.summary}</p>
+              <p className="text-sm text-muted-foreground font-medium leading-relaxed flex-1">
+                {s.patientUtsaga}
+              </p>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {s.snabbOversikt.slice(0, 2).map((item) => (
+                  <span key={item.label} className="text-xs bg-primary/8 text-primary px-2 py-0.5 rounded-full">
+                    {item.icon} {item.label}: {item.value}
+                  </span>
+                ))}
+              </div>
               <div className="flex items-center gap-1 text-xs font-mono text-secondary font-semibold uppercase tracking-wide mt-auto pt-2 border-t border-black/5">
                 <span>Öppna scenario</span>
                 <span>→</span>

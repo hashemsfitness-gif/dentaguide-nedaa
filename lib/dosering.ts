@@ -13,6 +13,10 @@ export interface DoseResult {
   maxDoseWarning: boolean;
 }
 
+function contraindicated(note: string, special = 'KONTRAINDICERAT'): DoseResult {
+  return { dose: 0, unit: '', interval: '', maxDay: 0, maxDayUnit: '', form: special, note, special, maxDoseWarning: true };
+}
+
 export function calculateDose(
   drug: DrugId,
   weight: number,
@@ -45,10 +49,10 @@ export function calculateDose(
       throw new Error('Kontraindicerat i 3:e trimestern');
     }
     if (group === 'pregnant') {
-      return { dose:0, unit:'', interval:'', maxDay:0, maxDayUnit:'', form:'KONTRAINDICERAT', note:'Kontraindicerat under >16 v.', special:'Kontraindicerat', maxDoseWarning:true };
+      return contraindicated('Kontraindicerat under >16 v.');
     }
     if (group === 'elderly') {
-      return { dose:0, unit:'', interval:'', maxDay:0, maxDayUnit:'', form:'UNDVIK', note:'COX-hämmare undviks till äldre över 75 år.', special:'KONTRAINDICERAT', maxDoseWarning:true };
+      return contraindicated('COX-hämmare undviks till äldre över 75 år.', 'UNDVIK');
     }
     if (group === 'adult') {
       return { dose: 400, unit: 'mg', interval: 'var 6–8:e timme', maxDay: 1200, maxDayUnit: 'mg/dygn', form: '400 mg tabletter', note: 'Max 1200 mg/dag (receptfritt).', special: null, maxDoseWarning: false };
@@ -58,7 +62,7 @@ export function calculateDose(
       dose: dose,
       unit: 'mg (10 mg/kg)',
       interval: 'var 6–8:e timme',
-      maxDay: Math.min(weight * 40, 1200), // Max 40mg/kg/day or 1200mg/day
+      maxDay: Math.min(weight * 40, 1200),
       maxDayUnit: 'mg/dygn',
       form: weight < 20 ? 'Oral suspension' : 'Tabletter',
       note: 'Barn: 10 mg/kg per dos.',
@@ -80,7 +84,7 @@ export function calculateDose(
       dose: dose,
       unit: 'mg (15 mg/kg)',
       interval: 'var 6:e timme',
-      maxDay: Math.min(weight * 60, 4000), // Max 60mg/kg/day or 4000mg/day (wait, adult max 4g, child usually smaller but formula is formula)
+      maxDay: Math.min(weight * 60, 4000),
       maxDayUnit: 'mg/dygn',
       form: weight < 25 ? 'Oral lösning' : 'Tabletter',
       note: 'Barn: 15 mg/kg per dos.',
@@ -111,7 +115,7 @@ export function calculateDose(
   // Klindamycin
   if (drug === 'klindamycin') {
     if (group === 'adult' || group === 'elderly' || group === 'pregnant') {
-      return { dose: 150, unit: 'mg', interval: '3 gånger dagligen i 5–7 dagar', maxDay: 450, maxDayUnit: 'mg/dygn', form: '150 mg kapslar', note: 'Vid pc-allergi.', special: null, maxDoseWarning: false };
+      return { dose: 150, unit: 'mg', interval: '3 gånger dagligen i 5–7 dagar', maxDay: 450, maxDayUnit: 'mg/dygn', form: '150 mg kapslar', note: 'Vid pc-allergi. VGR allvarlig infektion: 600mg × 3 i 5–7 dagar — verifiera mot aktuell regional riktlinje.', special: null, maxDoseWarning: false };
     }
     const dose = Math.min(weight * 6, 150);
     return {
@@ -121,12 +125,50 @@ export function calculateDose(
       maxDay: Math.min(weight * 18, 450),
       maxDayUnit: 'mg/dygn',
       form: weight < 25 ? 'Oral suspension' : 'Kapslar',
-      note: '6 mg/kg × 3',
+      note: '6 mg/kg × 3. Vid pc-allergi.',
       special: null,
       maxDoseWarning: weight * 6 > 150
     };
   }
 
-  // Fallbacks for others not thoroughly explicitly TDD tested in user prompt but needed
+  // Naproxen
+  if (drug === 'naproxen') {
+    if (group === 'pregnant' && trimester === 3) {
+      throw new Error('Naproxen kontraindicerat i 3:e trimestern (fosterstängning av ductus arteriosus).');
+    }
+    if (group === 'pregnant') {
+      return contraindicated('Kontraindicerat under graviditet — använd Paracetamol.', 'UNDVIK');
+    }
+    if (group === 'elderly') {
+      return contraindicated('NSAID undviks till äldre >75 år (njurpåverkan, GI-risk). Använd Paracetamol.', 'UNDVIK');
+    }
+    if (group === 'adult') {
+      return { dose: 500, unit: 'mg', interval: '2 gånger dagligen i 10 dagar', maxDay: 1000, maxDayUnit: 'mg/dygn', form: '500 mg tabletter', note: 'Screena kontraindikationer: Astma/NSAID-känsliga, Ulcus, Hjärtsvikt, Högt blodtryck, Njurar, Warfarin.', special: null, maxDoseWarning: false };
+    }
+    return contraindicated('Naproxen rekommenderas ej till barn under 12 år utan läkarordination.', 'UNDVIK');
+  }
+
+  // Metronidazol
+  if (drug === 'metronidazol') {
+    if (group === 'pregnant') {
+      return contraindicated('Kontraindicerat trimester 1. Trimester 2–3 undviks — läkarordination krävs.');
+    }
+    if (group === 'adult' || group === 'elderly') {
+      return { dose: 400, unit: 'mg', interval: '3 gånger dagligen i 5 dagar', maxDay: 1200, maxDayUnit: 'mg/dygn', form: '400 mg tabletter', note: 'Vid anaerob infektion / ANUG / terapisvikt. OBS: Alkohol strikt kontraindicerat under och 48h efter kuren (Antabuseffekt).', special: 'Alkohol kontraindicerat 48h efter sista dos', maxDoseWarning: false };
+    }
+    const dose = Math.min(weight * 7.5, 400);
+    return {
+      dose: dose,
+      unit: 'mg (7,5 mg/kg)',
+      interval: '3 gånger dagligen i 5 dagar',
+      maxDay: Math.min(weight * 22.5, 1200),
+      maxDayUnit: 'mg/dygn',
+      form: weight < 25 ? 'Oral suspension' : 'Tabletter',
+      note: 'OBS: Alkohol strikt kontraindicerat under och 48h efter kuren.',
+      special: 'Alkohol kontraindicerat 48h efter sista dos',
+      maxDoseWarning: weight * 7.5 > 400
+    };
+  }
+
   return { dose: 0, unit: '', interval: '', maxDay: 0, maxDayUnit: '', form: '', note: 'Implementering saknas', special: null, maxDoseWarning: false };
 }

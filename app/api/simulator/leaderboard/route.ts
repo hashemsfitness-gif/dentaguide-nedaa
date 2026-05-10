@@ -63,7 +63,7 @@ export async function GET() {
     return NextResponse.json({
       leaderboard: results,
       userClinic: profile.clinic_name,
-      userOptIn: profile.leaderboard_opt_in
+      userOptIn: (profile as any).leaderboard_opt_in ?? false
     });
 
   } catch (error: any) {

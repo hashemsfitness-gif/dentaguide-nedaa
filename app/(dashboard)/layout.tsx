@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import DashboardRightPanel from "@/components/dashboard/DashboardRightPanel";
 
 export const metadata: Metadata = {
   title: {
@@ -22,36 +24,7 @@ export default function DashboardLayout({
   return (
     <div className="dashboard-layout">
       {/* ── Left Sidebar (navigation + categories) ─────────────── */}
-      <aside
-        className="hidden lg:flex flex-col border-r border-border bg-sidebar overflow-y-auto"
-        aria-label="Sidopanel — Navigation"
-      >
-        <div className="p-4 border-b border-sidebar-border">
-          <div className="flex items-center gap-2">
-            <span className="text-xl" aria-hidden="true">🦷</span>
-            <h1 className="text-lg font-semibold text-sidebar-foreground">
-              DentaGuide-Pro
-            </h1>
-          </div>
-        </div>
-
-        {/* Navigation placeholder — fylls av Agent 01 */}
-        <nav className="flex-1 p-3 space-y-1" aria-label="Huvudnavigation">
-          <div className="skeleton h-8 w-full mb-2" />
-          <div className="skeleton h-8 w-full mb-2" />
-          <div className="skeleton h-8 w-full mb-2" />
-          <div className="skeleton h-8 w-3/4" />
-        </nav>
-
-        {/* Upgrade CTA for free users */}
-        <div className="p-4 border-t border-sidebar-border">
-          <div className="rounded-lg bg-sidebar-accent p-3 text-center">
-            <p className="text-xs text-sidebar-accent-foreground">
-              Kliniker-plan
-            </p>
-          </div>
-        </div>
-      </aside>
+      <DashboardSidebar />
 
       {/* ── Main Content Area ──────────────────────────────────── */}
       <div className="flex flex-col min-h-screen overflow-y-auto">
@@ -128,23 +101,7 @@ export default function DashboardLayout({
       </div>
 
       {/* ── Right Panel (red flags, tools, context) ────────────── */}
-      <aside
-        className="hidden xl:flex flex-col border-l border-border bg-sidebar overflow-y-auto"
-        aria-label="Sidopanel — Verktyg och röda flaggor"
-      >
-        <div className="p-4 border-b border-sidebar-border">
-          <h2 className="text-sm font-semibold text-sidebar-foreground uppercase tracking-wider">
-            Klinisk kontext
-          </h2>
-        </div>
-
-        {/* Right panel content — red flags, quick tools */}
-        <div className="flex-1 p-4 space-y-4">
-          {/* Red flags will be injected by ScenarioLayout */}
-          <div className="skeleton h-32 w-full" />
-          <div className="skeleton h-24 w-full" />
-        </div>
-      </aside>
+      <DashboardRightPanel />
     </div>
   );
 }

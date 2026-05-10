@@ -118,7 +118,7 @@ export default function RegisterPage() {
       >
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <Image src="/logo/hexagon-2.png" alt="DentaGuide-Pro" width={64} height={64} className="hex-logo-hero mb-4" />
+          <Image src="/logo/logo-hexagon-dark.png" alt="DentaGuide-Pro" width={64} height={64} className="hex-logo-hero mb-4" />
           <h1 className="editorial-header text-3xl text-center" style={{ color: 'var(--primary)' }}>
             Skapa konto
           </h1>

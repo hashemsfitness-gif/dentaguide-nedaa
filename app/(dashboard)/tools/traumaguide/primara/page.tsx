@@ -3,7 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { TraumaGuidePrimara } from '@/components/tools/TraumaGuide';
 
 export const metadata = {
-  title: "Traumaguiden - Primära tänder | DentaGuide Pro",
+  title: "Traumaguiden - Primära tänder | DentaGuide-Pro",
   description: "Interaktivt diagnostiskt flödesschema för akut tandtrauma - Primära tänder",
 };
 
@@ -13,7 +13,7 @@ export default function PrimaraTraumaPage() {
       {/* Header */}
       <header className="header-gradient flex items-center px-6">
         <Link href="/dashboard" className="logo text-white italic font-serif text-2xl hover:opacity-80 transition-opacity">
-          DentaGuide Pro
+          DentaGuide-Pro
         </Link>
         <div className="ml-8 font-mono text-sm uppercase tracking-wider opacity-80 text-white flex items-center">
           <Link href="/tools/traumaguide" className="hover:underline">Traumaguiden</Link>

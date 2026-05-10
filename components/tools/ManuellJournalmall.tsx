@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { journalScenarios, Scenario, Mall, ExtraAtgard } from '@/lib/journalData';
@@ -77,28 +78,29 @@ export default function ManuellJournalmall() {
     const regex = /\[(.*?)\]/g;
     const parts = [];
     let lastIndex = 0;
-    let match;
+    let match: RegExpExecArray | null;
 
     let placeholderIndex = 0;
 
     while ((match = regex.exec(text)) !== null) {
       parts.push(text.substring(lastIndex, match.index));
       
-      const pKey = `${placeholderIndex}_${match[1]}`;
+      const matchText = match[1];
+      const pKey = `${placeholderIndex}_${matchText}`;
       const val = placeholders[pKey] || '';
-      
+
       parts.push(
-        <span 
+        <span
           key={pKey}
           className={`cursor-pointer inline-block px-1 rounded border ${val ? 'bg-green-100 border-green-300 text-green-800' : 'bg-orange-100 border-orange-300 border-dashed text-orange-800'}`}
           onClick={() => {
-            const newVal = prompt(`Fyll i värde för [${match[1]}]:`, val);
+            const newVal = prompt(`Fyll i värde för [${matchText}]:`, val);
             if (newVal !== null) {
               updatePlaceholder(pKey, newVal);
             }
           }}
         >
-          {val || match[1]}
+          {val || matchText}
         </span>
       );
       

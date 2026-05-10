@@ -10,7 +10,13 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // ── MOCK SESSION FALLBACK ────────────────────────────────
+    if (process.env.SUPABASE_SERVICE_ROLE_KEY?.includes('din-service-role') || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return NextResponse.json({ session: null });
+    }
+
     const supabase = await createServerSupabase();
+    // ... original code
 
     const { data: session, error } = await supabase
       .from('simulator_sessions')

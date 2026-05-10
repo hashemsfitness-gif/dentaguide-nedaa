@@ -219,7 +219,7 @@ Plan: Återbesök SRP [nästa kvadrant/datum]. Re-evaluering [6–8 veckor].`,
     diffDiagnoser: [
       { namn: "Gingivit (K05.1)", kod: "K05.1", skillnad: "Blödning + inflammation UTAN röntgenverifierad bennedbrytning. Reversibel." },
       { namn: "Aggressiv parodontit (Grad C)", kod: "K05.3", skillnad: "Snabb bennedbrytning hos ung patient. Ej proporionell mot plackbörda." },
-      { namn: "Periimplantit (M27.62)", kod: "M27.62", skillnad: "Bennedbrytning runt implantat. Specifik diagnostik krävs." },
+      { namn: "Periimplantit (K05.6)", kod: "K05.6", skillnad: "Bennedbrytning runt implantat. Specifik diagnostik krävs." },
       { namn: "Nekrotiserande gingivit (ANUG)", kod: "A69.1", skillnad: "Papillnekros + fetor + akut debut. Ofta unga vuxna + stress/immunosuppression." },
     ],
 
@@ -258,7 +258,7 @@ Plan: Återbesök SRP [nästa kvadrant/datum]. Re-evaluering [6–8 veckor].`,
     id: "VARK-05-PERI",
     slug: "perikoronit",
     title: "Perikoronit",
-    icdCode: "K05.2 (Perikoronit)",
+    icdCode: "K05.22 (Perikoronit)",
     patientUtsaga: "Det gör ont längst bak i käken och det är svårt att gapa.",
     isAcute: true,
     category: "Parodontologi",
@@ -365,9 +365,9 @@ Plan: Återbesök SRP [nästa kvadrant/datum]. Re-evaluering [6–8 veckor].`,
       ],
       antibiotika:
         "Indikation: Feber >38°C, trismus, extraoral svullnad, allmänpåverkan, immunosuppression.\n" +
-        "Förstahandsval: PcV 1,6g × 3 i 5–7 dagar.\n" +
-        "Pc-allergi: Klindamycin 150mg × 3 i 5–7 dagar.\n" +
-        "Allvarlig infektion (VGR-riktlinje): Klindamycin 600mg engångsdos, sedan 150mg × 3.",
+        "Förstahandsval: PcV 1,6g × 3 i 5–7 dagar (ALDRIG 1g eller 2g).\n" +
+        "Pc-allergi: Klindamycin 600mg × 3 i 5–7 dagar (VGR-riktlinje — verifiera mot aktuell regional riktlinje).\n" +
+        "Vid terapisvikt: Metronidazol 400mg × 3 i 5–7 dagar.",
     },
 
     uppfoljning: {
@@ -397,7 +397,7 @@ Plan: Återbesök [X] dgr. Planering för extraktion tand [38/48] i kallt skede.
     ],
 
     kliniskaAnteckningar:
-      "PcV-dos = 1,6g × 3 i 5–7 dagar (ALDRIG 1g eller 2g). Klindamycin = 150mg × 3 vid pc-allergi. VGR allvarlig infektion: Klindamycin 600mg engångsdos. Mät gapförmåga i mm — dokumentera. Trismus <20mm = REMISS AKUT.",
+      "PcV-dos = 1,6g × 3 i 5–7 dagar (ALDRIG 1g eller 2g). Pc-allergi: Klindamycin 600mg × 3 i 5–7 dagar (VGR-riktlinje). Mät gapförmåga i mm — dokumentera. Trismus <20mm = REMISS AKUT.",
 
     redFlags: [
       {
@@ -480,7 +480,7 @@ Plan: Återbesök [X] dgr. Planering för extraktion tand [38/48] i kallt skede.
       ],
       uteslut: [
         "Apikal radiolucens + negativ sensibilitet → Apikal abscess (K04.7) — ej parodontal",
-        "Operculum runt visdomstand → Perikoronit (K05.2)",
+        "Operculum runt visdomstand → Perikoronit (K05.22)",
         "Lateral cysta → Röntgenverifiering (väl avgränsad radiolucens)",
         "Endo-paro-lesion → Komplex orsak, specialist",
       ],
@@ -532,7 +532,8 @@ Plan: Återbesök [X] dgr. Planering för extraktion tand [38/48] i kallt skede.
       antibiotika:
         "Indikation: Feber >38°C, cellulit, spridning, immunosupprimerad.\n" +
         "Förstahandsval: PcV 1,6g × 3 i 5–7 dagar.\n" +
-        "Pc-allergi: Klindamycin 150mg × 3 i 5–7 dagar.\n" +
+        "Pc-allergi: Klindamycin 600mg × 3 i 5–7 dagar (VGR-riktlinje — verifiera mot aktuell regional riktlinje).\n" +
+        "Vid terapisvikt: Metronidazol 400mg × 3 i 5–7 dagar.\n" +
         "OBS: Antibiotika är TILLÄGG till dränage — aldrig substitutet.",
     },
 
@@ -563,13 +564,13 @@ Plan: Återbesök [X] dgr. SRP i kallt skede planerat.`,
 
     diffDiagnoser: [
       { namn: "Apikal abscess (K04.7)", kod: "K04.7", skillnad: "Periapikal radiolucens, negativ sensibilitet, smärta apikalt — ej lateralt." },
-      { namn: "Perikoronit (K05.2)", kod: "K05.2", skillnad: "Operculum runt visdomstand, ej djup ficka i befintlig tand." },
+      { namn: "Perikoronit (K05.22)", kod: "K05.22", skillnad: "Operculum runt visdomstand, ej djup ficka i befintlig tand." },
       { namn: "Lateral parodontal cysta", kod: "K09.0", skillnad: "Väl avgränsad radiolucens lateralt, ingen akut smärta, normal pulpa." },
       { namn: "Endo-paro-lesion", kod: "K04.7", skillnad: "Kombinerad endodontisk + parodontal infektion — komplex diagnostik, specialist." },
     ],
 
     kliniskaAnteckningar:
-      "K05.20 = Parodontal abscess UTAN fistelgång (sluten). K05.21 = MED fistelgång. K05.2 = Perikoronit — INTE parodontal abscess (vanligt kodningsfel!). Skilj från apikal abscess: Lateral vs periapikal radiolucens + sensibilitetstestning.",
+      "K05.20 = Parodontal abscess UTAN fistelgång (sluten). K05.21 = MED fistelgång. K05.22 = Perikoronit — INTE parodontal abscess (vanligt kodningsfel!). Skilj från apikal abscess: Lateral vs periapikal radiolucens + sensibilitetstestning.",
 
     redFlags: [
       {
@@ -781,7 +782,7 @@ Plan: Återbesök om ej bättre [X] dagar.`,
     id: "VARK-13-IMPL",
     slug: "periimplantit",
     title: "Periimplantit",
-    icdCode: "M27.62 (Periimplantit)",
+    icdCode: "K05.6 (Periimplantit)",
     patientUtsaga: "Det gör ont runt implantatet, det blöder och gungar.",
     isAcute: false,
     category: "Parodontologi",
@@ -789,7 +790,7 @@ Plan: Återbesök om ej bättre [X] dagar.`,
 
     snabbOversikt: [
       { label: "Definition", text: "Periimplantit = bennedbrytning + inflammation runt osseointegrerat implantat. Periimplantar mukosit = reversibel mjukvävnadsinflammation (ej bennedbrytning)." },
-      { label: "ICD", text: "M27.62 — EJ K05-koder för periimplantit." },
+      { label: "ICD", text: "K05.6 (Periimplantit)." },
       { label: "Symtom", text: "BOP (blödning vid sondering), ökad fickdjup, bennedbrytning RTG, eventuell rörlighet." },
       { label: "Klassifikation", text: "Periimplantar mukosit (reversibel) → Periimplantit (irreversibel bennedbrytning)." },
       { label: "Prognos", text: "Periimplantar mukosit: God. Periimplantit: Sämre — tidig intervention viktigt." },
@@ -934,7 +935,7 @@ Plan: Re-evaluering [4/6] veckor. [Remiss specialist vid kvarstående aktivitet]
     ],
 
     kliniskaAnteckningar:
-      "M27.62 = Periimplantit (EJ K05-koder). Verifiera torque mot tillverkarens IFU — ALLTID. Använd plastsond (ej metall) vid sondering. Jämför alltid med baseline-RTG för att kvantifiera bennedbrytning.",
+      "K05.6 = Periimplantit. Verifiera torque mot tillverkarens IFU — ALLTID. Använd plastsond (ej metall) vid sondering. Jämför alltid med baseline-RTG för att kvantifiera bennedbrytning.",
 
     redFlags: [
       {
@@ -953,6 +954,12 @@ Plan: Re-evaluering [4/6] veckor. [Remiss specialist vid kvarstående aktivitet]
         id: "impl-3",
         title: "Abscess runt implantat",
         description: "Fluktuation + pus → Akut dränage. Antibiotika vid feber.",
+        severity: "warning",
+      },
+      {
+        id: "impl-4",
+        title: "Cementöverskott",
+        description: "Vanlig orsak till akut periimplantar mukosit efter kroninstallation. Cement under mjukvävnaden måste avlägsnas fullständigt — annars kvarstående inflammation.",
         severity: "warning",
       },
     ],

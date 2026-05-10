@@ -27,7 +27,7 @@ function welcomeEmail(name: string) {
     subject: 'Välkommen till DentaGuide-Pro! 🦷',
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#091b14">
-        <img src="https://dentaguide-pro.se/logo/hexagon-2.png" alt="DentaGuide-Pro" width="60" style="margin-bottom:24px" />
+        <img src="https://dentaguide-pro.se/logo/logo-hexagon-dark.png" alt="DentaGuide-Pro" width="60" style="margin-bottom:24px" />
         <h1 style="font-size:28px;font-weight:700;margin-bottom:12px">Välkommen, ${name}! 👋</h1>
         <p style="font-size:16px;line-height:1.6;color:#424845">
           Ditt konto är nu aktiverat. Här är tre saker du kan göra direkt:
@@ -53,7 +53,7 @@ function day3Email(name: string) {
     subject: 'Tips: Prova AI-journalen i DentaGuide-Pro 📝',
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#091b14">
-        <img src="https://dentaguide-pro.se/logo/hexagon-2.png" alt="DentaGuide-Pro" width="60" style="margin-bottom:24px" />
+        <img src="https://dentaguide-pro.se/logo/logo-hexagon-dark.png" alt="DentaGuide-Pro" width="60" style="margin-bottom:24px" />
         <h1 style="font-size:24px;font-weight:700;margin-bottom:12px">Hej ${name} 👋</h1>
         <p style="font-size:16px;line-height:1.6;color:#424845">
           Har du provat <strong>AI-journalen</strong>? Den strukturerar dina anteckningar till korrekta journaltexter på under 5 minuter.
@@ -77,7 +77,7 @@ function day7Email(name: string) {
     subject: 'En vecka med DentaGuide-Pro — hur går det? 🌟',
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#091b14">
-        <img src="https://dentaguide-pro.se/logo/hexagon-2.png" alt="DentaGuide-Pro" width="60" style="margin-bottom:24px" />
+        <img src="https://dentaguide-pro.se/logo/logo-hexagon-dark.png" alt="DentaGuide-Pro" width="60" style="margin-bottom:24px" />
         <h1 style="font-size:24px;font-weight:700;margin-bottom:12px">Hej ${name}! 🎉</h1>
         <p style="font-size:16px;line-height:1.6;color:#424845">
           Du har nu använt DentaGuide-Pro i en vecka. Vi hoppas att det har gjort din kliniska vardag enklare!

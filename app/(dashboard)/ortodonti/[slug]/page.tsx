@@ -9,13 +9,12 @@ import OrtRightPanel from '@/components/ortodonti/OrtRightPanel';
 import Link from 'next/link';
 
 interface Props {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 }
 
-export default function OrtScenarioPage({ params }: Props) {
-  const scenario = ortodontiScenarios[params.slug];
+export default async function OrtScenarioPage({ params }: Props) {
+  const { slug } = await params;
+  const scenario = ortodontiScenarios[slug];
 
   if (!scenario) {
     notFound();

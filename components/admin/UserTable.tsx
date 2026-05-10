@@ -125,7 +125,7 @@ export default function UserTable({ users: initialUsers }: { users: UserProfile[
                       <div>
                         <p className="font-bold text-[var(--text-primary)] flex items-center gap-2">
                           {u.full_name || 'Namn saknas'}
-                          {u.role === 'admin' && <Shield className="w-3 h-3 text-[var(--sidebar-text-active)]" title="Admin" />}
+                          {u.role === 'admin' && <Shield className="w-3 h-3 text-[var(--sidebar-text-active)]" aria-label="Admin" />}
                         </p>
                         <p className="text-[10px] font-mono text-[var(--text-muted)] mt-1">{u.email}</p>
                       </div>

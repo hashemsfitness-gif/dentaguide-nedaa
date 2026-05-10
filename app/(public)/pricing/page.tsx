@@ -83,7 +83,7 @@ export default function PricingPage() {
       <header className="public-header">
         <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3" aria-label="DentaGuide-Pro startsida">
-            <Image src="/logo/hexagon-2.png" alt="" width={40} height={40} className="hex-logo-nav" aria-hidden="true" />
+            <Image src="/logo/logo-hexagon-dark.png" alt="" width={40} height={40} className="hex-logo-nav" aria-hidden="true" />
             <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'white', fontSize: '1.3rem', fontWeight: 600 }}>
               DentaGuide-Pro
             </span>

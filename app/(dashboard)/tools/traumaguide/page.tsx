@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, Baby, UserRound } from 'lucide-react';
 
 export const metadata = {
-  title: "Traumaguiden | DentaGuide Pro",
+  title: "Traumaguiden | DentaGuide-Pro",
   description: "Interaktivt diagnostiskt flödesschema för akut tandtrauma",
 };
 
@@ -12,7 +12,7 @@ export default function TraumaGuidePage() {
       {/* Header */}
       <header className="header-gradient flex items-center px-6">
         <Link href="/dashboard" className="logo text-white italic font-serif text-2xl hover:opacity-80 transition-opacity">
-          DentaGuide Pro
+          DentaGuide-Pro
         </Link>
         <div className="ml-8 font-mono text-sm uppercase tracking-wider opacity-80 text-white">
           Kliniska Verktyg / Traumaguiden

@@ -2,7 +2,7 @@ import React from 'react';
 import ManuellJournalmall from '@/components/tools/ManuellJournalmall';
 
 export const metadata = {
-  title: 'Manuell Journalmall | DentaGuide',
+  title: 'Manuell Journalmall | DentaGuide-Pro',
   description: 'Klassisk journalmall för tandvård.',
 };
 

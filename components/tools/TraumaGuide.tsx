@@ -3,6 +3,22 @@
 import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, RotateCcw, Copy, Clock } from 'lucide-react';
 
+interface StepOption {
+  label: string;
+  desc?: string;
+  color: string;
+  nextId?: string;
+  resultId?: string;
+}
+
+interface StepData {
+  num: number;
+  title: string;
+  desc?: string;
+  principle?: string;
+  options: StepOption[];
+}
+
 // --- DATA: PRIMÄRA TÄNDER ---
 const PRIMARA_STEPS = {
   's0': {
@@ -336,7 +352,7 @@ export function TraumaGuidePrimara() {
   const [resultId, setResultId] = useState<string | null>(null);
 
   const currentStepId = history[history.length - 1];
-  const step = PRIMARA_STEPS[currentStepId as keyof typeof PRIMARA_STEPS];
+  const step = PRIMARA_STEPS[currentStepId as keyof typeof PRIMARA_STEPS] as StepData;
   const result = resultId ? RESULTS_PRIMARA[resultId as keyof typeof RESULTS_PRIMARA] : null;
 
   const handleOptionClick = (option: any) => {
@@ -413,7 +429,7 @@ export function TraumaGuidePermanenta() {
 
   const currentStepId = history[history.length - 1];
   const isCustomExartikulation = currentStepId === 's-avuls-exart';
-  const step = !isCustomExartikulation ? PERMANENTA_STEPS[currentStepId as keyof typeof PERMANENTA_STEPS] : null;
+  const step = !isCustomExartikulation ? PERMANENTA_STEPS[currentStepId as keyof typeof PERMANENTA_STEPS] as StepData : null;
   const result = resultId ? RESULTS_PERMANENTA[resultId as keyof typeof RESULTS_PERMANENTA] : null;
 
   const handleOptionClick = (option: any) => {

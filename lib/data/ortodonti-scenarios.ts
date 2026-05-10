@@ -157,18 +157,34 @@ export const ortodontiScenarios: Record<string, OrtScenario> = {
       title: "Handläggning",
       sections: [
         {
-          title: "Klippning/Inböjning",
+          title: "Alt 1 — Klippning",
           steps: [
-            "Klipp av tråden med distalkap eller tång.",
-            "Säkerställ att fragmentet tas om hand (risk för aspiration).",
-            "Böj in änden med Mathieu-tång.",
+            "Identifiera den vasst utskjutande bågänden distalt.",
+            "Håll fast änden med tång/fingrar (aspirationsrisk).",
+            "Klipp av med distalkap eller tång.",
+            "Tryck tillbaka änden mot tanden med Mathieu-tång.",
+            "Kontrollera att inga vassa kanter kvarstår.",
+            "Skölj med koksalt. Täck med vax."
+          ]
+        },
+        {
+          title: "Alt 2 — Inböjning",
+          steps: [
+            "Böj tillbaka bågänden mot tandens distala yta med Mathieu-tång.",
             "Täck med vax."
+          ]
+        },
+        {
+          title: "Alt 3 — Temporärt skydd",
+          steps: [
+            "Om klippning/inböjning ej möjligt: applicera vax direkt.",
+            "Planera omgående ortodontistkontakt."
           ]
         },
         {
           title: "Sårbehandling",
           steps: [
-            "Badda med Klorhexidin 0,1%.",
+            "Badda med Klorhexidin 0,12%.",
             "Rekommendera Xylocain gel vid smärta."
           ]
         }
@@ -374,11 +390,24 @@ export const ortodontiScenarios: Record<string, OrtScenario> = {
       title: "Handläggning",
       sections: [
         {
-          title: "Orsaksbehandling",
+          title: "Steg 1 — Identifiera & åtgärda orsak",
           steps: [
-            "Klipp utskjutande tråd eller slipa vass kant.",
-            "Applicera vax.",
-            "Badda med Klorhexidin 0,1%."
+            "Klipp utskjutande tråd eller slipa vass kant på bracket/band.",
+            "Applicera vax över apparaten som irriterar."
+          ]
+        },
+        {
+          title: "Steg 2 — Skydda slemhinnan",
+          steps: [
+            "Applicera Xylocain gel lokalt vid smärta.",
+            "Kontrollera att vaxet sitter och täcker ordentligt."
+          ]
+        },
+        {
+          title: "Steg 3 — Sårbehandling",
+          steps: [
+            "Badda med Klorhexidin 0,12%.",
+            "Instruera patient om daglig sköljning med Klorhexidin 0,12% i 1 vecka."
           ]
         }
       ]

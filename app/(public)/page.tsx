@@ -4,22 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion, useScroll } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { lakemedelData } from "@/lib/lakemedelData";
 
-// Scroll-följande karaktär — byter mellan wave och hug
+// Scroll-följande karaktär — tänkande hjärna permanent under hela sidan
 function ScrollCharacter() {
-  const { scrollYProgress } = useScroll();
-  const [currentChar, setCurrentChar] = useState('/characters/wave.gif');
-
-  useEffect(() => {
-    const unsubscribe = scrollYProgress.on('change', (latest) => {
-      if (latest < 0.5) setCurrentChar('/characters/wave.gif');
-      else setCurrentChar('/characters/hug.jpg');
-    });
-    return () => unsubscribe();
-  }, [scrollYProgress]);
-
   return (
     <motion.div
       className="fixed bottom-6 right-6 z-40 cursor-pointer"
@@ -32,8 +21,8 @@ function ScrollCharacter() {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={currentChar}
-        alt="DentaGuide karaktär"
+        src="/characters/think.gif"
+        alt="DentaGuide-Pro AI — tänkande hjärna"
         className="w-24 h-24 object-contain drop-shadow-lg"
       />
     </motion.div>
@@ -537,7 +526,7 @@ export default function LandingPage() {
       </div>
 
       <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-xs">
-        <p>© 2026 DentaGuide Pro. All rights reserved.</p>
+        <p>© 2026 DentaGuide-Pro. All rights reserved.</p>
         <div className="flex gap-6 mt-4 md:mt-0">
           <Link href="#" className="hover:text-white transition-colors">Integritetspolicy (GDPR)</Link>
           <Link href="#" className="hover:text-white transition-colors">Patientdatalagen (PDL)</Link>

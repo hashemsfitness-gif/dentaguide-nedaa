@@ -1,4 +1,5 @@
 import { createServerSupabase } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
 import GrowthChart from "@/components/admin/GrowthChart";
 import ScenarioViewsArea from "@/components/admin/ScenarioViewsArea";
 import { BarChart3, TrendingUp, Users, Eye } from 'lucide-react';

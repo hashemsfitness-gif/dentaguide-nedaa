@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertCircle, FileJson, CheckCircle2, Copy, RefreshCw, AlertTriangle, Lock } from 'lucide-react';
+import { AlertCircle, FileJson, CheckCircle2, Copy, RefreshCw, AlertTriangle, Lock, Bot } from 'lucide-react';
 import { AIJournalOutput } from '@/lib/journal-validator';
-import { createClient } from '@/lib/supabase/client';
+import { createClientSupabase } from '@/lib/supabase';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function AIJournalmallAgent() {
@@ -21,7 +21,7 @@ export default function AIJournalmallAgent() {
 
   useEffect(() => {
     async function checkTier() {
-      const supabase = createClient();
+      const supabase = createClientSupabase();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setTier('free');

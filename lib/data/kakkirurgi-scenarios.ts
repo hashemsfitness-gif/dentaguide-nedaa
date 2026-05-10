@@ -485,7 +485,8 @@ export const kakkirurgiScenarier: Record<string, KakkirurgiScenarioData> = {
     ],
     redFlags: [
       { id: "kir-25-1", title: "Elektrisk stöt vid injektion", description: "Dra tillbaka kanylen OMEDELBART! Injicera ej mer — intraneuralt läge spräcker nervfibrer.", severity: "critical" },
-      { id: "kir-25-2", title: "Numb Chin Syndrome", description: "Domning utan tandvårdsorsak = uteslut malignitet/metastas akut.", severity: "critical" }
+      { id: "kir-25-2", title: "Numb Chin Syndrome", description: "Domning utan tandvårdsorsak = uteslut malignitet/metastas akut.", severity: "critical" },
+      { id: "kir-25-3", title: "Rood & Shehab — Preoperativa risktecken (OPG)", description: "Inför UK-visdomstandsextraktion: (1) Rötterna mörknar vid mandibularkanalen, (2) kanalen smalnar av vid rötterna, (3) rötterna böjer av/krokar runt kanalen, (4) avbrott i kanalens kortikala begränsning (vita linjen försvinner). Vid dessa tecken → Remiss käkkirurg eller överväg Coronectomi.", severity: "warning" }
     ],
     kliniskAnteckning: "Elektrisk stöt = dra tillbaka kanylen direkt. Numb Chin utan tandvård = remiss omedelbart.",
     varningssignal: "⚠️ Numb Chin utan tandvårdsorsak = Uteslut malignitet"

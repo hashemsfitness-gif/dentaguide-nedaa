@@ -79,16 +79,20 @@ export const bettfysiologiScenarier: Record<string, BettfysiologiScenarioData> =
         {
           title: "Manuell Reponering (Hippokrates)",
           metod: [
-            "Patienten sitter lågt. Stå framför och placera tummarna på molarerna i UK.",
-            "Pressa kraftigt NEDÅT för att få kondylen under tuberculum.",
-            "För sedan käken BAKÅT och släpp uppåt in i fossa."
+            "Linda tummarna tjockt i kompresser — käken snäpper tillbaka med enorm muskelkraft (risk för allvarliga bitskador).",
+            "Patienten sitter lågt. Stå framför. Tummar på molarernas okklusalytor i UK. Fingrarna greppar runt käkvinklarna extraoralt.",
+            "VIKTIGT: Nedåt FÖRST — pressa kraftigt nedåt för att föra kondylen under tuberculum articulare.",
+            "För sedan käken BAKÅT och släpp uppåt in i fossa articularis."
           ]
         },
         {
           title: "Premedicinering (vid kraftig spasm)",
           metod: [
-            "Diazepam 5 mg p.o. 30-60 min innan reponering (screena kontraindikationer!).",
-            "Eventuellt LA i m. masseter bilat."
+            "Diazepam 5 mg p.o. 30–60 min innan reponering.",
+            "Kontraindikationer: Myasthenia gravis, svår leversjukdom, graviditet (trimester 1 och 3), amning.",
+            "Patienten får EJ lämna kliniken direkt efter — MÅSTE ha ledsagare hem. Får ej köra bil.",
+            "Pulsoximetri rekommenderas vid sedering.",
+            "Alternativt: LA i m. masseter bilateralt vid kraftig muskelspasm."
           ]
         }
       ]
@@ -104,7 +108,7 @@ export const bettfysiologiScenarier: Record<string, BettfysiologiScenarioData> =
     ],
     redFlags: [
       { id: "bett-26-1", title: "Andningsdepression", description: "Risk vid Diazepam hos äldre/KOL/sömnapné.", severity: "critical" },
-      { id: "bett-26-2", title: "Recidiverande luxation", description: "Remiss till käkkirurg för eminektomi.", severity: "warning" }
+      { id: "bett-26-2", title: "Habituel luxation (recidiverande)", description: "Remiss PRIMÄRT till käkkirurg (ej enbart bettfysiolog) för ställningstagande till kirurgisk eminektomi. Käkkirurg hanterar återkommande luxation, frakturmisstanke och käkledsankylos.", severity: "warning" }
     ],
     kliniskAnteckning: "Mjuk kost 1-2 veckor. Undvik extrem gapning."
   },
@@ -134,9 +138,10 @@ export const bettfysiologiScenarier: Record<string, BettfysiologiScenarioData> =
     },
     status: {
       inspektion: [
-        "Maxgap < 40-50 mm pga smärta.",
-        "Palpationsömhet m. masseter / m. temporalis (Familiar pain).",
-        "Ömhet laterala polen käkled."
+        "Maxgap < 40–50 mm pga smärta.",
+        "Palpation muskulatur (DC/TMD): 1 kg tryck, 2 sek — m. masseter och m. temporalis. Positiv = familiar pain (reproducerar patientens symtom).",
+        "Palpation käkled: 0,5 kg tryck laterala Polen — positiv = artralgi.",
+        "Ömhet laterala Polen käkled."
       ]
     },
     behandling: {
@@ -225,7 +230,7 @@ export const bettfysiologiScenarier: Record<string, BettfysiologiScenarioData> =
       { namn: "Muskelspasm", kod: "M79.1", skillnad: "Mjukare end-feel, ingen deflektion, ofta utlöst av stress/trauma." }
     ],
     redFlags: [
-      { id: "bett-29-1", title: "Handikappande besvär", description: "Remiss för artrocentes (lavage) vid utebliven effekt av konservativ behandling.", severity: "warning" }
+      { id: "bett-29-1", title: "Handikappande besvär — artrocentes", description: "Remiss för artrocentes (lavage) vid utebliven effekt av konservativ behandling. Artrocentes = spolning av leden för att skapa utrymme och tvätta bort inflammatoriska mediatorer. Bettfysiolog hanterar terapiresistent låsning/muskelsmärta.", severity: "warning" }
     ],
     kliniskAnteckning: "God långtidsprognos — ligament anpassar sig ofta över tid."
   },
@@ -265,7 +270,7 @@ export const bettfysiologiScenarier: Record<string, BettfysiologiScenarioData> =
           title: "Avlastning & NSAID",
           metod: [
             "Strikt skonkost (flytande/mosad mat).",
-            "NSAID (t.ex. Naproxen 500mg x 2) i 7-10 dagar (screena kontraindikationer!).",
+            "NSAID (t.ex. Naproxen 500mg × 2) i 10 dagar (screena: Astma/NSAID-känsliga, Ulcus, Hjärtsvikt, Högt blodtryck, Njurar, Warfarin).",
             "Kyla lokalt (max 15 min) för att minska svullnad."
           ]
         }
@@ -318,7 +323,8 @@ export const bettfysiologiScenarier: Record<string, BettfysiologiScenarioData> =
         {
           title: "Diagnostisk Blockad",
           metod: [
-            "1 ml LA vid processus coronoideus. Om 'falsk tandvärk' försvinner är diagnosen klar."
+            "Infiltration: 1 ml lokalanestesi (t.ex. Xylocain) vid processus coronoideus — framre ramusranden högt upp.",
+            "Om den 'falska tandvärken' i ÖK försvinner inom minuter → diagnosen fastställd som muskulär (Tendinit, ej dentalt ursprung)."
           ]
         },
         {
@@ -377,7 +383,7 @@ export const bettfysiologiScenarier: Record<string, BettfysiologiScenarioData> =
         {
           title: "NSAID & Rörelseträning",
           metod: [
-            "NSAID i 10 dagar (STRIKT screening: Astma, Ulcus, Hjärtsvikt, Njurar!).",
+            "NSAID (Ibuprofen/Naproxen/Diklofenak) i 10 dagar — STRIKT screening: Astma/NSAID-känsliga (risk för livshotande bronkospasm), Ulcus, Hjärtsvikt, Okontrollerat högt blodtryck, Njurfunktion hos äldre, Warfarin/koagulationsrubbning.",
             "Rörelseträning (motståndsövningar) bryter muskelspänning via reciprok hämning."
           ]
         },
@@ -399,7 +405,7 @@ export const bettfysiologiScenarier: Record<string, BettfysiologiScenarioData> =
       { namn: "Artralgi", kod: "M25.5", skillnad: "Ingen bettpåverkan, endast smärta." }
     ],
     redFlags: [
-      { id: "bett-34-1", title: "NSAID-kontraindikation", description: "Astma, Ulcus, Hjärtsvikt, Njurar/Waran -> Ge Paracetamol istället.", severity: "critical" },
+      { id: "bett-34-1", title: "NSAID-kontraindikation", description: "Astma/NSAID-känsliga (livshotande bronkospasm), Ulcus, Hjärtsvikt, Okontrollerat högt blodtryck, Njurstatus hos äldre, Koagulationsrubbning/Warfarin → Ge Paracetamol istället.", severity: "critical" },
       { id: "bett-34-2", title: "Kontralateralt öppet bett", description: "Detta är ett tecken på ledödem. Slipa INTE.", severity: "warning" }
     ],
     kliniskAnteckning: "Ipsilateral kontakt + KONTRALATERALT öppet bett = Artrit/Ödem."

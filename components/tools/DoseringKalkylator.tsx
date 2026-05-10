@@ -133,7 +133,7 @@ OBS: ${result.note}`;
                   type="number"
                   className="w-full p-3 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-[#0E3B52]"
                   value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
+                  onChange={(e) => setWeight(e.target.value === '' ? '' : Number(e.target.value))}
                   min="1"
                 />
               </div>
@@ -144,7 +144,7 @@ OBS: ${result.note}`;
                     type="number"
                     className="w-full p-3 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-[#0E3B52]"
                     value={age}
-                    onChange={(e) => setAge(e.target.value)}
+                    onChange={(e) => setAge(e.target.value === '' ? '' : Number(e.target.value))}
                     min="0"
                   />
                 </div>

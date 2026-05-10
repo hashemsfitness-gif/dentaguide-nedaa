@@ -200,7 +200,7 @@ export const oralmedicinScenarier: Record<string, OralScenarioData> = {
     ],
     diffDiagnoser: [
       { namn: "Erytroplaki", kod: "K13.2", skillnad: "Välavgränsad röd förändring, svarar ej på svampbehandling. Malignt!" },
-      { namn: "BMS", kod: "DA0F.0", skillnad: "Sveda utan synliga förändringar." }
+      { namn: "BMS", kod: "", skillnad: "Sveda utan synliga förändringar." }
     ],
     redFlags: [
       { id: "oral-36-1", title: "Flukonazol + Waran", description: "Interagerar kraftigt! Risk för livshotande blödning.", severity: "critical" },
@@ -287,7 +287,7 @@ export const oralmedicinScenarier: Record<string, OralScenarioData> = {
     id: "ORAL-38-LAKEMEDEL",
     slug: "lakemedel",
     title: "Läkemedel",
-    icdCode: "K05.1 / M87.1",
+    icdCode: "K06.1 / M87.1",
     patientUtsaga: "Svullet tandkött eller blottlagt ben",
     isAcute: true,
     category: "Oralmedicin",
@@ -434,7 +434,7 @@ export const oralmedicinScenarier: Record<string, OralScenarioData> = {
     id: "ORAL-40-NEURO",
     slug: "neurogent",
     title: "Neurogent",
-    icdCode: "8B82.0 / DA0F.0 / 1E91",
+    icdCode: "",
     patientUtsaga: "Det bränner eller hugger – men tanden ser frisk ut",
     isAcute: false,
     category: "Oralmedicin",
