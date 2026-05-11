@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createServerSupabase as createClient } from '@/lib/supabase';
+import * as Sentry from '@sentry/nextjs';
+import { createServerSupabase, createServiceSupabase } from '@/lib/supabase';
 import { claude, CLAUDE_MODEL } from '@/lib/claude';
-import { validateJournal } from '@/lib/journal-validator';
+import { validateJournal, detectPiiInInput } from '@/lib/journal-validator';
 import { getAiLimiter, checkRateLimit, rateLimitHeaders } from '@/lib/ratelimit';
 
 export const runtime = 'edge';
@@ -19,7 +20,7 @@ const generateRequestSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
+    const supabase = await createServerSupabase();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
@@ -47,9 +48,9 @@ export async function POST(req: Request) {
       if (!result.success) {
         return NextResponse.json(
           { error: 'Rate limit exceeded' },
-          { 
+          {
             status: 429,
-            headers: rateLimitHeaders(result)
+            headers: rateLimitHeaders(result),
           }
         );
       }
@@ -67,6 +68,16 @@ export async function POST(req: Request) {
 
     const { inputText } = validationResult.data;
 
+    if (detectPiiInInput(inputText)) {
+      return NextResponse.json(
+        {
+          error: 'PII detected',
+          message: 'Personuppgifter (personnummer/samordningsnummer) hittades i inmatningen. Använd platshållare som [Patient] istället.',
+        },
+        { status: 400 }
+      );
+    }
+
     const systemPrompt = `Du är AI-assistent som STRUKTURERAR journalanteckningar för svenska tandläkare.
 ABSOLUTA REGLER:
 1. HITTAR ALDRIG på medicinska fakta — strukturerar BARA tandläkarens text
@@ -74,22 +85,24 @@ ABSOLUTA REGLER:
 3. TLV/doser från tandläkarens text — annars '[verifiera kod]'
 4. ALDRIG personuppgifter — använd [Patient], [PNR]
 5. Output: ENBART JSON, ingen text före/efter, inga code fences
--VIKTIGT: ICD-koder visas ALDRIG i journaltext — bara i scenario-översikt.
-JSON-struktur: anamnes, status, diagnos {trolig, icd_kod, differentialdiagnoser}, behandling {atgard, lokalanestesi, lakemedel, tlv_koder}, uppfoljning, roda_flaggor_observerade, anmarkningar`;
+6. ICD-koder visas ALDRIG i journaltext (anamnes/status/behandling/uppfoljning/anmarkningar) — endast i diagnos.icd_kod
+7. Antibiotika: PcV (1,6 g × 3) är förstahandsval. Klindamycin (150 mg × 3) vid pc-allergi. Amoxicillin endast vid endokarditprofylax (ESC 2023)
+8. Använd ALDRIG ord som "ungefär", "cirka", "vanligtvis", "brukar", "troligtvis", "förmodligen" — strukturera bara fakta från tandläkarens text
+JSON-struktur: anamnes, status, diagnos {trolig, icd_kod, differentialdiagnoser}, behandling {atgard, lokalanestesi, lakemedel, tlv_koder}, uppfoljning, roda_flaggor_observerade (array), anmarkningar (string)`;
 
     const startTime = Date.now();
 
     const response = await claude.messages.create({
       model: CLAUDE_MODEL,
-      max_tokens: 1500,
+      max_tokens: 2500,
       temperature: 0,
       system: systemPrompt,
       messages: [
         {
           role: 'user',
-          content: `Strukturera följande text till en JSON-journal:\n\n${inputText}`
-        }
-      ]
+          content: `Strukturera följande text till en JSON-journal:\n\n${inputText}`,
+        },
+      ],
     });
 
     const endTime = Date.now();
@@ -98,40 +111,58 @@ JSON-struktur: anamnes, status, diagnos {trolig, icd_kod, differentialdiagnoser}
     const messageContent = response.content[0].type === 'text' ? response.content[0].text : '';
     const cleanJson = messageContent.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
 
-    const { valid, issues, data: journalData } = validateJournal(cleanJson);
+    const { valid, issues, warnings, data: journalData, flags } = validateJournal(cleanJson);
 
-    // Save log
-    await supabase.from('ai_journal_logs').insert({
+    const inputTokens = response.usage?.input_tokens ?? 0;
+    const outputTokens = response.usage?.output_tokens ?? 0;
+
+    const serviceSupabase = createServiceSupabase();
+    const logInsert = await serviceSupabase.from('ai_journal_logs').insert({
       user_id: user.id,
-      prompt_summary: inputText.substring(0, 100) + '...',
+      model: CLAUDE_MODEL,
+      input_tokens: inputTokens,
+      output_tokens: outputTokens,
+      total_tokens: inputTokens + outputTokens,
+      prompt_summary: inputText.substring(0, 100),
       output_length: cleanJson.length,
+      output_json: valid ? journalData : null,
       validation_passed: valid,
       validation_errors: issues,
-      pii_detected: issues.some(i => i.includes('Personnummer')),
-      fabrication_detected: issues.some(i => i.includes('Otillåtet uttryck')),
-      icd_code_in_output: issues.some(i => i.includes('ICD')), // We don't have ICD check in validator yet, but standard log
+      pii_detected: flags.piiDetected,
+      fabrication_detected: flags.fabricationDetected,
+      icd_code_in_output: flags.icdInJournalText,
       response_time_ms: responseTimeMs,
       status: valid ? 'completed' : 'failed',
-      error_message: valid ? null : 'Validation failed'
-    });
+      error_message: valid ? null : 'Validation failed',
+      edits_made: false,
+      user_approved: null,
+    }).select('id').single();
+
+    const logId = logInsert.data?.id ?? null;
 
     if (!valid) {
       return NextResponse.json({
         error: 'Validation failed',
         issues,
+        warnings,
         partialData: journalData,
+        logId,
       }, { status: 422 });
     }
 
     return NextResponse.json({
       success: true,
       data: journalData,
+      warnings,
+      logId,
     });
 
-  } catch (error: any) {
-    console.error('AI Journal generation error:', error);
+  } catch (error: unknown) {
+    Sentry.captureException(error, {
+      tags: { route: 'api/journalmall/generera' },
+    });
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

@@ -36,12 +36,6 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // ── TEMPORARY BYPASS FOR TESTING ──────────────────────────────
-  // In a real app, this would check Supabase auth.
-  // For now, we allow everything to let the USER test all functions.
-  return supabaseResponse;
-
-  /* Original Auth Logic (Commented out for testing)
   const {
     data: { user },
     error: userError,
@@ -62,13 +56,16 @@ export async function middleware(request: NextRequest) {
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
     }
-    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
     if (!profile || profile.role !== "admin") {
       return NextResponse.rewrite(new URL("/403", request.url));
     }
     return supabaseResponse;
   }
-  */
 
   return supabaseResponse;
 }
