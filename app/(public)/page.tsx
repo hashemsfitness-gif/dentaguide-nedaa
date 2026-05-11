@@ -441,49 +441,54 @@ export default function LandingPage() {
 
             <div className="bg-white p-10 rounded-[30px] border border-slate-200 text-center shadow-sm">
               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Enskild</span>
-              <h3 className="font-display text-3xl text-dark-bg my-2">Klinik Bas</h3>
+              <h3 className="font-display text-3xl text-dark-bg my-2">Gratis</h3>
               <div className="my-6">
                 <span className="text-5xl font-bold text-dark-bg">0 kr</span>
                 <span className="text-slate-500 text-sm"> / mån</span>
               </div>
               <ul className="text-sm text-slate-600 space-y-4 mb-8 text-left">
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Grundläggande beslutsstöd</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Läkemedelsinteraktioner</li>
-                <li className="flex items-center gap-3"><span className="text-slate-300">✗</span> AI-stödd journalföring</li>
+                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> 3 områden (10 scenarier)</li>
+                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Manuell journalmall</li>
+                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Doseringskalkylator (basic)</li>
+                <li className="flex items-center gap-3"><span className="text-slate-300">✗</span> AI-journal</li>
+                <li className="flex items-center gap-3"><span className="text-slate-300">✗</span> Premium-verktyg</li>
               </ul>
-              <Button variant="outline" className="w-full rounded-full border-slate-300 text-slate-600 hover:bg-slate-50">Registrera dig</Button>
+              <Link href="/registrera"><Button variant="outline" className="w-full rounded-full border-slate-300 text-slate-600 hover:bg-slate-50">Kom igång gratis</Button></Link>
             </div>
 
             <div className="bg-dark-surface p-10 rounded-[30px] border border-secondary/50 text-center shadow-2xl relative transform scale-105 z-10">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-full">Mest populär</div>
               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Professionell</span>
-              <h3 className="font-serif text-3xl text-white my-2">Klinik Pro</h3>
+              <h3 className="font-serif text-3xl text-white my-2">Kliniker</h3>
               <div className="my-6">
-                <span className="text-5xl font-bold text-white">299 kr</span>
+                <span className="text-5xl font-bold text-white">99 kr</span>
                 <span className="text-slate-400 text-sm"> / mån</span>
               </div>
               <ul className="text-sm text-slate-300 space-y-4 mb-8 text-left">
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Alla klinikfunktioner</li>
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Fullständig farmakologi</li>
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Digitala status-karta</li>
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Smart journalmall-export</li>
+                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Alla 12 områden (82 scenarier)</li>
+                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> AI-journal (5/dag)</li>
+                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Alla verktyg</li>
+                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Bokmärken & anteckningar</li>
+                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Email-support</li>
               </ul>
-              <Button className="w-full bg-secondary hover:bg-accent-hover text-white rounded-full">Välj Pro</Button>
+              <Link href="/pricing"><Button className="w-full bg-secondary hover:bg-accent-hover text-white rounded-full">Starta provperiod</Button></Link>
             </div>
 
             <div className="bg-white p-10 rounded-[30px] border border-slate-200 text-center shadow-sm">
               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Kliniknätverk</span>
-              <h3 className="font-display text-3xl text-dark-bg my-2">Klinik Team</h3>
+              <h3 className="font-display text-3xl text-dark-bg my-2">Klinik</h3>
               <div className="my-6">
-                <span className="text-5xl font-bold text-dark-bg">799 kr</span>
+                <span className="text-5xl font-bold text-dark-bg">399 kr</span>
                 <span className="text-slate-500 text-sm"> / mån</span>
               </div>
               <ul className="text-sm text-slate-600 space-y-4 mb-8 text-left">
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Upp till 10 användare</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Gemensam statistik</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Förtur på nyutvecklat</li>
+                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Allt i Kliniker</li>
+                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> 5 användare per klinik</li>
+                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> AI-journal (100/dag)</li>
+                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Admin-panel</li>
+                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Prioriterad support</li>
               </ul>
-              <Button variant="outline" className="w-full rounded-full border-slate-300 text-slate-600 hover:bg-slate-50">Kontakta Sälj</Button>
+              <Link href="/pricing"><Button variant="outline" className="w-full rounded-full border-slate-300 text-slate-600 hover:bg-slate-50">Kontakta Sälj</Button></Link>
             </div>
           </div>
         </div>

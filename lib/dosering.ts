@@ -98,36 +98,49 @@ export function calculateDose(
     if (group === 'adult' || group === 'elderly' || group === 'pregnant') {
       return { dose: 1600, unit: 'mg', interval: '3 gånger dagligen i 5–7 dagar', maxDay: 4800, maxDayUnit: 'mg/dygn', form: '800 mg tabletter (2 st)', note: 'Förstahandsval.', special: null, maxDoseWarning: false };
     }
-    const dose = Math.min(weight * 12.5, 1600);
+    const dose = Math.min(weight * 25, 1600);
     return {
       dose: dose,
-      unit: 'mg (12,5 mg/kg)',
+      unit: 'mg (25 mg/kg)',
       interval: '3 gånger dagligen i 5–7 dagar',
-      maxDay: Math.min(weight * 37.5, 4800),
+      maxDay: Math.min(weight * 75, 4800),
       maxDayUnit: 'mg/dygn',
-      form: weight < 20 ? 'Oral suspension' : 'Tabletter',
-      note: '12,5 mg/kg × 3',
+      form: weight < 20 ? 'Oral suspension (50 mg/ml)' : 'Tabletter',
+      note: '25 mg/kg × 3. Källa: Tandvårdens Läkemedel 2024–2025; Strama 2024; VGR doseringstabell.',
       special: null,
-      maxDoseWarning: weight * 12.5 > 1600
+      maxDoseWarning: weight * 25 > 1600
     };
   }
 
   // Klindamycin
   if (drug === 'klindamycin') {
-    if (group === 'adult' || group === 'elderly' || group === 'pregnant') {
+    if (group === 'pregnant') {
+      return {
+        dose: 150,
+        unit: 'mg',
+        interval: '3 gånger dagligen i 5–7 dagar',
+        maxDay: 450,
+        maxDayUnit: 'mg/dygn',
+        form: '150 mg kapslar',
+        note: 'Klindamycin passerar placenta (FASS kat. B:3). Använd endast vid verifierad pc-allergi när PcV ej är möjligt — undvik om alternativ finns. Samråd med obstetriker vid längre kur. Källa: Tandvårdens Läkemedel 2024–2025; FASS.',
+        special: 'GRAVIDITET — försiktighet, samråd om möjligt',
+        maxDoseWarning: true
+      };
+    }
+    if (group === 'adult' || group === 'elderly') {
       return { dose: 150, unit: 'mg', interval: '3 gånger dagligen i 5–7 dagar', maxDay: 450, maxDayUnit: 'mg/dygn', form: '150 mg kapslar', note: 'Vid pc-allergi. VGR allvarlig infektion: 600mg × 3 i 5–7 dagar — verifiera mot aktuell regional riktlinje.', special: null, maxDoseWarning: false };
     }
-    const dose = Math.min(weight * 6, 150);
+    const dose = Math.min(weight * 5, 150);
     return {
       dose: dose,
-      unit: 'mg (6 mg/kg)',
+      unit: 'mg (5 mg/kg)',
       interval: '3 gånger dagligen i 5–7 dagar',
-      maxDay: Math.min(weight * 18, 450),
+      maxDay: Math.min(weight * 15, 450),
       maxDayUnit: 'mg/dygn',
       form: weight < 25 ? 'Oral suspension' : 'Kapslar',
-      note: '6 mg/kg × 3. Vid pc-allergi.',
+      note: '5 mg/kg × 3. Vid verifierad pc-allergi. Källa: Tandvårdens Läkemedel 2024–2025.',
       special: null,
-      maxDoseWarning: weight * 6 > 150
+      maxDoseWarning: weight * 5 > 150
     };
   }
 
@@ -252,6 +265,50 @@ export function calculateDose(
       form: 'OxyNorm 5 mg kapsel eller oral lösning 5 mg/ml (1 ml per dos)',
       note: 'Indicerat vid kraftigt nedsatt njurfunktion när morfin är olämpligt. Targiniq (oxikodon + naloxon) föredras vid >1 dos — minskar förstoppning. Förskrivning kräver specialistkompetens i käkkirurgi. Källa: Tandvårdens Läkemedel 2024–2025 kap. 10.',
       special: 'Narkotikarecept (förteckning II) · Specialistkompetens käkkirurgi · HSLF-FS 2021:75',
+      maxDoseWarning: false
+    };
+  }
+
+  // Amoxicillin engångsprofylax (endokardit / sinuskommunikation)
+  // Källa: Tandvårdens Läkemedel 2024–2025; ESC Riktlinjer 2023.
+  if (drug === 'amoxicillin_profylax') {
+    if (group === 'pregnant') {
+      return {
+        dose: 2000,
+        unit: 'mg engångsdos',
+        interval: '60 min före ingrepp',
+        maxDay: 2000,
+        maxDayUnit: 'mg (engångsdos)',
+        form: '500 mg tabletter (4 st) eller 1000 mg (2 st)',
+        note: 'Amoxicillin är förstahandsval — säker under graviditet. Endast vid striktt indikation (endokarditprofylax). Källa: Tandvårdens Läkemedel 2024–2025; ESC 2023.',
+        special: 'Engångsprofylax · 60 min före ingrepp',
+        maxDoseWarning: false
+      };
+    }
+    if (group === 'adult' || group === 'elderly') {
+      return {
+        dose: 2000,
+        unit: 'mg engångsdos',
+        interval: '60 min före ingrepp',
+        maxDay: 2000,
+        maxDayUnit: 'mg (engångsdos)',
+        form: '500 mg tabletter (4 st) eller 1000 mg (2 st)',
+        note: 'Engångsdos 60 minuter före ingreppet. Indicerat vid endokarditrisk eller sinuskommunikation till frisk bihåla vid extraktion. Källa: Tandvårdens Läkemedel 2024–2025; ESC 2023; Strama 2024.',
+        special: 'Engångsprofylax · 60 min före ingrepp',
+        maxDoseWarning: false
+      };
+    }
+    // Barn: 50 mg/kg engångsdos, max 2 g
+    const dose = Math.min(weight * 50, 2000);
+    return {
+      dose,
+      unit: 'mg engångsdos (50 mg/kg)',
+      interval: '60 min före ingrepp',
+      maxDay: dose,
+      maxDayUnit: 'mg (engångsdos, max 2 g)',
+      form: weight < 25 ? 'Oral suspension (50 mg/ml)' : 'Tabletter',
+      note: 'Barn: 50 mg/kg engångsdos (max 2 g) 60 minuter före ingreppet. Källa: Tandvårdens Läkemedel 2024–2025; ESC 2023.',
+      special: 'Engångsprofylax · 60 min före ingrepp',
       maxDoseWarning: false
     };
   }

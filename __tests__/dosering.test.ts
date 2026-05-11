@@ -39,22 +39,99 @@ describe('Ibuprofen', () => {
 });
 
 describe('PcV', () => {
-  test('barn 20kg → 250mg/dos (12.5 mg/kg * 20 = 250)', () => {
+  test('barn 20kg → 500mg/dos (25 mg/kg × 20 = 500)', () => {
     const result = calculateDose('pcv', 20, 'child_big');
+    expect(result.dose).toBe(500);
+    expect(result.unit).toContain('25 mg/kg');
+  });
+
+  test('barn 10kg → 250mg/dos (25 mg/kg × 10 = 250)', () => {
+    const result = calculateDose('pcv', 10, 'child_big');
     expect(result.dose).toBe(250);
   });
-  
-  test('vuxen → max 4800mg/dag', () => {
+
+  test('barn 40kg → 1000mg/dos (25 mg/kg × 40 = 1000)', () => {
+    const result = calculateDose('pcv', 40, 'child_big');
+    expect(result.dose).toBe(1000);
+  });
+
+  test('barn 80kg → maxas vid 1600mg (vuxen-tak)', () => {
+    const result = calculateDose('pcv', 80, 'child_big');
+    expect(result.dose).toBe(1600);
+    expect(result.maxDoseWarning).toBe(true);
+  });
+
+  test('vuxen → 1600mg × 3 = 4800mg/dag', () => {
     const result = calculateDose('pcv', 70, 'adult');
     expect(result.maxDay).toBe(4800);
+    expect(result.dose).toBe(1600);
+  });
+
+  test('gravid → 1600mg × 3 (säker under graviditet)', () => {
+    const result = calculateDose('pcv', 65, 'pregnant');
+    expect(result.dose).toBe(1600);
+  });
+
+  test('äldre → 1600mg × 3', () => {
+    const result = calculateDose('pcv', 70, 'elderly');
     expect(result.dose).toBe(1600);
   });
 });
 
 describe('Klindamycin', () => {
-  test('barn 20kg → 120mg/dos (6 mg/kg)', () => {
+  test('barn 20kg → 100mg/dos (5 mg/kg × 20 = 100)', () => {
     const result = calculateDose('klindamycin', 20, 'child_big');
-    expect(result.dose).toBe(120);
+    expect(result.dose).toBe(100);
+    expect(result.unit).toContain('5 mg/kg');
+  });
+
+  test('barn 30kg → 150mg/dos (5 mg/kg × 30 = 150)', () => {
+    const result = calculateDose('klindamycin', 30, 'child_big');
+    expect(result.dose).toBe(150);
+  });
+
+  test('vuxen → 150mg × 3', () => {
+    const result = calculateDose('klindamycin', 70, 'adult');
+    expect(result.dose).toBe(150);
+    expect(result.maxDay).toBe(450);
+  });
+
+  test('gravid → 150mg × 3 men med försiktighetsvarning (passerar placenta)', () => {
+    const result = calculateDose('klindamycin', 65, 'pregnant');
+    expect(result.dose).toBe(150);
+    expect(result.maxDoseWarning).toBe(true);
+    expect(result.special).toContain('GRAVIDITET');
+    expect(result.note).toContain('passerar placenta');
+  });
+});
+
+describe('Amoxicillin profylax', () => {
+  test('vuxen → 2000mg engångsdos 60 min före', () => {
+    const result = calculateDose('amoxicillin_profylax', 70, 'adult');
+    expect(result.dose).toBe(2000);
+    expect(result.interval).toContain('60 min');
+    expect(result.special).toContain('Engångsprofylax');
+  });
+
+  test('äldre → 2000mg engångsdos', () => {
+    const result = calculateDose('amoxicillin_profylax', 75, 'elderly');
+    expect(result.dose).toBe(2000);
+  });
+
+  test('barn 20kg → 1000mg engångsdos (50 mg/kg × 20)', () => {
+    const result = calculateDose('amoxicillin_profylax', 20, 'child_big');
+    expect(result.dose).toBe(1000);
+    expect(result.unit).toContain('50 mg/kg');
+  });
+
+  test('barn 50kg → maxas vid 2000mg (50 × 50 = 2500 → cap 2000)', () => {
+    const result = calculateDose('amoxicillin_profylax', 50, 'child_big');
+    expect(result.dose).toBe(2000);
+  });
+
+  test('gravid → 2000mg engångsdos (säker under graviditet)', () => {
+    const result = calculateDose('amoxicillin_profylax', 65, 'pregnant');
+    expect(result.dose).toBe(2000);
   });
 });
 
