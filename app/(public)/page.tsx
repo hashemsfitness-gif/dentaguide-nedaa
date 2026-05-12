@@ -1,11 +1,144 @@
 'use client';
 
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion, useScroll } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { lakemedelData } from "@/lib/lakemedelData";
+
+// ──────────────────────────────────────────────────────────────
+// TERMINAL CARD — Live typewriter animation
+// ──────────────────────────────────────────────────────────────
+const TERMINAL_LINES = [
+  { text: '> INITIERAR KLINISK ANALYS...', color: 'text-green-400', delay: 0 },
+  { text: 'Anamnes: Molande värk tand 36, spontan, nattvärk.', color: 'text-green-200', delay: 900 },
+  { text: 'Status: Perkussion positiv, kyla neg.', color: 'text-green-200', delay: 2200 },
+  { text: 'Röntgen: Vidgad periapikal spalt 36.', color: 'text-amber-400', delay: 3600 },
+  { text: '> SÖKER I KLINISK DATABAS...', color: 'text-green-400', delay: 5100 },
+  { text: 'Matchning: Pulpanekros + apikal parodontit.', color: 'text-blue-300', delay: 6200 },
+  { text: '> DIAGNOSFÖRSLAG: K04.1 — Rotbehandling indicerad.', color: 'text-secondary', delay: 7600 },
+];
+
+function useTypewriter(text: string, startDelay: number, charSpeed = 28) {
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    setDisplayed('');
+    setDone(false);
+    let timeout: ReturnType<typeof setTimeout>;
+    let charIdx = 0;
+    timeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        charIdx++;
+        setDisplayed(text.slice(0, charIdx));
+        if (charIdx >= text.length) {
+          clearInterval(interval);
+          setDone(true);
+        }
+      }, charSpeed);
+      return () => clearInterval(interval);
+    }, startDelay);
+    return () => clearTimeout(timeout);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, startDelay]);
+
+  return { displayed, done };
+}
+
+function TerminalLine({ line, globalStart }: { line: typeof TERMINAL_LINES[0], globalStart: number }) {
+  const { displayed } = useTypewriter(line.text, Math.max(0, line.delay - globalStart));
+  return (
+    <p className={`${line.color} font-mono text-[11px] leading-relaxed min-h-[1.4em]`}>
+      {displayed}
+    </p>
+  );
+}
+
+function TerminalCard() {
+  const [epoch, setEpoch] = useState(0);
+  const [started, setStarted] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const totalDuration = TERMINAL_LINES[TERMINAL_LINES.length - 1].delay + 2000;
+
+  // Start when in view
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setStarted(true); },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Loop: restart after full sequence
+  useEffect(() => {
+    if (!started) return;
+    const t = setTimeout(() => setEpoch(e => e + 1), totalDuration + 1500);
+    return () => clearTimeout(t);
+  }, [started, epoch, totalDuration]);
+
+  const [cursor, setCursor] = useState(true);
+  useEffect(() => {
+    const t = setInterval(() => setCursor(c => !c), 530);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="bg-[#0d1117] rounded-3xl p-7 text-green-400 lg:col-span-1 lg:row-span-2 font-mono flex flex-col relative shadow-2xl overflow-hidden border border-green-900/30"
+    >
+      {/* Scan-line overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.04] z-10"
+        style={{ backgroundImage: 'repeating-linear-gradient(0deg, #00ff00 0px, transparent 1px, transparent 3px)' }}
+      />
+
+      {/* Title bar */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex gap-1.5">
+          <div className="w-3 h-3 rounded-full bg-red-500/80" />
+          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+        </div>
+        <span className="text-[9px] uppercase tracking-[0.25em] text-slate-500">dentaguide-ai v2.4</span>
+      </div>
+
+      <h3 className="text-white text-2xl font-bold mb-5 tracking-tight">
+        Digital Status<span className="text-green-400 text-sm font-mono ml-2 opacity-60">_</span>
+      </h3>
+
+      {/* Typewriter lines */}
+      <div key={epoch} className="space-y-2.5 flex-1 overflow-hidden">
+        {started && TERMINAL_LINES.map((line, i) => (
+          <TerminalLine key={`${epoch}-${i}`} line={line} globalStart={0} />
+        ))}
+        {!started && (
+          <p className="text-green-600 text-[11px]">Väntar på initiering...</p>
+        )}
+      </div>
+
+      {/* Blinking cursor at bottom */}
+      <div className="mt-4 flex items-center gap-1">
+        <span className="text-green-400 text-[11px]">$</span>
+        <span
+          className="inline-block w-2 h-4 bg-green-400"
+          style={{ opacity: cursor ? 1 : 0, transition: 'opacity 0.1s' }}
+        />
+      </div>
+
+      <Link href="/login">
+        <Button className="w-full bg-green-900/40 hover:bg-green-800/60 text-green-300 border border-green-800/50 mt-4 rounded-xl text-xs tracking-widest font-mono transition-colors">
+          INTERAKTIV JOURNALMALL →
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
 
 // Scroll-följande karaktär — tänkande hjärna permanent under hela sidan
 function ScrollCharacter() {
@@ -206,25 +339,43 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* Det breda Pedodonti-kortet med genererad karaktär */}
+            {/* Det breda Pedodonti-kortet med 3D-karaktär */}
             <div className="bg-primary-container rounded-3xl p-0 overflow-hidden flex flex-col md:flex-row relative group hover:shadow-xl transition-all border border-primary-container">
               <div className="p-10 md:p-14 md:w-1/2 flex flex-col justify-center text-white z-10">
                 <span className="bg-accent-light text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full w-max mb-6">Uppgraderad</span>
-                <h3 className="font-serif text-4xl mb-4 text-white">Pedodonti & Ungdom</h3>
+                <h3 className="font-serif text-4xl mb-4 text-white">Pedodonti &amp; Ungdom</h3>
                 <p className="text-pediatric-soft text-sm leading-relaxed mb-8 max-w-sm opacity-90">
                   Särskilt anpassade riktlinjer för barn- och ungdomsthandvård med fokus på beteendehantering och interceptiv ortodonti.
                 </p>
-                <Link href="#" className="text-pediatric-warm font-bold text-sm tracking-wide flex items-center gap-2 hover:gap-4 transition-all">
+                <Link href="/pedodonti" className="text-pediatric-warm font-bold text-sm tracking-wide flex items-center gap-2 hover:gap-4 transition-all">
                   LÄS MER <span>→</span>
                 </Link>
               </div>
-              <div className="md:w-1/2 relative bg-[#091B14]/30 flex items-center justify-center p-8 overflow-hidden">
-                {/* AI-Genererad pedodonti-karaktär */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-pediatric-warm/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-r-3xl"></div>
+
+              {/* Höger: Sömlöst integrerad 3D-karaktär med animation */}
+              <div
+                className="md:w-1/2 relative flex items-end justify-center overflow-hidden"
+                style={{ minHeight: '280px', backgroundColor: '#1E3028' }}
+              >
+                {/* Gradient vänster kant — exakt kortets färg */}
+                <div className="absolute inset-y-0 left-0 w-20 z-10 pointer-events-none"
+                  style={{ background: 'linear-gradient(to right, #1E3028, transparent)' }} />
+                {/* Gradient botten */}
+                <div className="absolute bottom-0 left-0 right-0 h-12 z-10 pointer-events-none"
+                  style={{ background: 'linear-gradient(to top, #1E3028 10%, transparent)' }} />
+                {/* Varmt glödsken bakom pojken */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-56 h-56 rounded-full opacity-15 blur-3xl"
+                    style={{ background: 'radial-gradient(circle, #fbbf8a 0%, transparent 70%)' }} />
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/characters/pedodonti_boy.png"
                   alt="Pedodonti och Ortodonti Karaktär"
-                  className="w-72 h-72 object-contain drop-shadow-[0_20px_30px_rgba(255,181,159,0.15)] group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-700 ease-out relative z-10"
+                  className="relative z-20 w-96 h-auto object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 24px 40px rgba(0,0,0,0.55)) drop-shadow(0 0 16px rgba(251,191,138,0.12))',
+                  }}
                 />
               </div>
             </div>
@@ -237,27 +388,33 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 auto-rows-[250px]">
               {/* Vänster kolumn (Diagnoshjälp & Riktlinjer) */}
               <div className="flex flex-col gap-6">
-                {/* Diagnoshjälp med think.gif — FÖRBÄTTRAD KONTRAST */}
-                <div className="bg-slate-50 rounded-3xl p-10 flex-1 relative overflow-hidden border-2 border-slate-200 shadow-sm hover:shadow-lg hover:border-secondary transition-all">
-                  <h3 className="font-display text-2xl text-[#0E3B52] mb-2 font-bold">Diagnoshjälp</h3>
-                  <p className="text-sm text-slate-600 mb-6">Kognitivt beslutsstöd i realtid.</p>
-
-                  <div className="bg-white p-4 rounded-xl border-2 border-slate-200 flex items-center justify-between shadow-sm">
-                    <div>
-                      <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Input-symtom</p>
-                      <p className="text-base font-bold text-secondary mt-1">Irreversibel Pulpit</p>
+                {/* Diagnoshjälp med think.gif — klickbar & synlig */}
+                <Link href="/tools/journalmall" className="block flex-1">
+                  <div className="bg-slate-50 rounded-3xl p-7 h-full relative border-2 border-slate-200 shadow-sm hover:shadow-lg hover:border-secondary transition-all group cursor-pointer">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-display text-2xl text-[#0E3B52] mb-1 font-bold">Diagnoshjälp</h3>
+                        <p className="text-sm text-slate-600">Kognitivt beslutsstöd i realtid.</p>
+                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="/characters/think.gif"
+                        alt="Tänkande AI"
+                        className="w-14 h-14 object-contain opacity-90 group-hover:scale-110 transition-transform"
+                      />
                     </div>
-                    <span className="text-red-500 font-bold text-2xl animate-pulse">!</span>
-                  </div>
 
-                  {/* THINK.GIF integrerad snyggt nere i hörnet */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/characters/think.gif"
-                    alt="Tänkande AI"
-                    className="absolute -bottom-4 -right-4 w-32 opacity-90 mix-blend-multiply"
-                  />
-                </div>
+                    <div className="bg-white p-4 rounded-xl border-2 border-slate-200 flex items-center justify-between shadow-sm">
+                      <div>
+                        <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Input-symtom</p>
+                        <p className="text-base font-medium text-slate-400 mt-1 italic">Skriv ett symtom...</p>
+                      </div>
+                      <span className="text-red-500 font-bold text-2xl animate-pulse">!</span>
+                    </div>
+
+                    <p className="text-[11px] text-slate-400 mt-3 text-right font-medium group-hover:text-secondary transition-colors">Öppna journalmall →</p>
+                  </div>
+                </Link>
               {/* Synkade Riktlinjer */}
               <div className="bg-white rounded-full p-6 flex items-center justify-between border border-slate-200 shadow-sm hover:border-secondary/50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-3">
@@ -268,32 +425,8 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Mitten: Digital Status (Dark Terminal UI) */}
-            <div className="bg-dark-surface rounded-3xl p-8 text-green-400 lg:col-span-1 lg:row-span-2 font-mono flex flex-col relative shadow-xl overflow-hidden">
-              <div className="flex items-center justify-between mb-8 opacity-50">
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                </div>
-                <span className="text-[10px] uppercase tracking-widest text-slate-400">Terminal</span>
-              </div>
-
-              <h3 className="font-serif text-3xl text-white mb-6 font-sans">Digital Status</h3>
-
-              <div className="space-y-4 text-xs leading-relaxed opacity-80 flex-1">
-                <p className="text-green-300">&gt; ANALYSERAR PATIENTDATA...</p>
-                <p>Anamnes: Patient söker för molande värk, kvartal III...</p>
-                <p>Status: Perkussionsömhet pos, sens.test neg...</p>
-                <p className="text-secondary">Röntgen: Vidgad periapikal spalt 36...</p>
-                <p className="text-blue-300 mt-4">&gt; DIAGNOSFÖRSLAG: Nekrotisk pulpa m. asymtomatisk apikal parodontit.</p>
-                <p className="animate-pulse">_</p>
-              </div>
-
-              <Button className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/10 mt-6 rounded-xl">
-                INTERAKTIV JOURNALMALL
-              </Button>
-            </div>
+            {/* Mitten: Digital Status — LIVE TYPEWRITER */}
+            <TerminalCard />
 
             {/* Höger kolumn (SOP & Trauma) */}
             <div className="bg-white rounded-3xl p-8 lg:row-span-2 border border-slate-200 shadow-sm flex flex-col">
@@ -328,59 +461,200 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* STACKED SCROLL-CARDS */}
-      <section className="py-32 bg-dark-bg relative">
+      {/* STACKED SCROLL-CARDS — sticky siblings = stacking effect */}
+      <section className="bg-dark-bg relative">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-24">
-            <h2 className="font-display text-4xl md:text-5xl text-white">Ett flöde för <span className="text-secondary italic">hela processen.</span></h2>
+          <div className="text-center pt-32 pb-24">
+            <h2 className="font-display text-4xl md:text-5xl text-white">
+              Ett flöde för <span className="text-secondary italic">hela processen.</span>
+            </h2>
           </div>
 
-          <div className="max-w-4xl mx-auto space-y-12 pb-32">
-            <div className="sticky top-28 bg-white p-12 md:p-16 rounded-[40px] shadow-xl border border-slate-100 mb-24 transition-transform duration-500">
-              <div className="flex justify-between items-start mb-8">
-                <span className="text-6xl font-light text-slate-200">01</span>
-                <span className="bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Parodontologi</span>
-              </div>
-              <h3 className="font-display text-5xl text-dark-bg mb-6">ParodKlassificerare</h3>
-              <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
-                Automatiskt bedömningsstöd för EFP/AAP 2018. Beräknar stadieindelning och gradering baserat på dina fickdjupsmätningar och röntgenfynd.
-              </p>
+          {/* ⚠️ ALLA KORT MÅSTE VARA SYSKON I SAMMA CONTAINER för sticky-stacking */}
+          <div className="max-w-4xl mx-auto" style={{ paddingBottom: '30vh' }}>
+
+            {/* CARD 01 — sticky top-24, z-1 */}
+            <div className="sticky top-24 z-[1]" style={{ marginBottom: '60vh' }}>
+              <Link href="/tools/parod-klassificering">
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-white p-12 md:p-16 rounded-[40px] shadow-xl border border-slate-100 group cursor-pointer hover:shadow-2xl hover:border-secondary/30 transition-shadow"
+                >
+                  <div className="flex justify-between items-start mb-8">
+                    <span className="text-6xl font-light text-slate-200">01</span>
+                    <span className="bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Parodontologi</span>
+                  </div>
+                  <h3 className="font-display text-5xl text-dark-bg mb-6">ParodKlassificerare</h3>
+                  <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
+                    Automatiskt bedömningsstöd för EFP/AAP 2018. Beräknar stadieindelning och gradering baserat på dina fickdjupsmätningar och röntgenfynd.
+                  </p>
+                  <span className="mt-6 inline-block text-secondary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Öppna verktyget →</span>
+                </motion.div>
+              </Link>
             </div>
 
-            <div className="sticky top-32 bg-slate-50 p-12 md:p-16 rounded-[40px] shadow-xl border border-slate-200 mb-24">
-              <div className="flex justify-between items-start mb-8">
-                <span className="text-6xl font-light text-slate-300">02</span>
-                <span className="bg-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Strama 2024</span>
-              </div>
-              <h3 className="font-display text-5xl text-dark-bg mb-6">AntibiotikaTool</h3>
-              <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
-                Interaktivt beslutsträd för antibiotikaförskrivning. Säkerställer att dina ordinationer följer nationella riktlinjer och undviker resistensutveckling.
-              </p>
+            {/* CARD 02 — sticky top-28, z-2 glider ovanpå kort 01 */}
+            <div className="sticky top-28 z-[2]" style={{ marginBottom: '60vh' }}>
+              <Link href="/tools/antibiotika">
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-slate-50 p-12 md:p-16 rounded-[40px] shadow-xl border border-slate-200 group cursor-pointer hover:shadow-2xl hover:border-secondary/30 transition-shadow"
+                >
+                  <div className="flex justify-between items-start mb-8">
+                    <span className="text-6xl font-light text-slate-300">02</span>
+                    <span className="bg-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Strama 2024</span>
+                  </div>
+                  <h3 className="font-display text-5xl text-dark-bg mb-6">AntibiotikaTool</h3>
+                  <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
+                    Interaktivt beslutsträd för antibiotikaförskrivning. Säkerställer att dina ordinationer följer nationella riktlinjer och undviker resistensutveckling.
+                  </p>
+                  <span className="mt-6 inline-block text-secondary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Öppna verktyget →</span>
+                </motion.div>
+              </Link>
             </div>
 
-            <div className="sticky top-36 bg-white p-12 md:p-16 rounded-[40px] shadow-2xl border border-slate-200 mb-24">
-              <div className="flex justify-between items-start mb-8">
-                <span className="text-6xl font-light text-slate-300">03</span>
-                <span className="bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Farmakologi</span>
-              </div>
-              <h3 className="font-display text-5xl text-dark-bg mb-6">DoseringKalkylator</h3>
-              <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
-                Exakt farmakologisk dosering baserat på patientens ålder, vikt och medicinska riskprofil. Interaktionsvarningar för säker behandling.
-              </p>
+            {/* CARD 03 — sticky top-32, z-3 glider ovanpå kort 02 */}
+            <div className="sticky top-32 z-[3]" style={{ marginBottom: '60vh' }}>
+              <Link href="/tools/dosering">
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-white p-12 md:p-16 rounded-[40px] shadow-2xl border border-slate-200 group cursor-pointer hover:shadow-2xl hover:border-secondary/30 transition-shadow"
+                >
+                  <div className="flex justify-between items-start mb-8">
+                    <span className="text-6xl font-light text-slate-300">03</span>
+                    <span className="bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Farmakologi</span>
+                  </div>
+                  <h3 className="font-display text-5xl text-dark-bg mb-6">DoseringKalkylator</h3>
+                  <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
+                    Exakt farmakologisk dosering baserat på patientens ålder, vikt och medicinska riskprofil. Interaktionsvarningar för säker behandling.
+                  </p>
+                  <span className="mt-6 inline-block text-secondary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Öppna verktyget →</span>
+                </motion.div>
+              </Link>
             </div>
 
-            <div className="sticky top-40 bg-header-from p-12 md:p-16 rounded-[40px] shadow-2xl border border-dark-bg text-white">
-              <div className="flex justify-between items-start mb-8">
-                <span className="text-6xl font-light text-white/20">04</span>
-                <span className="bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Administration</span>
-              </div>
-              <h3 className="font-serif text-5xl mb-6">AI-Journal & Debitering</h3>
-              <p className="text-lg text-slate-300 leading-relaxed max-w-xl mb-8">
-                Strukturerad automatiserad journalföring med integrerat HSLF-FS 2025:68-kompatibelt debiteringsstöd.
-              </p>
-              <Button className="bg-secondary hover:bg-accent-hover text-white rounded-full px-8 py-6">
-                Utforska Verktygen
-              </Button>
+            {/* CARD 04 — sticky top-36, z-4 glider ovanpå alla tre */}
+            <div className="sticky top-36 z-[4]">
+              <Link href="/tools/journalmall">
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-header-from p-12 md:p-16 rounded-[40px] shadow-2xl border border-dark-bg text-white group cursor-pointer hover:border-secondary/40 transition-all"
+                >
+                  <div className="flex justify-between items-start mb-8">
+                    <span className="text-6xl font-light text-white/20">04</span>
+                    <span className="bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Administration</span>
+                  </div>
+                  <h3 className="font-serif text-5xl mb-6">AI-Journal &amp; Debitering</h3>
+                  <p className="text-lg text-slate-300 leading-relaxed max-w-xl mb-8">
+                    Strukturerad automatiserad journalföring med integrerat HSLF-FS 2025:68-kompatibelt debiteringsstöd.
+                  </p>
+                  <Button className="bg-secondary hover:bg-accent-hover text-white rounded-full px-8 py-6 pointer-events-none">
+                    Utforska Verktygen
+                  </Button>
+                </motion.div>
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ALLA FUNKTIONER — klickbart grid */}
+      <section id="alla-funktioner" className="py-32 bg-dark-bg relative">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="font-display text-4xl md:text-5xl text-white">Alla funktioner <span className="text-secondary italic">— klicka & utforska.</span></h2>
+            <p className="text-slate-400 mt-4 text-lg">Varje verktyg är byggt för det kliniska arbetsflödet.</p>
+          </div>
+
+          {/* ── KLINISKA VERKTYG ── */}
+          <div className="mb-12">
+            <p className="text-[11px] text-secondary font-bold uppercase tracking-widest mb-6">Kliniska verktyg</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { icon: '📝', title: 'AI-Journalmall', desc: 'Automatisk journaltext via AI — snabb, strukturerad och HSLF-FS-kompatibel.', href: '/dashboard/tools/journalmall/ai-assisterad', tag: 'AI', tagColor: 'bg-secondary' },
+                { icon: '📋', title: 'Manuell Journalmall', desc: 'Välj behandling och fyll i en färdig klinisk journalmall direkt.', href: '/dashboard/tools/journalmall/manuell', tag: 'Manuell', tagColor: 'bg-slate-600' },
+                { icon: '💰', title: 'Debitering', desc: 'AI-assisterat debiteringsstöd — taxekoder och åtgärdskoder enligt gällande taxa.', href: '/dashboard/tools/debitering', tag: 'Ekonomi', tagColor: 'bg-emerald-700' },
+                { icon: '🦠', title: 'AntibiotikaTool', desc: 'Beslutsträd för antibiotikaförskrivning enligt Strama 2024.', href: '/dashboard/tools/antibiotika', tag: 'Strama 2024', tagColor: 'bg-amber-700' },
+                { icon: '💊', title: 'DoseringKalkylator', desc: 'Farmakologisk dosering baserat på ålder, vikt och riskprofil med interaktionsvarningar.', href: '/dashboard/tools/dosering', tag: 'Farmakologi', tagColor: 'bg-violet-700' },
+                { icon: '📦', title: 'Läkemedelskort', desc: 'Snabbreferens för vanliga läkemedel — warfarin, NOAK, bisfosfonater m.fl.', href: '/dashboard/tools/lakemedel', tag: 'Referens', tagColor: 'bg-slate-600' },
+                { icon: '🦷', title: 'ParodKlassificerare', desc: 'EFP/AAP 2018-klassificering av parodontit baserat på fickdjup och röntgenfynd.', href: '/dashboard/tools/parod-klassificering', tag: 'Parodontologi', tagColor: 'bg-teal-700' },
+                { icon: '🚑', title: 'TraumaGuide', desc: 'Kliniska protokoll för tandtrauma — primära och permanenta tänder.', href: '/dashboard/tools/traumaguide', tag: 'Akut', tagColor: 'bg-red-700' },
+              ].map((tool) => (
+                <Link key={tool.href} href={tool.href} className="group block">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col hover:bg-white/10 hover:border-secondary/50 hover:-translate-y-1 transition-all duration-200">
+                    <div className="flex items-start justify-between mb-4">
+                      <span className="text-3xl">{tool.icon}</span>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white ${tool.tagColor}`}>{tool.tag}</span>
+                    </div>
+                    <h4 className="text-white font-bold text-lg mb-2">{tool.title}</h4>
+                    <p className="text-slate-400 text-sm leading-relaxed flex-1">{tool.desc}</p>
+                    <span className="text-secondary text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity font-medium">Öppna →</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* ── KLINISKA AGENTER ── */}
+          <div className="mb-12">
+            <p className="text-[11px] text-secondary font-bold uppercase tracking-widest mb-6">Kliniska agenter</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { icon: '🦷', title: 'Endodonti', desc: 'Värk, pulpit & rotbehandling.', href: '/dashboard/endodonti' },
+                { icon: '🩸', title: 'Parodontologi', desc: 'Parodontit & peri-implantit.', href: '/dashboard/parodontologi' },
+                { icon: '🎯', title: 'Protetik', desc: 'Bettfunktion & rekonstruktioner.', href: '/dashboard/protetik' },
+                { icon: '🛠', title: 'Käkkirurgi', desc: 'Extraktioner & kirurgi.', href: '/dashboard/kakkirurgi' },
+                { icon: '🧠', title: 'Bettfysiologi', desc: 'TMD & funktionsstörningar.', href: '/dashboard/bettfysiologi' },
+                { icon: '🔬', title: 'Oralmedicin', desc: 'MRONJ, slemhinna & SVF.', href: '/dashboard/oralmedicin' },
+                { icon: '🧒', title: 'Pedodonti', desc: 'Barn- och ungdomstandvård.', href: '/dashboard/pedodonti' },
+                { icon: '📏', title: 'Ortodonti', desc: 'Interception & bedömning.', href: '/dashboard/ortodonti' },
+              ].map((agent) => (
+                <Link key={agent.href} href={agent.href} className="group block">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 h-full flex flex-col hover:bg-white/10 hover:border-white/30 hover:-translate-y-1 transition-all duration-200">
+                    <span className="text-2xl mb-3">{agent.icon}</span>
+                    <h4 className="text-white font-bold mb-1">{agent.title}</h4>
+                    <p className="text-slate-400 text-sm flex-1">{agent.desc}</p>
+                    <span className="text-slate-500 text-xs mt-3 group-hover:text-secondary transition-colors">Öppna →</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* ── SIMULATOR ── */}
+          <div>
+            <p className="text-[11px] text-secondary font-bold uppercase tracking-widest mb-6">Simulator</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                { icon: '🎮', title: 'Klinisk Simulator', desc: 'Träna på kliniska fall i 3 svårighetsgrader — få poäng och feedback i realtid.', href: '/dashboard/simulator', tag: 'Interaktiv', big: true },
+                { icon: '📊', title: 'Min Historik', desc: 'Se dina tidigare simulatorresultat och kunskapsutveckling.', href: '/dashboard/simulator/historik', tag: 'Statistik' },
+                { icon: '🏆', title: 'Leaderboard', desc: 'Jämför dina poäng med andra kliniker på plattformen.', href: '/dashboard/simulator/leaderboard', tag: 'Ranking' },
+              ].map((item) => (
+                <Link key={item.href} href={item.href} className={`group block ${item.big ? 'md:col-span-1' : ''}`}>
+                  <div className="bg-gradient-to-br from-secondary/20 to-dark-surface border border-secondary/30 rounded-2xl p-6 h-full flex flex-col hover:border-secondary hover:-translate-y-1 transition-all duration-200">
+                    <div className="flex items-start justify-between mb-4">
+                      <span className="text-3xl">{item.icon}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-secondary border border-secondary/40">{item.tag}</span>
+                    </div>
+                    <h4 className="text-white font-bold text-lg mb-2">{item.title}</h4>
+                    <p className="text-slate-400 text-sm leading-relaxed flex-1">{item.desc}</p>
+                    <span className="text-secondary text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity font-medium">Starta →</span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -514,9 +788,9 @@ export default function LandingPage() {
         <div>
           <h4 className="text-white text-xs font-bold tracking-widest uppercase mb-4">Plattform</h4>
           <ul className="space-y-3 text-sm">
-            <li><Link href="#" className="hover:text-white transition-colors">Verktyg</Link></li>
-            <li><Link href="#" className="hover:text-white transition-colors">Prismodell</Link></li>
-            <li><Link href="#" className="hover:text-white transition-colors">Klinisk API</Link></li>
+            <li><Link href="/login" className="hover:text-white transition-colors">Verktyg</Link></li>
+            <li><Link href="/pricing" className="hover:text-white transition-colors">Prismodell</Link></li>
+            <li><Link href="/login" className="hover:text-white transition-colors">Klinisk API</Link></li>
           </ul>
         </div>
 
@@ -533,8 +807,8 @@ export default function LandingPage() {
       <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-xs">
         <p>© 2026 DentaGuide-Pro. All rights reserved.</p>
         <div className="flex gap-6 mt-4 md:mt-0">
-          <Link href="#" className="hover:text-white transition-colors">Integritetspolicy (GDPR)</Link>
-          <Link href="#" className="hover:text-white transition-colors">Patientdatalagen (PDL)</Link>
+          <Link href="/login" className="hover:text-white transition-colors">Integritetspolicy (GDPR)</Link>
+          <Link href="/login" className="hover:text-white transition-colors">Patientdatalagen (PDL)</Link>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
             <span>System Status: Operativ</span>

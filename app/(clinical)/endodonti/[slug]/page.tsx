@@ -26,7 +26,7 @@ export default function EndodontiScenarioPage({ params }: Props) {
     <div data-theme="stitch-pro" className="max-w-4xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-6 font-mono">
-        <Link href="/dashboard/endodonti" className="hover:text-primary transition-colors">Endodonti</Link>
+        <Link href="/endodonti" className="hover:text-primary transition-colors">Endodonti</Link>
         <span>/</span>
         <span className="text-foreground">{scenario.title}</span>
       </nav>

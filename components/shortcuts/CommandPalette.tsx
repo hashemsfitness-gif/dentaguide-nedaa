@@ -20,7 +20,6 @@ interface CommandItem {
   category: "scenario" | "tool" | "navigation";
 }
 
-// Static navigation items — scenarios will be fetched dynamically
 const NAVIGATION_ITEMS: CommandItem[] = [
   {
     id: "nav-dashboard",
@@ -35,7 +34,7 @@ const NAVIGATION_ITEMS: CommandItem[] = [
     title: "Simulator",
     subtitle: "Träning och övning",
     icon: "🎮",
-    href: "/dashboard/simulator",
+    href: "/simulator",
     category: "navigation",
   },
   {
@@ -43,7 +42,7 @@ const NAVIGATION_ITEMS: CommandItem[] = [
     title: "Bokmärken",
     subtitle: "Sparade scenarier",
     icon: "🔖",
-    href: "/dashboard/bokmarken",
+    href: "/dashboard",
     category: "navigation",
   },
   {
@@ -51,7 +50,7 @@ const NAVIGATION_ITEMS: CommandItem[] = [
     title: "Anteckningar",
     subtitle: "Dina kliniska anteckningar",
     icon: "📝",
-    href: "/dashboard/anteckningar",
+    href: "/tools/journalmall",
     category: "navigation",
   },
   {
@@ -59,7 +58,7 @@ const NAVIGATION_ITEMS: CommandItem[] = [
     title: "Statistik",
     subtitle: "Användningsstatistik",
     icon: "📊",
-    href: "/dashboard/statistik",
+    href: "/dashboard",
     category: "navigation",
   },
   {
@@ -67,7 +66,7 @@ const NAVIGATION_ITEMS: CommandItem[] = [
     title: "Inställningar",
     subtitle: "Kontoinställningar",
     icon: "⚙️",
-    href: "/dashboard/installningar",
+    href: "/dashboard",
     category: "navigation",
   },
 ];
@@ -78,7 +77,7 @@ const TOOL_ITEMS: CommandItem[] = [
     title: "Doseringskalkylatorn",
     subtitle: "Viktbaserad dosering med maxdos-spärrar",
     icon: "💊",
-    href: "/dashboard/verktyg/dosering",
+    href: "/tools/dosering",
     category: "tool",
   },
   {
@@ -86,7 +85,7 @@ const TOOL_ITEMS: CommandItem[] = [
     title: "Antibiotikastöd",
     subtitle: "Strama 2024-baserat beslutsträd",
     icon: "🦠",
-    href: "/dashboard/verktyg/antibiotika",
+    href: "/tools/antibiotika",
     category: "tool",
   },
   {
@@ -94,7 +93,7 @@ const TOOL_ITEMS: CommandItem[] = [
     title: "Läkemedelsreferens",
     subtitle: "8 grupper med Janusmed-interaktioner",
     icon: "💉",
-    href: "/dashboard/verktyg/lakemedel",
+    href: "/tools/lakemedel",
     category: "tool",
   },
   {
@@ -102,7 +101,7 @@ const TOOL_ITEMS: CommandItem[] = [
     title: "Parodontologi-klassificerare",
     subtitle: "EFP/AAP 2018 Stadium I-IV",
     icon: "🔬",
-    href: "/dashboard/verktyg/parodontologi",
+    href: "/tools/parod-klassificering",
     category: "tool",
   },
   {
@@ -110,7 +109,7 @@ const TOOL_ITEMS: CommandItem[] = [
     title: "Journalmall (manuell)",
     subtitle: "Interaktiva platshållare",
     icon: "📋",
-    href: "/dashboard/verktyg/journal-manuell",
+    href: "/tools/journalmall/manuell",
     category: "tool",
   },
   {
@@ -118,7 +117,7 @@ const TOOL_ITEMS: CommandItem[] = [
     title: "AI-journalmall",
     subtitle: "Claude Opus 4.7 med fabriceringsvalidator",
     icon: "🤖",
-    href: "/dashboard/verktyg/journal-ai",
+    href: "/tools/journalmall/ai-assisterad",
     category: "tool",
   },
   {
@@ -126,7 +125,7 @@ const TOOL_ITEMS: CommandItem[] = [
     title: "Traumaguide",
     subtitle: "Dental Trauma Guide med tidskritiska timers",
     icon: "🚨",
-    href: "/dashboard/verktyg/trauma",
+    href: "/tools/traumaguide",
     category: "tool",
   },
   {
@@ -134,7 +133,7 @@ const TOOL_ITEMS: CommandItem[] = [
     title: "Debiteringsstöd",
     subtitle: "TLV-koder 100-900",
     icon: "💰",
-    href: "/dashboard/verktyg/debitering",
+    href: "/tools/debitering",
     category: "tool",
   },
 ];

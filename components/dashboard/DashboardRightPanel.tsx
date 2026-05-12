@@ -1,10 +1,10 @@
 import Link from 'next/link';
 
 const snabbverktyg = [
-  { href: '/dashboard/tools/dosering', label: 'Doseringskalkylatorn', icon: '⚖️' },
-  { href: '/dashboard/tools/antibiotika', label: 'Antibiotikastöd', icon: '🧬' },
-  { href: '/dashboard/tools/traumaguide', label: 'Traumaguiden', icon: '🚨' },
-  { href: '/dashboard/tools/journalmall', label: 'Journalmall', icon: '📝' },
+  { href: '/tools/dosering', label: 'Doseringskalkylatorn', icon: '⚖️' },
+  { href: '/tools/antibiotika', label: 'Antibiotikastöd', icon: '🧬' },
+  { href: '/tools/traumaguide', label: 'Traumaguiden', icon: '🚨' },
+  { href: '/tools/journalmall', label: 'Journalmall', icon: '📝' },
 ];
 
 export default function DashboardRightPanel() {

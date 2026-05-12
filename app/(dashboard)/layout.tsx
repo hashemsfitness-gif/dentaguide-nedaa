@@ -22,7 +22,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="dashboard-layout">
+    <div className="flex flex-col lg:grid lg:grid-cols-[240px_1fr] xl:grid-cols-[260px_1fr_300px] min-h-screen">
       {/* ── Left Sidebar (navigation + categories) ─────────────── */}
       <DashboardSidebar />
 

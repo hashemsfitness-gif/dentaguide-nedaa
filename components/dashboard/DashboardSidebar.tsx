@@ -42,11 +42,10 @@ function NavSection({ label, items, activeBase }: { label: string; items: NavIte
       </p>
       <ul className="space-y-0.5">
         {items.map(({ href, label: itemLabel, icon }) => {
-          const full = `/dashboard${href}`;
-          const active = activeBase === full || activeBase.startsWith(`${full}/`);
+          const active = activeBase === href || activeBase.startsWith(`${href}/`);
           return (
             <li key={href}>
-              <Link href={full} className={linkClass(active)} aria-current={active ? 'page' : undefined}>
+              <Link href={href} className={linkClass(active)} aria-current={active ? 'page' : undefined}>
                 <span className="text-base leading-none" aria-hidden="true">{icon}</span>
                 {itemLabel}
               </Link>
@@ -90,11 +89,11 @@ export default function DashboardSidebar() {
             Utbildning
           </p>
           <ul className="space-y-0.5">
-            <li>
+                      <li>
               <Link
-                href="/dashboard/simulator"
-                className={linkClass(pathname === '/dashboard/simulator')}
-                aria-current={pathname === '/dashboard/simulator' ? 'page' : undefined}
+                href="/simulator"
+                className={linkClass(pathname === '/simulator' || pathname.startsWith('/simulator/'))}
+                aria-current={pathname.startsWith('/simulator') ? 'page' : undefined}
               >
                 <span className="text-base leading-none" aria-hidden="true">🎓</span>
                 Simulator

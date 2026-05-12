@@ -31,7 +31,7 @@ const TABS = [
 const VERKTYG = [
   { label: "Antibiotikastöd", href: "/tools/antibiotika" },
   { label: "Farmaka", href: "/tools/lakemedel" },
-  { label: "Journalmallgenerator", href: "/tools/journal" },
+  { label: "Journalmall", href: "/tools/journalmall" },
 ];
 
 export default function ParodontoloiScenarioPage({
@@ -114,14 +114,14 @@ export default function ParodontoloiScenarioPage({
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 flex-1" aria-label="Huvudnavigation">
-          <Link href="/tools" className="text-sm text-white/60 hover:text-white transition-colors font-medium">
-            Diagnostic Hub
+          <Link href="/dashboard" className="text-sm text-white/60 hover:text-white transition-colors font-medium">
+            Översikt
           </Link>
           <Link href="/parodontologi" className="text-sm text-white font-semibold border-b border-white/50 pb-0.5">
-            Patient Records
+            Parodontologi
           </Link>
-          <Link href="/admin" className="text-sm text-white/60 hover:text-white transition-colors font-medium">
-            Clinical Analytics
+          <Link href="/tools/journalmall" className="text-sm text-white/60 hover:text-white transition-colors font-medium">
+            Journalmall
           </Link>
         </nav>
 
@@ -682,7 +682,7 @@ export default function ParodontoloiScenarioPage({
                 </button>
               )}
 
-              <Link href="/tools/parodklassifikation">
+              <Link href="/tools/parod-klassificering">
                 <div className="w-full flex items-center justify-between bg-[#1E3028] text-white rounded-full px-4 py-3 text-sm font-medium hover:bg-[#2a4038] transition-colors cursor-pointer">
                   <span>Parod-klassificerare</span>
                   <span className="text-white/50" aria-hidden="true">›</span>

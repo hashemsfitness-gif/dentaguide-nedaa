@@ -31,7 +31,7 @@ const TABS = [
 
 /* ─── Static tools available on all protetik scenarios ─── */
 const STATIC_VERKTYG = [
-  { label: "Journalmallgenerator", href: "/tools/journal" },
+  { label: "Journalmall", href: "/tools/journalmall" },
   { label: "Doseringskalkylator", href: "/tools/dosering" },
 ];
 
@@ -132,14 +132,14 @@ export default function ProtetikScenarioPage({
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 flex-1" aria-label="Huvudnavigation">
-          <Link href="/tools" className="text-sm text-white/60 hover:text-white transition-colors font-medium">
-            Diagnostic Hub
+          <Link href="/dashboard" className="text-sm text-white/60 hover:text-white transition-colors font-medium">
+            Översikt
           </Link>
           <Link href="/protetik" className="text-sm text-white font-semibold border-b border-white/50 pb-0.5">
-            Patient Records
+            Protetik
           </Link>
-          <Link href="/admin" className="text-sm text-white/60 hover:text-white transition-colors font-medium">
-            Clinical Analytics
+          <Link href="/tools/journalmall" className="text-sm text-white/60 hover:text-white transition-colors font-medium">
+            Journalmall
           </Link>
         </nav>
 
