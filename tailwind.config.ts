@@ -43,6 +43,13 @@ export default {
         // Borders
         'border-light':   '#E5E3DF',
         'border-medium':  '#D1CEC9',
+
+        // Ink (editorial body text — landing page)
+        ink:              '#091b14',
+      },
+
+      letterSpacing: {
+        widest2: '0.22em',
       },
 
       // ── Typografi ───────────────────────────────────────────────────────
@@ -72,6 +79,7 @@ export default {
         'clay':    '0 8px 24px rgba(30, 48, 40, 0.06)',
         'clay-lg': '0 20px 50px rgba(9, 27, 20, 0.08)',
         'accent':  '0 8px 16px -4px rgba(204, 88, 51, 0.4)',
+        'deep':    '0 30px 60px -12px rgba(9, 27, 20, 0.18), 0 18px 36px -18px rgba(0,0,0,0.12)',
       },
     },
   },

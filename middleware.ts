@@ -1,18 +1,61 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { getRouteRequirement, isFreeAccessible } from "@/lib/feature-access";
 
 /**
- * Middleware — skyddar /dashboard och /admin routes.
+ * Middleware — allowlist + freemium-modell.
  *
- * - /dashboard/* kräver inloggad användare
- * - /admin/* kräver inloggad användare med role = 'admin'
- * - Oautentiserade användare redirectas till /login
- * - Icke-admin som försöker nå /admin får 403
+ * Publika (ingen login):
+ *   - / (landing), /login, /registrera, /pricing, /om-oss, /reset-password
+ *   - /403, /404
+ *   - /api/auth/*, /api/webhooks/*, /api/cron/*
+ *   - Free-tier feature paths (lib/feature-access.ts) — första scenariot
+ *     per område + utvalda verktyg
+ *
+ * Login + UI-tier-check (sidan visar PremiumGate-modal vid behov):
+ *   - Övriga kliniska scenarier
+ *   - Bettfysiologi, Ortodonti
+ *   - AI-journal, Dosering, Debitering, Läkemedel
+ *
+ * Endast login (auth-gate, oberoende av tier):
+ *   - /dashboard, /simulator/*
+ *
+ * /admin/* kräver dessutom role = 'admin'.
  */
+
+const PUBLIC_PATHS = new Set<string>([
+  "/",
+  "/login",
+  "/registrera",
+  "/pricing",
+  "/om-oss",
+  "/reset-password",
+  "/premium-required",
+  "/403",
+  "/404",
+]);
+
+const PUBLIC_API_PREFIXES = [
+  "/api/auth/",
+  "/api/webhooks/",
+  "/api/cron/",
+  "/api/journalmall/manuell/check", // free-tier rate-limit endpoint
+];
+
+function isPublic(pathname: string): boolean {
+  if (PUBLIC_PATHS.has(pathname)) return true;
+  if (PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p))) return true;
+  if (isFreeAccessible(pathname)) return true;
+  return false;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ── Create Supabase client with cookie handling ────────────────
+  if (isPublic(pathname)) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -41,21 +84,14 @@ export async function middleware(request: NextRequest) {
     error: userError,
   } = await supabase.auth.getUser();
 
-  if (pathname.startsWith("/dashboard")) {
-    if (userError || !user) {
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-    return supabaseResponse;
+  if (userError || !user) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
+  // Admin check körs först (kräver role-fält)
   if (pathname.startsWith("/admin")) {
-    if (userError || !user) {
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
-    }
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
@@ -67,6 +103,23 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
+  // Premium tier-check för premium-routes (rewrite till /premium-required)
+  const requirement = getRouteRequirement(pathname);
+  if (requirement === "premium") {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("tier")
+      .eq("id", user.id)
+      .single();
+    const isPremium =
+      profile?.tier === "kliniker" || profile?.tier === "klinik";
+    if (!isPremium) {
+      const gateUrl = new URL("/premium-required", request.url);
+      gateUrl.searchParams.set("from", pathname);
+      return NextResponse.rewrite(gateUrl);
+    }
+  }
+
   return supabaseResponse;
 }
 
@@ -74,12 +127,10 @@ export const config = {
   matcher: [
     /*
      * Match all routes except:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
+     * - _next/static, _next/image (static files & image optimization)
      * - favicon.ico
-     * - Public files (svg, png, jpg, etc.)
-     * - API routes that handle their own auth (webhooks)
+     * - Public file extensions (svg, png, jpg, mp4, etc.)
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$|api/webhooks).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|mp4|webm)$).*)",
   ],
 };

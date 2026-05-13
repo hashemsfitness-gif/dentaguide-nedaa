@@ -60,6 +60,16 @@ export const simulatorAnswerLimiter = new Ratelimit({
   analytics: true,
 });
 
+// Manuell journalmall — gratis-användare har 4/dag, premium obegränsat.
+// API-routen /api/journalmall/manuell/check anropas av klienten innan
+// generering för att räkna förbrukning + ge kvoten.
+export const manuellJournalFreeLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(4, "24 h"),
+  prefix: "ratelimit:journal:manuell:free",
+  analytics: true,
+});
+
 export interface RateLimitResult {
   success: boolean;
   limit: number;

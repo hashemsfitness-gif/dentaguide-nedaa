@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DentaGuide-Pro — Kliniskt beslutsstöd</title>
+
+<!-- Fonter (samma som globals.css) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500;1,6..72,600;1,6..72,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<!-- Tailwind CDN + projektets designtokens -->
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#0E3B52',
+          'primary-container': '#1E3028',
+          secondary: '#CC5833',
+          'secondary-container': '#FF7E55',
+          neutral: '#F9F7F2',
+          surface: '#FCF9F8',
+          'status-ok': '#2D6A4F',
+          'status-warning': '#E07B39',
+          'status-danger': '#C1121F',
+          'tertiary-gold': '#C9A84C',
+          'header-from': '#0d4a65',
+          'header-to': '#062f40',
+          'dark-surface': '#0F1A14',
+          'dark-bg': '#062f40',
+          'pediatric-warm': '#FFB59F',
+          'pediatric-soft': '#FFDBD0',
+          'border-light': '#E5E3DF',
+          'border-medium': '#D1CEC9',
+          ink: '#091b14'
+        },
+        fontFamily: {
+          display: ['Newsreader', 'Cormorant Garamond', 'serif'],
+          body: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'Space Grotesk', 'monospace']
+        },
+        boxShadow: {
+          clay: '0 8px 24px rgba(30, 48, 40, 0.06)',
+          'clay-lg': '0 20px 50px rgba(9, 27, 20, 0.08)',
+          accent: '0 8px 16px -4px rgba(204, 88, 51, 0.4)',
+          'deep': '0 30px 60px -12px rgba(9, 27, 20, 0.18), 0 18px 36px -18px rgba(0,0,0,0.12)'
+        },
+        letterSpacing: {
+          widest2: '0.22em'
+        }
+      }
+    }
+  };
+</script>
+
+<style>
+  :root {
+    --primary: #0E3B52;
+    --primary-container: #1E3028;
+    --secondary: #CC5833;
+    --secondary-container: #FF7E55;
+    --neutral: #F9F7F2;
+    --surface: #FCF9F8;
+    --ink: #091b14;
+    --header-from: #0d4a65;
+    --header-to: #062f40;
+    --dark-bg: #062f40;
+    --border-light: #E5E3DF;
+    --tertiary-gold: #C9A84C;
+  }
+
+  html, body { background: var(--surface); color: var(--ink); }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+  .font-display { font-family: 'Newsreader', 'Cormorant Garamond', serif; letter-spacing: -0.022em; }
+  .font-mono { font-family: 'IBM Plex Mono', monospace; }
+
+  /* Editorial italic signatur */
+  .ed-italic { font-family: 'Newsreader', serif; font-style: italic; font-weight: 500; letter-spacing: -0.015em; }
+
+  /* Subtilt prickmönster */
+  .dot-grid {
+    background-image: radial-gradient(rgba(9,27,20,0.10) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Noise overlay (mjuk) */
+  .noise-overlay {
+    position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+
+  /* Hero atmosfär */
+  .hero-atmos::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 30%, rgba(204,88,51,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 60% at 10% 90%, rgba(14,59,82,0.35) 0%, transparent 70%);
+  }
+  .hero-grid::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%);
+  }
+
+  /* Brand logo */
+  .brand-logo {
+    width: 44px; height: 44px; border-radius: 12px; object-fit: cover;
+    background: #062f40;
+    box-shadow: 0 4px 16px -4px rgba(13, 74, 101, 0.45);
+  }
+
+  /* Hero scroll-companion */
+  .scroll-companion {
+    position: fixed; bottom: 24px; right: 24px; z-index: 40;
+    width: 92px; height: 92px; cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    filter: drop-shadow(0 12px 24px rgba(9, 27, 20, 0.25));
+  }
+  .scroll-companion:hover { transform: scale(1.12) rotate(-4deg); }
+  .scroll-companion img { width: 100%; height: 100%; object-fit: contain; }
+
+  /* CTA */
+  .btn-accent {
+    background: var(--secondary); color: white; border-radius: 9999px;
+    padding: 14px 26px; font-weight: 600; font-size: 15px;
+    box-shadow: 0 8px 16px -4px rgba(204,88,51,0.45);
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-accent:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 12px 24px -6px rgba(204,88,51,0.55); }
+  .btn-ghost {
+    background: transparent; color: var(--ink); border-radius: 9999px;
+    padding: 14px 26px; font-weight: 600; font-size: 15px;
+    border: 1px solid rgba(9,27,20,0.18);
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-ghost:hover { border-color: var(--secondary); color: var(--secondary); }
+  .btn-ghost-white {
+    background: transparent; color: rgba(255,255,255,0.92); border-radius: 9999px;
+    padding: 14px 26px; font-weight: 600; font-size: 15px;
+    border: 1px solid rgba(255,255,255,0.28); transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-ghost-white:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.6); }
+
+  /* Editorial domänkort */
+  .ed-card {
+    background: white; border: 1px solid var(--border-light); border-radius: 22px;
+    padding: 32px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; overflow: hidden;
+  }
+  .ed-card:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(9,27,20,0.08); border-color: rgba(204,88,51,0.35); }
+  .ed-card::before {
+    content: ''; position: absolute; top: 0; left: 32px; right: 32px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--secondary), transparent);
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .ed-card:hover::before { opacity: 0.5; }
+
+  /* Verktygsrad */
+  .tool-row {
+    display: grid; grid-template-columns: 64px 1.1fr 2fr 0.8fr 32px; gap: 28px;
+    padding: 28px 4px; border-bottom: 1px solid var(--border-light);
+    align-items: baseline; transition: all 0.3s;
+    cursor: pointer;
+  }
+  .tool-row:hover { background: rgba(255,255,255,0.55); padding-left: 16px; padding-right: 16px; border-radius: 14px; border-color: transparent; }
+  .tool-row:hover .tool-arrow { transform: translateX(6px); color: var(--secondary); }
+  .tool-arrow { transition: all 0.3s; color: rgba(9,27,20,0.4); }
+
+  /* Terminalkort */
+  .terminal {
+    background: #0a1019;
+    border: 1px solid rgba(45, 106, 79, 0.25);
+    border-radius: 24px;
+    padding: 28px; color: #c9f5d9; font-family: 'IBM Plex Mono', monospace;
+    position: relative; overflow: hidden;
+    box-shadow: 0 30px 60px -15px rgba(9,27,20,0.5);
+  }
+  .terminal::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,255,140,0.025) 0px, transparent 1px, transparent 3px);
+    opacity: 0.7;
+  }
+  .terminal-cursor {
+    display: inline-block; width: 8px; height: 14px; background: #6ee7b7; vertical-align: -2px;
+    animation: blink 1.05s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Sömlös marquee av institutioner */
+  .marq {
+    display: flex; gap: 64px; align-items: center;
+    animation: scrollx 38s linear infinite;
+  }
+  @keyframes scrollx {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Drug card */
+  .drug-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.10); border-radius: 24px; padding: 28px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 320px;
+    backdrop-filter: blur(4px);
+  }
+  .drug-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(204,88,51,0.45); transform: translateY(-4px); }
+
+  /* Price card */
+  .price-card {
+    background: white; border: 1px solid var(--border-light); border-radius: 28px;
+    padding: 38px 32px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .price-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(9,27,20,0.08); }
+  .price-card--featured {
+    background: #0c2230; color: white; border: 1px solid rgba(204,88,51,0.4);
+    box-shadow: 0 20px 60px rgba(12,34,48,0.35);
+  }
+
+  /* Pull-quote */
+  .pull-quote {
+    font-family: 'Newsreader', serif; font-style: italic; font-weight: 500;
+    line-height: 1.25; letter-spacing: -0.018em;
+  }
+
+  /* Hide scrollbar */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+
+  /* Section eyebrow */
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--secondary); font-weight: 600;
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before {
+    content: ''; width: 32px; height: 1px; background: currentColor; display: inline-block;
+  }
+  .eyebrow--light { color: rgba(255,255,255,0.55); }
+  .eyebrow--light::before { background: rgba(255,255,255,0.4); }
+
+  /* Pulse dot */
+  .pulse-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: #34d399; flex: none; }
+  .pulse-dot::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    border: 1px solid #34d399; animation: ping 1.6s ease-out infinite;
+  }
+  @keyframes ping {
+    0% { transform: scale(0.6); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* Image placeholder */
+  .img-placeholder {
+    background:
+      repeating-linear-gradient(135deg, rgba(9,27,20,0.04) 0 8px, transparent 8px 16px),
+      rgba(9,27,20,0.03);
+    border: 1px dashed rgba(9,27,20,0.18);
+    color: rgba(9,27,20,0.45); font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    border-radius: 18px;
+  }
+
+  /* Anchor offset for sticky header */
+  section[id] { scroll-margin-top: 92px; }
+
+  /* Status pill */
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 9999px; padding: 6px 14px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+  }
+
+  /* Logo video — grayscale by default, full color on hover */
+  .logo-video-wrap:hover .logo-video,
+  .logo-video-wrap:focus-within .logo-video {
+    filter: grayscale(0) contrast(1) saturate(1.15)
+            drop-shadow(0 30px 80px rgba(0,0,0,0.45))
+            drop-shadow(0 0 50px rgba(204,88,51,0.45)) !important;
+  }
+
+  /* === Hero logo-animation === */
+  @keyframes logo-ring-spin     { from { transform: rotate(0deg); }   to { transform: rotate(360deg); } }
+  @keyframes logo-ring-spin-rev { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+  @keyframes logo-sparkle {
+    0%, 100% { opacity: 0; transform: scale(0.3); }
+    50%      { opacity: 1; transform: scale(1.2); }
+  }
+  @keyframes logo-fade-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes logo-hex-float {
+    0%, 100% { transform: translateY(0) scale(1);     filter: drop-shadow(0 20px 60px rgba(0,0,0,0.4)) drop-shadow(0 0 30px rgba(204,88,51,0.35)); }
+    50%      { transform: translateY(-8px) scale(1.02); filter: drop-shadow(0 28px 70px rgba(0,0,0,0.5)) drop-shadow(0 0 50px rgba(204,88,51,0.65)); }
+  }
+  .hex-logo-hero { animation: logo-hex-float 4.5s ease-in-out infinite; }
+  .animate-pulse-soft { animation: logo-sparkle 3s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .hex-logo-hero, .animate-pulse-soft { animation: none; }
+  }
+</style>
+</head>
+
+<body data-theme="stitch-pro" class="bg-surface text-ink">
+
+<div class="noise-overlay" aria-hidden="true"></div>
+
+<!-- ============== NAV ============== -->
+<header class="sticky top-0 z-50 backdrop-blur-md bg-white/72 border-b border-black/5">
+  <div class="max-w-[1280px] mx-auto px-8 h-[76px] flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3">
+      <img src="assets/logo-hexagon-dark.png" alt="DentaGuide-Pro" class="brand-logo" />
+      <span class="font-display text-[22px] tracking-tight">
+        DentaGuide<span class="ed-italic text-secondary">·Pro</span>
+      </span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-9 text-[14px] font-medium text-ink/70">
+      <a href="#domaner" class="hover:text-ink transition-colors">Domäner</a>
+      <a href="#verktyg" class="hover:text-ink transition-colors">Verktyg</a>
+      <a href="#farmakologi" class="hover:text-ink transition-colors">Farmakologi</a>
+      <a href="#priser" class="hover:text-ink transition-colors">Pris</a>
+      <a href="#riktlinjer" class="hover:text-ink transition-colors">Klinisk data</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#" class="hidden sm:inline text-[14px] font-medium text-ink/70 hover:text-ink mr-3">Logga in</a>
+      <a href="#" class="btn-accent text-[14px] py-[10px] px-5">Kom igång<span aria-hidden>→</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- ============== HERO ============== -->
+<section id="top" class="relative overflow-hidden hero-atmos hero-grid bg-gradient-to-br from-header-from via-[#093d54] to-[#04222f] text-white">
+  <div class="relative max-w-[1280px] mx-auto px-8 pt-24 pb-28 z-10">
+
+    <div class="flex items-center gap-3 mb-9">
+      <span class="status-pill"></span>
+      <span class="status-pill hidden md:inline-flex"></span>
+    </div>
+
+    <div class="grid lg:grid-cols-[1.15fr_1fr] gap-16 items-end">
+
+      <!-- Vänster: editorial typografi -->
+      <div>
+        <h1 class="font-display font-medium text-white text-[68px] md:text-[88px] leading-[0.96]">
+          Klinisk precision,<br />
+          <span class="ed-italic text-secondary-container">när det räknas.</span>
+        </h1>
+        <p class="mt-8 max-w-[560px] text-[18px] leading-[1.65] text-white/72">
+          Evidensbaserade protokoll, interaktiva guider och realtidsstöd för anamnes, diagnostik och behandlingsplanering — utvecklat med och för svensk tandvård.
+        </p>
+        <div class="mt-10 flex flex-wrap gap-4">
+          <a href="#" class="btn-accent">Starta provperiod<span aria-hidden>→</span></a>
+          <a href="#" class="btn-ghost-white">Se klinisk demo</a>
+        </div>
+
+        <!-- Trust metrics — sober -->
+        <div class="mt-16 grid grid-cols-3 gap-8 max-w-[640px] pt-8 border-t border-white/12">
+          <div>
+            <div class="font-display ed-italic text-white text-[40px] leading-none">16</div>
+            <div class="mt-2 font-mono text-[10px] tracking-widest2 uppercase text-white/55">Kliniska agenter</div>
+          </div>
+          <div>
+            <div class="font-display ed-italic text-white text-[40px] leading-none">82</div>
+            <div class="mt-2 font-mono text-[10px] tracking-widest2 uppercase text-white/55">Scenarier</div>
+          </div>
+          <div>
+            <div class="font-display ed-italic text-secondary-container text-[40px] leading-none">2024</div>
+            <div class="mt-2 font-mono text-[10px] tracking-widest2 uppercase text-white/55">Strama-synk</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Höger: officiell animerad DentaGuide-Pro logo-video -->
+      <div class="relative flex items-start justify-center min-h-[560px] pt-2 lg:-mt-10" style="justify-content: space-evenly">
+        <!-- Atmosfärisk glöd -->
+        <div class="absolute inset-0 flex items-start justify-center pointer-events-none">
+          <div class="w-[460px] h-[460px] rounded-full opacity-40 blur-[110px]" style="background: radial-gradient(circle, #CC5833 0%, transparent 65%);"></div>
+        </div>
+
+        <!-- Video -->
+        <div class="relative z-10 flex flex-col items-center w-full">
+          <div class="logo-video-wrap relative w-full max-w-[520px] aspect-square overflow-hidden rounded-[28px]" style="mask-image: linear-gradient(180deg, black 0%, black 97%, transparent 100%); -webkit-mask-image: linear-gradient(180deg, black 0%, black 97%, transparent 100%);">
+            <video
+              src="assets/logo-animated.mp4"
+              autoplay
+              loop
+              muted
+              playsinline
+              preload="auto"
+              class="logo-video absolute inset-0 w-full h-[105%] object-cover"
+              style="filter: grayscale(1) contrast(1.05) drop-shadow(0 30px 80px rgba(0,0,0,0.45)); transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1); margin: 1px 0px 0px; border-style: double; border-radius: 55px; width: 458.038px; height: 40.938px"
+              aria-label="DentaGuide-Pro animerad logotyp"
+            ></video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== INSTITUTION-RAD (ersätter marquee) ============== -->
+<section class="bg-neutral border-y border-border-light">
+  <div class="max-w-[1280px] mx-auto px-8 py-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
+    <div class="font-mono text-[10px] tracking-widest2 uppercase text-ink/55 max-w-[180px]">Synkroniserat med riktlinjer från</div>
+    <div class="flex-1 overflow-hidden relative">
+      <div class="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-neutral to-transparent z-10 pointer-events-none"></div>
+      <div class="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-neutral to-transparent z-10 pointer-events-none"></div>
+      <div class="marq whitespace-nowrap" id="institutions-marq"></div>
+    </div>
+  </div>
+  <script>
+    (function() {
+      var list = [
+        'Socialstyrelsen',
+        'Nationella riktlinjer',
+        'Folkhälsomyndigheten',
+        'Strama 2024',
+        'SBU',
+        'EFP / AAP 2018',
+        'Läkemedelsverket',
+        'FASS',
+        'Janusmed',
+        'VGR Riktlinjer',
+        'GU Odontologen',
+        'KUSP TLV',
+        'Tandvårdsläkemedel 2024–2025',
+        'Tandvårdens Kunskapscentrum'
+      ];
+      var el = document.getElementById('institutions-marq');
+      if (!el) return;
+      var build = function() {
+        return list.map(function(name) {
+          return '<span class="font-display text-[22px] text-ink/70">' + name + '</span><span class="text-ink/20 text-2xl mx-7">·</span>';
+        }).join('');
+      };
+      el.innerHTML = build() + build();
+    })();
+  </script>
+</section>
+
+<!-- ============== KLINISKA DOMÄNER ============== -->
+<section id="domaner" class="relative bg-neutral">
+  <div class="max-w-[1280px] mx-auto px-8 py-32">
+    <header class="mb-20 max-w-[760px]">
+      <div class="eyebrow mb-6">Kliniska domäner</div>
+      <h2 class="font-display text-ink text-[64px] md:text-[80px] leading-[1.00]">
+        <span class="ed-italic">En sammanhängande klinik.</span>
+      </h2>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- 01 -->
+      <article class="ed-card text-center">
+        <div class="flex items-baseline justify-between mb-10">
+          <span class="font-display ed-italic text-secondary text-[44px] leading-none">01</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/30">Agent</span>
+        </div>
+        <h3 class="font-display text-[34px] leading-tight mb-4">Endodonti</h3>
+        <p class="text-[14px] text-ink/65 leading-relaxed">Värk &amp; smärta — akut endodonti, pulpit och differentialdiagnostik vid orofacial smärta.</p>
+      </article>
+
+      <!-- 02 -->
+      <article class="ed-card text-center">
+        <div class="flex items-baseline justify-between mb-10">
+          <span class="font-display ed-italic text-secondary text-[44px] leading-none">02</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/30">Agent</span>
+        </div>
+        <h3 class="font-display text-[34px] leading-tight mb-4">Parodontologi</h3>
+        <p class="text-[14px] text-ink/65 leading-relaxed">Systematiska behandlingsplaner för parodontit och peri-implantit enligt EFP/AAP 2018.</p>
+      </article>
+
+      <!-- 03 -->
+      <article class="ed-card text-center">
+        <div class="flex items-baseline justify-between mb-10">
+          <span class="font-display ed-italic text-secondary text-[44px] leading-none">03</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/30">Agent</span>
+        </div>
+        <h3 class="font-display text-[34px] leading-tight mb-4">Protetik</h3>
+        <p class="text-[14px] text-ink/65 leading-relaxed">Bettfunktion — fast och avtagbar protetik med tydliga indikationsgränser.</p>
+      </article>
+
+      <!-- 04 -->
+      <article class="ed-card text-center">
+        <div class="flex items-baseline justify-between mb-10">
+          <span class="font-display ed-italic text-secondary text-[44px] leading-none">04</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/30">Agent</span>
+        </div>
+        <h3 class="font-display text-[34px] leading-tight mb-4">Käkkirurgi</h3>
+        <p class="text-[14px] text-ink/65 leading-relaxed">Benfysiologi, extraktioner och postoperativt omhändertagande med riskstratifiering.</p>
+      </article>
+
+      <!-- 05 -->
+      <article class="ed-card text-center">
+        <div class="flex items-baseline justify-between mb-10">
+          <span class="font-display ed-italic text-secondary text-[44px] leading-none">05</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/30">Agent</span>
+        </div>
+        <h3 class="font-display text-[34px] leading-tight mb-4">Bettfysiologi</h3>
+        <p class="text-[14px] text-ink/65 leading-relaxed">TMD, tuggapparat och smärthantering — stegvis behandlingsalgoritm.</p>
+      </article>
+
+      <!-- 06 -->
+      <article class="ed-card text-center">
+        <div class="flex items-baseline justify-between mb-10">
+          <span class="font-display ed-italic text-secondary text-[44px] leading-none">06</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/30" data-comment-anchor="cc-59">Agent</span>
+        </div>
+        <h3 class="font-display text-[34px] leading-tight mb-4">Oralmedicin</h3>
+        <p class="text-[14px] text-ink/65 leading-relaxed">Slemhinna &amp; MRONJ — munslemhinnesjukdomar, MRONJ-risk samt SVF-remisser.</p>
+      </article>
+
+      <!-- 07 — bredkort (pedodonti/ortodonti) -->
+      <article class="ed-card md:col-span-2 lg:col-span-3 bg-primary-container text-white border-primary-container/0 hover:border-pediatric-warm/30 relative overflow-hidden" style="background-color: rgb(5, 40, 55)">
+        <div class="grid md:grid-cols-[1.2fr_1fr] gap-10 items-center relative z-10">
+          <div>
+            <div class="flex items-baseline justify-between mb-8">
+              <span class="font-display ed-italic text-pediatric-warm text-[56px] leading-none">07+08</span>
+              <span class="font-mono text-[10px] tracking-widest2 uppercase text-white/40">
+</span>
+            </div>
+            <h3 class="font-display text-[44px] leading-[1.05] mb-5">
+              Pedodonti <span class="ed-italic text-pediatric-warm">&amp; Ortodonti</span>
+            </h3>
+            <p class="text-[15px] text-white/72 leading-relaxed max-w-[460px] mb-7">
+              Barn &amp; ungdom — eget spår. Särskilt anpassade riktlinjer för beteendehantering, interceptiv ortodonti och åldersanpassade läkemedelsdoser.
+            </p>
+            <a href="#" class="inline-flex items-center gap-3 text-pediatric-warm font-mono text-[12px] tracking-widest2 uppercase hover:gap-5 transition-all">
+              Utforska spåret <span aria-hidden>→</span>
+            </a>
+          </div>
+          <div class="relative h-[300px] md:h-[340px] flex items-end justify-center" style="background-color: rgba(30, 63, 42, 0.075); opacity: 5">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="w-72 h-72 rounded-full opacity-40 blur-3xl" style="background: radial-gradient(circle, #fbbf8a 0%, transparent 70%);"></div>
+            </div>
+            <img src="assets/pedodonti_boy.png" alt="Pedodonti karaktär" data-comment-anchor="cc-36" class="relative z-10 h-full w-auto object-contain" style="filter: drop-shadow(0 24px 40px rgba(0,0,0,0.45)); -webkit-mask-image: radial-gradient(ellipse 75% 92% at 50% 55%, black 55%, transparent 92%); mask-image: radial-gradient(ellipse 75% 92% at 50% 55%, black 55%, transparent 92%); height: 4px; width: 400px; object-fit: fill; opacity: 50" />
+          </div>
+        </div>
+        <!-- glow -->
+        <div class="absolute -right-32 -top-32 w-[400px] h-[400px] rounded-full bg-pediatric-warm/10 blur-3xl pointer-events-none"></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== LIVE-DEMO (TERMINAL + STEG) ============== -->
+<section class="relative bg-[#e7ede9]">
+  <div class="max-w-[1280px] mx-auto px-8 py-32">
+    <header class="max-w-[720px] mb-16">
+      <div class="eyebrow mb-5">Live · realtid</div>
+      <h2 class="font-display text-ink text-[54px] leading-[1.02]">
+        Från symtom till diagnos<br />
+        <span class="ed-italic">&amp; bästa behandling</span> — på sekunder.
+      </h2>
+    </header>
+
+    <div class="grid lg:grid-cols-[1fr_1.05fr] gap-7">
+      <!-- Terminal -->
+      <div class="terminal">
+        <div class="relative z-10 flex items-center justify-between mb-7">
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
+          </div>
+          <span class="text-[9px] tracking-widest2 uppercase text-emerald-200/40">dentaguide-ai · v2.4</span>
+        </div>
+
+        <h3 class="relative z-10 text-white font-display text-[24px] mb-6">Digital status<span class="text-emerald-400 font-mono text-sm ml-2 opacity-60">_</span></h3>
+
+        <div class="relative z-10 space-y-2.5 text-[12px] leading-relaxed min-h-[260px]" id="terminal-stream"></div>
+
+        <a href="#" class="relative z-10 mt-7 inline-flex items-center justify-between w-full bg-emerald-900/40 hover:bg-emerald-800/50 border border-emerald-800/50 rounded-xl px-5 py-3 transition-colors">
+          <span class="text-emerald-200 text-[11px] tracking-widest2 font-mono">ÖPPNA INTERAKTIV JOURNALMALL</span>
+          <span class="text-emerald-300" aria-hidden>→</span>
+        </a>
+      </div>
+
+      <script>
+        (function() {
+          var lines = [
+            { text: '> INITIERAR KLINISK ANALYS...', cls: 'text-emerald-400', speed: 22 },
+            { text: 'Anamnes: molande värk tand 36, spontan, nattvärk.', cls: 'text-emerald-100/80', speed: 14, pre: 350 },
+            { text: 'Status: perkussion positiv, kyla neg, el.test neg.', cls: 'text-emerald-100/80', speed: 14, pre: 250 },
+            { text: 'Röntgen: vidgad periapikal spalt 36.', cls: 'text-amber-300', speed: 14, pre: 280 },
+            { text: '> SÖKER I KLINISK DATABAS...', cls: 'text-emerald-400 mt-3', speed: 22, pre: 500 },
+            { text: 'Matchning: pulpanekros + apikal parodontit (n = 12).', cls: 'text-sky-300', speed: 14, pre: 600 },
+            { text: '> KORSREFERENS · STRAMA 2024 · LMV-DATABAS', cls: 'text-emerald-400', speed: 18, pre: 350 },
+            { text: '▸ DIAGNOSFÖRSLAG: K04.1 — Rotbehandling indicerad.', cls: 'text-[#FF7E55] font-semibold mt-3', speed: 20, pre: 500 },
+            { text: '▸ ANTIBIOTIKA: ej indicerat (Strama 2024).', cls: 'text-[#FF7E55] font-semibold', speed: 18, pre: 300 },
+            { text: '$', cls: 'text-emerald-100/60 pt-2', speed: 0, pre: 400, prompt: true }
+          ];
+
+          var stream = document.getElementById('terminal-stream');
+          if (!stream) return;
+
+          var started = false;
+          var running = false;
+
+          function makeCursor() {
+            var c = document.createElement('span');
+            c.className = 'terminal-cursor ml-1';
+            return c;
+          }
+
+          function typeLine(line, done) {
+            var p = document.createElement('p');
+            p.className = line.cls;
+            stream.appendChild(p);
+            if (line.prompt) {
+              p.textContent = line.text + ' ';
+              p.appendChild(makeCursor());
+              setTimeout(done, 200);
+              return;
+            }
+            var cursor = makeCursor();
+            p.appendChild(cursor);
+            var i = 0;
+            var iv = setInterval(function() {
+              i++;
+              p.textContent = line.text.slice(0, i);
+              p.appendChild(cursor);
+              if (i >= line.text.length) {
+                clearInterval(iv);
+                // håll kvar cursor på sista raden bara
+                cursor.remove();
+                done();
+              }
+            }, line.speed);
+          }
+
+          function run() {
+            if (running) return;
+            running = true;
+            stream.innerHTML = '';
+            var idx = 0;
+            function next() {
+              if (idx >= lines.length) {
+                running = false;
+                setTimeout(run, 2400); // loop
+                return;
+              }
+              var line = lines[idx++];
+              setTimeout(function() { typeLine(line, next); }, line.pre || 0);
+            }
+            next();
+          }
+
+          var io = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) {
+              if (e.isIntersecting && !started) {
+                started = true;
+                run();
+              }
+            });
+          }, { threshold: 0.25 });
+          io.observe(stream);
+        })();
+      </script>
+
+      <!-- SOP / Steg -->
+      <div class="bg-white rounded-[24px] p-10 border border-border-light shadow-clay flex flex-col">
+        <div class="flex items-baseline justify-between mb-2">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/45">Protokoll (SOP)</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-secondary">Trauma · steg 2/4</span>
+        </div>
+        <h3 class="font-display text-[34px] mb-9">Strukturerat <span class="ed-italic">flöde.</span></h3>
+
+        <ol class="flex-1 space-y-1.5">
+          <li class="grid grid-cols-[28px_1fr_auto] gap-4 items-center py-4 px-4 -mx-4 rounded-2xl">
+            <span class="w-6 h-6 rounded-full bg-status-ok text-white flex items-center justify-center text-xs">✓</span>
+            <span class="text-[15px] text-ink/45 line-through">Klinisk anamnes och trauma-typ</span>
+            <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/40">02:14</span>
+          </li>
+          <li class="grid grid-cols-[28px_1fr_auto] gap-4 items-center py-4 px-4 -mx-4 rounded-2xl bg-secondary/5 border border-secondary/20">
+            <span class="w-6 h-6 rounded-full bg-secondary text-white flex items-center justify-center text-xs">●</span>
+            <span class="text-[15px] text-secondary font-semibold">Klinisk status — mobilitet, perkussion</span>
+            <span class="font-mono text-[10px] tracking-widest2 uppercase text-secondary">pågår</span>
+          </li>
+          <li class="grid grid-cols-[28px_1fr_auto] gap-4 items-center py-4 px-4 -mx-4 rounded-2xl">
+            <span class="w-6 h-6 rounded-full border border-ink/20"></span>
+            <span class="text-[15px] text-ink/75">Röntgenologisk undersökning</span>
+            <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/40">~ 4 min</span>
+          </li>
+          <li class="grid grid-cols-[28px_1fr_auto] gap-4 items-center py-4 px-4 -mx-4 rounded-2xl">
+            <span class="w-6 h-6 rounded-full border border-ink/20"></span>
+            <span class="text-[15px] text-ink/75">Preliminär diagnos &amp; uppföljning</span>
+            <span class="font-mono text-[10px] tracking-widest2 uppercase text-ink/40">~ 3 min</span>
+          </li>
+        </ol>
+
+        <div class="mt-8 -mx-3 rounded-2xl bg-dark-bg text-white px-6 py-5 flex items-center gap-4">
+          <div class="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center text-secondary-container font-display ed-italic text-xl">★</div>
+          <div>
+            <div class="font-mono text-[10px] tracking-widest2 uppercase text-white/55">Evidens</div>
+            <div class="text-[13px] font-semibold">Verifierat mot nationella riktlinjer.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live status pill (flyttad hit från hero — under Digital status & Strukturerat flöde) -->
+    <div class="mt-14 flex justify-center">
+      <div class="inline-flex items-center gap-3 bg-dark-bg/95 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 shadow-clay-lg">
+        <span class="pulse-dot" style="background: #34D399;"></span>
+        <span class="font-mono text-[10px] tracking-widest2 uppercase text-white/85">Systemet är online</span>
+        <span class="w-px h-3 bg-white/20"></span>
+        <span class="font-mono text-[10px] tracking-widest2 uppercase text-white/60">v 2.0 · 2026</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== VERKTYGSINDEX (ersätter sticky-cards) ============== -->
+<section id="verktyg" class="relative bg-surface">
+  <div class="max-w-[1280px] mx-auto px-8 py-32">
+
+    <header class="grid lg:grid-cols-[1fr_1.4fr] gap-12 items-end mb-16">
+      <div>
+        <div class="eyebrow mb-5">Verktygsindex</div>
+        <h2 class="font-display text-ink text-[54px] leading-[1.02]">
+          Åtta verktyg<br /><span class="ed-italic">för det dagliga.</span>
+        </h2>
+      </div>
+      <p class="text-[18px] leading-[1.6] text-ink/65 max-w-[560px] lg:justify-self-end">
+        Varje verktyg är byggt för en specifik klinisk situation — journalföring, dosering, klassificering, akut trauma. Klicka och öppna direkt.
+      </p>
+    </header>
+
+    <!-- Sticky stack av verktygskort -->
+    <div id="tools-stack" class="max-w-[960px] mx-auto" style="padding-bottom: 18vh;"></div>
+
+    <script>
+      (function() {
+        var tools = [
+          { n: '01', title: 'AI-Journalmall',      desc: 'Automatisk journaltext via AI — snabb, strukturerad och HSLF-FS 2025:68-kompatibel.', path: '/dashboard/tools/journalmall/ai-assisterad', tag: 'AI',           bg: 'white',   accent: 'secondary' },
+          { n: '02', title: 'Manuell Journalmall', desc: 'Välj behandling och fyll i en färdig klinisk journalmall direkt.',                      path: '/dashboard/tools/journalmall/manuell',       tag: 'Manuell',      bg: 'neutral', accent: 'ink' },
+          { n: '03', title: 'Debitering',          desc: 'AI-assisterat debiteringsstöd — taxekoder och åtgärdskoder enligt gällande taxa.',     path: '/dashboard/tools/debitering',                tag: 'Ekonomi',      bg: 'white',   accent: 'ok' },
+          { n: '04', title: 'AntibiotikaTool',     desc: 'Beslutsträd för antibiotikaförskrivning enligt Strama 2024 — undvik resistensutveckling.', path: '/dashboard/tools/antibiotika',           tag: 'Strama 2024',  bg: 'dark',    accent: 'warning' },
+          { n: '05', title: 'DoseringKalkylator',  desc: 'Farmakologisk dosering baserat på ålder, vikt och riskprofil. Interaktionsvarningar i realtid.', path: '/dashboard/tools/dosering',         tag: 'Farmakologi',  bg: 'white',   accent: 'violet' },
+          { n: '06', title: 'Läkemedelskort',      desc: 'Snabbreferens för vanliga läkemedel — warfarin, NOAK, bisfosfonater och fler.',         path: '/dashboard/tools/lakemedel',                 tag: 'Referens',     bg: 'neutral', accent: 'ink' },
+          { n: '07', title: 'ParodKlassificerare', desc: 'EFP/AAP 2018-klassificering baserat på fickdjup, fästenivåförlust och röntgenfynd.',    path: '/dashboard/tools/parod-klassificering',      tag: 'Parodontologi',bg: 'white',   accent: 'teal' },
+          { n: '08', title: 'TraumaGuide',         desc: 'Kliniska protokoll för tandtrauma — primära och permanenta tänder. Akut beslutsstöd.',  path: '/dashboard/tools/traumaguide',               tag: 'Akut',         bg: 'dark-accent', accent: 'danger' }
+        ];
+
+        var bgClass = {
+          'white':       { card: 'bg-white text-ink',          border: 'border-border-light',  num: 'text-ink/15',        title: 'text-ink',  desc: 'text-ink/65',  path: 'text-ink/45',  arrow: 'text-ink/40' },
+          'neutral':     { card: 'bg-[#f1ede6] text-ink',      border: 'border-[#e4dfd5]',     num: 'text-ink/15',        title: 'text-ink',  desc: 'text-ink/65',  path: 'text-ink/45',  arrow: 'text-ink/40' },
+          'dark':        { card: 'bg-[#0d2733] text-white',    border: 'border-white/10',      num: 'text-white/15',      title: 'text-white',desc: 'text-white/70',path: 'text-white/45',arrow: 'text-white/55'},
+          'dark-accent': { card: 'bg-primary-container text-white', border: 'border-white/10', num: 'text-pediatric-warm/30', title: 'text-white', desc: 'text-white/72', path: 'text-white/50', arrow: 'text-pediatric-warm' }
+        };
+
+        var accentClass = {
+          'secondary': 'text-secondary bg-secondary/10 border-secondary/25',
+          'ink':       'text-ink/65 bg-ink/5 border-ink/15',
+          'ok':        'text-status-ok bg-status-ok/10 border-status-ok/25',
+          'warning':   'text-status-warning bg-status-warning/15 border-status-warning/35',
+          'violet':    'text-[#a78bfa] bg-[#a78bfa]/10 border-[#a78bfa]/30',
+          'teal':      'text-teal-300 bg-teal-700/15 border-teal-300/30',
+          'danger':    'text-[#FF7E55] bg-[#FF7E55]/10 border-[#FF7E55]/30'
+        };
+
+        var stack = document.getElementById('tools-stack');
+        var topBase = 96;  // px från header
+        var topStep = 14;  // hur mycket varje ny stickar lägre
+
+        tools.forEach(function(t, i) {
+          var styles = bgClass[t.bg];
+          // dark accent overrides default accent text on dark cards
+          var accentColors = (t.bg === 'dark' || t.bg === 'dark-accent')
+            ? 'text-[#FF7E55] bg-white/8 border-white/15'
+            : accentClass[t.accent] || accentClass['ink'];
+
+          var top = topBase + i * topStep;
+          var isLast = i === tools.length - 1;
+
+          var wrap = document.createElement('div');
+          wrap.className = 'tools-stack-item';
+          wrap.style.position = 'sticky';
+          wrap.style.top = top + 'px';
+          wrap.style.zIndex = String(i + 1);
+          wrap.style.marginBottom = isLast ? '0' : '34vh';
+
+          wrap.innerHTML = ''
+            + '<a href="' + t.path + '" class="block group">'
+            + '  <article class="rounded-[36px] p-10 md:p-16 border ' + styles.card + ' ' + styles.border + ' shadow-deep transition-transform duration-300 group-hover:-translate-y-1">'
+            + '    <header class="flex items-baseline justify-between mb-10">'
+            + '      <span class="font-display ed-italic ' + styles.num + ' text-[80px] md:text-[120px] leading-none">' + t.n + '</span>'
+            + '      <span class="text-[10px] md:text-[11px] font-mono tracking-widest2 uppercase border rounded-full px-3 py-1 ' + accentColors + '">' + t.tag + '</span>'
+            + '    </header>'
+            + '    <h3 class="font-display ' + styles.title + ' text-[40px] md:text-[58px] leading-[1.02] mb-6">' + t.title + '</h3>'
+            + '    <p class="text-[15px] md:text-[18px] ' + styles.desc + ' leading-relaxed max-w-[640px] mb-10">' + t.desc + '</p>'
+            + '    <footer class="flex items-center justify-between border-t pt-6 ' + styles.border + '">'
+            + '      <code class="font-mono text-[11px] md:text-[12px] tracking-wide ' + styles.path + '">' + t.path + '</code>'
+            + '      <span class="font-mono text-[11px] tracking-widest2 uppercase flex items-center gap-3 ' + styles.arrow + ' group-hover:gap-5 transition-all">Öppna <span aria-hidden>→</span></span>'
+            + '    </footer>'
+            + '  </article>'
+            + '</a>';
+
+          stack.appendChild(wrap);
+        });
+      })();
+    </script>
+
+    <!-- Simulator-spår -->
+    <div class="mt-16 grid md:grid-cols-3 gap-5">
+      <a href="#" class="group block bg-gradient-to-br from-primary to-dark-bg text-white rounded-[24px] p-8 md:col-span-2 relative overflow-hidden">
+        <div class="relative z-10 grid md:grid-cols-[1fr_auto] gap-6 items-end">
+          <div>
+            <div class="font-mono text-[10px] tracking-widest2 uppercase text-secondary-container/90 mb-4">Simulator · 3 svårighetsgrader</div>
+            <h3 class="font-display text-[32px] mb-3">Träna kliniskt resonemang<br /><span class="ed-italic text-secondary-container">på riktiga fall.</span></h3>
+            <p class="text-white/65 text-[14px] max-w-md leading-relaxed">Realtidspoäng, feedback per beslut och en personlig kunskapskurva.</p>
+          </div>
+          <span class="btn-accent group-hover:translate-x-1 transition-transform">Starta simulator <span aria-hidden>→</span></span>
+        </div>
+        <div class="absolute -right-20 -bottom-20 w-[300px] h-[300px] rounded-full bg-secondary/15 blur-3xl"></div>
+      </a>
+      <div class="grid grid-rows-2 gap-5">
+        <a href="#" class="group bg-white rounded-[24px] border border-border-light p-6 hover:border-secondary/40 transition-colors flex flex-col justify-between">
+          <div>
+            <div class="font-mono text-[10px] tracking-widest2 uppercase text-ink/45 mb-2">Statistik</div>
+            <div class="font-display text-[22px]">Min historik</div>
+          </div>
+          <div class="text-[12px] text-ink/55 mt-3 group-hover:text-secondary transition-colors">Tidigare resultat →</div>
+        </a>
+        <a href="#" class="group bg-white rounded-[24px] border border-border-light p-6 hover:border-secondary/40 transition-colors flex flex-col justify-between">
+          <div>
+            <div class="font-mono text-[10px] tracking-widest2 uppercase text-ink/45 mb-2">Ranking</div>
+            <div class="font-display text-[22px]">Leaderboard</div>
+          </div>
+          <div class="text-[12px] text-ink/55 mt-3 group-hover:text-secondary transition-colors">Jämför poäng →</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CITAT (pull-quote, ersätter slop) ============== -->
+<section class="bg-white border-y border-border-light">
+  <div class="max-w-[1080px] mx-auto px-8 py-32 text-center">
+    <div class="eyebrow justify-center mb-8 inline-flex">Från klinikens vardag</div>
+    <blockquote class="pull-quote text-[44px] md:text-[56px] text-ink leading-[1.08] max-w-[920px] mx-auto">
+      &ldquo;Tiden mellan symtom och första diagnosförslag har gått från sex minuter till under en. Det är inte tekniken — det är att jag <span class="text-secondary">slipper byta kontext</span> mitt i ett patientmöte.&rdquo;
+    </blockquote>
+    <footer class="mt-10 flex items-center justify-center gap-4 text-ink/65">
+      <div class="w-10 h-10 rounded-full bg-neutral border border-border-light flex items-center justify-center font-display ed-italic text-ink/55">A</div>
+      <div class="text-left">
+        <div class="font-semibold text-ink text-[14px]">Anna Lindqvist</div>
+        <div class="text-[12px] font-mono tracking-wide text-ink/50">leg. tandläkare · Stockholm</div>
+      </div>
+    </footer>
+  </div>
+</section>
+
+<!-- ============== FARMAKOLOGI ============== -->
+<section id="farmakologi" class="relative bg-dark-bg text-white">
+  <div class="max-w-[1280px] mx-auto px-8 py-32">
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-14">
+      <div>
+        <div class="eyebrow eyebrow--light mb-5">Farmakologiskt stöd</div>
+        <h2 class="font-display text-white text-[54px] leading-[1.02]">
+          Dosering &amp; interaktion<br /><span class="ed-italic text-secondary-container">på en blick.</span>
+        </h2>
+      </div>
+      <p class="text-white/60 text-[15px] max-w-[420px] leading-relaxed">
+        Snabbreferens för läkemedel som påverkar dental praxis — koagulation, immunsuppression, antiresorptiva.
+      </p>
+    </header>
+
+    <div class="flex gap-5 overflow-x-auto no-scrollbar pb-10 -mx-8 px-8 snap-x">
+      <!-- Waran -->
+      <article class="drug-card snap-start">
+        <div class="flex items-center justify-between mb-6">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-secondary">Antikoagulantia</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-status-danger bg-status-danger/15 border border-status-danger/30 rounded-full px-3 py-1">HÖG RISK</span>
+        </div>
+        <h4 class="font-display text-[28px] mb-3">Warfarin</h4>
+        <p class="text-[13px] text-white/70 leading-relaxed">INR-kontroll inom 24 h före kirurgi. Kontakta ordinerande läkare vid INR &gt; 3,5.</p>
+        <footer class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-white/45">Klinisk data</span>
+          <span class="text-white/40 group-hover:text-secondary">→</span>
+        </footer>
+      </article>
+
+      <!-- NOAK -->
+      <article class="drug-card snap-start">
+        <div class="flex items-center justify-between mb-6">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-secondary">Antikoagulantia</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-status-warning bg-status-warning/15 border border-status-warning/30 rounded-full px-3 py-1">MEDEL</span>
+        </div>
+        <h4 class="font-display text-[28px] mb-3">NOAK</h4>
+        <p class="text-[13px] text-white/70 leading-relaxed">Apixaban, rivaroxaban, dabigatran. Standardiserat uppehåll vid större kirurgi.</p>
+        <footer class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-white/45">Klinisk data</span>
+          <span class="text-white/40">→</span>
+        </footer>
+      </article>
+
+      <!-- Bisfosfonat -->
+      <article class="drug-card snap-start">
+        <div class="flex items-center justify-between mb-6">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-secondary">Antiresorptiva</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-status-danger bg-status-danger/15 border border-status-danger/30 rounded-full px-3 py-1">MRONJ</span>
+        </div>
+        <h4 class="font-display text-[28px] mb-3">Bisfosfonater</h4>
+        <p class="text-[13px] text-white/70 leading-relaxed">Riskbedömning för MRONJ före extraktion. IV-administration kräver konsultation.</p>
+        <footer class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-white/45">Klinisk data</span>
+          <span class="text-white/40">→</span>
+        </footer>
+      </article>
+
+      <!-- Betablockerare -->
+      <article class="drug-card snap-start">
+        <div class="flex items-center justify-between mb-6">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-secondary">Hjärt &amp; kärl</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-status-warning bg-status-warning/15 border border-status-warning/30 rounded-full px-3 py-1">MEDEL</span>
+        </div>
+        <h4 class="font-display text-[28px] mb-3">Betablockerare</h4>
+        <p class="text-[13px] text-white/70 leading-relaxed">Lokalanestetika med adrenalin: max 2 carpuler. Beakta interaktion vid hypertoni.</p>
+        <footer class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-white/45">Klinisk data</span>
+          <span class="text-white/40">→</span>
+        </footer>
+      </article>
+
+      <!-- Antidepressiva -->
+      <article class="drug-card snap-start">
+        <div class="flex items-center justify-between mb-6">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-secondary">Psykofarmaka</span>
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-status-warning bg-status-warning/15 border border-status-warning/30 rounded-full px-3 py-1">MEDEL</span>
+        </div>
+        <h4 class="font-display text-[28px] mb-3">SSRI &amp; SNRI</h4>
+        <p class="text-[13px] text-white/70 leading-relaxed">Ökad blödningsbenägenhet. Munttorrhetspåverkan — anpassa kariesriskbedömning.</p>
+        <footer class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
+          <span class="font-mono text-[10px] tracking-widest2 uppercase text-white/45">Klinisk data</span>
+          <span class="text-white/40">→</span>
+        </footer>
+      </article>
+
+      <article class="drug-card snap-start flex flex-col justify-center items-center text-center border-dashed">
+        <div class="font-display ed-italic text-secondary-container text-[40px] leading-none mb-3">+42</div>
+        <p class="text-white/65 text-[13px] mb-5">läkemedel i full databas</p>
+        <a href="#" class="text-secondary-container font-mono text-[11px] tracking-widest2 uppercase">Visa alla →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PRICING ============== -->
+<section id="priser" class="bg-neutral relative">
+  <div class="max-w-[1180px] mx-auto px-8 py-32">
+    <header class="text-center max-w-[640px] mx-auto mb-16">
+      <div class="eyebrow justify-center inline-flex mb-5">Pris</div>
+      <h2 class="font-display text-ink text-[54px] leading-[1.02]">
+        Skalbart från solo<br /><span class="ed-italic">till kliniknätverk.</span>
+      </h2>
+    </header>
+
+    <div class="grid md:grid-cols-3 gap-6 items-stretch">
+      <!-- Gratis -->
+      <article class="price-card flex flex-col">
+        <div class="font-mono text-[10px] tracking-widest2 uppercase text-ink/45 mb-2">Enskild</div>
+        <div class="font-display text-[28px] mb-1">Gratis</div>
+        <div class="mt-6 mb-8 flex items-baseline gap-2">
+          <span class="font-display ed-italic text-[56px] leading-none">0</span>
+          <span class="text-ink/55 text-[14px]">kr / mån</span>
+        </div>
+        <ul class="text-[14px] text-ink/75 space-y-3 mb-10 flex-1">
+          <li class="flex gap-3"><span class="text-status-ok mt-0.5">✓</span> 3 domäner · 10 scenarier</li>
+          <li class="flex gap-3"><span class="text-status-ok mt-0.5">✓</span> Manuell journalmall</li>
+          <li class="flex gap-3"><span class="text-status-ok mt-0.5">✓</span> Doseringskalkylator (basic)</li>
+          <li class="flex gap-3 text-ink/35"><span class="mt-0.5">—</span> AI-journal</li>
+          <li class="flex gap-3 text-ink/35"><span class="mt-0.5">—</span> Premium-verktyg</li>
+        </ul>
+        <a href="#" class="btn-ghost justify-center w-full">Kom igång gratis</a>
+      </article>
+
+      <!-- Professionell — featured -->
+      <article class="price-card price-card--featured flex flex-col relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-white text-[10px] font-mono tracking-widest2 uppercase px-4 py-1 rounded-full">Mest populär</div>
+        <div class="font-mono text-[10px] tracking-widest2 uppercase text-white/55 mb-2">Professionell</div>
+        <div class="font-display text-[28px] mb-1">Kliniker</div>
+        <div class="mt-6 mb-8 flex items-baseline gap-2">
+          <span class="font-display ed-italic text-[56px] leading-none text-secondary-container">99</span>
+          <span class="text-white/65 text-[14px]">kr / mån</span>
+        </div>
+        <ul class="text-[14px] text-white/85 space-y-3 mb-10 flex-1">
+          <li class="flex gap-3"><span class="text-secondary-container mt-0.5">✓</span> Alla 7 domäner · 82 scenarier</li>
+          <li class="flex gap-3"><span class="text-secondary-container mt-0.5">✓</span> AI-journal (5/dag)</li>
+          <li class="flex gap-3"><span class="text-secondary-container mt-0.5">✓</span> Alla verktyg &amp; agenter</li>
+          <li class="flex gap-3"><span class="text-secondary-container mt-0.5">✓</span> Bokmärken &amp; anteckningar</li>
+          <li class="flex gap-3"><span class="text-secondary-container mt-0.5">✓</span> E-postsupport</li>
+        </ul>
+        <a href="#" class="btn-accent justify-center w-full">Starta 14-dagars provperiod</a>
+      </article>
+
+      <!-- Klinik -->
+      <article class="price-card flex flex-col">
+        <div class="font-mono text-[10px] tracking-widest2 uppercase text-ink/45 mb-2">Kliniknätverk</div>
+        <div class="font-display text-[28px] mb-1">Klinik</div>
+        <div class="mt-6 mb-8 flex items-baseline gap-2">
+          <span class="font-display ed-italic text-[56px] leading-none">399</span>
+          <span class="text-ink/55 text-[14px]">kr / mån</span>
+        </div>
+        <ul class="text-[14px] text-ink/75 space-y-3 mb-10 flex-1">
+          <li class="flex gap-3"><span class="text-status-ok mt-0.5">✓</span> Allt i Kliniker</li>
+          <li class="flex gap-3"><span class="text-status-ok mt-0.5">✓</span> 5 användare per klinik</li>
+          <li class="flex gap-3"><span class="text-status-ok mt-0.5">✓</span> AI-journal (100/dag)</li>
+          <li class="flex gap-3"><span class="text-status-ok mt-0.5">✓</span> Admin-panel &amp; analytics</li>
+          <li class="flex gap-3"><span class="text-status-ok mt-0.5">✓</span> Prioriterad support</li>
+        </ul>
+        <a href="#" class="btn-ghost justify-center w-full">Kontakta sälj</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FINAL CTA ============== -->
+<section class="bg-gradient-to-br from-header-from to-header-to text-white relative overflow-hidden">
+  <div class="absolute -right-32 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-secondary/12 blur-3xl"></div>
+  <div class="max-w-[920px] mx-auto px-8 py-32 text-center relative z-10">
+    <div class="eyebrow eyebrow--light justify-center inline-flex mb-6">Börja idag</div>
+    <h2 class="font-display text-white text-[56px] md:text-[68px] leading-[1.02] mb-8">
+      Säkrare flöden.<br /><span class="ed-italic text-secondary-container">Snabbare beslut.</span>
+    </h2>
+    <p class="text-white/70 text-[18px] leading-relaxed max-w-[560px] mx-auto mb-10">
+      Prova hela plattformen i 14 dagar utan kort. Ingen installation — fungerar direkt i webbläsaren.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="#" class="btn-accent">Starta provperiod<span aria-hidden>→</span></a>
+      <a href="#" class="btn-ghost-white">Boka en demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer id="riktlinjer" class="bg-dark-surface text-white/70">
+  <div class="max-w-[1280px] mx-auto px-8 pt-20 pb-10">
+    <div class="grid md:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-12 mb-16">
+      <div>
+        <div class="flex items-center gap-3 mb-6">
+          <img src="assets/logo-hexagon-dark.png" alt="DentaGuide-Pro" class="brand-logo" />
+          <span class="font-display text-[22px] text-white">DentaGuide<span class="ed-italic text-secondary">·Pro</span></span>
+        </div>
+        <p class="text-[14px] leading-relaxed max-w-[360px] text-white/60">
+          Nästa generations kliniska beslutsstöd för svensk tandvård. Utvecklat av tandläkare, för tandläkare.
+        </p>
+        <div class="mt-6 flex items-center gap-4">
+          <img src="assets/wave-alt.gif" alt="" class="w-24 h-24 object-contain" style="object-fit: fill; width: 200px" />
+          <p class="font-display ed-italic text-white/85 text-[28px] leading-[1.1] max-w-[280px]" style="width: 1e+09px">Tand &amp; hjärna ^^
+alltid på din sida</p>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-white text-[11px] font-mono tracking-widest2 uppercase mb-5">Plattform</h4>
+        <ul class="space-y-3 text-[14px]">
+          <li><a href="#" class="hover:text-white">Verktyg</a></li>
+          <li><a href="#" class="hover:text-white">Domäner</a></li>
+          <li><a href="#" class="hover:text-white">Simulator</a></li>
+          <li><a href="#" class="hover:text-white">API</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white text-[11px] font-mono tracking-widest2 uppercase mb-5">Klinisk data</h4>
+        <ul class="space-y-3 text-[14px]">
+          <li><a href="#" class="hover:text-white">Strama 2024</a></li>
+          <li><a href="#" class="hover:text-white">EFP/AAP 2018</a></li>
+          <li><a href="#" class="hover:text-white">HSLF-FS 2025:68</a></li>
+          <li><a href="#" class="hover:text-white">Källförteckning</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white text-[11px] font-mono tracking-widest2 uppercase mb-5">Kliniska nyhetsbrevet</h4>
+        <p class="text-[13px] mb-4 leading-relaxed">Uppdateringar när riktlinjer ändras. Inga marknadsutskick.</p>
+        <form class="flex gap-2">
+          <input type="email" placeholder="leg.tandläkare@klinik.se" class="bg-white/5 border border-white/10 rounded-full px-4 py-2 text-[13px] w-full focus:outline-none focus:border-secondary text-white placeholder-white/40" />
+          <button type="button" class="btn-accent !py-2 !px-4 !text-[12px]">Prenumerera</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between gap-6 text-[12px]">
+      <p>© 2026 DentaGuide-Pro. Med ensamrätt.</p>
+      <div class="flex flex-wrap gap-6">
+        <a href="#" class="hover:text-white">Integritet (GDPR)</a>
+        <a href="#" class="hover:text-white">Patientdatalagen</a>
+        <span class="flex items-center gap-2"><span class="pulse-dot"></span> Drift: operativ</span>
+      </div>
+    </div>
+
+    <p class="mt-10 text-center text-[11px] text-white/35 max-w-[760px] mx-auto leading-relaxed">
+      DentaGuide-Pro är ett kliniskt beslutsstöd och ersätter inte legitimerad tandläkares medicinska bedömning. Allt innehåll är avsett som stöd vid klinisk beslutsfattning och ska vägas mot patientens individuella förutsättningar. Enligt Patientsäkerhetslagen (PSL 2010:659) bär den legitimerade yrkesutövaren det slutliga ansvaret för vårdbeslut.
+    </p>
+  </div>
+</footer>
+
+<!-- Scroll-companion (tillbaka till toppen) -->
+<a href="#top" class="scroll-companion" id="scroll-companion" aria-label="Tillbaka till toppen" title="Tillbaka till toppen">
+  <img src="assets/think.gif" alt="" />
+</a>
+
+<!-- Tweaks-panel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<div id="tweaks-root"></div>
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": "#CC5833",
+    "headlineSize": 84,
+    "showQuote": true,
+    "heroVariant": "case"
+  }/*EDITMODE-END*/;
+
+  function TweaksApp() {
+    const [tweaks, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
+
+    React.useEffect(() => {
+      document.documentElement.style.setProperty('--secondary', tweaks.accent);
+      // Sätt alla element som använder text-secondary etc — vi sätter inline via egenskapsöverstyrning
+      const sheet = document.getElementById('tweak-overrides') || (() => {
+        const s = document.createElement('style'); s.id = 'tweak-overrides'; document.head.appendChild(s); return s;
+      })();
+      sheet.textContent = `
+        .text-secondary { color: ${tweaks.accent} !important; }
+        .bg-secondary { background-color: ${tweaks.accent} !important; }
+        .border-secondary { border-color: ${tweaks.accent} !important; }
+        .btn-accent { background: ${tweaks.accent} !important; box-shadow: 0 8px 16px -4px ${tweaks.accent}73 !important; }
+        .eyebrow { color: ${tweaks.accent}; }
+      `;
+    }, [tweaks.accent]);
+
+    React.useEffect(() => {
+      const h1 = document.querySelector('section#top h1');
+      if (h1) h1.style.fontSize = tweaks.headlineSize + 'px';
+    }, [tweaks.headlineSize]);
+
+    React.useEffect(() => {
+      const quote = document.querySelector('section.bg-white blockquote.pull-quote')?.closest('section');
+      if (quote) quote.style.display = tweaks.showQuote ? '' : 'none';
+    }, [tweaks.showQuote]);
+
+    return (
+      <window.TweaksPanel title="Tweaks">
+        <window.TweakSection title="Färg">
+          <window.TweakColor
+            label="Accent"
+            value={tweaks.accent}
+            onChange={(v) => setTweak('accent', v)}
+            options={['#CC5833', '#0E3B52', '#2D6A4F', '#C9A84C']}
+          />
+        </window.TweakSection>
+
+        <window.TweakSection title="Hero">
+          <window.TweakSlider
+            label="Rubrikens storlek"
+            value={tweaks.headlineSize}
+            onChange={(v) => setTweak('headlineSize', v)}
+            min={56} max={120} step={2} suffix="px"
+          />
+        </window.TweakSection>
+
+        <window.TweakSection title="Innehåll">
+          <window.TweakToggle
+            label="Visa citat-sektion"
+            value={tweaks.showQuote}
+            onChange={(v) => setTweak('showQuote', v)}
+          />
+        </window.TweakSection>
+      </window.TweaksPanel>
+    );
+  }
+
+  function waitAndMount() {
+    if (window.TweaksPanel && window.useTweaks) {
+      const root = ReactDOM.createRoot(document.getElementById('tweaks-root'));
+      root.render(<TweaksApp />);
+    } else {
+      setTimeout(waitAndMount, 60);
+    }
+  }
+  waitAndMount();
+</script>
+
+</body>
+</html>

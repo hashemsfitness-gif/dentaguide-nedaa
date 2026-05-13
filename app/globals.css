@@ -180,8 +180,14 @@
 /* BODY DEFAULTS                                       */
 /* ================================================== */
 
+html {
+  font-size: 18px;
+}
+
 body {
   font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
   background-color: var(--bg-main);
   background-image: var(--bg-pattern, none);
   background-size: var(--bg-pattern-size, auto);
@@ -397,18 +403,18 @@ pre,
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 10px 20px;
+  padding: 11px 22px;
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.8);
   color: var(--text-secondary);
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
-  min-height: 48px;
+  min-height: 52px;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
@@ -474,11 +480,11 @@ pre,
 .btn-primary {
   background: var(--accent-primary, #CC5833);
   color: white;
-  padding: 1rem 2rem;
+  padding: 1rem 2.25rem;
   border-radius: 9999px;
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 1rem;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -519,9 +525,9 @@ pre,
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.75rem;
+  padding: 0.3rem 0.85rem;
   border-radius: 9999px;
-  font-size: 0.65rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -652,7 +658,7 @@ pre,
 
 .stat-card-pill .stat-label {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-muted);
@@ -662,7 +668,7 @@ pre,
 .stat-card-pill .stat-value {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 3rem;
+  font-size: 3.25rem;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1;
@@ -670,7 +676,7 @@ pre,
 
 .stat-card-pill .stat-trend {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   margin-top: 0.5rem;
 }
@@ -685,8 +691,8 @@ pre,
   border-radius: 1rem;
   padding: 1.5rem;
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.7;
+  font-size: 0.94rem;
+  line-height: 1.75;
   white-space: pre-wrap;
   position: relative;
   color: var(--text-primary);
@@ -699,8 +705,8 @@ pre,
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
-  padding: 4px 12px;
-  font-size: 0.625rem;
+  padding: 5px 14px;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -804,9 +810,9 @@ pre,
   background: var(--bg-card-solid);
   border: 1px solid var(--border-light);
   border-radius: 9999px;
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 1.6rem;
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--text-primary);
   transition: all 0.3s ease;
   width: 100%;
@@ -906,10 +912,10 @@ pre,
 .psl-footer {
   background: rgba(6, 47, 64, 0.95);
   color: rgba(255, 255, 255, 0.8);
-  font-size: 0.625rem;
+  font-size: 0.72rem;
   line-height: 1.5;
   text-align: center;
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 1.75rem;
   border-radius: 9999px;
   font-weight: 500;
   font-family: var(--font-body);
@@ -940,25 +946,25 @@ pre,
 }
 
 @media (max-width: 768px) {
-  body {
-    font-size: 0.875rem;
+  html {
+    font-size: 16px;
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: 2.1rem;
   }
 
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
 
   .pill-button {
-    padding: 8px 14px;
-    font-size: 12px;
+    padding: 9px 16px;
+    font-size: 0.75rem;
   }
 }
 

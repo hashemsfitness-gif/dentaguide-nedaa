@@ -1,831 +1,679 @@
-'use client';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Zap, Layers, Crown, Scissors, Activity, FlaskConical } from 'lucide-react';
+import { createServerSupabase } from '@/lib/supabase';
+import TerminalDemo from '@/components/landing/TerminalDemo';
+import InstitutionsMarquee from '@/components/landing/InstitutionsMarquee';
+import ScrollCompanion from '@/components/landing/ScrollCompanion';
+import ToolsStack from '@/components/landing/ToolsStack';
+import LogoutButton from '@/components/landing/LogoutButton';
+import { PremiumGateProvider, FeatureLink } from '@/components/landing/PremiumGate';
+import { TierBadge } from '@/components/landing/TierBadge';
+import { DOMAIN_FEATURES, SIMULATOR_FEATURES, TOOL_FEATURES } from '@/lib/feature-access';
+import './landing.css';
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { motion, useScroll } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
-import { lakemedelData } from "@/lib/lakemedelData";
+export const metadata = {
+  title: 'DentaGuide-Pro — Kliniskt beslutsstöd',
+  description:
+    'Evidensbaserade protokoll, interaktiva guider och realtidsstöd för anamnes, diagnostik och behandlingsplanering — utvecklat med och för svensk tandvård.',
+};
 
-// ──────────────────────────────────────────────────────────────
-// TERMINAL CARD — Live typewriter animation
-// ──────────────────────────────────────────────────────────────
-const TERMINAL_LINES = [
-  { text: '> INITIERAR KLINISK ANALYS...', color: 'text-green-400', delay: 0 },
-  { text: 'Anamnes: Molande värk tand 36, spontan, nattvärk.', color: 'text-green-200', delay: 900 },
-  { text: 'Status: Perkussion positiv, kyla neg.', color: 'text-green-200', delay: 2200 },
-  { text: 'Röntgen: Vidgad periapikal spalt 36.', color: 'text-amber-400', delay: 3600 },
-  { text: '> SÖKER I KLINISK DATABAS...', color: 'text-green-400', delay: 5100 },
-  { text: 'Matchning: Pulpanekros + apikal parodontit.', color: 'text-blue-300', delay: 6200 },
-  { text: '> DIAGNOSFÖRSLAG: K04.1 — Rotbehandling indicerad.', color: 'text-secondary', delay: 7600 },
+const DOMAINS = [
+  { n: '01', icon: Zap,          img: '/characters/Endodonti ikon landingpage.png',          title: 'Endodonti',     desc: 'Värk & smärta — akut endodonti, pulpit och differentialdiagnostik vid orofacial smärta.', href: '/endodonti' },
+  { n: '02', icon: Layers,       img: '/characters/parodontologi ikon landingpage.png',       title: 'Parodontologi', desc: 'Systematiska behandlingsplaner för parodontit och peri-implantit enligt EFP/AAP 2018.', href: '/parodontologi' },
+  { n: '03', icon: Crown,        img: '/characters/protetik ikon landingpage.png',             title: 'Protetik',      desc: 'Bettfunktion — fast och avtagbar protetik med tydliga indikationsgränser.', href: '/protetik' },
+  { n: '04', icon: Scissors,     img: '/characters/Käkkirurgi ikon landingpange.png',          title: 'Käkkirurgi',    desc: 'Benfysiologi, extraktioner och postoperativt omhändertagande med riskstratifiering.', href: '/kakkirurgi' },
+  { n: '05', icon: Activity,     img: '/characters/bettfysiologi ikon landingpage.png',        title: 'Bettfysiologi', desc: 'TMD, tuggapparat och smärthantering — stegvis behandlingsalgoritm.', href: '/bettfysiologi' },
+  { n: '06', icon: FlaskConical, img: '/characters/oral medicin ikon landingpage.png',         title: 'Oralmedicin',   desc: 'Slemhinna & MRONJ — munslemhinnesjukdomar, MRONJ-risk samt SVF-remisser.', href: '/oralmedicin' },
 ];
 
-function useTypewriter(text: string, startDelay: number, charSpeed = 28) {
-  const [displayed, setDisplayed] = useState('');
-  const [done, setDone] = useState(false);
+const DRUGS = [
+  { cat: 'Antikoagulantia', name: 'Warfarin', desc: 'INR-kontroll inom 24 h före kirurgi. Kontakta ordinerande läkare vid INR > 3,5.', risk: 'HÖG RISK', riskTone: 'danger' as const, href: '/tools/lakemedel#waran' },
+  { cat: 'Antikoagulantia', name: 'NOAK', desc: 'Apixaban, rivaroxaban, dabigatran. Standardiserat uppehåll vid större kirurgi.', risk: 'MEDEL', riskTone: 'warning' as const, href: '/tools/lakemedel#noak' },
+  { cat: 'Antiresorptiva', name: 'Bisfosfonater', desc: 'Riskbedömning för MRONJ före extraktion. IV-administration kräver konsultation.', risk: 'MRONJ', riskTone: 'danger' as const, href: '/tools/lakemedel#bisfosfonat' },
+  { cat: 'Hjärt & kärl', name: 'Betablockerare', desc: 'Lokalanestetika med adrenalin: max 2 carpuler. Beakta interaktion vid hypertoni.', risk: 'MEDEL', riskTone: 'warning' as const, href: '/tools/lakemedel#betablockerare' },
+  { cat: 'Psykofarmaka', name: 'SSRI & SNRI', desc: 'Ökad blödningsbenägenhet. Munttorrhetspåverkan — anpassa kariesriskbedömning.', risk: 'MEDEL', riskTone: 'warning' as const, href: '/tools/lakemedel#antidepressiva' },
+];
 
-  useEffect(() => {
-    setDisplayed('');
-    setDone(false);
-    let timeout: ReturnType<typeof setTimeout>;
-    let charIdx = 0;
-    timeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        charIdx++;
-        setDisplayed(text.slice(0, charIdx));
-        if (charIdx >= text.length) {
-          clearInterval(interval);
-          setDone(true);
-        }
-      }, charSpeed);
-      return () => clearInterval(interval);
-    }, startDelay);
-    return () => clearTimeout(timeout);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, startDelay]);
-
-  return { displayed, done };
-}
-
-function TerminalLine({ line, globalStart }: { line: typeof TERMINAL_LINES[0], globalStart: number }) {
-  const { displayed } = useTypewriter(line.text, Math.max(0, line.delay - globalStart));
+function RiskBadge({ tone, label }: { tone: 'danger' | 'warning'; label: string }) {
+  const toneClass =
+    tone === 'danger'
+      ? 'text-status-danger bg-status-danger/15 border-status-danger/30'
+      : 'text-status-warning bg-status-warning/15 border-status-warning/30';
   return (
-    <p className={`${line.color} font-mono text-[11px] leading-relaxed min-h-[1.4em]`}>
-      {displayed}
-    </p>
+    <span className={`font-mono text-[13px] tracking-widest2 uppercase border rounded-full px-3 py-1 ${toneClass}`}>
+      {label}
+    </span>
   );
 }
 
-function TerminalCard() {
-  const [epoch, setEpoch] = useState(0);
-  const [started, setStarted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const totalDuration = TERMINAL_LINES[TERMINAL_LINES.length - 1].delay + 2000;
+export default async function LandingPage() {
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isLoggedIn = !!user;
 
-  // Start when in view
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setStarted(true); },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  let isPremium = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('tier')
+      .eq('id', user.id)
+      .single();
+    isPremium = profile?.tier === 'kliniker' || profile?.tier === 'klinik';
+  }
 
-  // Loop: restart after full sequence
-  useEffect(() => {
-    if (!started) return;
-    const t = setTimeout(() => setEpoch(e => e + 1), totalDuration + 1500);
-    return () => clearTimeout(t);
-  }, [started, epoch, totalDuration]);
-
-  const [cursor, setCursor] = useState(true);
-  useEffect(() => {
-    const t = setInterval(() => setCursor(c => !c), 530);
-    return () => clearInterval(t);
-  }, []);
+  const primaryCTAHref = isLoggedIn ? '/dashboard' : '/registrera';
+  const primaryCTALabel = isLoggedIn ? 'Till dashboard' : 'Kom igång';
+  const journalHref = '/tools/journalmall'; // free — manuell-mall är gratis
+  // Pedodonti är gratis (öppnar första scenariot)
+  const pedoHref = '/pedodonti';
+  // Simulator-spåret är premium — FeatureLink hanterar gate vid klick
+  const simulatorHref = '/simulator';
+  const simulatorHistoryHref = '/simulator/historik';
+  const simulatorLeaderboardHref = '/simulator/leaderboard';
 
   return (
-    <div
-      ref={ref}
-      className="bg-[#0d1117] rounded-3xl p-7 text-green-400 lg:col-span-1 lg:row-span-2 font-mono flex flex-col relative shadow-2xl overflow-hidden border border-green-900/30"
-    >
-      {/* Scan-line overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04] z-10"
-        style={{ backgroundImage: 'repeating-linear-gradient(0deg, #00ff00 0px, transparent 1px, transparent 3px)' }}
-      />
+    <PremiumGateProvider isLoggedIn={isLoggedIn} isPremium={isPremium}>
+    <div data-theme="stitch-pro" className="bg-surface text-ink min-h-screen">
+      <div className="noise-overlay" aria-hidden="true" />
 
-      {/* Title bar */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-red-500/80" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-          <div className="w-3 h-3 rounded-full bg-green-500/80" />
-        </div>
-        <span className="text-[9px] uppercase tracking-[0.25em] text-slate-500">dentaguide-ai v2.4</span>
-      </div>
-
-      <h3 className="text-white text-2xl font-bold mb-5 tracking-tight">
-        Digital Status<span className="text-green-400 text-sm font-mono ml-2 opacity-60">_</span>
-      </h3>
-
-      {/* Typewriter lines */}
-      <div key={epoch} className="space-y-2.5 flex-1 overflow-hidden">
-        {started && TERMINAL_LINES.map((line, i) => (
-          <TerminalLine key={`${epoch}-${i}`} line={line} globalStart={0} />
-        ))}
-        {!started && (
-          <p className="text-green-600 text-[11px]">Väntar på initiering...</p>
-        )}
-      </div>
-
-      {/* Blinking cursor at bottom */}
-      <div className="mt-4 flex items-center gap-1">
-        <span className="text-green-400 text-[11px]">$</span>
-        <span
-          className="inline-block w-2 h-4 bg-green-400"
-          style={{ opacity: cursor ? 1 : 0, transition: 'opacity 0.1s' }}
-        />
-      </div>
-
-      <Link href="/login">
-        <Button className="w-full bg-green-900/40 hover:bg-green-800/60 text-green-300 border border-green-800/50 mt-4 rounded-xl text-xs tracking-widest font-mono transition-colors">
-          INTERAKTIV JOURNALMALL →
-        </Button>
-      </Link>
-    </div>
-  );
-}
-
-
-// Scroll-följande karaktär — tänkande hjärna permanent under hela sidan
-function ScrollCharacter() {
-  return (
-    <motion.div
-      className="fixed bottom-6 right-6 z-40 cursor-pointer"
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 1.5, duration: 0.6, type: 'spring' }}
-      whileHover={{ scale: 1.3, rotate: 5 }}
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      title="Tillbaka till toppen"
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/characters/think.gif"
-        alt="DentaGuide-Pro AI — tänkande hjärna"
-        className="w-24 h-24 object-contain drop-shadow-lg"
-      />
-    </motion.div>
-  );
-}
-
-const featuredDrugs = lakemedelData.filter(d =>
-  ['waran', 'noak', 'bisfosfonat', 'betablockerare', 'antidepressiva'].includes(d.id)
-);
-
-export default function LandingPage() {
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  return (
-    <div data-theme="stitch-pro" className="min-h-screen bg-dark-bg text-slate-100 font-body selection:bg-secondary selection:text-white">
-      {/* BACKGROUND GRAIN OVERLAY — intern SVG via globals.css .noise-overlay */}
-      <div className="noise-overlay" aria-hidden="true"></div>
-
-      {/* NAVIGATION */}
-      <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-dark-bg/80 border-b border-white/5">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+      {/* ============== NAV ============== */}
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/72 border-b border-black/5">
+        <div className="max-w-[1280px] mx-auto px-8 h-[82px] flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo/logo-hexagon-dark.png"
-              alt="DentaGuide-Pro Logo"
-              width={44}
-              height={44}
-              className="w-11 h-11 rounded-xl object-cover"
-              style={{ backgroundColor: '#0d4a65' }}
-            />
-            <span className="font-serif italic text-2xl tracking-wide text-white">
-              DentaGuide<span className="text-secondary font-body not-italic text-sm align-top ml-1">PRO</span>
+            <img src="/logo/logo-hexagon-dark.png" alt="DentaGuide-Pro" className="brand-logo" />
+            <span className="font-display text-[25px] tracking-tight">
+              DentaGuide<span className="ed-italic text-secondary">·Pro</span>
             </span>
-          </div>
+          </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-            <Link href="#verktyg" className="hover:text-secondary transition-colors">Verktyg</Link>
-            <Link href="#priser" className="hover:text-secondary transition-colors">Priser</Link>
-            <Link href="/om-oss" className="hover:text-secondary transition-colors">Klinisk Data</Link>
+          <nav className="hidden md:flex items-center gap-9 text-[16px] font-medium text-ink/70">
+            <a href="#domaner" className="hover:text-ink transition-colors">Domäner</a>
+            <a href="#verktyg" className="hover:text-ink transition-colors">Verktyg</a>
+            <a href="#farmakologi" className="hover:text-ink transition-colors">Farmakologi</a>
+            <a href="#priser" className="hover:text-ink transition-colors">Pris</a>
+            <Link href="/om-oss" className="hover:text-ink transition-colors">Klinisk data</Link>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium hover:text-white transition-colors">Logga in</Link>
-            <Button className="bg-secondary hover:bg-accent-hover text-white rounded-full px-6 border-none">
-              Kom igång
-            </Button>
+          <div className="flex items-center gap-3">
+            {isLoggedIn ? (
+              <>
+                <Link href="/dashboard" className="hidden sm:inline text-[16px] font-medium text-ink/70 hover:text-ink mr-3">
+                  Översikt
+                </Link>
+                <LogoutButton />
+                <Link href="/dashboard" className="btn-accent text-[16px] py-[10px] px-5">
+                  Till dashboard <span aria-hidden>→</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="hidden sm:inline text-[16px] font-medium text-ink/70 hover:text-ink mr-3">
+                  Logga in
+                </Link>
+                <Link href="/registrera" className="btn-accent text-[16px] py-[10px] px-5">
+                  Kom igång <span aria-hidden>→</span>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
 
-      <main ref={containerRef}>
-        {/* HERO SECTION */}
-        <section className="relative pt-24 pb-32 overflow-hidden bg-gradient-to-b from-header-from to-dark-bg">
-          <div className="container mx-auto px-6">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-
-              {/* Vänster Kolumn: Text & Stats */}
-              <div className="space-y-10 z-10">
-                <h1 className="font-serif text-5xl md:text-7xl leading-tight text-white">
-                  Klinisk precision <br />
-                  <motion.span
-                    animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                    className="italic inline-block relative bg-gradient-to-r from-secondary via-accent-light to-secondary bg-[length:200%_auto] bg-clip-text text-transparent"
-                  >
-                    när det gäller.
-                  </motion.span>
-                </h1>
-                <p className="text-lg text-slate-300 max-w-xl leading-relaxed">
-                  Effektivisera ditt kliniska arbetsflöde med evidensbaserade protokoll, interaktiva guider och realtidsstöd anpassat för modern svensk tandvård.
-                </p>
-
-                <div className="flex flex-wrap gap-4">
-                  <Button className="bg-secondary hover:bg-accent-hover text-white rounded-full px-8 py-6 text-lg border-none shadow-lg shadow-secondary/20">
-                    Utforska plattformen
-                  </Button>
-                  <Button variant="outline" className="rounded-full px-8 py-6 text-lg border-white/20 text-white hover:bg-white/10 bg-transparent">
-                    Se Demo
-                  </Button>
-                </div>
-
-                {/* Stats Rad — baserade på implementerade agenter (16 st) + kliniska verktyg */}
-                <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
-                  <div>
-                    <p className="text-3xl font-bold text-white">16</p>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider mt-1">Kliniska agenter</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold text-white">7</p>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider mt-1">Odontologiska domäner</p>
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold text-secondary">Strama</p>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider mt-1">Synkade riktlinjer 2024</p>
-                  </div>
-                </div>
+      {/* ============== HERO ============== */}
+      <section
+        id="top"
+        className="relative overflow-hidden hero-atmos hero-grid bg-gradient-to-br from-header-from via-[#093d54] to-[#04222f] text-white"
+      >
+        <div className="relative max-w-[1280px] mx-auto px-8 pt-24 pb-28 z-10">
+          <div className="grid lg:grid-cols-[1.15fr_1fr] gap-16 items-end">
+            {/* Vänster */}
+            <div>
+              <h1 className="font-display font-medium text-white text-[68px] md:text-[88px] leading-[0.96]">
+                Rätt beslut,<br />
+                <span className="ed-italic text-secondary-container">direkt i kliniken.</span>
+              </h1>
+              <p className="mt-8 max-w-[560px] text-[18px] leading-[1.65] text-white/72">
+                Strukturerade protokoll, evidensbaserade guider och <span className="text-secondary-container font-bold">kliniskt stöd i realtid</span> — designat för den svenska tandvårdens vardag.
+              </p>
+              <div className="mt-10 flex flex-wrap gap-4">
+                <Link href={primaryCTAHref} className="btn-accent">
+                  {isLoggedIn ? primaryCTALabel : 'Starta provperiod'} <span aria-hidden>→</span>
+                </Link>
+                <a href="#verktyg" className="btn-ghost-white">Se klinisk demo</a>
               </div>
 
-              {/* Höger Kolumn: Animerad Logga */}
-              <div className="relative flex justify-center items-center z-10">
-                <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden border border-white/10 bg-header-from/50 shadow-2xl group">
+              <div className="mt-16 grid grid-cols-2 gap-8 max-w-[420px] pt-8 border-t border-white/10">
+                <div>
+                  <div className="font-display ed-italic text-white text-[26px] leading-tight">Evidensbaserat</div>
+                  <div className="mt-2 font-mono text-[13px] tracking-widest2 uppercase text-white/55">Nationella riktlinjer</div>
+                </div>
+                <div>
+                  <div className="font-display ed-italic text-white text-[26px] leading-tight">Alltid tillgängligt</div>
+                  <div className="mt-2 font-mono text-[13px] tracking-widest2 uppercase text-white/55">Webb &amp; mobil</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Höger: animerad logo */}
+            <div className="relative flex items-start justify-center min-h-[460px] pt-2 lg:-mt-10">
+              <div className="absolute inset-0 flex items-start justify-center pointer-events-none">
+                <div
+                  className="w-[460px] h-[460px] rounded-full opacity-40 blur-[110px]"
+                  style={{ background: 'radial-gradient(circle, #CC5833 0%, transparent 65%)' }}
+                />
+              </div>
+              <div className="relative z-10 flex flex-col items-center w-full">
+                <div className="hex-logo-hero relative w-full max-w-[460px] aspect-square overflow-hidden rounded-[28px]">
                   <video
+                    src="/logo/logo-animated.mp4"
                     autoPlay
                     loop
                     muted
                     playsInline
-                    className="object-cover w-full h-full grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-in-out"
-                  >
-                    <source src="/logo/logo-animated.mp4" type="video/mp4" />
-                  </video>
+                    preload="auto"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    aria-label="DentaGuide-Pro animerad logotyp"
+                  />
                 </div>
               </div>
-
             </div>
           </div>
-        </section>
-
-        {/* MARQUEE TICKER */}
-        <div className="w-full bg-secondary py-4 overflow-hidden flex whitespace-nowrap">
-          <motion.div
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ ease: "linear", duration: 25, repeat: Infinity }}
-            className="inline-flex text-white font-bold tracking-widest text-sm uppercase"
-          >
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex">
-                <span className="mx-8">• PULPIT</span>
-                <span className="mx-8">• PARODONTIT</span>
-                <span className="mx-8">• TMD-BEHANDLING</span>
-                <span className="mx-8">• MRONJ</span>
-                <span className="mx-8">• STRAMA 2024</span>
-                <span className="mx-8">• TRAUMAGUIDE</span>
-                <span className="mx-8">• ANTIBIOTIKA</span>
-              </div>
-            ))}
-          </motion.div>
         </div>
+      </section>
 
-        {/* ================= SEKTION: KLINISKA DOMÄNER ================= */}
-        <section id="verktyg" className="py-32 bg-neutral text-dark-bg">
-          <div className="container mx-auto px-6 max-w-6xl">
-            <div className="mb-16">
-              <h2 className="font-serif text-4xl md:text-5xl mb-4">Kliniska domäner</h2>
-              <p className="text-slate-500 text-lg">Fullständig process för alla odontologiska discipliner. Från anamnes till komplex protetik.</p>
-            </div>
+      {/* ============== INSTITUTIONER ============== */}
+      <InstitutionsMarquee />
 
-            {/* Grid med de 7 kliniska domänerna (6 i grid + Pedodonti-breddkort) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-              {[
-                { icon: "🦷", title: "Värk & smärta", desc: "Endodontiska akutflöden och svår smärtlindring." },
-                { icon: "🩸", title: "Parodontal sjukdom", desc: "Systematiska behandlingsplaner för parodontit och peri-implantit." },
-                { icon: "🎯", title: "Protetik", desc: "Bettfunktion och protetiska rekonstruktioner." },
-                { icon: "🛠", title: "Kirurgi", desc: "Benfysiologi, extraktioner och postoperativt omhändertagande." },
-                { icon: "🧠", title: "Bettfysiologi", desc: "Funktionsstörningar, tuggapparaten och smärthantering." },
-                { icon: "🔬", title: "Oralmedicin", desc: "Munslemhinnesjukdomar, MRONJ-riskbedömning och SVF-remisser.", accent: "#5B21B6" },
-                { icon: "📏", title: "Ortodonti", desc: "Interceptionella och ortodontiska bedömningar i allmäntandvård.", pediatric: true }
-              ].map((domain, i) => (
-                <div
-                  key={i}
-                  className={`p-8 rounded-3xl border shadow-sm hover:shadow-md transition-all group cursor-pointer ${domain.pediatric
-                      ? 'bg-surface border-pediatric-warm hover:border-accent-light'
-                      : domain.accent
-                        ? 'bg-white border-slate-100 hover:border-[#5B21B6]/30'
-                        : 'bg-white border-slate-100 hover:border-secondary/30'
-                    }`}
+      {/* ============== KLINISKA DOMÄNER ============== */}
+      <section id="domaner" className="relative bg-neutral">
+        <div className="max-w-[1280px] mx-auto px-8 py-32">
+          <header className="mb-20 max-w-[760px]">
+            <div className="eyebrow mb-6">Kliniska domäner</div>
+            <h2 className="font-display text-ink text-[64px] md:text-[80px] leading-[1.00]">
+              <span className="ed-italic">En sammanhängande klinik.</span>
+            </h2>
+          </header>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {DOMAINS.map((d) => {
+              const tier = DOMAIN_FEATURES[d.href] ?? 'premium';
+              return (
+                <FeatureLink
+                  key={d.n}
+                  href={d.href}
+                  tier={tier}
+                  label={d.title}
+                  className="ed-card block group"
                 >
-                  <div className="text-3xl mb-4 opacity-80 group-hover:scale-110 transition-transform origin-left">{domain.icon}</div>
-                  <h3 className="font-display text-2xl mb-2 text-dark-bg">{domain.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed">{domain.desc}</p>
-                  {domain.accent && (
-                    <span className="mt-4 inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border" style={{ borderColor: domain.accent + '40', color: domain.accent, background: domain.accent + '10' }}>
-                      Agent 05
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Det breda Pedodonti-kortet med 3D-karaktär */}
-            <div className="bg-primary-container rounded-3xl p-0 overflow-hidden flex flex-col md:flex-row relative group hover:shadow-xl transition-all border border-primary-container">
-              <div className="p-10 md:p-14 md:w-1/2 flex flex-col justify-center text-white z-10">
-                <span className="bg-accent-light text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full w-max mb-6">Uppgraderad</span>
-                <h3 className="font-serif text-4xl mb-4 text-white">Pedodonti &amp; Ungdom</h3>
-                <p className="text-pediatric-soft text-sm leading-relaxed mb-8 max-w-sm opacity-90">
-                  Särskilt anpassade riktlinjer för barn- och ungdomsthandvård med fokus på beteendehantering och interceptiv ortodonti.
-                </p>
-                <Link href="/pedodonti" className="text-pediatric-warm font-bold text-sm tracking-wide flex items-center gap-2 hover:gap-4 transition-all">
-                  LÄS MER <span>→</span>
-                </Link>
-              </div>
-
-              {/* Höger: Sömlöst integrerad 3D-karaktär med animation */}
-              <div
-                className="md:w-1/2 relative flex items-end justify-center overflow-hidden"
-                style={{ minHeight: '280px', backgroundColor: '#1E3028' }}
-              >
-                {/* Gradient vänster kant — exakt kortets färg */}
-                <div className="absolute inset-y-0 left-0 w-20 z-10 pointer-events-none"
-                  style={{ background: 'linear-gradient(to right, #1E3028, transparent)' }} />
-                {/* Gradient botten */}
-                <div className="absolute bottom-0 left-0 right-0 h-12 z-10 pointer-events-none"
-                  style={{ background: 'linear-gradient(to top, #1E3028 10%, transparent)' }} />
-                {/* Varmt glödsken bakom pojken */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-56 h-56 rounded-full opacity-15 blur-3xl"
-                    style={{ background: 'radial-gradient(circle, #fbbf8a 0%, transparent 70%)' }} />
-                </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/characters/pedodonti_boy.png"
-                  alt="Pedodonti och Ortodonti Karaktär"
-                  className="relative z-20 w-96 h-auto object-contain"
-                  style={{
-                    filter: 'drop-shadow(0 24px 40px rgba(0,0,0,0.55)) drop-shadow(0 0 16px rgba(251,191,138,0.12))',
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ================= SEKTION: BENTO GRID (VERKTYG) ================= */}
-        <section className="py-24 bg-[#e8efec]">
-          <div className="container mx-auto px-6 max-w-6xl">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 auto-rows-[250px]">
-              {/* Vänster kolumn (Diagnoshjälp & Riktlinjer) */}
-              <div className="flex flex-col gap-6">
-                {/* Diagnoshjälp med think.gif — klickbar & synlig */}
-                <Link href="/tools/journalmall" className="block flex-1">
-                  <div className="bg-slate-50 rounded-3xl p-7 h-full relative border-2 border-slate-200 shadow-sm hover:shadow-lg hover:border-secondary transition-all group cursor-pointer">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="font-display text-2xl text-[#0E3B52] mb-1 font-bold">Diagnoshjälp</h3>
-                        <p className="text-sm text-slate-600">Kognitivt beslutsstöd i realtid.</p>
-                      </div>
+                  <div className="flex items-start justify-between mb-8">
+                    <div className="h-[88px] flex items-center justify-start">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src="/characters/think.gif"
-                        alt="Tänkande AI"
-                        className="w-14 h-14 object-contain opacity-90 group-hover:scale-110 transition-transform"
+                        src={d.img}
+                        alt={d.title}
+                        className="max-h-full max-w-[140px] w-auto object-contain drop-shadow-[0_8px_16px_rgba(9,27,20,0.15)] group-hover:scale-105 transition-transform duration-500 origin-left"
                       />
                     </div>
-
-                    <div className="bg-white p-4 rounded-xl border-2 border-slate-200 flex items-center justify-between shadow-sm">
-                      <div>
-                        <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Input-symtom</p>
-                        <p className="text-base font-medium text-slate-400 mt-1 italic">Skriv ett symtom...</p>
-                      </div>
-                      <span className="text-red-500 font-bold text-2xl animate-pulse">!</span>
-                    </div>
-
-                    <p className="text-[11px] text-slate-400 mt-3 text-right font-medium group-hover:text-secondary transition-colors">Öppna journalmall →</p>
+                    <TierBadge tier={tier} />
                   </div>
-                </Link>
-              {/* Synkade Riktlinjer */}
-              <div className="bg-white rounded-full p-6 flex items-center justify-between border border-slate-200 shadow-sm hover:border-secondary/50 transition-colors cursor-pointer">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
-                  <span className="text-sm font-bold text-dark-bg">Synkade Riktlinjer</span>
+                  <h3 className="font-display text-[34px] leading-tight mb-4">{d.title}</h3>
+                  <p className="text-[14px] text-ink/65 leading-relaxed">{d.desc}</p>
+                  <span className="mt-6 inline-flex items-center gap-2 text-secondary font-mono text-[13px] tracking-widest2 uppercase opacity-0 group-hover:opacity-100 transition-opacity">
+                    {tier === 'free' ? 'Öppna' : 'Se Premium'} <span aria-hidden>→</span>
+                  </span>
+                </FeatureLink>
+              );
+            })}
+
+            {/* 07 + 08 bredkort */}
+            <Link
+              href={pedoHref}
+              className="ed-card md:col-span-2 lg:col-span-3 text-white border-0 hover:border-pediatric-warm/30 relative overflow-hidden group mt-24 md:mt-40"
+              style={{ backgroundColor: 'rgb(5, 40, 55)' }}
+            >
+              <div className="grid md:grid-cols-[1.2fr_1fr] gap-10 items-center relative z-10">
+                <div>
+                  <div className="mb-5">
+                    <span className="font-mono text-[13px] tracking-widest2 uppercase text-white/40">Pediatric spår</span>
+                  </div>
+                  <h3 className="font-display text-[44px] leading-[1.05] mb-5">
+                    <span className="text-white">Pedodonti</span> <span className="ed-italic text-pediatric-warm">&amp; Ortodonti</span>
+                  </h3>
+                  <p className="text-[15px] text-white/72 leading-relaxed max-w-[460px] mb-7">
+                    Barn & ungdom — eget spår. Särskilt anpassade riktlinjer för beteendehantering,
+                    interceptiv ortodonti och åldersanpassade läkemedelsdoser.
+                  </p>
+                  <span className="inline-flex items-center gap-3 text-pediatric-warm font-mono text-[14px] tracking-widest2 uppercase group-hover:gap-5 transition-all">
+                    Utforska spåret <span aria-hidden>→</span>
+                  </span>
                 </div>
-                <span className="text-xs text-slate-400 font-medium">Uppdaterad idag 08:45</span>
-              </div>
-            </div>
-
-            {/* Mitten: Digital Status — LIVE TYPEWRITER */}
-            <TerminalCard />
-
-            {/* Höger kolumn (SOP & Trauma) */}
-            <div className="bg-white rounded-3xl p-8 lg:row-span-2 border border-slate-200 shadow-sm flex flex-col">
-              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-2">PROTOKOLL (SOP)</p>
-              <h3 className="font-display text-3xl text-dark-bg mb-8">SOP <span className="italic text-slate-400">&</span> Trauma</h3>
-
-              <div className="space-y-4 flex-1">
-                {[
-                  { text: "Klinisk anamnes och trauma-typ", done: true },
-                  { text: "Klinisk status (inkl. mobilitet)", done: false, active: true },
-                  { text: "Röntgenologisk undersökning", done: false },
-                  { text: "Preliminär diagnos & uppföljning", done: false },
-                ].map((step, i) => (
-                  <div key={i} className={`flex items-start gap-4 p-3 rounded-xl transition-colors ${step.active ? 'bg-red-50 border border-red-100' : ''}`}>
-                    <div className={`mt-1 w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] text-white ${step.done ? 'bg-green-500' : step.active ? 'bg-red-500' : 'border-2 border-slate-300'}`}>
-                      {step.done ? '✓' : step.active ? '!' : ''}
-                    </div>
-                    <span className={`text-sm ${step.done ? 'text-slate-400 line-through' : step.active ? 'text-red-700 font-medium' : 'text-slate-600'}`}>
-                      {step.text}
-                    </span>
+                <div className="relative h-[280px] md:h-[320px] flex items-end justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div
+                      className="w-72 h-72 rounded-full opacity-40 blur-3xl"
+                      style={{ background: 'radial-gradient(circle, #fbbf8a 0%, transparent 70%)' }}
+                    />
                   </div>
-                ))}
+                  <div className="relative z-10 w-full h-full overflow-hidden" style={{ maxWidth: '420px', margin: '0 auto' }}>
+                    <video
+                      src="/characters/pedodonti_boy animerad.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      aria-label="Pedodonti animerad karaktär"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center 15%',
+                        transform: 'scale(1.5)',
+                        transformOrigin: 'center 20%',
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
-
-              <div className="bg-header-from text-white p-4 rounded-2xl flex items-center gap-4 mt-6 cursor-pointer hover:bg-dark-bg transition-colors">
-                <span className="text-2xl">★</span>
-                <p className="text-xs font-semibold leading-tight">EVIDENSBASERAT BESLUTSSTÖD. VERIFIERAT ENLIGT NATIONELLA RIKTLINJER.</p>
-              </div>
-            </div>
-
+              <div className="absolute -right-32 -top-32 w-[400px] h-[400px] rounded-full bg-pediatric-warm/10 blur-3xl pointer-events-none" />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* STACKED SCROLL-CARDS — sticky siblings = stacking effect */}
-      <section className="bg-dark-bg relative">
-        <div className="container mx-auto px-6">
-          <div className="text-center pt-32 pb-24">
-            <h2 className="font-display text-4xl md:text-5xl text-white">
-              Ett flöde för <span className="text-secondary italic">hela processen.</span>
+      {/* ============== LIVE-DEMO (TERMINAL + SOP) ============== */}
+      <section className="relative bg-[#e7ede9]">
+        <div className="max-w-[1280px] mx-auto px-8 py-32">
+          <header className="max-w-[720px] mx-auto text-center flex flex-col items-center mb-16">
+            <div className="font-mono text-secondary font-bold text-[18px] tracking-widest uppercase mb-5">
+              Kliniskt beslutstöd · realtid
+            </div>
+            <h2 className="font-display text-ink text-[50px] leading-[1.05]">
+              Från första symtom till diagnos <span className="ed-italic whitespace-nowrap">&amp; säker behandling</span><br />
+              — <span className="text-secondary font-bold">direkt i stolen.</span>
             </h2>
-          </div>
+          </header>
 
-          {/* ⚠️ ALLA KORT MÅSTE VARA SYSKON I SAMMA CONTAINER för sticky-stacking */}
-          <div className="max-w-4xl mx-auto" style={{ paddingBottom: '30vh' }}>
+          <div className="grid lg:grid-cols-[1fr_1.05fr] gap-7">
+            <TerminalDemo targetHref={journalHref} />
 
-            {/* CARD 01 — sticky top-24, z-1 */}
-            <div className="sticky top-24 z-[1]" style={{ marginBottom: '60vh' }}>
-              <Link href="/tools/parod-klassificering">
-                <motion.div
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white p-12 md:p-16 rounded-[40px] shadow-xl border border-slate-100 group cursor-pointer hover:shadow-2xl hover:border-secondary/30 transition-shadow"
-                >
-                  <div className="flex justify-between items-start mb-8">
-                    <span className="text-6xl font-light text-slate-200">01</span>
-                    <span className="bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Parodontologi</span>
-                  </div>
-                  <h3 className="font-display text-5xl text-dark-bg mb-6">ParodKlassificerare</h3>
-                  <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
-                    Automatiskt bedömningsstöd för EFP/AAP 2018. Beräknar stadieindelning och gradering baserat på dina fickdjupsmätningar och röntgenfynd.
-                  </p>
-                  <span className="mt-6 inline-block text-secondary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Öppna verktyget →</span>
-                </motion.div>
-              </Link>
-            </div>
+            {/* SOP / Steg */}
+            <div className="bg-white rounded-[24px] p-10 border border-border-light shadow-clay flex flex-col">
+              <div className="flex items-baseline justify-between mb-2">
+                <span className="font-mono text-[13px] tracking-widest2 uppercase text-ink/45">Protokoll (SOP)</span>
+                <span className="font-mono text-[13px] tracking-widest2 uppercase text-secondary">Trauma · steg 2/4</span>
+              </div>
+              <h3 className="font-display text-[34px] mb-9">
+                Strukturerat <span className="ed-italic">flöde.</span>
+              </h3>
 
-            {/* CARD 02 — sticky top-28, z-2 glider ovanpå kort 01 */}
-            <div className="sticky top-28 z-[2]" style={{ marginBottom: '60vh' }}>
-              <Link href="/tools/antibiotika">
-                <motion.div
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-slate-50 p-12 md:p-16 rounded-[40px] shadow-xl border border-slate-200 group cursor-pointer hover:shadow-2xl hover:border-secondary/30 transition-shadow"
-                >
-                  <div className="flex justify-between items-start mb-8">
-                    <span className="text-6xl font-light text-slate-300">02</span>
-                    <span className="bg-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Strama 2024</span>
-                  </div>
-                  <h3 className="font-display text-5xl text-dark-bg mb-6">AntibiotikaTool</h3>
-                  <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
-                    Interaktivt beslutsträd för antibiotikaförskrivning. Säkerställer att dina ordinationer följer nationella riktlinjer och undviker resistensutveckling.
-                  </p>
-                  <span className="mt-6 inline-block text-secondary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Öppna verktyget →</span>
-                </motion.div>
-              </Link>
-            </div>
+              <ol className="flex-1 space-y-1.5">
+                <li className="grid grid-cols-[28px_1fr_auto] gap-4 items-center py-4 px-4 -mx-4 rounded-2xl">
+                  <span className="w-6 h-6 rounded-full bg-status-ok text-white flex items-center justify-center text-xs">✓</span>
+                  <span className="text-[15px] text-ink/45 line-through">Klinisk anamnes och trauma-typ</span>
+                  <span className="font-mono text-[13px] tracking-widest2 uppercase text-ink/40">02:14</span>
+                </li>
+                <li className="grid grid-cols-[28px_1fr_auto] gap-4 items-center py-4 px-4 -mx-4 rounded-2xl bg-secondary/5 border border-secondary/20">
+                  <span className="w-6 h-6 rounded-full bg-secondary text-white flex items-center justify-center text-xs">●</span>
+                  <span className="text-[15px] text-secondary font-semibold">Klinisk status — mobilitet, perkussion</span>
+                  <span className="font-mono text-[13px] tracking-widest2 uppercase text-secondary">pågår</span>
+                </li>
+                <li className="grid grid-cols-[28px_1fr_auto] gap-4 items-center py-4 px-4 -mx-4 rounded-2xl">
+                  <span className="w-6 h-6 rounded-full border border-ink/20" />
+                  <span className="text-[15px] text-ink/75">Röntgenologisk undersökning</span>
+                  <span className="font-mono text-[13px] tracking-widest2 uppercase text-ink/40">~ 4 min</span>
+                </li>
+                <li className="grid grid-cols-[28px_1fr_auto] gap-4 items-center py-4 px-4 -mx-4 rounded-2xl">
+                  <span className="w-6 h-6 rounded-full border border-ink/20" />
+                  <span className="text-[15px] text-ink/75">Preliminär diagnos & uppföljning</span>
+                  <span className="font-mono text-[13px] tracking-widest2 uppercase text-ink/40">~ 3 min</span>
+                </li>
+              </ol>
 
-            {/* CARD 03 — sticky top-32, z-3 glider ovanpå kort 02 */}
-            <div className="sticky top-32 z-[3]" style={{ marginBottom: '60vh' }}>
-              <Link href="/tools/dosering">
-                <motion.div
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-white p-12 md:p-16 rounded-[40px] shadow-2xl border border-slate-200 group cursor-pointer hover:shadow-2xl hover:border-secondary/30 transition-shadow"
-                >
-                  <div className="flex justify-between items-start mb-8">
-                    <span className="text-6xl font-light text-slate-300">03</span>
-                    <span className="bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Farmakologi</span>
-                  </div>
-                  <h3 className="font-display text-5xl text-dark-bg mb-6">DoseringKalkylator</h3>
-                  <p className="text-lg text-slate-500 leading-relaxed max-w-xl">
-                    Exakt farmakologisk dosering baserat på patientens ålder, vikt och medicinska riskprofil. Interaktionsvarningar för säker behandling.
-                  </p>
-                  <span className="mt-6 inline-block text-secondary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">Öppna verktyget →</span>
-                </motion.div>
-              </Link>
-            </div>
-
-            {/* CARD 04 — sticky top-36, z-4 glider ovanpå alla tre */}
-            <div className="sticky top-36 z-[4]">
-              <Link href="/tools/journalmall">
-                <motion.div
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                  className="bg-header-from p-12 md:p-16 rounded-[40px] shadow-2xl border border-dark-bg text-white group cursor-pointer hover:border-secondary/40 transition-all"
-                >
-                  <div className="flex justify-between items-start mb-8">
-                    <span className="text-6xl font-light text-white/20">04</span>
-                    <span className="bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Administration</span>
-                  </div>
-                  <h3 className="font-serif text-5xl mb-6">AI-Journal &amp; Debitering</h3>
-                  <p className="text-lg text-slate-300 leading-relaxed max-w-xl mb-8">
-                    Strukturerad automatiserad journalföring med integrerat HSLF-FS 2025:68-kompatibelt debiteringsstöd.
-                  </p>
-                  <Button className="bg-secondary hover:bg-accent-hover text-white rounded-full px-8 py-6 pointer-events-none">
-                    Utforska Verktygen
-                  </Button>
-                </motion.div>
-              </Link>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ALLA FUNKTIONER — klickbart grid */}
-      <section id="alla-funktioner" className="py-32 bg-dark-bg relative">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-4xl md:text-5xl text-white">Alla funktioner <span className="text-secondary italic">— klicka & utforska.</span></h2>
-            <p className="text-slate-400 mt-4 text-lg">Varje verktyg är byggt för det kliniska arbetsflödet.</p>
-          </div>
-
-          {/* ── KLINISKA VERKTYG ── */}
-          <div className="mb-12">
-            <p className="text-[11px] text-secondary font-bold uppercase tracking-widest mb-6">Kliniska verktyg</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                { icon: '📝', title: 'AI-Journalmall', desc: 'Automatisk journaltext via AI — snabb, strukturerad och HSLF-FS-kompatibel.', href: '/dashboard/tools/journalmall/ai-assisterad', tag: 'AI', tagColor: 'bg-secondary' },
-                { icon: '📋', title: 'Manuell Journalmall', desc: 'Välj behandling och fyll i en färdig klinisk journalmall direkt.', href: '/dashboard/tools/journalmall/manuell', tag: 'Manuell', tagColor: 'bg-slate-600' },
-                { icon: '💰', title: 'Debitering', desc: 'AI-assisterat debiteringsstöd — taxekoder och åtgärdskoder enligt gällande taxa.', href: '/dashboard/tools/debitering', tag: 'Ekonomi', tagColor: 'bg-emerald-700' },
-                { icon: '🦠', title: 'AntibiotikaTool', desc: 'Beslutsträd för antibiotikaförskrivning enligt Strama 2024.', href: '/dashboard/tools/antibiotika', tag: 'Strama 2024', tagColor: 'bg-amber-700' },
-                { icon: '💊', title: 'DoseringKalkylator', desc: 'Farmakologisk dosering baserat på ålder, vikt och riskprofil med interaktionsvarningar.', href: '/dashboard/tools/dosering', tag: 'Farmakologi', tagColor: 'bg-violet-700' },
-                { icon: '📦', title: 'Läkemedelskort', desc: 'Snabbreferens för vanliga läkemedel — warfarin, NOAK, bisfosfonater m.fl.', href: '/dashboard/tools/lakemedel', tag: 'Referens', tagColor: 'bg-slate-600' },
-                { icon: '🦷', title: 'ParodKlassificerare', desc: 'EFP/AAP 2018-klassificering av parodontit baserat på fickdjup och röntgenfynd.', href: '/dashboard/tools/parod-klassificering', tag: 'Parodontologi', tagColor: 'bg-teal-700' },
-                { icon: '🚑', title: 'TraumaGuide', desc: 'Kliniska protokoll för tandtrauma — primära och permanenta tänder.', href: '/dashboard/tools/traumaguide', tag: 'Akut', tagColor: 'bg-red-700' },
-              ].map((tool) => (
-                <Link key={tool.href} href={tool.href} className="group block">
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col hover:bg-white/10 hover:border-secondary/50 hover:-translate-y-1 transition-all duration-200">
-                    <div className="flex items-start justify-between mb-4">
-                      <span className="text-3xl">{tool.icon}</span>
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white ${tool.tagColor}`}>{tool.tag}</span>
-                    </div>
-                    <h4 className="text-white font-bold text-lg mb-2">{tool.title}</h4>
-                    <p className="text-slate-400 text-sm leading-relaxed flex-1">{tool.desc}</p>
-                    <span className="text-secondary text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity font-medium">Öppna →</span>
-                  </div>
-                </Link>
-              ))}
+              <div className="mt-8 -mx-3 rounded-2xl bg-dark-bg text-white px-6 py-5 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center text-secondary-container font-display ed-italic text-xl">★</div>
+                <div>
+                  <div className="font-mono text-[13px] tracking-widest2 uppercase text-white/55">Evidens</div>
+                  <div className="text-[15px] font-semibold">Verifierat mot nationella riktlinjer.</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* ── KLINISKA AGENTER ── */}
-          <div className="mb-12">
-            <p className="text-[11px] text-secondary font-bold uppercase tracking-widest mb-6">Kliniska agenter</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { icon: '🦷', title: 'Endodonti', desc: 'Värk, pulpit & rotbehandling.', href: '/dashboard/endodonti' },
-                { icon: '🩸', title: 'Parodontologi', desc: 'Parodontit & peri-implantit.', href: '/dashboard/parodontologi' },
-                { icon: '🎯', title: 'Protetik', desc: 'Bettfunktion & rekonstruktioner.', href: '/dashboard/protetik' },
-                { icon: '🛠', title: 'Käkkirurgi', desc: 'Extraktioner & kirurgi.', href: '/dashboard/kakkirurgi' },
-                { icon: '🧠', title: 'Bettfysiologi', desc: 'TMD & funktionsstörningar.', href: '/dashboard/bettfysiologi' },
-                { icon: '🔬', title: 'Oralmedicin', desc: 'MRONJ, slemhinna & SVF.', href: '/dashboard/oralmedicin' },
-                { icon: '🧒', title: 'Pedodonti', desc: 'Barn- och ungdomstandvård.', href: '/dashboard/pedodonti' },
-                { icon: '📏', title: 'Ortodonti', desc: 'Interception & bedömning.', href: '/dashboard/ortodonti' },
-              ].map((agent) => (
-                <Link key={agent.href} href={agent.href} className="group block">
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5 h-full flex flex-col hover:bg-white/10 hover:border-white/30 hover:-translate-y-1 transition-all duration-200">
-                    <span className="text-2xl mb-3">{agent.icon}</span>
-                    <h4 className="text-white font-bold mb-1">{agent.title}</h4>
-                    <p className="text-slate-400 text-sm flex-1">{agent.desc}</p>
-                    <span className="text-slate-500 text-xs mt-3 group-hover:text-secondary transition-colors">Öppna →</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* ── SIMULATOR ── */}
-          <div>
-            <p className="text-[11px] text-secondary font-bold uppercase tracking-widest mb-6">Simulator</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[
-                { icon: '🎮', title: 'Klinisk Simulator', desc: 'Träna på kliniska fall i 3 svårighetsgrader — få poäng och feedback i realtid.', href: '/dashboard/simulator', tag: 'Interaktiv', big: true },
-                { icon: '📊', title: 'Min Historik', desc: 'Se dina tidigare simulatorresultat och kunskapsutveckling.', href: '/dashboard/simulator/historik', tag: 'Statistik' },
-                { icon: '🏆', title: 'Leaderboard', desc: 'Jämför dina poäng med andra kliniker på plattformen.', href: '/dashboard/simulator/leaderboard', tag: 'Ranking' },
-              ].map((item) => (
-                <Link key={item.href} href={item.href} className={`group block ${item.big ? 'md:col-span-1' : ''}`}>
-                  <div className="bg-gradient-to-br from-secondary/20 to-dark-surface border border-secondary/30 rounded-2xl p-6 h-full flex flex-col hover:border-secondary hover:-translate-y-1 transition-all duration-200">
-                    <div className="flex items-start justify-between mb-4">
-                      <span className="text-3xl">{item.icon}</span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-secondary border border-secondary/40">{item.tag}</span>
-                    </div>
-                    <h4 className="text-white font-bold text-lg mb-2">{item.title}</h4>
-                    <p className="text-slate-400 text-sm leading-relaxed flex-1">{item.desc}</p>
-                    <span className="text-secondary text-sm mt-4 opacity-0 group-hover:opacity-100 transition-opacity font-medium">Starta →</span>
-                  </div>
-                </Link>
-              ))}
+          <div className="mt-14 flex justify-center">
+            <div className="inline-flex items-center gap-3 bg-dark-bg/95 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 shadow-clay-lg">
+              <span className="pulse-dot" />
+              <span className="font-mono text-[13px] tracking-widest2 uppercase text-white/85">Systemet är online</span>
+              <span className="w-px h-3 bg-white/20" />
+              <span className="font-mono text-[13px] tracking-widest2 uppercase text-white/60">v 2.0 · 2026</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FARMAKOLOGISKT STÖD */}
-      <section className="py-24 bg-dark-surface text-white border-t border-white/5">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="mb-12">
-            <h2 className="font-serif text-4xl mb-4 text-white">Farmakologiskt stöd</h2>
-            <p className="text-slate-400 text-lg">Snabbt åtkomlig dosering och interaktionsvarning för dental praxis.</p>
-          </div>
+      {/* ============== VERKTYGSINDEX ============== */}
+      <section id="verktyg" className="relative bg-surface">
+        <div className="max-w-[1280px] mx-auto px-8 py-32">
+          <header className="max-w-[800px] mx-auto text-center flex flex-col items-center mb-20">
+            <div className="font-mono text-secondary font-bold text-[18px] tracking-widest uppercase mb-5">Kliniska verktyg</div>
+            <h2 className="font-display text-ink text-[54px] leading-[1.02] mb-6">
+              En smidigare <span className="ed-italic">arbetsdag.</span>
+            </h2>
+            <p className="text-[18px] leading-[1.6] text-ink/65 text-balance">
+              Interaktiva beslutsstödsverktyg utvecklade för att <strong className="text-secondary font-bold text-[19px]">kapa administrativ tid</strong>. Oavsett om det gäller barntrauma, svårbedömd protetik eller dosering — <strong className="text-secondary font-bold text-[19px]">svaret finns ett klick bort</strong>. Öppna, använd och återgå till patienten.
+            </p>
+          </header>
 
-          <div className="flex overflow-x-auto pb-12 gap-6 snap-x hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            {featuredDrugs.map((drug) => (
-              <div
-                key={drug.id}
-                className="group min-w-[320px] bg-white/5 border border-white/10 p-8 rounded-[24px] snap-start transition-all duration-300 hover:-translate-y-2 hover:bg-white/10 hover:border-secondary hover:shadow-accent cursor-pointer flex flex-col justify-between min-h-[240px]"
+          <ToolsStack />
+
+          {/* Simulator-spår (premium) */}
+          <div className="mt-16 grid md:grid-cols-3 gap-5">
+            <FeatureLink
+              href={simulatorHref}
+              tier={SIMULATOR_FEATURES[simulatorHref] ?? 'premium'}
+              label="Klinisk Simulator"
+              className="group block bg-gradient-to-br from-primary to-dark-bg text-white rounded-[24px] p-8 md:col-span-2 relative overflow-hidden"
+            >
+              <div className="relative z-10 grid md:grid-cols-[1fr_auto] gap-6 items-end">
+                <div>
+                  <div className="font-mono text-[13px] tracking-widest2 uppercase text-secondary-container/90 mb-4 flex items-center gap-3">
+                    Simulator · 3 svårighetsgrader <TierBadge tier="premium" />
+                  </div>
+                  <h3 className="font-display text-white text-[32px] mb-3">
+                    Träna kliniskt resonemang<br />
+                    <span className="ed-italic text-secondary-container">på riktiga fall.</span>
+                  </h3>
+                  <p className="text-white/65 text-[14px] max-w-md leading-relaxed">
+                    Realtidspoäng, feedback per beslut och en personlig kunskapskurva.
+                  </p>
+                </div>
+                <span className="btn-accent group-hover:translate-x-1 transition-transform">
+                  Starta simulator <span aria-hidden>→</span>
+                </span>
+              </div>
+              <div className="absolute -right-20 -bottom-20 w-[300px] h-[300px] rounded-full bg-secondary/15 blur-3xl" />
+            </FeatureLink>
+            <div className="grid grid-rows-2 gap-5">
+              <FeatureLink
+                href={simulatorHistoryHref}
+                tier={SIMULATOR_FEATURES[simulatorHistoryHref] ?? 'premium'}
+                label="Min historik"
+                className="group bg-white rounded-[24px] border border-border-light p-6 hover:border-secondary/40 transition-colors flex flex-col justify-between"
               >
                 <div>
-                  <span className="text-[10px] text-secondary font-bold tracking-widest uppercase mb-4 block">
-                    {drug.cat}
-                  </span>
-                  <h4 className="text-2xl font-bold mb-3 text-white">{drug.name}</h4>
-                  <p className="text-sm text-slate-300 leading-relaxed line-clamp-3">
-                    {drug.risk && (
-                      <span className={`font-bold mr-2 ${drug.risk.includes('HÖG') ? 'text-red-400' : 'text-yellow-400'}`}>
-                        [{drug.risk}]
-                      </span>
-                    )}
-                    {drug.summary[0]?.replace(/^[❌⚠️✓]\s*/, '')}
-                  </p>
+                  <div className="font-mono text-[13px] tracking-widest2 uppercase text-ink/45 mb-2 flex items-center gap-2">Statistik <TierBadge tier="premium" /></div>
+                  <div className="font-display text-[22px]">Min historik</div>
                 </div>
-
-                <div className="flex justify-between items-center mt-6 pt-5 border-t border-white/10 transition-colors duration-300 group-hover:border-secondary/30">
-                  <span className="text-[10px] text-slate-400 uppercase font-bold tracking-widest group-hover:text-white transition-colors">
-                    Klinisk Data
-                  </span>
-                  <span className="text-slate-500 group-hover:text-secondary group-hover:translate-x-1 transition-all">
-                    →
-                  </span>
+                <div className="text-[14px] text-ink/55 mt-3 group-hover:text-secondary transition-colors">Tidigare resultat →</div>
+              </FeatureLink>
+              <FeatureLink
+                href={simulatorLeaderboardHref}
+                tier={SIMULATOR_FEATURES[simulatorLeaderboardHref] ?? 'premium'}
+                label="Leaderboard"
+                className="group bg-white rounded-[24px] border border-border-light p-6 hover:border-secondary/40 transition-colors flex flex-col justify-between"
+              >
+                <div>
+                  <div className="font-mono text-[13px] tracking-widest2 uppercase text-ink/45 mb-2 flex items-center gap-2">Ranking <TierBadge tier="premium" /></div>
+                  <div className="font-display text-[22px]">Leaderboard</div>
                 </div>
-              </div>
-            ))}
+                <div className="text-[14px] text-ink/55 mt-3 group-hover:text-secondary transition-colors">Jämför poäng →</div>
+              </FeatureLink>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* PRISSÄTTNING */}
-      <section id="priser" className="py-32 bg-neutral">
-        <div className="container mx-auto px-6 max-w-5xl">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-5xl text-dark-bg mb-4">Prisplaner för kliniken</h2>
-            <p className="text-slate-500">Välj den nivå som passar din verksamhet. Skalbart från den enskilda kliniken till den stora kedjan.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-
-            <div className="bg-white p-10 rounded-[30px] border border-slate-200 text-center shadow-sm">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Enskild</span>
-              <h3 className="font-display text-3xl text-dark-bg my-2">Gratis</h3>
-              <div className="my-6">
-                <span className="text-5xl font-bold text-dark-bg">0 kr</span>
-                <span className="text-slate-500 text-sm"> / mån</span>
-              </div>
-              <ul className="text-sm text-slate-600 space-y-4 mb-8 text-left">
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> 3 områden (10 scenarier)</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Manuell journalmall</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Doseringskalkylator (basic)</li>
-                <li className="flex items-center gap-3"><span className="text-slate-300">✗</span> AI-journal</li>
-                <li className="flex items-center gap-3"><span className="text-slate-300">✗</span> Premium-verktyg</li>
-              </ul>
-              <Link href="/registrera"><Button variant="outline" className="w-full rounded-full border-slate-300 text-slate-600 hover:bg-slate-50">Kom igång gratis</Button></Link>
-            </div>
-
-            <div className="bg-dark-surface p-10 rounded-[30px] border border-secondary/50 text-center shadow-2xl relative transform scale-105 z-10">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-full">Mest populär</div>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Professionell</span>
-              <h3 className="font-serif text-3xl text-white my-2">Kliniker</h3>
-              <div className="my-6">
-                <span className="text-5xl font-bold text-white">99 kr</span>
-                <span className="text-slate-400 text-sm"> / mån</span>
-              </div>
-              <ul className="text-sm text-slate-300 space-y-4 mb-8 text-left">
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Alla 12 områden (82 scenarier)</li>
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> AI-journal (5/dag)</li>
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Alla verktyg</li>
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Bokmärken & anteckningar</li>
-                <li className="flex items-center gap-3"><span className="text-secondary">✓</span> Email-support</li>
-              </ul>
-              <Link href="/pricing"><Button className="w-full bg-secondary hover:bg-accent-hover text-white rounded-full">Starta provperiod</Button></Link>
-            </div>
-
-            <div className="bg-white p-10 rounded-[30px] border border-slate-200 text-center shadow-sm">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Kliniknätverk</span>
-              <h3 className="font-display text-3xl text-dark-bg my-2">Klinik</h3>
-              <div className="my-6">
-                <span className="text-5xl font-bold text-dark-bg">399 kr</span>
-                <span className="text-slate-500 text-sm"> / mån</span>
-              </div>
-              <ul className="text-sm text-slate-600 space-y-4 mb-8 text-left">
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Allt i Kliniker</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> 5 användare per klinik</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> AI-journal (100/dag)</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Admin-panel</li>
-                <li className="flex items-center gap-3"><span className="text-green-500">✓</span> Prioriterad support</li>
-              </ul>
-              <Link href="/pricing"><Button variant="outline" className="w-full rounded-full border-slate-300 text-slate-600 hover:bg-slate-50">Kontakta Sälj</Button></Link>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-      {/* FOOTER */ }
-  <footer className="bg-dark-surface pt-20 pb-10 border-t border-white/10 text-slate-400">
-    <div className="container mx-auto px-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-        <div className="col-span-1 md:col-span-2">
-          <div className="flex items-center gap-2 mb-6">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo/logo-hexagon-dark.png" alt="Logo" width={24} height={24} className="w-6 h-6 rounded-lg object-cover" style={{ backgroundColor: '#0d4a65' }} />
-            <span className="font-display italic text-xl text-white">DentaGuide<span className="text-secondary font-body not-italic text-xs align-top ml-1">PRO</span></span>
-          </div>
-          <p className="text-sm max-w-sm mb-6 leading-relaxed">
-            Nästa generations kliniska beslutsstöd för tandvården. Utvecklat av tandläkare, för tandläkare.
-            Säkerställer evidensbaserade skadefria flöden.
+      {/* ============== VISION / MÅL ============== */}
+      <section className="bg-white border-y border-border-light">
+        <div className="max-w-[1080px] mx-auto px-8 py-32 text-center">
+          <div className="eyebrow justify-center mb-8 inline-flex">Vårt kliniska mål</div>
+          <p className="pull-quote text-[44px] md:text-[56px] text-ink leading-[1.08] max-w-[920px] mx-auto">
+            Att tiden mellan symtom och diagnos ska gå från minuter till sekunder. Det handlar inte om mer teknik — det handlar om att du ska <span className="text-secondary">slippa byta kontext</span> mitt i ett patientmöte.
           </p>
         </div>
+      </section>
 
-        <div>
-          <h4 className="text-white text-xs font-bold tracking-widest uppercase mb-4">Plattform</h4>
-          <ul className="space-y-3 text-sm">
-            <li><Link href="/login" className="hover:text-white transition-colors">Verktyg</Link></li>
-            <li><Link href="/pricing" className="hover:text-white transition-colors">Prismodell</Link></li>
-            <li><Link href="/login" className="hover:text-white transition-colors">Klinisk API</Link></li>
-          </ul>
-        </div>
+      {/* ============== FARMAKOLOGI ============== */}
+      <section id="farmakologi" className="relative bg-dark-bg text-white">
+        <div className="max-w-[1280px] mx-auto px-8 py-32">
+          <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-14">
+            <div>
+              <div className="eyebrow eyebrow--light mb-5">Farmakologiskt stöd</div>
+              <h2 className="font-display text-white text-[54px] leading-[1.02]">
+                Dosering & interaktion<br />
+                <span className="ed-italic text-secondary-container">på en blick.</span>
+              </h2>
+            </div>
+            <p className="text-white/60 text-[15px] max-w-[420px] leading-relaxed">
+              Snabbreferens för läkemedel som påverkar dental praxis — koagulation, immunsuppression, antiresorptiva.
+            </p>
+          </header>
 
-        <div>
-          <h4 className="text-white text-xs font-bold tracking-widest uppercase mb-4">Nyhetsbrev</h4>
-          <p className="text-xs mb-4">Håll dig uppdaterad med de senaste kliniska riktlinjerna.</p>
-          <div className="flex gap-2">
-            <input type="email" placeholder="Din e-post" className="bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm w-full focus:outline-none focus:border-secondary" />
-            <Button className="bg-secondary hover:bg-accent-hover text-white rounded-full px-4">Prenumerera</Button>
+          <div className="flex gap-5 overflow-x-auto no-scrollbar pb-10 -mx-8 px-8 snap-x">
+            {DRUGS.map((d) => (
+              <FeatureLink
+                key={d.name}
+                href={d.href}
+                tier={TOOL_FEATURES['/tools/lakemedel'] ?? 'premium'}
+                label={d.name}
+                className="drug-card snap-start group"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <span className="font-mono text-[13px] tracking-widest2 uppercase text-secondary">{d.cat}</span>
+                  <RiskBadge tone={d.riskTone} label={d.risk} />
+                </div>
+                <h4 className="font-display text-white text-[28px] mb-3">{d.name}</h4>
+                <p className="text-[15px] text-white/70 leading-relaxed">{d.desc}</p>
+                <footer className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
+                  <span className="font-mono text-[13px] tracking-widest2 uppercase text-white/45 flex items-center gap-2">
+                    Klinisk data <TierBadge tier="premium" />
+                  </span>
+                  <span className="text-white/40 group-hover:text-secondary transition-colors">→</span>
+                </footer>
+              </FeatureLink>
+            ))}
+            <FeatureLink
+              href="/tools/lakemedel"
+              tier={TOOL_FEATURES['/tools/lakemedel'] ?? 'premium'}
+              label="Läkemedelskort"
+              className="drug-card snap-start flex flex-col justify-center items-center text-center"
+            >
+              <div className="font-display ed-italic text-secondary-container text-[40px] leading-none mb-3">+42</div>
+              <p className="text-white/65 text-[15px] mb-5">läkemedel i full databas</p>
+              <span className="text-secondary-container font-mono text-[13px] tracking-widest2 uppercase">
+                Visa alla →
+              </span>
+            </FeatureLink>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-xs">
-        <p>© 2026 DentaGuide-Pro. All rights reserved.</p>
-        <div className="flex gap-6 mt-4 md:mt-0">
-          <Link href="/login" className="hover:text-white transition-colors">Integritetspolicy (GDPR)</Link>
-          <Link href="/login" className="hover:text-white transition-colors">Patientdatalagen (PDL)</Link>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-            <span>System Status: Operativ</span>
+      {/* ============== PRICING ============== */}
+      <section id="priser" className="bg-neutral relative">
+        <div className="max-w-[1180px] mx-auto px-8 py-32">
+          <header className="text-center max-w-[640px] mx-auto mb-16">
+            <div className="eyebrow justify-center inline-flex mb-5">Abonnemang</div>
+            <h2 className="font-display text-ink text-[54px] leading-[1.02]">
+              En plan för<br /><span className="ed-italic">varje klinik.</span>
+            </h2>
+          </header>
+
+          <div className="grid md:grid-cols-3 gap-6 items-stretch">
+            {/* Gratis */}
+            <article className="price-card-v2 flex flex-col">
+              <div className="font-mono text-[13px] tracking-widest2 uppercase text-ink/45 mb-2">Enskild</div>
+              <div className="font-display text-[28px] mb-1">Gratis</div>
+              <div className="mt-6 mb-8 flex items-baseline gap-2">
+                <span className="font-display ed-italic text-[56px] leading-none">0</span>
+                <span className="text-ink/55 text-[14px]">kr / mån</span>
+              </div>
+              <ul className="text-[14px] text-ink/75 space-y-3 mb-10 flex-1">
+                <li className="flex gap-3"><span className="text-status-ok mt-0.5">✓</span> 3 domäner · 10 scenarier</li>
+                <li className="flex gap-3"><span className="text-status-ok mt-0.5">✓</span> Manuell journalmall</li>
+                <li className="flex gap-3"><span className="text-status-ok mt-0.5">✓</span> Doseringskalkylator (basic)</li>
+                <li className="flex gap-3 text-ink/35"><span className="mt-0.5">—</span> AI-journal</li>
+                <li className="flex gap-3 text-ink/35"><span className="mt-0.5">—</span> Premium-verktyg</li>
+              </ul>
+              <Link href="/registrera" className="btn-ghost justify-center w-full">Kom igång gratis</Link>
+            </article>
+
+            {/* Professionell */}
+            <article className="price-card-v2 price-card-v2--featured flex flex-col relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-white text-[13px] font-mono tracking-widest2 uppercase px-4 py-1 rounded-full">
+                Mest populär
+              </div>
+              <div className="font-mono text-[13px] tracking-widest2 uppercase text-white/55 mb-2">Professionell</div>
+              <div className="font-display text-[28px] mb-1">Kliniker</div>
+              <div className="mt-6 mb-8 flex items-baseline gap-2">
+                <span className="font-display ed-italic text-[56px] leading-none text-secondary-container">99</span>
+                <span className="text-white/65 text-[14px]">kr / mån</span>
+              </div>
+              <ul className="text-[14px] text-white/85 space-y-3 mb-10 flex-1">
+                <li className="flex gap-3"><span className="text-secondary-container mt-0.5">✓</span> Alla domäner · 82 scenarier</li>
+                <li className="flex gap-3"><span className="text-secondary-container mt-0.5">✓</span> AI-journal (5/dag)</li>
+                <li className="flex gap-3"><span className="text-secondary-container mt-0.5">✓</span> Alla verktyg & agenter</li>
+                <li className="flex gap-3"><span className="text-secondary-container mt-0.5">✓</span> Bokmärken & anteckningar</li>
+                <li className="flex gap-3"><span className="text-secondary-container mt-0.5">✓</span> E-postsupport</li>
+              </ul>
+              <Link href="/pricing" className="btn-accent justify-center w-full">Starta 14-dagars provperiod</Link>
+            </article>
+
+            {/* Klinik */}
+            <article className="price-card-v2 flex flex-col">
+              <div className="font-mono text-[13px] tracking-widest2 uppercase text-ink/45 mb-2">Kliniknätverk</div>
+              <div className="font-display text-[28px] mb-1">Klinik</div>
+              <div className="mt-6 mb-8 flex items-baseline gap-2">
+                <span className="font-display ed-italic text-[56px] leading-none">399</span>
+                <span className="text-ink/55 text-[14px]">kr / mån</span>
+              </div>
+              <ul className="text-[14px] text-ink/75 space-y-3 mb-10 flex-1">
+                <li className="flex gap-3"><span className="text-status-ok mt-0.5">✓</span> Allt i Kliniker</li>
+                <li className="flex gap-3"><span className="text-status-ok mt-0.5">✓</span> 5 användare per klinik</li>
+                <li className="flex gap-3"><span className="text-status-ok mt-0.5">✓</span> AI-journal (100/dag)</li>
+                <li className="flex gap-3"><span className="text-status-ok mt-0.5">✓</span> Admin-panel & analytics</li>
+                <li className="flex gap-3"><span className="text-status-ok mt-0.5">✓</span> Prioriterad support</li>
+              </ul>
+              <Link href="/pricing" className="btn-ghost justify-center w-full">Kontakta sälj</Link>
+            </article>
           </div>
         </div>
-      </div>
-      {/* PSL 2010:659 — Patientsäkerhetslag */}
-      <p className="mt-6 text-center text-[10px] text-slate-600 max-w-3xl mx-auto leading-relaxed">
-        ⚖️ DentaGuide-Pro är ett kliniskt beslutsstöd och ersätter inte legitimerad tandläkares medicinska bedömning.
-        Allt innehåll är avsett som stöd vid klinisk beslutsfattning och ska alltid vägas mot patientens individuella förutsättningar.
-        Enligt Patientsäkerhetslagen (PSL 2010:659) bär den legitimerade yrkesutövaren alltid det slutliga ansvaret för vårdbeslut.
-      </p>
+      </section>
+
+      {/* ============== FINAL CTA ============== */}
+      <section className="bg-gradient-to-br from-header-from to-header-to text-white relative overflow-hidden">
+        <div className="absolute -right-32 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-secondary/10 blur-3xl" />
+        <div className="max-w-[920px] mx-auto px-8 py-32 text-center relative z-10">
+          <div className="eyebrow eyebrow--light justify-center inline-flex mb-6">Börja idag</div>
+          <h2 className="font-display text-white text-[56px] md:text-[68px] leading-[1.02] mb-8">
+            Säkrare flöden.<br />
+            <span className="ed-italic text-secondary-container">Snabbare beslut.</span>
+          </h2>
+          <p className="text-white/70 text-[18px] leading-relaxed max-w-[560px] mx-auto mb-10">
+            Prova hela plattformen i 14 dagar utan kort. Ingen installation — fungerar direkt i webbläsaren.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href={isLoggedIn ? '/dashboard' : '/registrera'} className="btn-accent">
+              {isLoggedIn ? 'Till dashboard' : 'Starta provperiod'} <span aria-hidden>→</span>
+            </Link>
+            <Link href="/pricing" className="btn-ghost-white">Se prisplanerna</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ============== FOOTER ============== */}
+      <footer id="riktlinjer" className="bg-dark-surface text-white/70">
+        <div className="max-w-[1280px] mx-auto px-8 pt-20 pb-10">
+          <div className="grid md:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-12 mb-16">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo/logo-hexagon-dark.png" alt="DentaGuide-Pro" className="brand-logo" />
+                <span className="font-display text-[22px] text-white">
+                  DentaGuide<span className="ed-italic text-secondary">·Pro</span>
+                </span>
+              </div>
+              <p className="text-[14px] leading-relaxed max-w-[360px] text-white/60">
+                Nästa generations kliniska beslutsstöd för svensk tandvård. Utvecklat av tandläkare, för tandläkare.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-white text-[13px] font-mono tracking-widest2 uppercase mb-5">Plattform</h4>
+              <ul className="space-y-3 text-[14px]">
+                <li><a href="#verktyg" className="hover:text-white transition-colors">Verktyg</a></li>
+                <li><a href="#domaner" className="hover:text-white transition-colors">Domäner</a></li>
+                <li><Link href={simulatorHref} className="hover:text-white transition-colors">Simulator</Link></li>
+                <li><Link href="/pricing" className="hover:text-white transition-colors">Pris</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white text-[13px] font-mono tracking-widest2 uppercase mb-5">Klinisk data</h4>
+              <ul className="space-y-3 text-[14px]">
+                <li><Link href="/om-oss" className="hover:text-white transition-colors">Strama 2024</Link></li>
+                <li><Link href="/om-oss" className="hover:text-white transition-colors">EFP/AAP 2018</Link></li>
+                <li><Link href="/om-oss" className="hover:text-white transition-colors">HSLF-FS 2025:68</Link></li>
+                <li><Link href="/om-oss" className="hover:text-white transition-colors">Källförteckning</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white text-[13px] font-mono tracking-widest2 uppercase mb-5">Konto</h4>
+              <ul className="space-y-3 text-[14px]">
+                {isLoggedIn ? (
+                  <>
+                    <li><Link href="/dashboard" className="hover:text-white transition-colors">Översikt</Link></li>
+                    <li><Link href="/dashboard/profile" className="hover:text-white transition-colors">Profil</Link></li>
+                  </>
+                ) : (
+                  <>
+                    <li><Link href="/login" className="hover:text-white transition-colors">Logga in</Link></li>
+                    <li><Link href="/registrera" className="hover:text-white transition-colors">Registrera</Link></li>
+                  </>
+                )}
+                <li><Link href="/pricing" className="hover:text-white transition-colors">Prisplaner</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center justify-center text-center mt-12 mb-16">
+            <Image
+              src="/characters/wave-alt.gif"
+              alt=""
+              width={140}
+              height={140}
+              className="w-[140px] h-[140px] object-contain mb-4 drop-shadow-lg hover:scale-105 transition-transform"
+              unoptimized
+            />
+            <p className="font-display ed-italic text-white text-[32px] md:text-[40px] leading-[1.1]">
+              Tand & hjärna — alltid på din sida.
+            </p>
+          </div>
+
+          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between gap-6 text-[14px]">
+            <p>© 2026 DentaGuide-Pro. Med ensamrätt.</p>
+            <div className="flex flex-wrap gap-6">
+              <Link href="/om-oss" className="hover:text-white transition-colors">Integritet (GDPR)</Link>
+              <Link href="/om-oss" className="hover:text-white transition-colors">Patientdatalagen</Link>
+              <span className="flex items-center gap-2"><span className="pulse-dot" /> Drift: operativ</span>
+            </div>
+          </div>
+
+          <p className="mt-10 text-center text-[13px] text-white/35 max-w-[760px] mx-auto leading-relaxed">
+            DentaGuide-Pro är ett kliniskt beslutsstöd och ersätter inte legitimerad tandläkares medicinska bedömning.
+            Allt innehåll är avsett som stöd vid klinisk beslutsfattning och ska vägas mot patientens individuella
+            förutsättningar. Enligt Patientsäkerhetslagen (PSL 2010:659) bär den legitimerade yrkesutövaren det
+            slutliga ansvaret för vårdbeslut.
+          </p>
+        </div>
+      </footer>
+
+      <ScrollCompanion />
     </div>
-  </footer>
-
-  {/* SCROLL-FÖLJANDE KARAKTÄR */ }
-  <ScrollCharacter />
-    </div >
+    </PremiumGateProvider>
   );
 }

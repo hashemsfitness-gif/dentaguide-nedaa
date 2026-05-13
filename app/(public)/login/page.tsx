@@ -1,14 +1,31 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { Suspense, useState, FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import * as Sentry from '@sentry/nextjs';
 
+function safeRedirect(raw: string | null): string {
+  if (!raw) return '/';
+  // Endast intern, absolut path tillåten (motverkar open-redirect)
+  if (!raw.startsWith('/') || raw.startsWith('//')) return '/';
+  return raw;
+}
+
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = safeRedirect(searchParams.get('redirect'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
@@ -31,7 +48,8 @@ export default function LoginPage() {
         setError(data.error ?? 'Inloggning misslyckades. Kontrollera dina uppgifter.');
         return;
       }
-      router.push('/dashboard');
+      router.refresh();
+      router.push(redirectTo);
     } catch (err) {
       Sentry.captureException(err);
       setError('Ett oväntat fel uppstod. Försök igen.');
