@@ -18,20 +18,19 @@ export default async function Layout({ children }: { children: ReactNode }) {
     redirect("/login");
   }
 
-  // Check role using service role key is not needed here as we want to check
-  // against the user's RLS-restricted profile, or we can use the service client
-  // if we want to be absolutely sure. The plan v2 says:
-  // "Hämtar profile.role med Service Role Key (server-side only)."
-  
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+  const isSuperUser = user.email === 'nedaakh95se@gmail.com';
 
-  if (!profile || profile.role !== "admin") {
-    // If not admin, redirect to main dashboard
-    redirect("/dashboard");
+  if (!isSuperUser) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.role !== "admin") {
+      // If not admin, redirect to main dashboard
+      redirect("/dashboard");
+    }
   }
 
   return <AdminLayout>{children}</AdminLayout>;

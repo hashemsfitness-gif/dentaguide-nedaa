@@ -10,6 +10,8 @@ type GateState = {
 };
 
 type PremiumGateContextValue = {
+  isLoggedIn: boolean;
+  isPremium: boolean;
   show: (href: string, label: string) => void;
   hide: () => void;
 };
@@ -26,13 +28,14 @@ export function usePremiumGate() {
 
 export function PremiumGateProvider({
   isLoggedIn,
-  isPremium,
+  isPremium: _isPremium, // Ignorera faktiska värdet under test
   children,
 }: {
   isLoggedIn: boolean;
   isPremium: boolean;
   children: ReactNode;
 }) {
+  const isPremium = true; // ALLA ÄR PREMIUM UNDER TESTFAS
   const [state, setState] = useState<GateState>({ open: false, href: '', label: '' });
 
   const show = useCallback((href: string, label: string) => {
@@ -43,7 +46,10 @@ export function PremiumGateProvider({
     setState((s) => ({ ...s, open: false }));
   }, []);
 
-  const value = useMemo(() => ({ show, hide }), [show, hide]);
+  const value = useMemo(
+    () => ({ isLoggedIn, isPremium, show, hide }),
+    [isLoggedIn, isPremium, show, hide]
+  );
 
   return (
     <PremiumGateContext.Provider value={value}>
@@ -173,9 +179,10 @@ export function FeatureLink({
   className?: string;
   children: ReactNode;
 }) {
-  const { show } = usePremiumGate();
+  const { show, isPremium } = usePremiumGate();
+  const superAdmin = false; // Kan utökas vid behov
 
-  if (tier === 'free') {
+  if (tier === 'free' || isPremium || superAdmin) {
     return (
       <Link href={href} className={className}>
         {children}

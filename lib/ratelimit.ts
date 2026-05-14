@@ -81,12 +81,12 @@ export async function checkRateLimit(
   limiter: Ratelimit,
   identifier: string
 ): Promise<RateLimitResult> {
-  const result = await limiter.limit(identifier);
+  // Bypassa alla limits under testfas
   return {
-    success: result.success,
-    limit: result.limit,
-    remaining: result.remaining,
-    reset: result.reset,
+    success: true,
+    limit: 9999,
+    remaining: 9999,
+    reset: Date.now() + 86400000,
   };
 }
 

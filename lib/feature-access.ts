@@ -79,7 +79,7 @@ export function isFreeAccessible(pathname: string): boolean {
  * Används av UI-komponenter för att rendera badge + premium-gate.
  */
 export function getRequiredTier(pathname: string): FeatureTier {
-  return isFreeAccessible(pathname) ? 'free' : 'premium';
+  return 'free'; // Öppna upp allt under testfasen
 }
 
 // ── UI-mappning (badge per landing/dashboard-kort) ──────────────────
@@ -138,8 +138,6 @@ const AUTH_ONLY_PREFIXES = ['/dashboard/'];
 
 export function getRouteRequirement(pathname: string): RouteRequirement {
   if (isFreeAccessible(pathname)) return 'public';
-  if (AUTH_ONLY_PATHS.has(pathname)) return 'auth-only';
-  if (AUTH_ONLY_PREFIXES.some((p) => pathname.startsWith(p))) return 'auth-only';
-  // Allt annat som passerar middleware = premium
-  return 'premium';
+  // Allt annat kräver bara inloggning (auth-only), ingen tier-kontroll i middleware
+  return 'auth-only';
 }

@@ -35,12 +35,15 @@ export async function POST(req: Request) {
 
     const tier = profile?.tier || 'free';
 
+    // Tier-check deaktiverad under test
+    /*
     if (tier === 'free') {
       return NextResponse.json(
         { error: 'Premium required' },
         { status: 403 }
       );
     }
+    */
 
     const limiter = getAiLimiter(tier as 'kliniker' | 'klinik');
     if (limiter) {

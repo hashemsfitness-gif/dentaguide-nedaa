@@ -1,5 +1,18 @@
 'use client';
 
+/**
+ * app/(dashboard)/simulator/page.tsx
+ *
+ * Huvud-orkestrator för DentaGuide-Pro Simulator & Fortbildning.
+ * Kopplar ihop alla UI-komponenter med useSimulatorSession-hooken.
+ *
+ * Tillstånd:
+ *   idle             → <StartScreen>
+ *   presenting_case  → <ProgressBar> + <CasePresentation> + <AnswerInterface>
+ *   showing_feedback → <ProgressBar> + <FeedbackCard>
+ *   showing_results  → <ResultScreen>
+ */
+
 import React from 'react';
 import { SimulatorLayout } from '@/components/simulator/SimulatorLayout';
 import { StartScreen } from '@/components/simulator/StartScreen';
@@ -10,41 +23,69 @@ import { FeedbackCard } from '@/components/simulator/FeedbackCard';
 import { ResultScreen } from '@/components/simulator/ResultScreen';
 import { useSimulatorSession } from '@/hooks/useSimulatorSession';
 import { getCategoryAccent } from '@/lib/simulator/category-colors';
+import { calculateGrade } from '@/lib/simulator/scoring';
 
 export default function SimulatorPage() {
-  const { 
-    state, 
-    startSession, 
-    submitAnswer, 
-    nextCase, 
-    resetSession 
+  const {
+    state,
+    startSession,
+    submitAnswer,
+    nextCase,
+    resetSession,
+    totalScore,
+    maxScore,
   } = useSimulatorSession();
 
-  const currentScenario = state.scenarios[state.currentCaseIndex];
-  const accentColor = currentScenario ? getCategoryAccent(currentScenario.category_slug) : '#CC5833';
+  // Aktivt scenario och accentfärg för detta domänområde
+  const currentScenario = state.scenarios[state.currentCaseIndex] ?? null;
+  const accentColor = currentScenario
+    ? getCategoryAccent(currentScenario.category_slug)
+    : '#CC5833';
+
+  // Betyg beräknas klientside — API:et bekräftar vid finish
+  const grade = calculateGrade(
+    maxScore > 0 ? (totalScore / maxScore) * 100 : 0,
+  );
+
+  // Är detta sista fallet? (0-indexerat)
+  const isLastCase = state.currentCaseIndex >= state.scenarios.length - 1;
 
   return (
     <SimulatorLayout>
+
+      {/* ── IDLE: Startskärm ─────────────────────────────── */}
       {state.status === 'idle' && (
-        <StartScreen 
-          onStart={(difficulty, categoryIds) => startSession.mutate({ difficulty, categoryIds })} 
+        <StartScreen
+          onStart={(difficulty, categoryIds) =>
+            startSession.mutate({ difficulty, categoryIds })
+          }
+          isLoading={startSession.isPending}
         />
       )}
 
-      {(state.status === 'presenting_case' || state.status === 'showing_feedback') && (
+      {/* ── AKTIV SESSION: Progress + fall-innehåll ─────── */}
+      {(state.status === 'presenting_case' ||
+        state.status === 'showing_feedback') && (
         <>
-          <ProgressBar 
-            current={state.currentCaseIndex + 1} 
-            total={5} 
-            difficulty={state.sessionId ? 'Active' : '...'} 
+          <ProgressBar
+            current={state.currentCaseIndex + 1}
+            total={state.scenarios.length || 5}
+            difficulty={
+              /* Visa domännamnet (kategori) i progress-baren */
+              currentScenario?.category_slug
+                ? currentScenario.category_slug.charAt(0).toUpperCase() +
+                  currentScenario.category_slug.slice(1)
+                : 'Standard'
+            }
             accentColor={accentColor}
           />
 
-          <div className="pb-40">
+          <div className="pb-44">
+            {/* Fall-presentation + svarspanel */}
             {state.status === 'presenting_case' && currentScenario && (
               <>
                 <CasePresentation scenario={currentScenario} />
-                <AnswerInterface 
+                <AnswerInterface
                   isSubmitting={submitAnswer.isPending}
                   onSubmit={(data) => submitAnswer.mutate(data)}
                   categoryId={currentScenario.category_id}
@@ -52,30 +93,34 @@ export default function SimulatorPage() {
               </>
             )}
 
-            {state.status === 'showing_feedback' && state.lastFeedback && (
-              <FeedbackCard 
-                feedback={state.lastFeedback} 
-                onNext={nextCase}
-                isLast={state.currentCaseIndex === 4}
-              />
-            )}
+            {/* Feedback-kort efter insänt svar */}
+            {state.status === 'showing_feedback' &&
+              state.lastFeedback && (
+                <FeedbackCard
+                  feedback={state.lastFeedback}
+                  onNext={nextCase}
+                  isLast={isLastCase}
+                />
+              )}
           </div>
         </>
       )}
 
+      {/* ── RESULTAT: Sammanfattning ─────────────────────── */}
       {state.status === 'showing_results' && (
-        <ResultScreen 
-          totalScore={state.results.reduce((sum, r) => sum + r.scores.total, 0)}
-          maxScore={500}
-          grade={state.results.length === 5 ? 'A' : 'F'} // Simplified for now, finish API should provide this
-          results={state.results.map((r, i) => ({
+        <ResultScreen
+          totalScore={totalScore}
+          maxScore={maxScore}
+          grade={grade}
+          results={state.results.map((r) => ({
             user_diagnosis: r.user_diagnosis,
-            user_icd: r.user_icd,
-            total_case_score: r.scores.total
+            user_icd:       r.user_icd,
+            total_case_score: r.scores.total,
           }))}
           onRestart={resetSession}
         />
       )}
+
     </SimulatorLayout>
   );
 }

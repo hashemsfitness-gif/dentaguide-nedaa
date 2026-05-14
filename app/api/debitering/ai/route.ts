@@ -17,6 +17,7 @@ const requestSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  console.log('--- AI DEBITERING REQUEST RECEIVED ---');
   try {
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -33,12 +34,15 @@ export async function POST(req: Request) {
 
     const tier = profile?.tier || 'free';
 
+    // Tier-check deaktiverad under test
+    /*
     if (tier === 'free') {
       return NextResponse.json(
         { error: 'Premium required for AI features' },
         { status: 403 }
       );
     }
+    */
 
     const limiter = getAiLimiter(tier as 'kliniker' | 'klinik');
     if (limiter) {

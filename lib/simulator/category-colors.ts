@@ -1,41 +1,42 @@
 /**
  * lib/simulator/category-colors.ts
- * 
- * Maps clinical categories to their specific design tokens.
+ * Accentfärger och Material Symbols-ikoner per klinisk domän.
+ * Används av CategoryChips, ProgressBar och CasePresentation.
  */
 
 export const CATEGORY_ACCENT: Record<string, string> = {
-  endodonti:                '#CC5833',  // Stitch Pro default (Terrakotta)
-  parodontologi:            '#CC5833',
-  protetik:                 '#CC5833',
-  oralmedicin:              '#5B21B6',  // Agent 05 override (Lila)
-  kakkirurgi:               '#B45309',  // Agent 06 override (Amber)
-  bettfysiologi:            '#0D9488',  // Agent 07 override (Teal)
-  pedodonti:                '#1E3028',  // Pediatric Moss
-  'pedodonti-trauma':       '#1E3028',
-  'pedodonti-akut':         '#1E3028',
-  'pedodonti-munslemhinna': '#1E3028',
-  'pedodonti-beteende':     '#1E3028',
-  ortodonti:                '#1E3028',
-  allmant:                  '#0E3B52',  // Tech Blue
+  endodonti:       '#CC5833', // secondary/clay
+  parodontologi:   '#2D6A4F', // status-ok/forest
+  protetik:        '#0E3B52', // primary/tech-blue
+  oralmedicin:     '#C9A84C', // tertiary-gold
+  kirurgi:         '#5B21B6', // violet
+  bettfysiologi:   '#0D9488', // teal
+  pedodonti:       '#E07B39', // status-warning/warm
+  ortodonti:       '#3B82F6', // blue-500
 };
 
 export const CATEGORY_ICON: Record<string, string> = {
-  endodonti:     'tooth',
-  parodontologi: 'layers',
-  protetik:      'shield',
-  oralmedicin:   'medical_services',
-  kakkirurgi:    'content_cut',
-  bettfysiologi: 'psychology',
-  pedodonti:     'child_care',
-  ortodonti:     'architecture',
-  allmant:       'school',
+  endodonti:      'dentistry',
+  parodontologi:  'layers',
+  protetik:       'shield',
+  oralmedicin:    'clinical_notes',
+  kirurgi:        'content_cut',
+  bettfysiologi:  'electric_bolt',
+  pedodonti:      'child_care',
+  ortodonti:      'linear_scale',
 };
 
+/**
+ * Returnerar accentfärg för en domän-slug.
+ * Faller tillbaka på DentaGuide-Pro secondary (#CC5833).
+ */
 export function getCategoryAccent(slug: string): string {
   return CATEGORY_ACCENT[slug] ?? '#CC5833';
 }
 
+/**
+ * Returnerar Material Symbols-ikonnamn för en domän-slug.
+ */
 export function getCategoryIcon(slug: string): string {
-  return CATEGORY_ICON[slug] ?? 'clinical_notes';
+  return CATEGORY_ICON[slug] ?? 'dentistry';
 }

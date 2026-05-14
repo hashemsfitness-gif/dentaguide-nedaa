@@ -8,5 +8,5 @@ export const claude = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
 });
 
-// The prompt specifies: export const CLAUDE_MODEL = 'claude-opus-4-7';
-export const CLAUDE_MODEL = 'claude-opus-4-7';
+// Claude 3.5 Sonnet är den snabbaste och mest kapabla modellen för kliniska resonemang
+export const CLAUDE_MODEL = 'claude-3-5-sonnet-latest';

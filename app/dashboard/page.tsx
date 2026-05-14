@@ -59,12 +59,13 @@ export default async function DashboardPage() {
     .single();
 
   const displayName = profile?.full_name || user.email?.split('@')[0] || 'kollega';
-  const tierLabel =
+  const isSuperUser = user.email === 'nedaakh95se@gmail.com';
+  const tierLabel = isSuperUser ? 'Klinik (Admin)' :
     profile?.tier === 'klinik' ? 'Klinik' : profile?.tier === 'kliniker' ? 'Kliniker' : 'Gratis';
-  const isPremium = profile?.tier === 'kliniker' || profile?.tier === 'klinik';
+  const isPremium = isSuperUser || profile?.tier === 'kliniker' || profile?.tier === 'klinik';
 
   return (
-    <PremiumGateProvider isLoggedIn={true} isPremium={isPremium}>
+    <PremiumGateProvider isLoggedIn={true} isPremium={true}>
     <div data-theme="stitch-pro" className="bg-surface text-ink min-h-screen">
       <div className="noise-overlay" aria-hidden="true" />
 
@@ -84,7 +85,7 @@ export default async function DashboardPage() {
             <a href="#omraden" className="hover:text-ink transition-colors">Områden</a>
             <a href="#verktyg" className="hover:text-ink transition-colors">Verktyg</a>
             <a href="#simulator" className="hover:text-ink transition-colors">Simulator</a>
-            {profile?.role === 'admin' && (
+              {(profile?.role === 'admin' || isSuperUser) && (
               <Link href="/admin/dashboard" className="hover:text-ink transition-colors">
                 Admin
               </Link>

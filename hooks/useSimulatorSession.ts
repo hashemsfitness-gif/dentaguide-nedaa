@@ -1,164 +1,203 @@
 'use client';
 
-import { useReducer, useEffect, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+/**
+ * hooks/useSimulatorSession.ts
+ *
+ * Huvud-hook för simulatorns sessionstillstånd.
+ * Orkestrerar: start, svar, nästa fall, reset.
+ * All nätverkskommunikation sker via TanStack Query-mutations mot API-routes.
+ *
+ * API-routes som krävs (implementeras av backend-agent):
+ *   POST /api/simulator/start    → { sessionId, scenarios }
+ *   POST /api/simulator/submit   → { scores, correct }
+ *   POST /api/simulator/finish   → { finalGrade, savedAt }
+ */
 
-type SessionState = 'idle' | 'presenting_case' | 'showing_feedback' | 'showing_results';
+import { useState, useCallback } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { calculateGrade, type Grade } from '@/lib/simulator/scoring';
 
-interface State {
-  status: SessionState;
-  currentCaseIndex: number;
-  sessionId: string | null;
-  scenarios: any[];
-  results: any[];
-  lastFeedback: any | null;
+// ── Typer ──────────────────────────────────────────────────
+
+export type SimulatorStatus =
+  | 'idle'
+  | 'presenting_case'
+  | 'showing_feedback'
+  | 'showing_results';
+
+export interface SimulatorScenario {
+  id: string;
+  category_id: string;
+  category_slug: string;
+  patient_quote: string;
+  /** HTML-sträng med anamnes */
+  anamnes: string;
+  /** HTML-sträng med klinisk status & fynd */
+  status_section: string;
 }
 
-type Action =
-  | { type: 'START_SESSION'; sessionId: string; scenarios: any[] }
-  | { type: 'SUBMIT_ANSWER'; feedback: any }
-  | { type: 'NEXT_CASE' }
-  | { type: 'FINISH_SESSION' }
-  | { type: 'REHYDRATE'; session: any; results: any[]; scenarios: any[] }
-  | { type: 'RESET' };
+export interface ScoreBreakdown {
+  diagnosis: number;
+  icd: number;
+  tlv: number;
+  total: number;
+}
 
-const initialState: State = {
+export interface FeedbackData {
+  scores: ScoreBreakdown;
+  correct: {
+    trolig_diagnos: string;
+    icd_code: string;
+    differentialdiagnoser: string[];
+    tlvCodes: string[];
+    kallor: Array<{ name: string }>;
+  };
+}
+
+export interface CaseResult {
+  user_diagnosis: string;
+  user_icd: string;
+  scores: ScoreBreakdown;
+}
+
+interface SimulatorState {
+  status: SimulatorStatus;
+  sessionId: string | null;
+  scenarios: SimulatorScenario[];
+  currentCaseIndex: number;
+  lastFeedback: FeedbackData | null;
+  results: CaseResult[];
+  grade: Grade;
+}
+
+// ── Initialt tillstånd ─────────────────────────────────────
+
+const INITIAL_STATE: SimulatorState = {
   status: 'idle',
-  currentCaseIndex: 0,
   sessionId: null,
   scenarios: [],
-  results: [],
+  currentCaseIndex: 0,
   lastFeedback: null,
+  results: [],
+  grade: 'F',
 };
 
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'START_SESSION':
-      return {
-        ...state,
-        status: 'presenting_case',
-        sessionId: action.sessionId,
-        scenarios: action.scenarios,
-        currentCaseIndex: 0,
-        results: [],
-      };
-    case 'SUBMIT_ANSWER':
-      return {
-        ...state,
-        status: 'showing_feedback',
-        lastFeedback: action.feedback,
-        results: [...state.results, action.feedback],
-      };
-    case 'NEXT_CASE':
-      return {
-        ...state,
-        status: 'presenting_case',
-        currentCaseIndex: state.currentCaseIndex + 1,
-        lastFeedback: null,
-      };
-    case 'FINISH_SESSION':
-      return {
-        ...state,
-        status: 'showing_results',
-      };
-    case 'REHYDRATE':
-      const completedCount = action.results.length;
-      const isFinished = action.session.status === 'completed';
-      return {
-        ...state,
-        sessionId: action.session.id,
-        scenarios: action.scenarios,
-        results: action.results,
-        currentCaseIndex: completedCount < 5 ? completedCount : 4,
-        status: isFinished ? 'showing_results' : 'presenting_case',
-      };
-    case 'RESET':
-      return initialState;
-    default:
-      return state;
-  }
-}
+// ── Hook ───────────────────────────────────────────────────
 
 export function useSimulatorSession() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [state, setState] = useState<SimulatorState>(INITIAL_STATE);
   const queryClient = useQueryClient();
 
-  const sessionIdFromUrl = searchParams.get('session');
-
-  // Rehydrate session if ID in URL
-  useEffect(() => {
-    if (sessionIdFromUrl && !state.sessionId) {
-      fetch(`/api/simulator/session/${sessionIdFromUrl}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.session) {
-            dispatch({ 
-              type: 'REHYDRATE', 
-              session: data.session, 
-              results: data.results, 
-              scenarios: data.scenarios 
-            });
-          }
-        })
-        .catch(err => console.error('Failed to rehydrate session', err));
-    }
-  }, [sessionIdFromUrl, state.sessionId]);
-
+  // ── Starta session ───────────────────────────────────────
   const startSession = useMutation({
-    mutationFn: async (opts: { difficulty: string; categoryIds: string[] }) => {
+    mutationFn: async (params: {
+      difficulty: 'basic' | 'standard' | 'advanced';
+      categoryIds: string[];
+    }) => {
       const res = await fetch('/api/simulator/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(opts),
+        body: JSON.stringify(params),
       });
-      if (!res.ok) throw new Error('Failed to start session');
-      return res.json();
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message ?? 'Kunde inte starta session');
+      }
+      return res.json() as Promise<{
+        sessionId: string;
+        scenarios: SimulatorScenario[];
+      }>;
     },
     onSuccess: (data) => {
-      dispatch({ type: 'START_SESSION', sessionId: data.sessionId, scenarios: data.scenarios });
-      router.push(`/simulator?session=${data.sessionId}`);
+      setState({
+        ...INITIAL_STATE,
+        status: 'presenting_case',
+        sessionId: data.sessionId,
+        scenarios: data.scenarios,
+      });
     },
   });
 
+  // ── Skicka svar ──────────────────────────────────────────
   const submitAnswer = useMutation({
-    mutationFn: async (answer: {
+    mutationFn: async (params: {
       userDiagnosis: string;
       userIcd: string;
       userTlvCodes: string[];
       timeTakenSeconds: number;
     }) => {
-      const res = await fetch('/api/simulator/answer', {
+      const res = await fetch('/api/simulator/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...answer,
           sessionId: state.sessionId,
-          caseOrder: state.currentCaseIndex,
+          caseIndex: state.currentCaseIndex,
+          ...params,
         }),
       });
-      if (!res.ok) throw new Error('Failed to submit answer');
-      return res.json();
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message ?? 'Kunde inte skicka svar');
+      }
+      return res.json() as Promise<FeedbackData>;
     },
-    onSuccess: (data) => {
-      dispatch({ type: 'SUBMIT_ANSWER', feedback: data });
+    onSuccess: (feedback, variables) => {
+      setState((prev) => ({
+        ...prev,
+        status: 'showing_feedback',
+        lastFeedback: feedback,
+        results: [
+          ...prev.results,
+          {
+            user_diagnosis: variables.userDiagnosis,
+            user_icd: variables.userIcd,
+            scores: feedback.scores,
+          },
+        ],
+      }));
     },
   });
 
+  // ── Nästa fall ───────────────────────────────────────────
   const nextCase = useCallback(() => {
-    if (state.currentCaseIndex < 4) {
-      dispatch({ type: 'NEXT_CASE' });
-    } else {
-      dispatch({ type: 'FINISH_SESSION' });
-    }
-  }, [state.currentCaseIndex]);
+    setState((prev) => {
+      const nextIndex = prev.currentCaseIndex + 1;
 
+      if (nextIndex >= prev.scenarios.length) {
+        // Sessionens alla fall klara
+        const totalScore = [...prev.results].reduce(
+          (sum, r) => sum + r.scores.total,
+          0,
+        );
+        const maxScore = prev.scenarios.length * 100;
+        const pct = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+
+        return {
+          ...prev,
+          status: 'showing_results',
+          grade: calculateGrade(pct),
+        };
+      }
+
+      return {
+        ...prev,
+        status: 'presenting_case',
+        currentCaseIndex: nextIndex,
+        lastFeedback: null,
+      };
+    });
+  }, []);
+
+  // ── Återställ ────────────────────────────────────────────
   const resetSession = useCallback(() => {
-    dispatch({ type: 'RESET' });
-    router.push('/simulator');
-  }, [router]);
+    // Invalidera aktiv-session-query så ResumeBanner försvinner
+    queryClient.invalidateQueries({ queryKey: ['active-session'] });
+    setState(INITIAL_STATE);
+  }, [queryClient]);
+
+  // ── Beräknade värden ─────────────────────────────────────
+  const totalScore = state.results.reduce((sum, r) => sum + r.scores.total, 0);
+  const maxScore   = (state.scenarios.length || 5) * 100;
 
   return {
     state,
@@ -166,5 +205,7 @@ export function useSimulatorSession() {
     submitAnswer,
     nextCase,
     resetSession,
+    totalScore,
+    maxScore,
   };
 }
