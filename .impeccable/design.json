@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-16T00:00:00.000Z",
+  "title": "Design System: DentaGuide-Pro",
+  "extensions": {
+    "colorMeta": {
+      "terracotta": { "role": "primary", "displayName": "Terrakotta", "canonical": "oklch(58% 0.13 38)", "tonalRamp": ["#3a160c", "#5c2413", "#80331c", "#a34427", "#cc5833", "#e07b55", "#f0a98c", "#f8d4c4"] },
+      "tech-blue": { "role": "secondary", "displayName": "Tech-blå auktoritet", "canonical": "oklch(38% 0.06 230)", "tonalRamp": ["#04161f", "#072733", "#0a3346", "#0e3b52", "#1c5a76", "#3a82a0", "#74aec4", "#bcd7e3"] },
+      "deep-green": { "role": "neutral", "displayName": "Djupgrön behållare", "canonical": "oklch(28% 0.03 155)", "tonalRamp": ["#0c130f", "#13211a", "#1e3028", "#2b443a", "#3d5e50", "#5a8071", "#8aab9c", "#c4d6cd"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "oklch(20% 0.02 155)", "tonalRamp": ["#091b14", "#13241c", "#22332b", "#3a4a42", "#5a6a62", "#83938b", "#b2c0b9", "#dde6e1"] },
+      "surface-cream": { "role": "neutral", "displayName": "Cream-yta", "canonical": "oklch(98% 0.004 60)", "tonalRamp": ["#1c1a17", "#3a3530", "#5e564e", "#867c70", "#b3a99c", "#d8cdbf", "#f0e9df", "#fcf9f8"] },
+      "border-light": { "role": "neutral", "displayName": "Border ljus", "canonical": "oklch(91% 0.005 70)", "tonalRamp": ["#2a2723", "#46413a", "#665f54", "#8b8377", "#b2aa9d", "#d1cec9", "#e5e3df", "#f4f2ee"] },
+      "red-flag": { "role": "tertiary", "displayName": "Röd flagga", "canonical": "oklch(58% 0.22 25)", "tonalRamp": ["#3a0a0a", "#5e1212", "#841d1d", "#aa2727", "#dc2626", "#e85757", "#f08c8c", "#f7c4c4"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero- och sidtitlar. Sparsamt." },
+      "display-italic": { "displayName": "Display Italic", "purpose": "Signaturfraser — systemets 'röst'. Aldrig hela stycken." },
+      "body": { "displayName": "Body", "purpose": "All brödtext och klinisk data. Radlängd 65–75ch." },
+      "label": { "displayName": "Label / Mono", "purpose": "Eyebrows, koder (ICD/TLV), doser, status-pills." }
+    },
+    "shadows": [
+      { "name": "clay", "value": "0 8px 24px rgba(30,48,40,0.06)", "purpose": "Mjuk vilo-bädd under kort som behöver lätt separation." },
+      { "name": "hover-lift", "value": "0 16px 40px rgba(9,27,20,0.08)", "purpose": "Standard kort-hover, ofta med translateY(-3px)." },
+      { "name": "accent-glow", "value": "0 8px 16px -4px rgba(204,88,51,0.40)", "purpose": "Endast under terrakotta CTA-knappar." },
+      { "name": "deep", "value": "0 30px 60px -12px rgba(9,27,20,0.18)", "purpose": "Endast lyfta mörka ytor (featured, terminal, modaler)." }
+    ],
+    "motion": [
+      { "name": "ease-signature", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Kort-lyft och större övergångar. Ease-out, ingen bounce." },
+      { "name": "duration-fast", "value": "0.2s", "purpose": "Knapp-hover och små tillståndsskiften." },
+      { "name": "reduced-motion", "value": "prefers-reduced-motion: reduce → animation: none", "purpose": "Kritiskt: verktyget används i akuta lägen." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primär knapp (accent)",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "Terrakotta pillerknapp för primär CTA. Enda starkt färgade elementet på ytan.",
+      "html": "<button class=\"ds-btn-accent\">Kom igång <span aria-hidden=\"true\">→</span></button>",
+      "css": ".ds-btn-accent { display:inline-flex; align-items:center; gap:10px; background:#cc5833; color:#fcf9f8; border:0; border-radius:9999px; padding:14px 26px; font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:15px; box-shadow:0 8px 16px -4px rgba(204,88,51,0.45); cursor:pointer; transition:transform .2s, box-shadow .2s, filter .2s; } .ds-btn-accent:hover { background:#ff7e55; transform:translateY(-1px); filter:brightness(1.04); box-shadow:0 12px 24px -6px rgba(204,88,51,0.55); } .ds-btn-accent:focus-visible { outline:2px solid #cc5833; outline-offset:3px; }"
+    },
+    {
+      "name": "Ghost-knapp",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Sekundär åtgärd: hårfin kant, terrakotta först vid hover.",
+      "html": "<button class=\"ds-btn-ghost\">Se klinisk demo</button>",
+      "css": ".ds-btn-ghost { display:inline-flex; align-items:center; gap:10px; background:transparent; color:#091b14; border:1px solid rgba(9,27,20,0.18); border-radius:9999px; padding:14px 26px; font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; font-size:15px; cursor:pointer; transition:border-color .2s, color .2s; } .ds-btn-ghost:hover { border-color:#cc5833; color:#cc5833; } .ds-btn-ghost:focus-visible { outline:2px solid #cc5833; outline-offset:3px; }"
+    },
+    {
+      "name": "Editorial-kort",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Standard innehållskort. Platt vid vila, mjuk lyft + topp-hairline vid hover.",
+      "html": "<article class=\"ds-card\"><span class=\"ds-eyebrow\">Kliniska domäner</span><h3>Parodontologi</h3><p>Systematiska behandlingsplaner enligt EFP/AAP 2018.</p></article>",
+      "css": ".ds-card { position:relative; overflow:hidden; background:#fcf9f8; color:#091b14; border:1px solid #e5e3df; border-radius:22px; padding:32px; transition:transform .4s cubic-bezier(0.16,1,0.3,1), box-shadow .4s cubic-bezier(0.16,1,0.3,1), border-color .4s; } .ds-card h3 { font-family:'Newsreader',serif; font-weight:700; font-size:28px; letter-spacing:-0.02em; margin:14px 0 8px; } .ds-card p { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; line-height:1.6; color:rgba(9,27,20,0.65); margin:0; } .ds-card::before { content:''; position:absolute; top:0; left:32px; right:32px; height:1px; background:linear-gradient(90deg,transparent,#cc5833,transparent); opacity:0; transition:opacity .4s; } .ds-card:hover { transform:translateY(-3px); box-shadow:0 16px 40px rgba(9,27,20,0.08); border-color:rgba(204,88,51,0.35); } .ds-card:hover::before { opacity:0.5; }"
+    },
+    {
+      "name": "Eyebrow-etikett",
+      "kind": "custom",
+      "refersTo": "eyebrow",
+      "description": "Mono uppercase mikro-etikett med ledande linje. Systemets 'kliniska' signaltypografi.",
+      "html": "<span class=\"ds-eyebrow\">Kliniskt beslutsstöd</span>",
+      "css": ".ds-eyebrow { display:inline-flex; align-items:center; gap:12px; font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:#cc5833; } .ds-eyebrow::before { content:''; width:32px; height:1px; background:currentColor; display:inline-block; }"
+    },
+    {
+      "name": "Sökfält / input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Cream botten, hårfin kant, lugn terrakotta-fokus (kant, ej glow).",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Sök scenario, dos eller kod…\" />",
+      "css": ".ds-input { width:100%; background:#fcf9f8; color:#091b14; border:1px solid #e5e3df; border-radius:12px; padding:12px 16px; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; transition:border-color .2s, box-shadow .2s; } .ds-input::placeholder { color:rgba(9,27,20,0.4); } .ds-input:focus { outline:none; border-color:#cc5833; box-shadow:0 0 0 3px rgba(204,88,51,0.15); }"
+    },
+    {
+      "name": "Röda flaggor (säkerhet)",
+      "kind": "custom",
+      "refersTo": "red-flag-banner",
+      "description": "Solid hög-synlig kontraindikations-yta. Får aldrig döljas bakom accordion på vuxenscenarier.",
+      "html": "<section class=\"ds-redflag\"><h4>Röda flaggor</h4><ul><li>Feber + fluktuerande svullnad → akut dränage</li><li>Systemisk påverkan → antibiotika (PcV)</li></ul></section>",
+      "css": ".ds-redflag { background:#dc2626; color:#fcf9f8; border-radius:2rem; padding:32px; box-shadow:0 8px 24px rgba(220,38,38,0.30); } .ds-redflag h4 { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 16px; } .ds-redflag ul { margin:0; padding:0; list-style:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; line-height:1.7; } .ds-redflag li { padding-left:1.25rem; position:relative; } .ds-redflag li::before { content:'●'; position:absolute; left:0; color:#fcf9f8; }"
+    },
+    {
+      "name": "Navigation (sticky shell)",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Sticky editorial topp-nav: blur, cream-transparent, display-logotyp med terrakotta ·Pro.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-brand\" href=\"/\">DentaGuide<span>·Pro</span></a><nav><a href=\"#\">Domäner</a><a href=\"#\">Verktyg</a><a href=\"#\">Pris</a></nav><button class=\"ds-btn-accent\">Kom igång</button></header>",
+      "css": ".ds-nav { display:flex; align-items:center; justify-content:space-between; gap:32px; height:76px; padding:0 32px; background:rgba(252,249,248,0.72); backdrop-filter:blur(12px); border-bottom:1px solid rgba(0,0,0,0.05); } .ds-nav-brand { font-family:'Newsreader',serif; font-size:22px; font-weight:700; letter-spacing:-0.02em; color:#091b14; text-decoration:none; } .ds-nav-brand span { font-style:italic; font-weight:500; color:#cc5833; } .ds-nav nav { display:flex; gap:36px; } .ds-nav nav a { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:500; color:rgba(9,27,20,0.7); text-decoration:none; transition:color .2s; } .ds-nav nav a:hover { color:#091b14; } .ds-nav .ds-btn-accent { padding:10px 20px; font-size:14px; box-shadow:none; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Kollegan vid stolen",
+    "overview": "DentaGuide-Pro beter sig som en betrodd överkollega som räcker dig svaret mitt i ett patientmöte: saklig, lugn, snabb, utan en sekunds teatraliska effekter. Allt visuellt tjänar ett enda mål — tid från symtom till säkert beslut, mätt i sekunder. Det editoriala uttrycket finns för att kollegan ska kännas erfaren och trovärdig, inte för att imponera. Ramen är redaktionell; kärnan, där kliniska data läses, är tät, läsbar och rörelsefattig som ett välbyggt verktyg. Systemet har två lägen (ljust + mörkt); terrakotta-accent och röd flagga är konstanta i båda.",
+    "keyCharacteristics": [
+      "Editorial ram, klinisk kärna: uttryck utåt, densitet inåt.",
+      "En accent (terrakotta), använd sällan och med mening.",
+      "Cream-ytor, aldrig rent vitt eller rent svart.",
+      "Två lägen (ljust + mörkt); accent och röd flagga konstanta.",
+      "Platt vid vila; mjuk lyft endast som svar på interaktion.",
+      "Evidens, röda flaggor och PSL-ansvar alltid synliga.",
+      "Snabbhet och läsbarhet slår alltid visuell show."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Terrakotta (#CC5833) är den enda accenten och ska täcka ≤10% av en vuxenyta. Dess sällsynthet ÄR signalen.", "section": "colors" },
+      { "name": "The No-Pure-Neutrals Rule", "body": "Aldrig #fff eller #000. Ljusa ytor är cream (#FCF9F8), text är ink (#091B14).", "section": "colors" },
+      { "name": "The Color-Plus-Word Rule", "body": "Klinisk status kommuniceras aldrig med enbart färg. Alltid färg + ord/ikon.", "section": "colors" },
+      { "name": "The Two-Mode Rule", "body": "Ytor/text/kant definieras via roll-tokens, aldrig hårdkodat hex i komponenten, så ljust↔mörkt bara är en inversion.", "section": "colors" },
+      { "name": "The Constant-Signal Rule", "body": "Accent och röd flagga byter aldrig värde mellan lägena; kontrast ≥4.5:1 i båda.", "section": "colors" },
+      { "name": "The Italic-Is-Voice Rule", "body": "Newsreader italic används bara där systemet 'talar' som kollega. Aldrig dekoration eller löptext.", "section": "typography" },
+      { "name": "The Mono-Means-Data Rule", "body": "IBM Plex Mono uppercase betyder maskinläsbar klinisk fakta/etikett. Aldrig prosa.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Ytor är platta i vila. Skugga dyker bara upp som svar på tillstånd (hover/fokus/modal).", "section": "elevation" },
+      { "name": "The Tinted-Shadow Rule", "body": "Skuggor tonas mot ink/grön-svart vid låg opacitet. Aldrig rå svart rgba(0,0,0,0.2+).", "section": "elevation" }
+    ],
+    "dos": [
+      "Do behåll terrakotta som enda accent, ≤10% av en vuxenyta.",
+      "Do använd cream (#FCF9F8) för ytor och ink (#091B14) för text — aldrig rent vitt/svart.",
+      "Do håll kort platta i vila; lyft endast vid hover.",
+      "Do låt typografin bära hierarkin (Newsreader röst, Plus Jakarta data, IBM Plex Mono koder).",
+      "Do håll röda flaggor, källor, doser och PSL-ansvar alltid synliga.",
+      "Do komprimera luften i den kliniska kärnan; ge den editoriala ramen mer luft.",
+      "Do definiera ytor/text/kant via roll-tokens så ljust↔mörkt bara är en inversion; verifiera ≥4.5:1 i båda.",
+      "Do respektera prefers-reduced-motion; transitions ≤0.4s ease-out, ingen bounce."
+    ],
+    "donts": [
+      "Don't bygg en generisk SaaS-mall: inga lila gradienter, hero-metric-block eller identiska ikon-kort-rutnät.",
+      "Don't låt det kännas som en steril sjukhusjournal (kall grå-blå, tabelltung 90-tals-EPJ).",
+      "Don't gör det till en lekfull konsument-app (gamification, emoji-dekor, barnslighet på vuxenytor).",
+      "Don't överdesigna eller sakta ner: inga tunga 3D-lager, glas-överallt eller blockerande animationer.",
+      "Don't använd border-left/right >1px som färgad accent-stripe.",
+      "Don't använd background-clip:text-gradienttext.",
+      "Don't gör glas (glass-bento) till standardyta, särskilt inte i den kliniska kärnan.",
+      "Don't kommunicera klinisk status med enbart färg.",
+      "Don't rör medicinsk data när du arbetar med design — presentation ändras, data är oföränderlig (noll dataförlust)."
+    ]
+  }
+}

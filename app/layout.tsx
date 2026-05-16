@@ -114,7 +114,7 @@ export default function RootLayout({
         </QueryProvider>
 
         {/* PSL-fotnot hanteras per-sida i (public) och (dashboard) layouts */}
-      </body>
+</body>
     </html>
   );
 }

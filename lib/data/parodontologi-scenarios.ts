@@ -150,7 +150,7 @@ export const parodontoloiScenarier: Record<string, ParodScenarioData> = {
             "Justera/avlägsna retention (överhängande fyllningar, dåligt anpassade kronor)",
           ],
           tid: "30–45 min",
-          koder: "301, 302",
+          koder: "311, 312",
         },
         {
           title: "Steg 2: Tandstenssanering / SRP (Scaling & Root Planing)",
@@ -163,7 +163,7 @@ export const parodontoloiScenarier: Record<string, ParodScenarioData> = {
             "Behandla en kvadrant/sextant per besök eller full-mouth inom 24h",
           ],
           tid: "45–90 min per kvadrant",
-          koder: "323, 324",
+          koder: "341, 342",
         },
         {
           title: "Steg 3: Re-evaluering (6–8 veckor efter SRP)",
@@ -174,7 +174,7 @@ export const parodontoloiScenarier: Record<string, ParodScenarioData> = {
             "Bedöm: Kirurgibehov? Specialistremiss? Underhållsprogram?",
           ],
           tid: "30–45 min",
-          koder: "121",
+          koder: "301, 311",
         },
         {
           title: "Steg 4: Korrektiv behandling / Specialistremiss",
@@ -663,7 +663,7 @@ Plan: Återbesök [X] dgr. SRP i kallt skede planerat.`,
             "Analgetika: Paracetamol 1g × 4",
           ],
           tid: "30–45 min",
-          koder: "301, 323",
+          koder: "311, 341",
         },
         {
           title: "ANUG — Alt B: Metronidazol (vid systemisk påverkan)",

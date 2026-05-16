@@ -1,0 +1,61 @@
+{
+  "id": "09e7522c",
+  "phase": "accept_requested",
+  "pageUrl": "/parodontologi/gingivit-parodontit",
+  "sourceFile": null,
+  "expectedVariants": 3,
+  "arrivedVariants": 3,
+  "visibleVariant": 2,
+  "paramValues": {},
+  "pendingEventSeq": 28,
+  "pendingEvent": {
+    "type": "accept",
+    "id": "09e7522c",
+    "variantId": "2"
+  },
+  "deliveryLease": null,
+  "checkpointRevision": 10,
+  "activeOwner": "827fb7a9",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 1
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 2
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 4
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 5
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 1
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 1
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 1
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 2
+    },
+    {
+      "error": "stale_checkpoint_ignored",
+      "revision": 2
+    }
+  ],
+  "updatedAt": "2026-05-16T15:26:32.798Z"
+}
