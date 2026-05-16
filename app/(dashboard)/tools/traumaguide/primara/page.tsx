@@ -9,35 +9,28 @@ export const metadata = {
 
 export default function PrimaraTraumaPage() {
   return (
-    <div data-theme="stitch-pro" className="min-h-screen bg-[#f7f2ee]">
-      {/* Header */}
-      <header className="header-gradient flex items-center px-6">
-        <Link href="/dashboard" className="logo text-white italic font-serif text-2xl hover:opacity-80 transition-opacity">
-          DentaGuide-Pro
-        </Link>
-        <div className="ml-8 font-mono text-sm uppercase tracking-wider opacity-80 text-white flex items-center">
-          <Link href="/tools/traumaguide" className="hover:underline">Traumaguiden</Link>
-          <span className="mx-2">/</span>
-          Primära tänder
-        </div>
-      </header>
-
-      {/* Main Layout */}
-      <main className="max-w-[1200px] mx-auto p-8 layout-grid">
-        <div className="col-span-full mb-6">
-          <Link href="/tools/traumaguide" className="inline-flex items-center text-[#CC5833] font-semibold hover:opacity-80">
+    <div data-theme="stitch-pro" className="min-h-screen bg-[#f7f2ee] pb-20">
+      {/* Soft Hero Header (Restored) */}
+      <div className="bg-[#0E3B52] pt-12 pb-24 px-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4" />
+        
+        <div className="max-w-[1000px] mx-auto relative z-10">
+          <Link href="/tools/traumaguide" className="inline-flex items-center text-white/60 hover:text-white mb-8 transition-colors font-medium">
             <ArrowLeft className="w-4 h-4 mr-2" /> Tillbaka till översikten
           </Link>
+          <h1 className="font-display text-white text-4xl md:text-5xl font-bold tracking-tight">
+            Primära <span className="italic font-medium text-white/80">tänder</span>
+          </h1>
         </div>
-        
-        <div className="col-span-full">
-          <TraumaGuidePrimara />
-        </div>
+      </div>
+
+      {/* Main Content */}
+      <main className="max-w-[1000px] mx-auto px-6 -mt-12 relative z-20">
+        <TraumaGuidePrimara />
       </main>
 
-      <footer className="text-center py-12 text-sm text-[#0E3B52] opacity-70 flex flex-col items-center gap-2">
-        <span>PSL 2010:659 — Ersätter inte kliniskt omdöme</span>
-        <span className="text-xs opacity-80">Källor: IADT 2020, Dental Trauma Guide</span>
+      <footer className="mt-20 text-center text-[#0E3B52]/40 text-xs font-medium uppercase tracking-widest pb-12">
+        PSL 2010:659 — Ersätter inte kliniskt omdöme
       </footer>
     </div>
   );

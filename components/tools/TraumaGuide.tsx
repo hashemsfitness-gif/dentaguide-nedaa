@@ -1,25 +1,19 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ChevronRight, ArrowLeft, RotateCcw, Copy, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ChevronRight, 
+  RotateCcw, 
+  Check, 
+  AlertTriangle, 
+  Copy, 
+  ArrowLeft,
+  Clock
+} from 'lucide-react';
 
-interface StepOption {
-  label: string;
-  desc?: string;
-  color: string;
-  nextId?: string;
-  resultId?: string;
-}
+/* ── KLINISK DATA (VERBATIM) ─────────────────────────────────── */
 
-interface StepData {
-  num: number;
-  title: string;
-  desc?: string;
-  principle?: string;
-  options: StepOption[];
-}
-
-// --- DATA: PRIMÄRA TÄNDER ---
 const PRIMARA_STEPS = {
   's0': {
     num: 1,
@@ -104,32 +98,31 @@ const PRIMARA_STEPS = {
 const RESULTS_PRIMARA = {
   'rem': { color: 'red', title: '🚨 REMISS BARNAKUT — OMEDELBART', description: 'Tandbehandling väntar. Stabilisera barnet först.' },
   'konk': { color: 'green', title: '✅ Konkussion', description: 'Normal rörlighet, perkussionsöm. Avvakta. Skonkost 1–2 v. Kontroll: 1 v, 3 v, 3 mån. Utmärkt prognos — mycket liten risk för nekros.' },
-  'sublux': { color: 'blue', title: '📋 Subluxation', description: 'Ökad rörlighet, ej displacerad. Avvakta. Skonkost + klorhexidin 0,12 % 2 ggr/dag. Kontroll: 1 v, 4 v, 3 mån. God prognos.' },
-  'avvakta': { color: 'green', title: '✅ Avvakta — observation', description: 'Ingen bettstörning + apex buckalt. Skonkost 1–2 v. Klorhexidinbaddning. Kontroll: 1 v, 4 v, 3 mån, 6 mån. Försäkringsanmälan.' },
-  'slipa': { color: 'blue', title: '🔧 Ocklusionsjustering — slipa', description: 'Liten bettstörning → slipa störande kontakt med diamantborr. Kontrollera att barnet kan bita ihop normalt. Skonkost + klorhexidin.' },
-  'ex-bett': { color: 'amber', title: '⚠️ Extraktion — stor bettstörning', description: 'Ocklusionsstörning ej lösbar med slipning. Extraktion i LA (beräkna barnvikt!). Hemostas. Postop-instruktioner till förälder. Försäkringsanmälan.' },
-  'ex-apex': { color: 'red', title: '🚨 Extraktion — apex mot anlaget', description: 'Apex displacerat palatinalt → risk för skada på permanent tandanlag. Extraktion krävs. Använd ALDRIG apikalt tryck nära anlag. Försäkringsanmälan.' },
-  'intru-b': { color: 'green', title: '✅ Intrusion — avvakta reeruption', description: 'Apex buckalt (bort från anlag). Avvakta spontan reeruption 1–6 månader. Kontroll var 4:e vecka. Om ingen reeruption 6 mån → extraktion. Försäkringsanmälan.' },
-  'intru-p': { color: 'red', title: '🚨 Intrusion — extraktion krävs', description: 'Apex palatinalt (mot anlag). Hög risk för skada på permanent tandanlag. Extraktion. Försäkringsanmälan.' },
-  'exart-ok': { color: 'red', title: '🚨 Exartikulation — ALDRIG replantation', description: 'Replanteras ALDRIG. Spolning koksalt, hemostas med kompress. Lugnande info, kontroll 1 vecka. Info till förälder: permanent anlag kan visa skada vid 6–7 år (hypomineralisering, formavvikelse). Försäkringsanmälan ALLTID.' },
-  'asp': { color: 'red', title: '🚨 MISSTÄNKT ASPIRATION — AKUT REMISS', description: 'Tand ej hittad + hosta/andningsbesvär → AKUT remiss barnakut/sjukhus för lungröntgen. Vid stridor/andnöd: RING 112.' },
-  'exart-rtg': { color: 'amber', title: '⚠️ Tand ej hittad — röntga omedelbart', description: 'Röntga för att utesluta total intrusion (tand uppslagen i benet). Om tom alveol på rtg = exartikulation bekräftad (replanteras aldrig). Om tand syns i benet = total intrusion → bedöm apex-riktning.' },
-  'infrak': { color: 'green', title: '✅ Infraktion / Emaljfraktur', description: 'Ingen eller minimal substansförlust. Slipa eventuella vassa kanter. Ingen annan åtgärd krävs. Uppföljning vid ordinarie revision. Utmärkt prognos.' },
-  'frak-ok': { color: 'blue', title: '📋 Okomplicerad kronfraktur', description: 'Dentin blottat utan pulpablotta. Slipa/runda vassa kanter. Palpera läpp (tandfragment?). Om stort dentinsår + kooperativt barn: GIC-förband. Fluorlack. Kontroll 4 v.' },
-  'frak-komp': { color: 'amber', title: '⚠️ Komplicerad kronfraktur — pulpablotta', description: 'Litet/okooperativt barn (<3–4 år): EXTRAKTION är förstahandsval — tvinga aldrig smärtsam behandling.\nKooperativt äldre barn + vital tand + <24 h: partiell pulpotomi (Cvek) med Ca(OH)₂ eller MTA.\n>24 h eller nekrotisk pulpa: extraktion.' },
-  'kronrot': { color: 'amber', title: '⚠️ Kronrotfraktur', description: 'Fraktur genom emalj, dentin och rotcement. Oftast dålig prognos i primära bettet. Avlägsna löst fragment. Extraktion rekommenderas i de flesta fall. Lämna djupt apikalt fragment (resorberas). Försäkringsanmälan.' },
-  'rotfrak': { color: 'red', title: '🔴 Rotfraktur', description: 'Kronan kan se intakt ut men är extremt rörlig. Röntgen (2 vinklar) bekräftar frakturlinje i roten.\n\nÅtgärd: Extrahera koronalt fragment. LÄMNA apikalt fragment om det sitter djupt — att gräva efter det riskerar skada på permanenta anlaget. Resorberas spontant. Kontroll 1 mån + 1 år.' },
-  'alv': { color: 'red', title: '🚨 Alveolarutskottsfraktur — Specialistfall', description: 'Rörligt bensegment med 2–4 tänder som enhet. Kraftig blödning.\n\nAkut: Reponering + flexibel splint 4 v (om möjligt). Små barn 1–3 år: splintning ofta omöjlig → skonkost/flytande föda + sårvård.\n\nRemittera till pedodontist/käkkirurg. Försäkringsanmälan.' }
+  'sublux': { color: 'blue', title: '✅ Subluxation', description: 'Ökad rörlighet men ej dislokerad. Avvakta. Skonkost 1–2 v. Kontroll: 1 v, 3 v, 3 mån. Låg risk för nekros.' },
+  'avvakta': { color: 'green', title: '✅ Avvakta spontan eruption', description: 'Låt tanden erumpera själv. Kontrollera noga (kliniskt + rtg) inom 1 v, 3 v, 3 mån. Skonkost.' },
+  'slipa': { color: 'blue', title: '✅ Slipa bort bettstörning', description: 'Slipa försiktigt på tanden som stör bettet. Kontroll 1 v, 3 v, 3 mån. Skonkost.' },
+  'ex-bett': { color: 'red', title: '🚨 Extraktion — bettstörning', description: 'Tanden stör bettet och kan ej slipas. Extraktion rekommenderas för att undvika trauma mot permanenta anlaget.' },
+  'ex-apex': { color: 'red', title: '🚨 Extraktion — apex mot anlag', description: 'Tanden är dislokerad mot det permanenta anlaget. Extraktion krävs för att minimera skaderisken på anlaget.' },
+  'intru-b': { color: 'green', title: '✅ Avvakta — apex buckalt', description: 'Tanden pekar bort från anlaget. God chans till spontan re-eruption (oftast inom 6 mån). Kontroll 1 v, 3 v, 3 mån.' },
+  'intru-p': { color: 'red', title: '🚨 Extraktion — apex palatinalt', description: 'Tanden är intryckt mot det permanenta anlaget. Extraktion rekommenderas för att skydda anlaget.' },
+  'exart-ok': { color: 'green', title: '✅ Avvakta — tanden är ute', description: 'Tanden återhittad. Sätt ALDRIG tillbaka den. Röntgen för att utesluta rötter/intrusion. Kontrollera permanenta anlagets eruption senare.' },
+  'asp': { color: 'red', title: '🚨 REMISS AKUTEN — ASPIRATION?', description: 'Misstänkt aspiration av tand/fragment. Kräv omedelbar medicinsk bedömning (lungröntgen).' },
+  'exart-rtg': { color: 'amber', title: '⚠️ Röntgen krävs', description: 'Tanden ej hittad. Måste utesluta att den är total-intruderad (helt intryckt i benet).' },
+  'infrak': { color: 'green', title: '✅ Avvakta', description: 'Ingen behandling krävs. Eventuellt kontroll av sensibilitet senare.' },
+  'frak-ok': { color: 'blue', title: '✅ Täck dentin', description: 'Täck blottat dentin med komposit/glasjonomer för att minska sensibilitet. Kontroll 3 v, 3 mån.' },
+  'frak-komp': { color: 'red', title: '🚨 Pulpotomi eller Extraktion', description: 'Pulpablotta. Hos barn väljs oftast extraktion p.g.a. svårighet att utföra endodonti, men partiell pulpotomi kan övervägas.' },
+  'kronrot': { color: 'red', title: '🚨 Extraktion', description: 'Fraktur sträcker sig under bennivå. Tanden kan ej räddas på ett hållbart sätt i primära bettet.' },
+  'rotfrak': { color: 'amber', title: '⚠️ Avvakta eller Extraktion', description: 'Om den koronala delen ej stör bettet: låt sitta. Annars: extrahera koronala delen, lämna rotspetsen (den resorberas oftast).' },
+  'alv': { color: 'red', title: '🚨 Reponering och Fixering', description: 'Hela benblocket rör sig. Reponera manuellt och fixera (splint) i 4 veckor. Remiss till specialist rekommenderas.' }
 };
 
-// --- DATA: PERMANENTA TÄNDER ---
 const PERMANENTA_STEPS = {
   's0': {
     num: 1,
     title: '🚨 Huvudskada?',
-    desc: 'Medvetslöshet? Kräkningar? Nacksmärta?',
+    desc: 'Medvetslöshet? Kräkningar? Nacksmärta? Slog barnet i huvudet?',
     options: [
-      { label: '✅ Nej — patienten är alert', color: 'green', nextId: 's1' },
+      { label: '✅ Nej — alert', color: 'green', nextId: 's1' },
       { label: '🚨 Ja — misstänkt huvudskada', color: 'red', resultId: 'rem' }
     ]
   },
@@ -145,410 +138,458 @@ const PERMANENTA_STEPS = {
   's2a': {
     num: 3,
     title: 'Rörlighet, position, perkussion?',
-    desc: 'Testa sensibilitet (referensvärde). Röntga (uteslut rotfraktur).',
     options: [
-      { label: 'Normal rörlighet, perkussionsöm', desc: 'Konkussion', color: 'green', nextId: 's-konk' },
-      { label: 'Ökad rörlighet, ej displacerad', desc: 'Subluxation', color: 'blue', resultId: 'sublux' },
-      { label: 'Tanden ser längre ut (dragen utåt)', desc: 'Extrusion', color: 'amber', nextId: 's-extru' },
-      { label: 'Tryckt snett, kan vara låst', desc: 'Lateral luxation', color: 'amber', nextId: 's-lat' },
+      { label: 'Rörlig, rätt plats, öm', desc: 'Subluxation / Konkussion', color: 'green', nextId: 's-konk' },
+      { label: 'Tryckt snett eller dragen utåt', desc: 'Lateral luxation / Extrusion', color: 'amber', nextId: 's-lux' },
       { label: 'Intryckt i benet (kortare/osynlig)', desc: 'Intrusion', color: 'red', nextId: 's-intru' },
       { label: 'Flera tänder + ben rör sig som block', desc: 'Alveolarutskottsfraktur', color: 'red', resultId: 'alv' }
     ]
   },
   's-konk': {
     num: 4,
-    title: 'Röntgen normal? (uteslut rotfraktur)',
+    title: 'Har tanden ökad rörlighet?',
     options: [
-      { label: 'Ja — normal röntgenbild', desc: '→ Konkussion bekräftad', color: 'green', resultId: 'konk' },
-      { label: 'Frakturlinje synlig i roten', desc: '→ Rotfraktur!', color: 'amber', resultId: 'rotfrak' }
+      { label: 'Ja — ökad rörlighet', desc: '→ Subluxation', color: 'blue', resultId: 'sublux' },
+      { label: 'Nej — normal rörlighet', desc: '→ Konkussion', color: 'green', resultId: 'konk' }
     ]
   },
-  's-extru': {
+  's-lux': {
     num: 4,
-    title: 'Rotutvecklingsstadium?',
-    desc: 'Röntgen: öppet eller slutet apex?',
+    title: '⚠️ Bettstörning?',
+    desc: 'Kan patienten bita ihop ordentligt?',
     options: [
-      { label: 'Öppet apex', desc: 'Chans till revaskularisering', color: 'green', resultId: 'extru-open' },
-      { label: 'Slutet apex', desc: 'Nekros förväntas → endo', color: 'amber', resultId: 'extru-closed' }
-    ]
-  },
-  's-lat': {
-    num: 4,
-    title: 'Rotutvecklingsstadium?',
-    options: [
-      { label: 'Öppet apex', desc: 'Chans till revaskularisering', color: 'green', resultId: 'lat-open' },
-      { label: 'Slutet apex', desc: 'Nekros sannolikt → endo', color: 'amber', resultId: 'lat-closed' }
+      { label: 'Ja — tanden stör bettet', desc: 'Reponering krävs', color: 'red', resultId: 'repo-fix' },
+      { label: 'Nej — inget bettfel', color: 'green', resultId: 'fix' }
     ]
   },
   's-intru': {
     num: 4,
-    title: '⚠️ Allvarligast luxationstyp. Rotutveckling + intrusionsgrad?',
+    title: 'Hur djupt är tanden intryckt?',
     options: [
-      { label: 'Öppet apex', desc: 'Avvakta spontan reeruption 2–4 mån', color: 'green', resultId: 'intru-open' },
-      { label: 'Slutet apex + intrusion < 7 mm', desc: 'Ortodontisk extrusion', color: 'amber', resultId: 'intru-closed-mild' },
-      { label: 'Slutet apex + intrusion > 7 mm', desc: 'Kirurgisk repositionering', color: 'red', resultId: 'intru-closed-severe' }
+      { label: '< 3 mm', desc: 'Vänta på re-eruption (<17 år) eller dra ut ortodontiskt', color: 'green', resultId: 'intru-liten' },
+      { label: '3 - 7 mm', desc: 'Ortodontisk eller kirurgisk reponering', color: 'amber', resultId: 'intru-mellan' },
+      { label: '> 7 mm', desc: 'Kirurgisk reponering omedelbart', color: 'red', resultId: 'intru-stor' }
     ]
   },
   's2b': {
     num: 3,
-    title: 'Bekräfta: är det en permanent tand?',
-    desc: 'Mjölktand replanteras ALDRIG. Kontrollera!',
-    principle: '🚨 REPLANTATION SÅ FORT SOM MÖJLIGT — Varje minut räknas!',
+    title: '🚨 EXARTIKULATION — AGERA NU!',
+    principle: 'Varje minut räknas för att rädda tanden. Målet är replantation OMEDELBART.',
     options: [
-      { label: 'Ja — permanent tand', desc: '→ REPLANTATION', color: 'red', nextId: 's-avuls-exart' }, // Navigates to custom UI block
-      { label: 'Nej — det är en mjölktand', desc: '→ Aldrig replantation', color: 'amber', resultId: 'mjolk-fel' }
-    ]
-  },
-  's-avuls': { // Will jump here from custom UI
-    num: 4,
-    title: 'Extraoral tid + förvaringsmedium',
-    desc: 'Hur länge? Hur förvarad?',
-    options: [
-      { label: '< 60 min, förvarad fuktigt (mjölk/saliv/koksalt)', desc: 'God prognos', color: 'green', nextId: 's-apex-avuls' },
-      { label: '< 60 min, förvarad torrt', desc: 'Blötlägg koksalt 20 min → replantera', color: 'amber', nextId: 's-apex-avuls' },
-      { label: '> 60 min, förvarad fuktigt', desc: 'PDL skadat, replantera ändå', color: 'amber', nextId: 's-apex-avuls' },
-      { label: '> 60 min, torrt', desc: 'Dålig prognos, replantera ändå', color: 'red', nextId: 's-apex-avuls' }
-    ]
-  },
-  's-apex-avuls': {
-    num: 5,
-    title: 'Rotutvecklingsstadium?',
-    options: [
-      { label: 'Öppet apex', desc: 'Monitorera revaskularisering', color: 'green', resultId: 'avuls-open' },
-      { label: 'Slutet apex', desc: 'Rotbehandling inom 7–14 d', color: 'amber', resultId: 'avuls-closed' }
+      { label: '✅ Tanden är redan replanterad', color: 'green', resultId: 'exart-re' },
+      { label: '⚠️ Tanden är ute (i mjölk/saliv/fysiologiskt)', color: 'blue', resultId: 'exart-media' },
+      { label: '🚨 Tanden är torr (> 60 minuter)', color: 'red', resultId: 'exart-torr' }
     ]
   },
   's2c': {
     num: 3,
-    title: 'Vad ser du i frakturytan?',
-    desc: 'Palpera ALLTID läpparna — tandfragment kan vara inbäddade! Har patienten med sig fragmentet?',
+    title: 'Vad ser du?',
+    desc: 'Palpera ALLTID läpparna — tandfragment kan vara inbäddade!',
     options: [
-      { label: 'Spricka utan substansförlust', desc: 'Infraktion', color: 'green', resultId: 'infrak' },
-      { label: 'Emalj av, inget dentin blottat', desc: 'Emaljfraktur', color: 'green', resultId: 'emalj' },
+      { label: 'Spricka / liten emaljbit av', desc: 'Infraktion / Emaljfraktur', color: 'green', resultId: 'infrak' },
       { label: 'Dentin blottat, INGEN röd punkt', desc: 'Okomplicerad kronfraktur', color: 'blue', resultId: 'frak-ok' },
-      { label: 'Röd punkt / blödning i frakturyta', desc: 'Komplicerad (pulpablotta)', color: 'amber', nextId: 's-cvek' },
-      { label: 'Fraktur under tandköttet', desc: 'Kronrotfraktur', color: 'amber', resultId: 'kronrot' },
-      { label: 'Kronan intakt men extremt rörlig', desc: 'Rotfraktur (rtg bekräftar)', color: 'amber', resultId: 'rotfrak' },
-      { label: 'Flera tänder + ben rör sig', desc: 'Alveolarutskottsfraktur', color: 'red', resultId: 'alv' }
-    ]
-  },
-  's-cvek': {
-    num: 4,
-    title: 'Är Cvek (partiell pulpotomi) möjlig?',
-    desc: 'Krav: vital pulpa (blödning), < 24 h sedan skada, ej symtomgivande.',
-    options: [
-      { label: 'Ja — vital, < 24 h, kooperativ', desc: '→ Cvek med MTA/Biodentine', color: 'green', resultId: 'cvek-ok' },
-      { label: 'Nej — nekrotisk / > 24 h / symtom', desc: '→ Endodonti / Extraktion', color: 'red', resultId: 'cvek-nej' }
+      { label: 'Röd punkt / blödning i frakturyta', desc: 'Komplicerad (pulpablotta)', color: 'red', resultId: 'frak-komp' },
+      { label: 'Kronan intakt men extremt rörlig', desc: 'Rotfraktur (rtg bekräftar)', color: 'red', resultId: 'rotfrak' }
     ]
   }
 };
 
 const RESULTS_PERMANENTA = {
-  'rem': { color: 'red', title: '🚨 AKUT REMISS — Sjukhus/Barnakut', description: 'Tandbehandling väntar. Om utslagen tand: skicka den med i mjölk!' },
-  'konk': { color: 'green', title: '✅ Konkussion', description: 'Normal rörlighet, perkussionsöm, normal röntgenbild. Avvakta. Skonkost 1–2 v. Sensibilitet: registrera referensvärde.\nKontroll: 1 v, 3 v, 3 mån, 6 mån. Utmärkt prognos.' },
-  'sublux': { color: 'blue', title: '📋 Subluxation', description: 'Ökad rörlighet, ej displacerad. Avvakta. Skonkost 2 v. Klorhexidin 0,12 %. Ev. flexibel splint 2 v (komfort).\nKontroll: 1 v, 4 v, 3 mån. God prognos.' },
-  'extru-open': { color: 'green', title: '✅ Extrusion — öppet apex', description: 'Reponera försiktigt (digitalt tryck). Flexibel splint 2 v. Öppet apex: chans till revaskularisering — monitorera sensibilitet.\nKontroll: 2 v (splintborttagning), 4 v, 3 mån, 6 mån, 1 år.' },
-  'extru-closed': { color: 'amber', title: '⚠️ Extrusion — slutet apex', description: 'Reponera försiktigt. Flexibel splint 2 v. Slutet apex: pulpanekros förväntas → planera endodontisk behandling.\nKontroll: 2 v (splint + endo-start), 4 v, 3 mån, 6 mån, 1 år.' },
-  'lat-open': { color: 'green', title: '✅ Lateral luxation — öppet apex', description: 'Reponering: lösgör från palatinalt med fingertryck/tång. Flexibel splint 4 v. Öppet apex: avvakta, chans till revaskularisering.\nMonitorera sensibilitet noggrant. Kontroll: 2 v, 4 v (splint bort), 3 mån, 6 mån, 1 år.' },
-  'lat-closed': { color: 'amber', title: '⚠️ Lateral luxation — slutet apex', description: 'Reponering under LA. Flexibel splint 4 v. Slutet apex: pulpanekros sannolikt → planera endodontisk behandling.\nHög risk för extern rotresorption. Kontroll: 2 v, 4 v, 3 mån, 6 mån, 1 år, årligen 5 år.' },
-  'intru-open': { color: 'green', title: '✅ Intrusion — öppet apex: avvakta', description: 'Avvakta spontan reeruption (förväntas inom 2–4 månader). Om ingen reeruption → ortodontisk extrusion.\nMonitorera sensibilitet. Om nekros → endodonti.' },
-  'intru-closed-mild': { color: 'amber', title: '⚠️ Intrusion < 7 mm — ortodontisk extrusion', description: 'Slutet apex + intrusion < 7 mm: ortodontisk extrusion rekommenderas. Flexibel splint 4 v efter extrusion.\nEndodonti inom 2–3 v (nekros förväntas). Hög risk för resorption.' },
-  'intru-closed-severe': { color: 'red', title: '🚨 Intrusion > 7 mm — kirurgisk repositionering', description: 'Slutet apex + intrusion > 7 mm: kirurgisk repositionering under LA. Flexibel splint 4 v.\nEndodonti inom 2–3 v. Mycket hög risk för extern rotresorption. Intensiv uppföljning.' },
-  'avuls-open': { color: 'green', title: '✅ Replantation — öppet apex', description: 'Tanden replanterad. Flexibel splint 2 v. Antibiotika: PcV. Klorhexidin 2 ggr/dag.\nÖppet apex: monitorera revaskularisering — sensibilitetstest vid varje kontroll.\nOm nekros utvecklas → apexifikation/endodonti.\nKontroll: 2 v, 4 v, 3 mån, 6 mån, 1 år, årligen 5 år.' },
-  'avuls-closed': { color: 'amber', title: '⚠️ Replantation — slutet apex', description: 'Tanden replanterad. Flexibel splint 2 v. Antibiotika: PcV.\nSlutet apex: ROTBEHANDLING inom 7–14 dagar (nekros förväntas).\nCa(OH)₂ som intrakanal-medikament 1 mån → definitiv rotfyllning.\nKontroll: 2 v, 4 v, 3 mån, 6 mån, 1 år, årligen 5 år.\nFörsäkringsanmälan ALLTID.' },
-  'mjolk-fel': { color: 'amber', title: '⚠️ Mjölktand — ALDRIG replantation', description: 'Mjölktänder replanteras aldrig. Risk för skada på permanent anlag. Se flödesschema för primära tänder.\nSpolning, hemostas. Försäkringsanmälan.' },
-  'infrak': { color: 'green', title: '✅ Infraktion', description: 'Spricka i emaljen utan substansförlust. Synlig vid transilluminering. Ingen åtgärd krävs.\nRegistrera sensibilitet (referensvärde). Uppföljning vid ordinarie revision.' },
-  'emalj': { color: 'green', title: '✅ Emaljfraktur', description: 'Förlust av emalj utan dentinblotta. Slipa eventuella vassa kanter. Ev. komposit vid estetisk zon.\nUtmärkt prognos.' },
-  'frak-ok': { color: 'blue', title: '📋 Okomplicerad kronfraktur (emalj + dentin)', description: 'Dentin blottat utan pulpablotta. Sensibilitet positiv.\nFragment medtaget → bonding (adhesiv + flödbar komposit).\nFragment saknas → komposituppbyggnad.\nAlternativ: GIC som temporärt förband.\nPalpera läpp (fragment?). Kontroll: 3–4 v, 3 mån, 1 år.\nGod prognos (1–6 % nekrosrisk).' },
-  'cvek-ok': { color: 'green', title: '✅ Komplicerad kronfraktur — Cvek-pulpotomi', description: 'Partiell pulpotomi (Cvek) = förstahandsval. Kofferdam obligatorisk.\n1. Avlägsna 1–2 mm inflammerad pulpa med roserande borr under spolning.\n2. Hemostas med steril koksaltpellet.\n3. Täck med MTA / Biodentine.\n4. Temporär GIC → återbesök 24–48 h för slutlig komposit.\nSärskilt viktigt vid öppet apex (bevara vitalitet → rotutveckling).\nKontroll: 4 v, 3 mån, 6 mån, 1 år.' },
-  'cvek-nej': { color: 'red', title: '🔴 Komplicerad kronfraktur — Cvek EJ möjlig', description: 'Pulpa nekrotisk, symtomgivande eller > 24 h sedan skada.\nÖppet apex: apexifikation med MTA (specialist).\nSlutet apex: konventionell endodonti.\nOm tanden ej restaurerbar: extraktion.\nRemittera vid osäkerhet.' },
-  'kronrot': { color: 'amber', title: '⚠️ Kronrotfraktur', description: 'Fraktur genom emalj, dentin och rotcement. Avlägsna löst fragment.\nBedöm restaurerbarhet:\n— Ytlig fraktur: GIC/komposit.\n— Djup fraktur: ortodontisk/kirurgisk extrusion + endo + krona.\n— Hopplös prognos: extraktion.\nOfta komplex behandling — överväg remiss.' },
-  'rotfrak': { color: 'amber', title: '⚠️ Rotfraktur', description: 'Kronan rörlig men ser intakt ut. Röntgen (2+ vinklar) bekräftar frakturlinje.\nReponera koronalt fragment om displacerat. Flexibel splint:\n— Apikal/mellersta tredjedelen: 4 v.\n— Cervikala tredjedelen: 4 månader.\nMonitorera sensibilitet. Om nekros → endo BARA av koronalt fragment.\nPrognos: apikal fraktur bäst, cervikal sämst.' },
-  'alv': { color: 'red', title: '🚨 Alveolarutskottsfraktur', description: 'Rörligt bensegment med flera tänder. Kraftig blödning, bettstörning.\nReponering under LA. Flexibel splint 4 v. Kontrollera ocklusion.\nAntibiotika vid indikation. Monitorera sensibilitet alla tänder i segmentet.\nVid misstanke om käkbensfraktur: remiss käkkirurg.\nKontroll: 1 v, 4 v, 3 mån, 6 mån, 1 år.' }
+  'rem': { color: 'red', title: '🚨 REMISS BARNAKUT — OMEDELBART', description: 'Tandbehandling väntar. Stabilisera patienten först.' },
+  'konk': { color: 'green', title: '✅ Konkussion', description: 'Normal rörlighet, perkussionsöm. Ingen fixering. Kontroll 2 v, 4 v, 6-8 v, 6 mån, 1 år.' },
+  'sublux': { color: 'blue', title: '✅ Subluxation', description: 'Ökad rörlighet. Fixering valfritt (vid obehag). Kontroll 2 v, 4 v, 6-8 v, 6 mån, 1 år.' },
+  'repo-fix': { color: 'red', title: '🚨 Reponera och Fixera', description: 'Reponera manuellt under lokalanestesi. Fixera (flexibel splint) i 2 veckor (4 veckor vid alveolarfraktur). Kontroll 2 v, 4 v, 6-8 v, 6 mån, 1 år.' },
+  'fix': { color: 'blue', title: '✅ Fixera', description: 'Fixera (flexibel splint) i 2 veckor. Kontroll 2 v, 4 v, 6-8 v, 6 mån, 1 år.' },
+  'intru-liten': { color: 'green', title: '✅ Avvakta spontan eruption', description: 'Gäller patienter < 17 år med öppet apex. Kontrollera noga var 1-2 vecka. Om ingen rörelse efter 3 veckor → ortodontiskt framdragande.' },
+  'intru-mellan': { color: 'amber', title: '⚠️ Ortodontisk/Kirurgisk reponering', description: 'Dra fram tanden ortodontiskt (långsamt) eller reponera kirurgiskt. Fixera i 4 veckor.' },
+  'intru-stor': { color: 'red', title: '🚨 Kirurgisk reponering', description: 'Reponera kirurgiskt omedelbart och fixera i 4 veckor. Hög risk för ankyloos.' },
+  'exart-re': { color: 'green', title: '✅ Redan på plats', description: 'Rengör område, verifiera läge med rtg. Fixera i 2 veckor. Antibiotika (Amimox/Doxyferm). Kontrollera stelkrampsskydd.' },
+  'exart-media': { color: 'blue', title: '✅ Replantera OMEDELBART', description: 'Håll i kronan, skölj tanden 10 sek i koksalt om smutsig. Replantera direkt. Fixera 2 veckor. Antibiotika. Kontrollera stelkrampsskydd.' },
+  'exart-torr': { color: 'red', title: '🚨 Replantera (dålig prognos)', description: 'Tanden har varit torr >60 min. PDL-celler är döda. Blötlägg i fluorlösning före replantation. Hög risk för resorption/ankylos.' },
+  'infrak': { color: 'green', title: '✅ Avvakta', description: 'Ingen akut åtgärd. Eventuellt slipning/polering.' },
+  'frak-ok': { color: 'blue', title: '✅ Bonding / Komposit', description: 'Limma fast fragment om det finns, annars komposit. Kontroll 6-8 v, 1 år.' },
+  'frak-komp': { color: 'red', title: '🚨 Partiell pulpotomi (Cvek)', description: 'Bevara pulpan! Rengör med koksalt/klorhexidin. Partiell pulpotomi med kalciumhydroxid/MTA. Täck med komposit.' },
+  'rotfrak': { color: 'red', title: '🚨 Reponera och Fixera', description: 'Reponera koronala fragmentet om dislokerat. Fixera i 4 veckor (vid apikal fraktur) eller upp till 4 månader (vid cervikal fraktur).' },
+  'alv': { color: 'red', title: '🚨 Reponering och Fixering', description: 'Hela benblocket rör sig. Reponera manuellt och fixera (splint) i 4 veckor.' }
 };
 
-// UI Components
-function TraumaResultCard({ result, onReset }: { result: any, onReset: () => void }) {
-  const [copied, setCopied] = useState(false);
+/* ── KOMPONENTER ────────────────────────────────────────────── */
 
-  const getColors = (color: string) => {
-    switch (color) {
-      case 'red': return 'bg-red-100/50 border-red-500/30 text-red-900';
-      case 'blue': return 'bg-blue-100/50 border-blue-500/30 text-blue-900';
-      case 'green': return 'bg-emerald-100/50 border-emerald-500/30 text-emerald-900';
-      case 'amber': return 'bg-amber-100/50 border-amber-500/30 text-amber-900';
-      default: return 'bg-gray-100/50 border-gray-500/30 text-gray-900';
-    }
+function StepOption({ label, desc, color, onClick }) {
+  const colorMap = {
+    green: "border-green-100 hover:border-green-300 bg-green-50/50 hover:bg-green-50",
+    blue: "border-blue-100 hover:border-blue-300 bg-blue-50/50 hover:bg-blue-50",
+    amber: "border-amber-100 hover:border-amber-300 bg-amber-50/50 hover:bg-amber-50",
+    red: "border-red-100 hover:border-red-300 bg-red-50/50 hover:bg-red-50"
   };
 
-  const copyToClipboard = () => {
-    const text = `${result.title}\n\n${result.description}`;
+  const textMap = {
+    green: "text-green-900",
+    blue: "text-blue-900",
+    amber: "text-amber-900",
+    red: "text-red-900"
+  };
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.015, x: 5 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className={`w-full text-left p-5 rounded-2xl border-2 transition-all group relative overflow-hidden ${colorMap[color] || ""}`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <span className={`block font-bold text-base mb-0.5 ${textMap[color] || ""}`}>{label}</span>
+          {desc && <span className="block text-sm opacity-60 font-medium">{desc}</span>}
+        </div>
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          whileHover={{ opacity: 0.4, x: 0 }}
+        >
+          <ChevronRight className={`w-5 h-5 ${textMap[color] || ""}`} />
+        </motion.div>
+      </div>
+    </motion.button>
+  );
+}
+
+function ResultCard({ result, onRestart }) {
+  const [copied, setCopied] = useState(false);
+  const isRed = result.color === 'red';
+  const bgColor = isRed ? 'bg-red-50 border-2 border-red-100' : 'bg-white border border-[var(--border-light)]';
+  const textColor = isRed ? 'text-red-900' : 'text-[var(--text-primary)]';
+  const iconBg = isRed ? 'bg-red-100' : 'bg-[#0E3B52]/10';
+
+  const handleCopy = () => {
+    const text = `${result.title}\n\n${result.description}\n\nKälla: DentaGuide-Pro Traumaguide`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className={`p-6 rounded-2xl border ${getColors(result.color)} animate-in fade-in slide-in-from-bottom-4`}>
-      <h3 className="text-xl font-bold mb-3">{result.title}</h3>
-      <div className="space-y-3 mb-6">
-        {result.description.split('\n').map((line: string, i: number) => (
-          <p key={i} className="leading-relaxed opacity-90">{line}</p>
-        ))}
-      </div>
+    <div className={`rounded-[32px] p-8 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500 overflow-hidden relative ${bgColor}`}>
+      {isRed && (
+        <motion.div 
+          animate={{ opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 3, repeat: Infinity }}
+          className="absolute top-0 right-0 w-48 h-48 bg-red-600/5 rounded-bl-[100px] pointer-events-none" 
+        />
+      )}
       
-      <div className="mt-4 pt-4 border-t border-black/10 text-sm opacity-80 mb-6 flex flex-col gap-1">
-        <div>📋 Försäkringsanmälan ALLTID</div>
-        <div>📅 Boka uppföljning</div>
-        <div>📝 Dokumentera i journal</div>
-      </div>
+      <div className="relative z-10">
+        <div className="mb-6">
+          <motion.div 
+            initial={{ scale: 0, rotate: -20 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 ${iconBg}`}
+          >
+            {isRed ? (
+              <motion.div
+                animate={{ rotate: [0, -5, 5, -5, 0] }}
+                transition={{ delay: 0.5, duration: 0.5, repeat: 1 }}
+              >
+                <AlertTriangle className="w-8 h-8 text-red-600" />
+              </motion.div>
+            ) : (
+              <Check className="w-8 h-8 text-[#0E3B52]" />
+            )}
+          </motion.div>
+          <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${isRed ? 'text-red-600' : 'text-[#0E3B52]/60'}`}>
+            {isRed ? 'Akut rekommendation' : 'Klinisk uppföljning'}
+          </span>
+        </div>
+        
+        <h2 className={`text-2xl font-bold mb-4 ${textColor}`}>
+          {result.title}
+        </h2>
+        
+        <p className={`text-lg leading-relaxed mb-8 opacity-90 font-medium ${isRed ? 'text-red-900/70' : 'text-[var(--text-secondary)]'}`}>
+          {result.description}
+        </p>
 
-      <div className="flex flex-wrap gap-3">
-        <button 
-          onClick={copyToClipboard}
-          className="flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/70 border border-black/10 rounded-xl font-medium transition-colors"
-        >
-          <Copy className="w-4 h-4" />
-          {copied ? '✅ Kopierat!' : 'Kopiera text'}
-        </button>
-        <button 
-          onClick={onReset}
-          className="flex items-center gap-2 px-4 py-2 bg-black/5 hover:bg-black/10 border border-black/10 rounded-xl font-medium transition-colors"
-        >
-          <RotateCcw className="w-4 h-4" />
-          Börja om
-        </button>
+        <div className="flex flex-col gap-4">
+          <button 
+            onClick={onRestart}
+            className={`flex items-center justify-center gap-2 py-4 px-6 rounded-2xl font-bold transition-all ${
+              isRed 
+                ? 'bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-200' 
+                : 'bg-[var(--secondary)] text-white hover:bg-[var(--secondary)]/90 shadow-lg shadow-[var(--secondary)]/10'
+            }`}
+          >
+            <RotateCcw className="w-5 h-5" /> Börja om
+          </button>
+          
+          <button 
+            onClick={handleCopy}
+            className={`flex items-center justify-center gap-2 py-4 px-6 rounded-2xl font-bold transition-all relative overflow-hidden ${
+              isRed 
+                ? 'bg-red-100 text-red-700 hover:bg-red-200' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            <AnimatePresence mode="wait">
+              {copied ? (
+                <motion.span 
+                  key="copied"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  className="flex items-center gap-2"
+                >
+                  <Check className="w-5 h-5" /> Kopierat!
+                </motion.span>
+              ) : (
+                <motion.span 
+                  key="copy"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -20, opacity: 0 }}
+                  className="flex items-center gap-2"
+                >
+                  <Copy className="w-5 h-5" /> Kopiera råd till journal
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-function StepButton({ option, onClick }: { option: any, onClick: () => void }) {
-  const getColors = (color: string) => {
-    switch (color) {
-      case 'red': return 'border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300';
-      case 'blue': return 'border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300';
-      case 'green': return 'border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300';
-      case 'amber': return 'border-amber-200 text-amber-700 hover:bg-amber-50 hover:border-amber-300';
-      default: return 'border-gray-200 text-gray-700 hover:bg-gray-50';
-    }
-  };
+function TraumaGuideFlow({ variant }) {
+  const [currentId, setCurrentId] = useState('s0');
+  const [path, setPath] = useState([]); // Håller reda på ID:n i historiken
+  const [direction, setDirection] = useState(0); // 1 för framåt, -1 för bakåt
+  
+  const isPrimara = variant === 'primara';
+  const steps = isPrimara ? PRIMARA_STEPS : PERMANENTA_STEPS;
+  const results = isPrimara ? RESULTS_PRIMARA : RESULTS_PERMANENTA;
+  
+  const step = steps[currentId];
+  const isResult = !step && results[currentId];
+  const result = isResult ? results[currentId] : null;
 
-  return (
-    <button 
-      onClick={onClick}
-      className={`p-4 text-left border rounded-xl bg-white/40 backdrop-blur-sm transition-all duration-200 ${getColors(option.color)}`}
-    >
-      <div className="font-semibold text-[0.95rem]">{option.label}</div>
-      {option.desc && <div className="text-xs opacity-70 mt-1 font-medium">{option.desc}</div>}
-    </button>
-  );
-}
-
-// MAIN COMPONENTS
-
-export function TraumaGuidePrimara() {
-  const [history, setHistory] = useState<string[]>(['s0']);
-  const [resultId, setResultId] = useState<string | null>(null);
-
-  const currentStepId = history[history.length - 1];
-  const step = PRIMARA_STEPS[currentStepId as keyof typeof PRIMARA_STEPS] as StepData;
-  const result = resultId ? RESULTS_PRIMARA[resultId as keyof typeof RESULTS_PRIMARA] : null;
-
-  const handleOptionClick = (option: any) => {
-    if (option.resultId) {
-      setResultId(option.resultId);
-    } else if (option.nextId) {
-      setHistory([...history, option.nextId]);
-    }
+  const handleOptionClick = (nextId, resultId) => {
+    setDirection(1);
+    setPath([...path, currentId]);
+    if (resultId) setCurrentId(resultId);
+    else if (nextId) setCurrentId(nextId);
   };
 
   const handleBack = () => {
-    if (resultId) {
-      setResultId(null);
-    } else if (history.length > 1) {
-      setHistory(history.slice(0, -1));
-    }
+    if (path.length === 0) return;
+    setDirection(-1);
+    const newPath = [...path];
+    const prevId = newPath.pop();
+    setPath(newPath);
+    setCurrentId(prevId);
   };
 
-  const handleReset = () => {
-    setHistory(['s0']);
-    setResultId(null);
+  const handleJumpTo = (stepId, index) => {
+    setDirection(-1);
+    const newPath = path.slice(0, index);
+    setPath(newPath);
+    setCurrentId(stepId);
+  };
+
+  const handleRestart = () => {
+    setDirection(-1);
+    setPath([]);
+    setCurrentId('s0');
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto animate-in fade-in">
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8 text-center">
-        <strong className="text-red-600 text-sm">⚠️ GRUNDPRINCIP: Primära tänder ska ALDRIG reponeras med kraft eller replanteras. Mål: smärtfrihet + skydda permanenta anlaget.</strong>
-      </div>
-
-      <div className="flex items-center justify-between mb-6">
-        {history.length > 1 || resultId ? (
-          <button onClick={handleBack} className="flex items-center text-sm font-medium text-[#0E3B52]/70 hover:text-[#0E3B52] transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-1" /> Tillbaka
-          </button>
-        ) : <div />}
-        <button onClick={handleReset} className="flex items-center text-sm font-medium text-[#0E3B52]/70 hover:text-[#0E3B52] transition-colors">
-          <RotateCcw className="w-4 h-4 mr-1" /> Börja om
+    <div className="w-full">
+      {/* Visual Breadcrumb Stepper */}
+      <div className="flex items-center gap-3 mb-8 overflow-x-auto pb-4 no-scrollbar">
+        <button 
+          onClick={handleRestart}
+          title="Starta om guiden"
+          className={`flex items-center shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all border hover:scale-105 active:scale-95 ${
+            currentId === 's0' 
+              ? 'bg-[var(--secondary)] text-white border-[var(--secondary)]' 
+              : 'bg-white text-[var(--text-secondary)] border-[var(--border-light)]'
+          }`}
+        >
+          <Clock className="w-3.5 h-3.5 mr-2" /> Start
         </button>
+        
+        {path.map((id, idx) => {
+          const s = steps[id];
+          if (!s) return null;
+          return (
+            <React.Fragment key={id}>
+              <ChevronRight className="w-4 h-4 text-[var(--border-medium)] shrink-0" />
+              <button 
+                onClick={() => handleJumpTo(id, idx)}
+                title={`Hoppa tillbaka till steg ${s.num}`}
+                className="flex items-center shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-white text-[var(--text-secondary)] border border-[var(--border-light)] shadow-sm hover:border-[var(--secondary)] hover:text-[var(--secondary)] transition-all hover:scale-105 active:scale-95"
+              >
+                Steg {s.num}
+              </button>
+            </React.Fragment>
+          );
+        })}
+        
+        {!isResult && currentId !== 's0' && (
+          <>
+            <ChevronRight className="w-4 h-4 text-[var(--border-medium)] shrink-0" />
+            <div className="flex items-center shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-[var(--secondary)] text-white border border-[var(--secondary)] shadow-md shadow-[var(--secondary)]/20 animate-in zoom-in-95">
+              Steg {step.num}
+            </div>
+          </>
+        )}
       </div>
 
-      {result ? (
-        <TraumaResultCard result={result} onReset={handleReset} />
-      ) : (
-        <div className="glass-bento bg-white/50">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-7 h-7 rounded-full bg-[#0E3B52] text-white flex items-center justify-center font-bold text-xs">
-              {step.num}
-            </div>
-            <div className="text-xs font-bold tracking-wider text-[#0E3B52]/50 uppercase">Steg {step.num}</div>
-          </div>
-          
-          <h2 className="text-2xl font-bold text-[#0E3B52] mb-2">{step.title}</h2>
-          {step.desc && <p className="text-[#0E3B52]/70 text-sm mb-6">{step.desc}</p>}
-          {step.principle && (
-            <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm font-bold border border-red-200 mb-6">
-              {step.principle}
-            </div>
-          )}
+      {/* Hero / Question Section */}
+      <div className="relative min-h-[500px]">
+        <AnimatePresence mode="wait" custom={direction}>
+          {!isResult ? (
+            <motion.div 
+              key={currentId}
+              custom={direction}
+              initial={{ opacity: 0, x: direction * 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: direction * -50 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white border border-[var(--border-light)] rounded-[32px] p-8 shadow-sm"
+            >
+              <div className="flex items-center gap-2 mb-6 font-mono text-[10px] tracking-[0.22em] uppercase font-bold text-[var(--secondary)]">
+                <span className="w-6 h-6 rounded-full bg-[var(--secondary)] text-white flex items-center justify-center font-bold text-[8px] mr-1">
+                  {step.num}
+                </span>
+                Kliniskt beslutsstöd / Traumaguide
+              </div>
+              
+              <h1 className="font-display italic text-3xl font-medium tracking-tight text-[var(--text-primary)] mb-4 leading-tight">
+                {step.title}
+              </h1>
+              
+              {step.desc && (
+                <p className="text-[var(--text-secondary)] font-medium text-lg leading-relaxed mb-8 opacity-80">
+                  {step.desc}
+                </p>
+              )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-            {step.options.map((opt, i) => (
-              <StepButton key={i} option={opt} onClick={() => handleOptionClick(opt)} />
-            ))}
-          </div>
-        </div>
-      )}
+              {step.principle && (
+                <div className="flex items-start gap-4 p-5 bg-red-50 border border-red-200 rounded-2xl mb-8">
+                  <AlertTriangle className="w-6 h-6 text-red-600 shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-bold text-red-900 text-sm mb-1 uppercase tracking-wide">Viktig princip</h4>
+                    <p className="text-red-800 text-sm leading-relaxed font-bold">{step.principle}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-4 mb-8">
+                {step.options.map((opt, i) => (
+                  <StepOption 
+                    key={i}
+                    label={opt.label}
+                    desc={opt.desc}
+                    color={opt.color}
+                    onClick={() => handleOptionClick(opt.nextId, opt.resultId)}
+                  />
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between gap-4 pt-6 border-t border-[var(--border-light)]">
+                <button 
+                  onClick={handleBack}
+                  disabled={path.length === 0}
+                  className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all ${
+                    path.length === 0 
+                      ? 'opacity-0 pointer-events-none' 
+                      : 'text-[var(--text-secondary)] hover:bg-gray-100'
+                  }`}
+                >
+                  <ArrowLeft className="w-4 h-4" /> Föregående steg
+                </button>
+                <button 
+                  onClick={handleRestart}
+                  className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold text-[#CC5833] hover:bg-[#CC5833]/5 transition-all"
+                >
+                  <RotateCcw className="w-4 h-4" /> Börja om
+                </button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ResultCard result={result} onRestart={handleRestart} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Urgent Checklist — Only for Permanent Exarticulation */}
+      <AnimatePresence>
+        {!isPrimara && currentId === 's2b' && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-8 bg-red-50 border-2 border-red-100 rounded-[32px] p-8 text-red-900 shadow-sm overflow-hidden"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <h3 className="text-xl font-display italic font-bold uppercase tracking-wide text-red-800">Checklista: Akut exartikulation</h3>
+            </div>
+            <motion.ul 
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+                }
+              }}
+              className="space-y-3"
+            >
+              {[
+                'Rör INTE roten — håll endast i kronan.',
+                'Om smutsig: skölj 10 sek i kallt vatten / koksalt.',
+                'Replantera omedelbart — tryck tanden på plats.',
+                'Låt patienten bita på en kompress.',
+                'Sök tandläkare direkt.'
+              ].map((item, i) => (
+                <motion.li 
+                  key={i}
+                  variants={{
+                    hidden: { x: -20, opacity: 0 },
+                    show: { x: 0, opacity: 1 }
+                  }}
+                  className="flex items-start gap-4 bg-white/50 p-4 rounded-2xl border border-red-100/50"
+                >
+                  <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-red-700">{i+1}</span>
+                  </div>
+                  <span className="font-medium leading-tight">{item}</span>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
+}
+
+export function TraumaGuidePrimara() {
+  return <TraumaGuideFlow variant="primara" />;
 }
 
 export function TraumaGuidePermanenta() {
-  const [history, setHistory] = useState<string[]>(['s0']);
-  const [resultId, setResultId] = useState<string | null>(null);
-
-  const currentStepId = history[history.length - 1];
-  const isCustomExartikulation = currentStepId === 's-avuls-exart';
-  const step = !isCustomExartikulation ? PERMANENTA_STEPS[currentStepId as keyof typeof PERMANENTA_STEPS] as StepData : null;
-  const result = resultId ? RESULTS_PERMANENTA[resultId as keyof typeof RESULTS_PERMANENTA] : null;
-
-  const handleOptionClick = (option: any) => {
-    if (option.resultId) {
-      setResultId(option.resultId);
-    } else if (option.nextId) {
-      setHistory([...history, option.nextId]);
-    }
-  };
-
-  const handleBack = () => {
-    if (resultId) {
-      setResultId(null);
-    } else if (history.length > 1) {
-      setHistory(history.slice(0, -1));
-    }
-  };
-
-  const handleReset = () => {
-    setHistory(['s0']);
-    setResultId(null);
-  };
-
-  return (
-    <div className="w-full max-w-2xl mx-auto animate-in fade-in">
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8 text-center">
-        <strong className="text-red-600 text-sm">⚠️ GRUNDPRINCIP: Utslagen permanent tand = HYPERAKUT replantation. Öppet apex = bevara vitalitet (Cvek). Tid är avgörande.</strong>
-      </div>
-
-      <div className="flex items-center justify-between mb-6">
-        {history.length > 1 || resultId ? (
-          <button onClick={handleBack} className="flex items-center text-sm font-medium text-[#0E3B52]/70 hover:text-[#0E3B52] transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-1" /> Tillbaka
-          </button>
-        ) : <div />}
-        <button onClick={handleReset} className="flex items-center text-sm font-medium text-[#0E3B52]/70 hover:text-[#0E3B52] transition-colors">
-          <RotateCcw className="w-4 h-4 mr-1" /> Börja om
-        </button>
-      </div>
-
-      {result ? (
-        <TraumaResultCard result={result} onReset={handleReset} />
-      ) : isCustomExartikulation ? (
-        <div className="glass-bento bg-white/50 border-red-200">
-          <div className="bg-red-600 text-white p-4 -mt-8 -mx-10 rounded-t-2xl mb-6 flex items-center justify-center gap-3">
-            <Clock className="w-6 h-6" />
-            <h2 className="text-xl font-bold tracking-wider">AGERA NU — &lt; 60 MINUTER</h2>
-          </div>
-          
-          <div className="space-y-4 mb-8 text-[#0E3B52]">
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">1</div>
-              <p>Håll tanden i <strong>KRONAN</strong> (aldrig roten)</p>
-            </div>
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">2</div>
-              <p>Skölj 10 sek fysiologisk koksalt om smutsig (aldrig scrubba)</p>
-            </div>
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</div>
-              <p className="font-bold">Replantation OMEDELBART</p>
-            </div>
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">4</div>
-              <p>Annars förvara: Mjölk &gt; Koksalt &gt; Saliv &gt; (ALDRIG vatten)</p>
-            </div>
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">5</div>
-              <p>Splint 2 veckor flexibel</p>
-            </div>
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">6</div>
-              <p>Antibiotika PcV 25mg/kg × 3 i 7 dagar (barn) / 1,6g × 3 (vuxen)</p>
-            </div>
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">7</div>
-              <p>Stelkrampsstatus</p>
-            </div>
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">8</div>
-              <p>Endo 7-10 dagar post replantation (vid slutet apex)</p>
-            </div>
-            <div className="flex gap-3 items-start">
-              <div className="w-6 h-6 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">9</div>
-              <p>RTG: 4v, 3mån, 6mån, 1år, 2år, 5år</p>
-            </div>
-          </div>
-          
-          <button 
-            onClick={() => setHistory([...history, 's-avuls'])}
-            className="w-full p-4 bg-[#CC5833] hover:bg-[#CC5833]/90 text-white font-bold rounded-xl flex items-center justify-center transition-colors"
-          >
-            Vidare till detaljerat apex-beslut <ChevronRight className="w-5 h-5 ml-2" />
-          </button>
-        </div>
-      ) : step ? (
-        <div className="glass-bento bg-white/50">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-7 h-7 rounded-full bg-[#0E3B52] text-white flex items-center justify-center font-bold text-xs">
-              {step.num}
-            </div>
-            <div className="text-xs font-bold tracking-wider text-[#0E3B52]/50 uppercase">Steg {step.num}</div>
-          </div>
-          
-          <h2 className="text-2xl font-bold text-[#0E3B52] mb-2">{step.title}</h2>
-          {step.desc && <p className="text-[#0E3B52]/70 text-sm mb-6">{step.desc}</p>}
-          {step.principle && (
-            <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm font-bold border border-red-200 mb-6">
-              {step.principle}
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-            {step.options.map((opt, i) => (
-              <StepButton key={i} option={opt} onClick={() => handleOptionClick(opt)} />
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </div>
-  );
+  return <TraumaGuideFlow variant="permanenta" />;
 }

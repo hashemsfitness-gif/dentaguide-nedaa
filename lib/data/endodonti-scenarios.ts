@@ -962,7 +962,7 @@ Kontakta vid försämring (ökad svullnad/smärta).`
           metod: [
             "Förstahandsval: Fenoximetylpenicillin (Kåvepenin) 1,6 g x 3 i 5–7 dagar",
             "Vid penicillinallergi: Klindamycin (Dalacin) 150 mg x 3 i 5–7 dagar",
-            "Vid svår infektion/terapisvikt: PcV 1,6 g x 3 + Metronidazol 400 mg x 3 i 5–7 dagar ALT Klindamycin 300-600 mg x 3 + Metronidazol 400 mg x 3",
+            "Vid svår infektion/terapisvikt: PcV 1,6 g x 3 + Metronidazol 400 mg x 3 i 5–7 dagar ALT Klindamycin 150 mg x 3 + Metronidazol 400 mg x 3",
             "Vid sepsis/sjukhus: IV-antibiotika (Benzylpenicillin + Metronidazol)"
           ],
           tlvKoder: "Framgår ej av kodexempel — räknas under sjukdomsbehandling"
@@ -1829,7 +1829,7 @@ Info: Instr. mjuk borstteknik (gnuggmetod). Rek. tandkräm mot ilningar (t.ex. S
         "Antibiotika INTE smärtlindring. Ges ALDRIG vid enbart lokal smärta",
         "Ja antibiotika vid: Feber >38°C + sjukdomskänsla, Trikus (<25mm), Svollna lymfkörtlar, Snabbt progressiv svullnad",
         "Antibiotika förstahandsval: PcV 1,6 g × 3 i 5–7 dagar",
-        "Vid PC-allergi: Klindamycin 150–300 mg × 3"
+        "Vid PC-allergi: Klindamycin 150 mg × 3 i 5–7 dagar (källa: Tandvårdens Läkemedel 2024–2025 / Strama)"
       ]
     },
     journal: [

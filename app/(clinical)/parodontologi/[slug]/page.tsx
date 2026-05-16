@@ -15,8 +15,8 @@ const SCENARIO_NAV = [
   { slug: "perikoronit", id: "VARK-05-PERI", quote: "Ont längst bak i käken / svårt att gapa", title: "Perikoronit" },
   { slug: "parodontal-abscess", id: "VARK-12-PARAB", quote: "Det bultar i tandköttet, tanden känns lös/hög", title: "Parodontal Abscess" },
   { slug: "anug-herpes", id: "VARK-11-GING", quote: "Det svider, blöder och luktar illa i munnen", title: "ANUG / Herpes" },
-  { slug: "periimplantit", id: "VARK-13-IMPL", quote: "Det gör ont runt implantatet, det blöder och gungar", title: "Periimplantit" },
-  { slug: "furkationsdiagnostik", id: "PARO-26-FK", quote: "Tandläkaren hittade ett djupt hål under molaren", title: "Furkationspåverkan" },
+  { slug: "periimplantit", id: "VARK-13-IMPL", quote: "Det blöder och varar runt implantatet", title: "Periimplantit" },
+  { slug: "frammande-kropp", id: "PARO-26-FK", quote: "Något sitter fast mellan tänderna / Det gör ont", title: "Främmande kropp" },
 ];
 
 /* Höger-railens kliniska verktyg (parodontologi). */
@@ -101,6 +101,8 @@ export default function ParodontoloiScenarioPage({
     journal: s.journal,
 
     kliniskaAnteckningar: s.kliniskaAnteckningar,
+
+    infografik: s.infografik,
 
     verktyg: VERKTYG,
   };

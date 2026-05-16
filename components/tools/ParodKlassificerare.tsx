@@ -1,8 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
-import { Copy, AlertTriangle, Info, CheckCircle2, RotateCcw } from "lucide-react";
+import { 
+  Copy, 
+  AlertTriangle, 
+  Info, 
+  CheckCircle2, 
+  RotateCcw, 
+  ChevronRight,
+  FileText,
+  Activity,
+  History
+} from "lucide-react";
 
 interface InclusionData {
   bop: "yes" | "no" | null;
@@ -128,9 +139,12 @@ function calcGrade(
     reasons.push({ txt: `Direkt bevis: ${dTxt[gradeData.direct]}`, level: d });
   }
 
-  const bonePct = Number(sev.bonePct);
-  const age = Number(patient.age);
-  if (sev.bonePct !== "" && !isNaN(bonePct) && patient.age !== "" && !isNaN(age) && age > 0) {
+  const rawBonePct = Number(sev.bonePct);
+  const rawAge = Number(patient.age);
+  const bonePct = isNaN(rawBonePct) ? 0 : Math.max(0, Math.min(100, rawBonePct));
+  const age = isNaN(rawAge) ? 1 : Math.max(1, Math.min(125, rawAge));
+
+  if (sev.bonePct !== "" && patient.age !== "" && age > 0) {
     boneAgeRatio = bonePct / age;
     let ratioGrade = 0;
     if (boneAgeRatio < 0.25)                              ratioGrade = 1;
@@ -177,20 +191,30 @@ const EMPTY_COMPLEXITY: ComplexityData = { ppd: null, angular: null, furk: null,
 const EMPTY_GRADE: GradeData          = { direct: null, phenotype: null };
 const EMPTY_EXTENT: ExtentData        = { extent: null, bop: "", plaque: "" };
 
-function OptBtn({ value, current, onClick, children }: {
-  value: string; current: string | null; onClick: () => void; children: React.ReactNode;
+function OptBtn({ value, current, onClick, children, fullWidth = false }: {
+  value: string | boolean; current: string | boolean | null; onClick: () => void; children: React.ReactNode; fullWidth?: boolean;
 }) {
+  const isSelected = current === value;
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.015, x: 2 }}
+      whileTap={{ scale: 0.97 }}
       onClick={onClick}
-      className={`p-2.5 rounded-xl border-2 text-left transition-all text-sm font-medium w-full ${
-        current === value
-          ? "border-[#CC5833] bg-[#CC5833]/10 text-[#0E3B52] font-bold"
-          : "border-gray-200 bg-white/50 text-gray-700 hover:border-[#CC5833]/50"
-      }`}
+      aria-pressed={isSelected}
+      className={`p-3 rounded-ds-xl border-2 text-left transition-all text-sm font-bold shadow-ds-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 relative overflow-hidden ${
+        isSelected
+          ? "border-secondary bg-secondary/[0.07] text-secondary ring-1 ring-secondary font-extrabold shadow-accent/5"
+          : "border-border-light bg-surface text-ink/70 hover:border-border-medium hover:text-ink hover:shadow-ds-md focus:border-border-medium"
+      } ${fullWidth ? "w-full" : ""}`}
     >
-      {children}
-    </button>
+      {isSelected && (
+        <span className="absolute left-0 top-0 bottom-0 w-1 bg-secondary rounded-r-md pointer-events-none" />
+      )}
+      <div className="flex items-center justify-between">
+        <span className="leading-tight">{children}</span>
+        {isSelected && <CheckCircle2 size={14} className="shrink-0 ml-2 text-secondary" aria-hidden="true" />}
+      </div>
+    </motion.button>
   );
 }
 
@@ -198,23 +222,29 @@ function ToggleRow({ checked, onChange, label, sub }: {
   checked: boolean; onChange: (v: boolean) => void; label: string; sub?: string;
 }) {
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
       type="button"
+      role="checkbox"
+      aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`flex items-center gap-3 p-2.5 rounded-xl border-2 cursor-pointer transition-all w-full text-left ${
-        checked ? "border-[#CC5833] bg-[#CC5833]/10" : "border-gray-200 bg-white/50 hover:border-[#CC5833]/50"
+      className={`flex items-center gap-3 p-3 rounded-ds-xl border-2 cursor-pointer transition-all w-full text-left shadow-ds-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 ${
+        checked ? "border-secondary bg-secondary/5" : "border-border-light bg-surface hover:border-border-medium focus:border-border-medium"
       }`}
     >
-      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
-        checked ? "bg-[#CC5833] border-[#CC5833] text-white" : "border-gray-300 bg-white"
+      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+        checked ? "bg-secondary border-secondary text-white" : "border-border-medium bg-surface"
       }`}>
-        {checked && <CheckCircle2 size={12} />}
+        {checked && <CheckCircle2 size={12} aria-hidden="true" />}
       </div>
-      <span className="text-sm font-medium text-gray-700 flex-1 text-left">
-        {label}
-        {sub && <span className="block text-xs text-gray-500 font-normal">{sub}</span>}
-      </span>
-    </button>
+      <div className="flex-1">
+        <span className={`text-sm font-bold block leading-tight ${checked ? "text-secondary" : "text-ink"}`}>
+          {label}
+        </span>
+        {sub && <span className="block text-[10px] text-ink/40 font-medium mt-0.5">{sub}</span>}
+      </div>
+    </motion.button>
   );
 }
 
@@ -222,26 +252,67 @@ function Card({ num, title, desc, children }: {
   num: number; title: string; desc: string; children: React.ReactNode;
 }) {
   return (
-    <div className="glass-bento p-5 flex flex-col">
-      <div className="mb-4 pb-3 border-b border-white/30">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs font-bold w-6 h-6 rounded-full bg-[#CC5833] text-white flex items-center justify-center font-mono">
+    <div className="bg-surface border border-border-light rounded-ds-2xl p-8 shadow-ds-sm hover:shadow-ds-md transition-all flex flex-col h-full group">
+      <div className="mb-6 pb-4 border-b border-neutral/10">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-xs font-mono font-bold w-7 h-7 rounded-full bg-secondary text-white flex items-center justify-center shadow-accent/20 shadow-lg">
             {num}
           </span>
-          <h2 className="text-base font-serif italic text-[#0E3B52] font-bold">{title}</h2>
+          <h2 className="text-xl font-display italic text-primary font-bold tracking-tight group-hover:text-secondary transition-colors">{title}</h2>
         </div>
-        <p className="text-xs text-[#0E3B52]/70 leading-snug">{desc}</p>
+        <p className="text-xs text-ink/50 font-medium leading-relaxed">{desc}</p>
       </div>
-      <div className="space-y-4 flex-1">{children}</div>
+      <div className="space-y-6 flex-1">{children}</div>
     </div>
   );
 }
 
-function FieldLabel({ children, hint }: { children: React.ReactNode; hint?: string }) {
+function FieldLabel({ children, hint, htmlFor, info }: { children: React.ReactNode; hint?: string; htmlFor?: string; info?: string }) {
   return (
-    <div className="mb-2">
-      <p className="text-[10px] font-bold text-[#CC5833] uppercase tracking-wider">{children}</p>
-      {hint && <p className="text-xs text-gray-500 mt-0.5">{hint}</p>}
+    <div className="mb-3">
+      <div className="flex items-center gap-1.5 mb-1">
+        <label htmlFor={htmlFor} className="text-[10px] font-mono font-bold text-secondary uppercase tracking-widest2 block cursor-pointer">
+          {children}
+        </label>
+        {info && <InfoTooltip text={info} />}
+      </div>
+      {hint && <p className="text-xs text-ink/40 font-medium leading-tight">{hint}</p>}
+    </div>
+  );
+}
+
+function InfoTooltip({ text }: { text: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative flex items-center">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+        aria-label="Visa definition"
+        className={`p-1 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-secondary/40 ${
+          isOpen 
+            ? "bg-secondary/20 text-secondary scale-110" 
+            : "bg-neutral text-ink/40 hover:bg-secondary/10 hover:text-secondary hover:scale-105"
+        }`}
+      >
+        <Info size={11} />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 w-56 p-3 bg-primary/80 backdrop-blur-md border border-white/20 text-surface text-[10px] font-medium leading-relaxed rounded-ds-xl z-50 shadow-ds-2xl pointer-events-none text-left"
+          >
+            <div className="relative z-10">{text}</div>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-primary/80 rotate-45 -translate-y-1.5 border-r border-b border-white/20 pointer-events-none" />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -258,8 +329,6 @@ export default function ParodKlassificerare() {
   const { grade, reasons: gradeReasons } = calcGrade(gradeData, patient, severity, extentData);
   const extentLabel    = getExtentLabel(extentData.extent);
   const supportInterval = getSupportInterval(grade);
-  const inclusionOk    = inclusion.bop === "yes" && inclusion.pocket === "yes";
-  const allReasons     = [...stageReasons, ...gradeReasons];
 
   function buildJournal(): string {
     const today    = new Date().toLocaleDateString("sv-SE");
@@ -276,7 +345,7 @@ export default function ParodKlassificerare() {
 
     const ivF: string[] = [];
     if (complexity.chew)  ivF.push("Nedsatt tuggfunktion");
-    if (complexity.mob)   ivF.push("Mobilitet ≥ Grad 2");
+    if (complexity.mob)   ivF.push("Tandmobilitet ≥ Grad 2");
     if (complexity.bite)  ivF.push("Bettkollaps");
     if (complexity.drift) ivF.push("Tandvandring");
     if (complexity.few)   ivF.push("<20 tänder");
@@ -336,273 +405,111 @@ Ansvarig tandläkare: _______________`;
     setExtentData(EMPTY_EXTENT);
   }
 
-  // Auto bone-age ratio display
   const ratioBlock = (() => {
     if (severity.bonePct === "" || patient.age === "") {
       return (
-        <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-500">
+        <div className="p-4 rounded-ds-xl bg-neutral/50 border border-border-light text-xs text-ink/40 font-medium italic">
           ⏳ Fyll i ålder + benförlust % för automatisk kvot-beräkning.
         </div>
       );
     }
     const ratio = Number(severity.bonePct) / Number(patient.age);
-    let cls = "bg-green-50 border-green-500 text-green-800";
+    let cls = "bg-status-ok/5 border-status-ok/20 text-status-ok";
     let icon = "✅"; let gradeTxt = "Grad A";
-    if (ratio >= 0.25 && ratio <= 1.0) { cls = "bg-amber-50 border-amber-400 text-amber-800"; icon = "⚠️"; gradeTxt = "Grad B"; }
-    if (ratio > 1.0)                   { cls = "bg-red-50 border-red-500 text-red-800";       icon = "🔴"; gradeTxt = "Grad C"; }
+    if (ratio >= 0.25 && ratio <= 1.0) { cls = "bg-status-warning/5 border-status-warning/20 text-status-warning"; icon = "⚠️"; gradeTxt = "Grad B"; }
+    if (ratio > 1.0)                   { cls = "bg-status-danger/5 border-status-danger/20 text-status-danger";       icon = "🔴"; gradeTxt = "Grad C"; }
     return (
-      <div className={`p-2.5 rounded-xl border-l-4 text-xs ${cls}`}>
-        <p className="font-bold uppercase tracking-wider mb-0.5">Benförlust/ålder-kvot</p>
-        {icon} {ratio.toFixed(2)} ({severity.bonePct}% / {patient.age}år) → <strong>{gradeTxt}</strong>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className={`p-4 rounded-ds-xl border-2 text-xs font-bold ${cls}`}
+      >
+        <p className="text-[10px] font-mono uppercase tracking-widest2 mb-1 opacity-70 text-current">Benförlust/ålder-kvot</p>
+        <div className="flex items-center gap-2 text-sm font-body">
+          {icon} {ratio.toFixed(2)} ({severity.bonePct}% / {patient.age}år) → {gradeTxt}
+        </div>
+      </motion.div>
     );
   })();
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-
-      {/* ── RIGHT STICKY RESULT PANEL ── (flexbox sticky — follows scroll reliably) */}
-      <aside className="order-first lg:order-last w-full lg:w-[340px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:h-fit">
-        <div className="glass-sidebar !static !w-full !h-auto rounded-3xl p-5">
-          <div className="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-[#0E3B52]/10">
-            <div className="flex items-center gap-2">
-              <Info className="text-[#CC5833]" size={20} />
-              <h3 className="font-serif italic text-lg text-[#0E3B52] font-bold">Klassifikation</h3>
-            </div>
-            <button
-              onClick={resetAll}
-              className="flex items-center gap-1 text-xs text-gray-500 hover:text-red-600 transition-colors"
-              title="Återställ alla fält"
-              type="button"
-            >
-              <RotateCcw size={12} /> Återställ
-            </button>
-          </div>
-
-          <div className="space-y-4">
-
-            {/* Full classification */}
-            <div className="text-center p-4 rounded-xl bg-gradient-to-br from-[#CC5833]/10 to-[#0E3B52]/5 border border-[#CC5833]/20">
-              <p className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-2">EFP/AAP 2018</p>
-              {stage > 0 && grade ? (
-                <p className="font-serif italic text-[#0E3B52] text-base font-bold leading-snug">
-                  {extentData.extent ? getExtentLabel(extentData.extent).split(" ")[0] + " p" : "P"}arodontit<br />
-                  stadie {toRoman(stage)} grad {grade}
-                </p>
-              ) : (
-                <p className="text-sm text-gray-400 italic">Fyll i kort 1–6 för klassifikation</p>
-              )}
-            </div>
-
-            {/* Inclusion status */}
-            {(inclusion.bop !== null || inclusion.pocket !== null) && (
-              <div className={`p-2.5 rounded-xl border-l-4 text-xs ${
-                inclusionOk
-                  ? "bg-green-50 border-green-500 text-green-800"
-                  : inclusion.bop !== null && inclusion.pocket !== null
-                    ? "bg-amber-50 border-amber-500 text-amber-800"
-                    : "bg-gray-50 border-gray-300 text-gray-600"
-              }`}>
-                {inclusionOk
-                  ? <><strong>✅ Inklusion uppfylld</strong></>
-                  : inclusion.bop !== null && inclusion.pocket !== null
-                    ? <><strong>⚠️ Inklusion EJ uppfylld</strong> — Möjligen gingivit eller lokal parodontit.</>
-                    : <span>Inklusionsscreening pågår…</span>
-                }
-              </div>
-            )}
-
-            {/* Stadium meter */}
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Stadie</span>
-                <span className="font-serif font-bold text-[#0E3B52] text-sm">{stage > 0 ? `Stadie ${toRoman(stage)}` : "—"}</span>
-              </div>
-              <div className="flex gap-1 mb-1">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className={`flex-1 h-2 rounded transition-all ${stage >= i ? ["", "bg-green-500", "bg-amber-500", "bg-orange-500", "bg-red-500"][i] : "bg-gray-200"}`} />
-                ))}
-              </div>
-              <div className="flex justify-between text-xs text-gray-400"><span>I</span><span>II</span><span>III</span><span>IV</span></div>
-            </div>
-
-            {/* Grade meter */}
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Grad</span>
-                <span className="font-serif font-bold text-[#0E3B52] text-sm">{grade ? `Grad ${grade}` : "—"}</span>
-              </div>
-              <div className="flex gap-1 mb-1">
-                {(["A", "B", "C"] as const).map((g, i) => (
-                  <div key={g} className={`flex-1 h-2 rounded transition-all ${grade && ["A", "B", "C"].indexOf(grade) >= i ? ["bg-green-500", "bg-amber-500", "bg-red-500"][i] : "bg-gray-200"}`} />
-                ))}
-              </div>
-              <div className="flex justify-between text-xs text-gray-400"><span>A</span><span>B</span><span>C</span></div>
-            </div>
-
-            {/* Extent */}
-            <div className="flex justify-between items-center p-2.5 rounded-xl bg-white/60 border border-white">
-              <span className="text-xs font-bold text-gray-500 uppercase">Utbredning</span>
-              <span className="text-sm font-semibold text-[#0E3B52]">{extentLabel}</span>
-            </div>
-
-            {/* Support interval */}
-            <div className="flex justify-between items-center p-2.5 rounded-xl bg-white/60 border border-white">
-              <span className="text-xs font-bold text-gray-500 uppercase">Stödbehandling</span>
-              <span className="text-sm font-semibold text-[#CC5833]">{supportInterval}</span>
-            </div>
-
-            {/* Reasoning chain */}
-            {allReasons.length > 0 && (
-              <div className="border-t border-gray-200 pt-3">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Beslutskedja</p>
-                <div className="space-y-1">
-                  {allReasons.map((r, i) => {
-                    const dotColor = ["bg-gray-300", "bg-green-500", "bg-amber-500", "bg-orange-500", "bg-red-500"][Math.min(r.level, 4)];
-                    return (
-                      <div key={i} className="flex gap-2 items-start text-xs text-gray-600">
-                        <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5 ${dotColor}`} />
-                        <span>{r.txt}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Journal */}
-            <div className="border-t border-gray-200 pt-3">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-bold text-gray-500 uppercase">Journalmall</span>
-                <button onClick={copyToClipboard} className="flex items-center gap-1 text-xs font-semibold text-[#CC5833] hover:text-[#0E3B52] transition-colors" type="button">
-                  <Copy size={12} /> Kopiera
-                </button>
-              </div>
-              <div className="font-mono text-xs text-gray-600 whitespace-pre-wrap bg-white/50 p-3 rounded-xl border border-gray-100">
-                {buildJournal()}
-              </div>
-            </div>
-
-            <div className="p-2.5 rounded-xl bg-orange-50 border-l-4 border-orange-300 text-xs text-orange-700 flex gap-2">
-              <AlertTriangle size={14} className="flex-shrink-0 mt-0.5" />
-              <span>Utvärdera alltid patientens compliance och systemiska hälsa. Stadium IV → utred protetiskt behandlingsbehov efter sjukdomskontroll.</span>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* ── LEFT GRID OF CARDS ── */}
-      <section className="flex-1 min-w-0 grid grid-cols-1 xl:grid-cols-2 gap-5 content-start">
-
-        {/* CARD 1 — Inklusion */}
-        <Card num={1} title="Inklusionsscreening" desc="Båda kriterier krävs. Minst 2 icke-angränsande tänder. Visdomständer (18,28,38,48) exkluderas.">
+    <div className="flex flex-col lg:flex-row lg:items-start gap-8">
+      <section className="flex-1 min-w-0 grid grid-cols-1 xl:grid-cols-2 gap-8 content-start">
+        <Card num={1} title="Inklusionsscreening" desc="Båda kriterier krävs. Minst 2 icke-angränsande tänder. Visdomständer exkluderas.">
           <div>
             <FieldLabel hint="Föreligger BoP på >2 icke-angränsande tänder?">Kriterium 1 — BoP</FieldLabel>
-            <div className="flex flex-col gap-2">
-              <OptBtn value="yes" current={inclusion.bop} onClick={() => setInclusion({ ...inclusion, bop: "yes" })}>✅ Ja — &gt;2 icke-angränsande tänder</OptBtn>
-              <OptBtn value="no"  current={inclusion.bop} onClick={() => setInclusion({ ...inclusion, bop: "no"  })}>⛔ Nej</OptBtn>
+            <div className="grid grid-cols-2 gap-2">
+              <OptBtn value="yes" current={inclusion.bop} onClick={() => setInclusion({ ...inclusion, bop: "yes" })}>Ja — &gt;2 approximala ytor</OptBtn>
+              <OptBtn value="no"  current={inclusion.bop} onClick={() => setInclusion({ ...inclusion, bop: "no"  })}>Nej</OptBtn>
             </div>
           </div>
           <div>
             <FieldLabel hint="PPD ≥4mm med BoP eller CAL på >2 approximala ytor?">Kriterium 2 — Approximala fickor</FieldLabel>
-            <div className="flex flex-col gap-2">
-              <OptBtn value="yes" current={inclusion.pocket} onClick={() => setInclusion({ ...inclusion, pocket: "yes" })}>✅ Ja — &gt;2 approximala ytor</OptBtn>
-              <OptBtn value="no"  current={inclusion.pocket} onClick={() => setInclusion({ ...inclusion, pocket: "no"  })}>⛔ Nej</OptBtn>
+            <div className="grid grid-cols-2 gap-2">
+              <OptBtn value="yes" current={inclusion.pocket} onClick={() => setInclusion({ ...inclusion, pocket: "yes" })}>Ja — &gt;2 approximala ytor</OptBtn>
+              <OptBtn value="no"  current={inclusion.pocket} onClick={() => setInclusion({ ...inclusion, pocket: "no"  })}>Nej</OptBtn>
             </div>
           </div>
         </Card>
 
-        {/* CARD 2 — Svårighetsgrad */}
         <Card num={2} title="Svårighetsgrad" desc="Välj det VÄRSTA uppmätta värdet för hela bettet (CAL + benförlust + tandförlust).">
           <div>
-            <FieldLabel>Klinisk fästeförlust (CAL) — värsta site</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "1", label: "1–2 mm → Stadie I" },
-                { val: "2", label: "3–4 mm → Stadie II" },
-                { val: "3", label: "≥ 5 mm → Stadie III/IV" },
-              ].map(o => (
+            <FieldLabel info="Clinical Attachment Loss: Avståndet från emalj-cementgränsen (CEJ) till fickans botten.">Klinisk fästeförlust (CAL)</FieldLabel>
+            <div className="grid grid-cols-2 gap-2">
+              {[{ val: "1", label: "1–2 mm" }, { val: "2", label: "3–4 mm" }, { val: "3", label: "≥ 5 mm" }].map(o => (
                 <OptBtn key={o.val} value={o.val} current={severity.cal} onClick={() => setSeverity({ ...severity, cal: o.val as SeverityData["cal"] })}>{o.label}</OptBtn>
               ))}
             </div>
           </div>
           <div>
             <FieldLabel hint="Andel av rotlängd">Radiografisk benförlust</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "1", label: "<15% (koronal 1/3) → Stadie I" },
-                { val: "2", label: "15–33% → Stadie II" },
-                { val: "3", label: ">33% (överstiger koronal 1/3) → Stadie III/IV" },
-              ].map(o => (
+            <div className="grid grid-cols-2 gap-2">
+              {[{ val: "1", label: "< 15%" }, { val: "2", label: "15–33%" }, { val: "3", label: "> 33%" }].map(o => (
                 <OptBtn key={o.val} value={o.val} current={severity.bone} onClick={() => setSeverity({ ...severity, bone: o.val as SeverityData["bone"] })}>{o.label}</OptBtn>
               ))}
             </div>
           </div>
           <div>
-            <FieldLabel>Tandförlust p.g.a. parodontit</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "0", label: "Ingen tandförlust" },
-                { val: "3", label: "≤ 4 tänder förlorade → Stadie III" },
-                { val: "4", label: "≥ 5 tänder förlorade → Stadie IV" },
-              ].map(o => (
+            <FieldLabel hint="Tandförlust p.g.a. parodontit">Tandförlust</FieldLabel>
+            <div className="grid grid-cols-2 gap-2">
+              {[{ val: "0", label: "Ingen" }, { val: "3", label: "≤ 4 tänder" }, { val: "4", label: "≥ 5 tänder" }].map(o => (
                 <OptBtn key={o.val} value={o.val} current={severity.toothloss} onClick={() => setSeverity({ ...severity, toothloss: o.val as SeverityData["toothloss"] })}>{o.label}</OptBtn>
               ))}
             </div>
           </div>
-          <div>
-            <FieldLabel hint="Värsta tanden, % av rotlängd. Används för Grade-kvot.">Benförlust % (för Grade)</FieldLabel>
-            <input type="number" min="0" max="100" placeholder="t.ex. 30"
-              value={severity.bonePct}
-              onChange={(e) => setSeverity({ ...severity, bonePct: e.target.value === "" ? "" : Number(e.target.value) })}
-              className="w-full p-2.5 rounded-xl border border-gray-200 focus:border-[#CC5833] focus:ring-2 focus:ring-[#CC5833]/20 bg-white/50 text-sm"
-            />
-            <p className="text-xs text-gray-500 mt-1.5">Kvot = benförlust% / ålder. &lt;0.25 → A · 0.25–1.0 → B · &gt;1.0 → C</p>
-          </div>
         </Card>
 
-        {/* CARD 3 — Komplexitet */}
         <Card num={3} title="Komplexitet" desc="PPD, angulära defekter, furkation + Stadie IV-faktorer (kryssa allt som gäller).">
           <div>
-            <FieldLabel>Max PPD — djupaste fickan</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "1", label: "≤ 4 mm → Stadie I" },
-                { val: "2", label: "≤ 5 mm → Stadie II" },
-                { val: "3", label: "≥ 6 mm → Stadie III" },
-              ].map(o => (
+            <FieldLabel info="Probing Pocket Depth: Avståndet från tandköttskanten till fickans botten vid sondering.">Max PPD — djupaste fickan</FieldLabel>
+            <div className="grid grid-cols-2 gap-2">
+              {[{ val: "1", label: "≤ 4 mm" }, { val: "2", label: "≤ 5 mm" }, { val: "3", label: "≥ 6 mm" }].map(o => (
                 <OptBtn key={o.val} value={o.val} current={complexity.ppd} onClick={() => setComplexity({ ...complexity, ppd: o.val as ComplexityData["ppd"] })}>{o.label}</OptBtn>
               ))}
             </div>
           </div>
-          <div>
-            <FieldLabel>Angulära bendefekter</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "0", label: "Inga ≥ 3 mm" },
-                { val: "3", label: "≥ 3 mm → Stadie III" },
-              ].map(o => (
-                <OptBtn key={o.val} value={o.val} current={complexity.angular} onClick={() => setComplexity({ ...complexity, angular: o.val as ComplexityData["angular"] })}>{o.label}</OptBtn>
-              ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <FieldLabel info="Vertikal benförlust längs en tandsida som skapar en 'ficka' i käkbenet.">Angulära bendefekter</FieldLabel>
+              <div className="grid grid-cols-1 gap-2">
+                <OptBtn value="0" current={complexity.angular} onClick={() => setComplexity({ ...complexity, angular: "0" })}>Inga / &lt; 3 mm</OptBtn>
+                <OptBtn value="3" current={complexity.angular} onClick={() => setComplexity({ ...complexity, angular: "3" })}>≥ 3 mm</OptBtn>
+              </div>
             </div>
-          </div>
-          <div>
-            <FieldLabel>Furkation (värst drabbad)</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "0",  label: "Ingen / Grad I (< 1/3 bredd)" },
-                { val: "3",  label: "Grad II (partiell) → Stadie III" },
-                { val: "3b", label: "Grad III (genomgående) → Stadie III" },
-              ].map(o => (
-                <OptBtn key={o.val} value={o.val} current={complexity.furk} onClick={() => setComplexity({ ...complexity, furk: o.val as ComplexityData["furk"] })}>{o.label}</OptBtn>
-              ))}
+            <div>
+              <FieldLabel>Furkationsinvolvering<InfoTooltip text="Benförlust mellan rötterna på en flerrotig tand (t.ex. molarer). Grad I-III." /></FieldLabel>
+              <div className="grid grid-cols-1 gap-2">
+                <OptBtn value="0" current={complexity.furk} onClick={() => setComplexity({ ...complexity, furk: "0" })}>Ingen / Grad I</OptBtn>
+                <OptBtn value="3" current={complexity.furk} onClick={() => setComplexity({ ...complexity, furk: "3" })}>Grad II</OptBtn>
+                <OptBtn value="3b" current={complexity.furk} onClick={() => setComplexity({ ...complexity, furk: "3b" })}>Grad III</OptBtn>
+              </div>
             </div>
           </div>
           <div>
             <FieldLabel hint="Minst ett kryss → Stadie IV">Stadie IV-faktorer</FieldLabel>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <ToggleRow checked={complexity.chew}  onChange={(v) => setComplexity({ ...complexity, chew: v  })} label="Nedsatt tuggfunktion" />
-              <ToggleRow checked={complexity.mob}   onChange={(v) => setComplexity({ ...complexity, mob: v   })} label="Tandmobilitet ≥ Grad 2" sub="Horisontell rörlighet > 1 mm" />
+              <ToggleRow checked={complexity.mob}   onChange={(v) => setComplexity({ ...complexity, mob: v   })} label="Tandmobilitet ≥ Grad 2" />
               <ToggleRow checked={complexity.bite}  onChange={(v) => setComplexity({ ...complexity, bite: v  })} label="Bettkollaps" />
               <ToggleRow checked={complexity.drift} onChange={(v) => setComplexity({ ...complexity, drift: v })} label="Tandvandring / fläktning" />
               <ToggleRow checked={complexity.few}   onChange={(v) => setComplexity({ ...complexity, few: v   })} label="< 20 tänder / < 10 antagonistpar" />
@@ -610,113 +517,80 @@ Ansvarig tandläkare: _______________`;
           </div>
         </Card>
 
-        {/* CARD 4 — Utbredning & hygien */}
         <Card num={4} title="Utbredning & hygien" desc="Andel tänder med parodontit + munhygienstatus (BoP% + plack%).">
           <div>
             <FieldLabel>Utbredning</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "lok", label: "Lokaliserad — < 30% av tänderna" },
-                { val: "gen", label: "Generaliserad — ≥ 30% av tänderna" },
-                { val: "mol", label: "Molar/Incisiv-mönster → indikerar Grad C" },
-              ].map(o => (
-                <OptBtn key={o.val} value={o.val} current={extentData.extent} onClick={() => setExtentData({ ...extentData, extent: o.val as ExtentData["extent"] })}>{o.label}</OptBtn>
-              ))}
+            <div className="grid grid-cols-2 gap-2">
+              <OptBtn value="lok" current={extentData.extent} onClick={() => setExtentData({ ...extentData, extent: "lok" })}>Lokaliserad (&lt; 30%)</OptBtn>
+              <OptBtn value="gen" current={extentData.extent} onClick={() => setExtentData({ ...extentData, extent: "gen" })}>Generaliserad (≥ 30%)</OptBtn>
+              <OptBtn value="mol" current={extentData.extent} onClick={() => setExtentData({ ...extentData, extent: "mol" })}>Molar/Incisiv-mönster</OptBtn>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <FieldLabel hint="Hälsa: ≤ 10%">BoP %</FieldLabel>
-              <input type="number" min="0" max="100" placeholder="t.ex. 45"
-                value={extentData.bop}
-                onChange={(e) => setExtentData({ ...extentData, bop: e.target.value === "" ? "" : Number(e.target.value) })}
-                className="w-full p-2.5 rounded-xl border border-gray-200 focus:border-[#CC5833] focus:ring-2 focus:ring-[#CC5833]/20 bg-white/50 text-sm"
-              />
+              <FieldLabel>BoP %</FieldLabel>
+              <input type="number" placeholder="t.ex. 45" value={extentData.bop} onChange={(e) => setExtentData({ ...extentData, bop: e.target.value === "" ? "" : Math.max(0, Math.min(100, Number(e.target.value))) })} className="w-full p-3 rounded-ds-xl border-2 border-border-light focus:border-secondary focus:ring-1 focus:ring-secondary bg-surface text-sm font-bold outline-none transition-all" />
             </div>
             <div>
-              <FieldLabel hint="Cervikala 1/3">Plack %</FieldLabel>
-              <input type="number" min="0" max="100" placeholder="t.ex. 35"
-                value={extentData.plaque}
-                onChange={(e) => setExtentData({ ...extentData, plaque: e.target.value === "" ? "" : Number(e.target.value) })}
-                className="w-full p-2.5 rounded-xl border border-gray-200 focus:border-[#CC5833] focus:ring-2 focus:ring-[#CC5833]/20 bg-white/50 text-sm"
-              />
+              <FieldLabel>Plack %</FieldLabel>
+              <input type="number" placeholder="t.ex. 35" value={extentData.plaque} onChange={(e) => setExtentData({ ...extentData, plaque: e.target.value === "" ? "" : Math.max(0, Math.min(100, Number(e.target.value))) })} className="w-full p-3 rounded-ds-xl border-2 border-border-light focus:border-secondary focus:ring-1 focus:ring-secondary bg-surface text-sm font-bold outline-none transition-all" />
             </div>
           </div>
-          <div className="p-2.5 rounded-xl bg-green-50 border-l-4 border-green-500 text-xs text-green-800">
-            ✅ Stödbehandling: <strong>A:</strong> 7–12 mån · <strong>B:</strong> 5–6 mån · <strong>C:</strong> 3–4 mån
-          </div>
+          {grade && (
+            <div className="p-4 rounded-ds-2xl bg-primary/5 border border-primary/10 text-primary font-bold text-sm flex items-center gap-2">
+              <Activity size={18} className="text-secondary" />
+              Stödbehandling: {supportInterval}
+            </div>
+          )}
         </Card>
 
-        {/* CARD 5 — Progression / Prognosgradering */}
-        <Card num={5} title="Progression / Prognosgradering (Grad A–C)" desc="Direkt bevis väger tyngst. Saknas data → använd indirekt bedömning + kvot.">
+        <Card num={5} title="Progression / Prognosgradering" desc="Direkt bevis väger tyngst. Saknas data → använd indirekt bedömning + kvot.">
           <div>
-            <FieldLabel hint="Äldre journaldata/röntgen över 5 år">Direkt bevis</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "none", label: "Saknas / Inte tillämpbart" },
-                { val: "A",    label: "Ingen progression över 5 år → Grad A" },
-                { val: "B",    label: "< 2 mm över 5 år → Grad B" },
-                { val: "C",    label: "≥ 2 mm över 5 år → Grad C" },
-              ].map(o => (
-                <OptBtn key={o.val} value={o.val} current={gradeData.direct} onClick={() => setGradeData({ ...gradeData, direct: o.val as GradeData["direct"] })}>{o.label}</OptBtn>
-              ))}
+            <FieldLabel>Direkt bevis</FieldLabel>
+            <div className="grid grid-cols-2 gap-2">
+              <OptBtn value="none" current={gradeData.direct} onClick={() => setGradeData({ ...gradeData, direct: "none" })}>Saknas data</OptBtn>
+              <OptBtn value="A" current={gradeData.direct} onClick={() => setGradeData({ ...gradeData, direct: "A" })}>Ingen prog. (5 år)</OptBtn>
+              <OptBtn value="B" current={gradeData.direct} onClick={() => setGradeData({ ...gradeData, direct: "B" })}>&lt; 2 mm (5 år)</OptBtn>
+              <OptBtn value="C" current={gradeData.direct} onClick={() => setGradeData({ ...gradeData, direct: "C" })}>≥ 2 mm (5 år)</OptBtn>
             </div>
           </div>
           <div>
-            <FieldLabel hint="Förhållande mellan plack/tandsten och stödjevävnadsförlust">Case phenotype</FieldLabel>
-            <div className="flex flex-col gap-2">
-              {[
-                { val: "A", label: "A — Stor plack/tandsten men liten förlust" },
-                { val: "B", label: "B — Plack och förlust korrelerar" },
-                { val: "C", label: "C — Stor förlust trots lite plack (snabb progression)" },
-              ].map(o => (
+            <FieldLabel>Fenotyp (indirekt bedömning)</FieldLabel>
+            <div className="grid grid-cols-3 gap-2">
+              {[{ val: "A", label: "Grad A" }, { val: "B", label: "Grad B" }, { val: "C", label: "Grad C" }].map(o => (
                 <OptBtn key={o.val} value={o.val} current={gradeData.phenotype} onClick={() => setGradeData({ ...gradeData, phenotype: o.val as GradeData["phenotype"] })}>{o.label}</OptBtn>
               ))}
             </div>
           </div>
-          {ratioBlock}
         </Card>
 
-        {/* CARD 6 — Rökning & Diabetes (riskfaktorer) */}
         <Card num={6} title="Rökning & diabetes" desc="Modifierande riskfaktorer som uppgraderar Grade. Ålder + antal tänder används för Grade-kvot.">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <FieldLabel>Ålder</FieldLabel>
-              <input type="number" min="10" max="99" placeholder="t.ex. 45"
-                value={patient.age}
-                onChange={(e) => setPatient({ ...patient, age: e.target.value === "" ? "" : Number(e.target.value) })}
-                className="w-full p-2.5 rounded-xl border border-gray-200 focus:border-[#CC5833] focus:ring-2 focus:ring-[#CC5833]/20 bg-white/50 text-sm"
-              />
+              <FieldLabel htmlFor="paro-age">Ålder</FieldLabel>
+              <input id="paro-age" type="number" placeholder="t.ex. 45" value={patient.age} onChange={(e) => setPatient({ ...patient, age: e.target.value === "" ? "" : Math.max(1, Math.min(125, Number(e.target.value))) })} className="w-full p-3 rounded-ds-xl border-2 border-border-light focus:border-secondary focus:ring-1 focus:ring-secondary bg-surface text-sm font-bold outline-none transition-all" />
             </div>
             <div>
-              <FieldLabel hint="Exkl. visdomständer">Kvarv. tänder</FieldLabel>
-              <input type="number" min="0" max="28" placeholder="t.ex. 24"
-                value={patient.teeth}
-                onChange={(e) => setPatient({ ...patient, teeth: e.target.value === "" ? "" : Number(e.target.value) })}
-                className="w-full p-2.5 rounded-xl border border-gray-200 focus:border-[#CC5833] focus:ring-2 focus:ring-[#CC5833]/20 bg-white/50 text-sm"
-              />
+              <FieldLabel htmlFor="paro-bone-pct" hint="Värsta site, %">Benförlust %</FieldLabel>
+              <input id="paro-bone-pct" type="number" placeholder="t.ex. 30" value={severity.bonePct} onChange={(e) => setSeverity({ ...severity, bonePct: e.target.value === "" ? "" : Math.max(0, Math.min(100, Number(e.target.value))) })} className="w-full p-3 rounded-ds-xl border-2 border-border-light focus:border-secondary focus:ring-1 focus:ring-secondary bg-surface text-sm font-bold outline-none transition-all" />
             </div>
           </div>
+          {ratioBlock}
           <div>
-            <FieldLabel hint="<10/dag → minst Grad B · ≥10/dag → Grad C">Rökning</FieldLabel>
+            <FieldLabel hint="<10/dag → Grad B · ≥10/dag → Grad C">Rökning</FieldLabel>
             <div className="grid grid-cols-2 gap-2">
-              {[
-                { val: "none",  label: "Icke-rökare" },
-                { val: "lt10",  label: "< 10 cig/dag" },
-                { val: "ge10",  label: "≥ 10 cig/dag" },
-                { val: "snus",  label: "Snus / e-cig" },
-              ].map(o => (
+              {[{ val: "none", label: "Icke-rökare" }, { val: "lt10", label: "< 10 cig/dag" }, { val: "ge10", label: "≥ 10 cig/dag" }, { val: "snus", label: "Snus / e-cig" }].map(o => (
                 <OptBtn key={o.val} value={o.val} current={patient.smoking} onClick={() => setPatient({ ...patient, smoking: o.val as PatientData["smoking"] })}>{o.label}</OptBtn>
               ))}
             </div>
           </div>
           <div>
-            <FieldLabel hint="<53 mmol/mol → minst Grad B · ≥53 → Grad C">Diabetes (HbA1c)</FieldLabel>
-            <div className="flex flex-col gap-2">
+            <FieldLabel hint="HbA1c < 53 → Grad B · ≥ 53 → Grad C">Diabetes</FieldLabel>
+            <div className="grid grid-cols-1 gap-2">
               {[
-                { val: "none",         label: "Ingen diabetes" },
-                { val: "controlled",   label: "HbA1c < 53 mmol/mol (< 7%)" },
-                { val: "uncontrolled", label: "HbA1c ≥ 53 mmol/mol (≥ 7%)" },
+                { val: "none", label: "Ingen diabetes" },
+                { val: "controlled", label: "HbA1c < 53 mmol/mol (Grad B)" },
+                { val: "uncontrolled", label: "HbA1c ≥ 53 mmol/mol (Grad C)" }
               ].map(o => (
                 <OptBtn key={o.val} value={o.val} current={patient.diabetes} onClick={() => setPatient({ ...patient, diabetes: o.val as PatientData["diabetes"] })}>{o.label}</OptBtn>
               ))}
@@ -724,6 +598,144 @@ Ansvarig tandläkare: _______________`;
           </div>
         </Card>
       </section>
+
+      <aside id="result-panel" className="w-full lg:w-[380px] lg:flex-shrink-0 lg:sticky lg:top-4 lg:h-fit">
+        <div className="bg-surface border border-border-light rounded-ds-2xl p-6 shadow-ds-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-bl-[60px] pointer-events-none" />
+          
+          <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-neutral/10 relative z-10">
+            <div className="flex items-center gap-2">
+              <Activity className="text-secondary" size={22} />
+              <h3 className="font-display italic text-xl text-primary font-bold">Klassifikation</h3>
+            </div>
+            <button
+              onClick={resetAll}
+              className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-ink/30 hover:text-status-danger transition-colors bg-neutral/50 px-3 py-1.5 rounded-ds-pill tracking-widest2 uppercase"
+              type="button"
+            >
+              <RotateCcw size={14} /> Återställ
+            </button>
+          </div>
+
+          <div className="space-y-6 relative z-10">
+            <div className="text-center p-6 rounded-ds-xl bg-gradient-to-tr from-primary via-primary to-primary-container text-surface shadow-ds-xl shadow-primary/20 relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-r from-secondary/0 via-secondary/10 to-secondary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 -skew-x-12 pointer-events-none" />
+              <p className="text-[10px] font-mono text-surface/40 uppercase tracking-widest2 mb-2 relative z-10">EFP/AAP 2018</p>
+              <AnimatePresence mode="wait">
+                {stage > 0 && grade ? (
+                  <motion.div
+                    key="result"
+                    initial={{ opacity: 0, scale: 0.93 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="font-display italic text-2xl font-bold leading-tight relative z-10 tracking-tight"
+                  >
+                    {extentData.extent ? getExtentLabel(extentData.extent).split(" ")[0] + " p" : "P"}arodontit<br />
+                    stadie {toRoman(stage)} grad {grade}
+                  </motion.div>
+                ) : (
+                  <motion.p 
+                    key="empty"
+                    className="text-sm text-surface/40 italic relative z-10"
+                  >
+                    Fyll i kort 1–6 för klassifikation
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className="bg-neutral/30 p-4 rounded-ds-xl border border-border-light">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[10px] font-mono font-bold text-ink/30 uppercase tracking-widest2">Stadie</span>
+                <span className="font-display font-bold text-primary text-lg">{stage > 0 ? toRoman(stage) : "—"}</span>
+              </div>
+              <div className="flex gap-2 mb-2">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className={`flex-1 h-3 rounded-ds-pill transition-all duration-500 ${stage >= i ? ["", "bg-status-ok", "bg-status-warning", "bg-status-warning", "bg-status-danger"][i] : "bg-surface border border-border-light"}`} />
+                ))}
+              </div>
+              <div className="flex justify-between text-[10px] font-mono font-bold text-ink/20"><span>I</span><span>II</span><span>III</span><span>IV</span></div>
+            </div>
+
+            <div className="bg-neutral/30 p-4 rounded-ds-xl border border-border-light">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[10px] font-mono font-bold text-ink/30 uppercase tracking-widest2">Grad</span>
+                <span className="font-display font-bold text-primary text-lg">{grade ? grade : "—"}</span>
+              </div>
+              <div className="flex gap-2 mb-2">
+                {(["A", "B", "C"] as const).map((g, i) => (
+                  <div key={g} className={`flex-1 h-3 rounded-ds-pill transition-all duration-500 ${grade && ["A", "B", "C"].indexOf(grade) >= i ? ["bg-status-ok", "bg-status-warning", "bg-status-danger"][i] : "bg-surface border border-border-light"}`} />
+                ))}
+              </div>
+              <div className="flex justify-between text-[10px] font-mono font-bold text-ink/20"><span>A</span><span>B</span><span>C</span></div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 bg-neutral/30 rounded-ds-lg border border-border-light text-center">
+                <span className="block text-[8px] font-mono font-bold text-ink/30 uppercase mb-1 tracking-widest2">Utbredning</span>
+                <span className="text-xs font-bold text-primary">{extentLabel}</span>
+              </div>
+              <div className="p-3 bg-neutral/30 rounded-ds-lg border border-border-light text-center">
+                <span className="block text-[8px] font-mono font-bold text-ink/30 uppercase mb-1 tracking-widest2">Stödbehandling</span>
+                <span className="text-xs font-bold text-secondary">{supportInterval}</span>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[10px] font-mono font-bold text-ink/30 uppercase tracking-widest2">Journalmall</span>
+                <button onClick={copyToClipboard} className="flex items-center gap-1.5 text-xs font-bold text-secondary hover:text-primary transition-colors bg-secondary/5 px-4 py-2 rounded-ds-xl" type="button">
+                  <Copy size={14} /> Kopiera
+                </button>
+              </div>
+              <div className="font-mono text-[10px] text-ink/60 whitespace-pre-wrap bg-neutral/30 p-4 rounded-ds-xl border border-border-light leading-relaxed max-h-[300px] overflow-y-auto custom-scrollbar">
+                {buildJournal()}
+              </div>
+            </div>
+
+            <div className="p-4 bg-status-warning/10 rounded-ds-xl border border-status-warning/20 flex items-start gap-3">
+              <AlertTriangle size={16} className="text-status-warning shrink-0 mt-0.5" />
+              <p className="text-[10px] text-status-warning/80 font-medium leading-normal">
+                Utvärdera alltid patientens compliance och systemiska hälsa. Stadie IV kräver ofta tvärfacklig bedömning.
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Floating Mobile Action Bar */}
+      <AnimatePresence>
+        {stage > 0 && grade && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-4 left-4 right-4 z-50 lg:hidden"
+          >
+            <div className="bg-primary text-surface p-4 rounded-ds-2xl shadow-ds-xl border border-white/10 flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <p className="text-[8px] font-mono text-surface/40 uppercase tracking-widest2 mb-0.5">Diagnos</p>
+                <p className="text-sm font-display italic font-bold">
+                   {toRoman(stage)}: {grade} — {getExtentLabel(extentData.extent)}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => document.getElementById('result-panel')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="p-2 bg-white/10 rounded-ds-lg text-surface hover:bg-white/20 transition-colors"
+                >
+                  <Activity size={18} />
+                </button>
+                <button 
+                  onClick={copyToClipboard}
+                  className="flex items-center gap-2 px-4 py-2 bg-secondary text-surface rounded-ds-pill font-bold text-xs"
+                >
+                  <Copy size={14} /> Kopiera
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
