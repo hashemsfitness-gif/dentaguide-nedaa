@@ -69,7 +69,8 @@ export default function AIJournalmallAgent() {
         .eq('id', user.id)
         .single();
       if (cancelled) return;
-      setTier(profile?.tier || 'free');
+      // setTier(profile?.tier || 'free');
+      setTier('klinik'); // Tvinga premium under testfas
     }
     checkTier();
     return () => { cancelled = true; };
