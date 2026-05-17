@@ -47,10 +47,10 @@ export interface EndoScenarioData {
 }
 
 export const endodontiScenarier: Record<string, EndoScenarioData> = {
-  "sc1-reversibel-pulpit": {
+  "sc1-pulpit-tidig-fas": {
     id: "VARK-01-REV",
-    slug: "reversibel-pulpit",
-    title: "Symtomatisk pulpit (reversibel)",
+    slug: "pulpit-tidig-fas",
+    title: "Pulpit (tidig fas)",
     patientUtsaga: "Det ilar/hugger vid kyla & sött",
     icdCode: "K04.00",
     isAcute: false,
@@ -298,10 +298,10 @@ Planering: Återbesök om 6-12 månader för definitiv fyllning. Kontakta vid sy
     ]
   },
 
-  "sc2-irreversibel-pulpit": {
+  "sc2-pulpit-sen-fas": {
     id: "VARK-02-IRR",
-    slug: "irreversibel-pulpit",
-    title: "Symtomatisk pulpit (irreversibel) / Pulpanekros",
+    slug: "pulpit-sen-fas",
+    title: "Pulpit (sen fas) / Pulpanekros",
     patientUtsaga: "Bultande spontanvärk / Nattsmärta",
     icdCode: "K04.01",
     isAcute: true,

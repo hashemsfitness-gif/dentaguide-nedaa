@@ -56,6 +56,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next({ request });
   }
 
+  // ===================================================================
+  // TEMP — TESTLÄGE: alla login-/premium-restriktioner avstängda så att
+  // hela appen kan testas. /admin behåller sin auth- + roll-grind nedan.
+  // TODO FAS D: TA BORT HELA DETTA BLOCK för att återaktivera login-
+  // grinden (raden nedan + denna kommentar). Premium-grinden ligger redan
+  // bortkommenterad längre ned ("DEAKTIVERAD UNDER TEST").
+  if (!pathname.startsWith("/admin")) {
+    return NextResponse.next({ request });
+  }
+  // ================== /TEMP TESTLÄGE =================================
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(

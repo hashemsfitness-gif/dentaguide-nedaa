@@ -27,6 +27,7 @@
 import Link from "next/link";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import * as Sentry from "@sentry/nextjs";
+import { ScenarioHotkeys } from "@/components/shortcuts/ScenarioHotkeys";
 
 /* ── Datakontrakt (superset — får aldrig tappa ett områdesfält) ── */
 
@@ -68,20 +69,22 @@ export type NormalizedScenario = {
     obligatoriska?: Array<{ fraga: string; forvantatSvar?: string }>;
     kompletterande?: string[];
     riskfaktorer?: string[];
+    varning?: string;
   };
 
   status?: {
     inspektion?: string[];
     palpation?: string | string[];
-    perkussion?: string;
-    sensibilitet?: string;
+    perkussion?: string | string[];
+    sensibilitet?: string | string[];
+    kliniskaFynd?: string[];
     bpe?: { description: string; normalt: string; patologiskt: string };
     /** Valfri inline-widget (t.ex. <BPEKarta/>) som expanderas i status. */
     bpeWidget?: ReactNode;
   };
 
   diagnostik?: {
-    kriterier?: string;
+    kriterier?: string | string[];
     rtg?: string[];
     klassifikation?: string;
     uteslut?: string[];
@@ -93,21 +96,41 @@ export type NormalizedScenario = {
     varning?: string;
     alternativ?: Array<{
       title: string;
+      alt?: string;
       indikation?: string;
+      material?: string[];
       metod?: string[];
       tid?: string;
       koder?: string;
       specialist?: boolean;
     }>;
+    checklista?: string[];
     antibiotika?: string;
     lokalbehandling?: string;
   };
 
-  uppfoljning?: { text?: string };
+  uppfoljning?: {
+    text?: string | string[];
+    tidpunkt?: string[];
+    lyckadKriteria?: string[];
+    omvardering?: string[];
+  };
 
-  diffDiagnoser?: Array<{ namn: string; kod?: string; skillnad?: string }>;
+  diffDiagnoser?: Array<{
+    namn: string;
+    kod?: string;
+    skillnad?: string;
+    skillnader?: string[];
+    behandling?: string;
+  }>;
 
-  journal?: Array<{ titel: string; text: string }>;
+  journal?: Array<{ titel: string; text: string; tlvKoder?: string }>;
+
+  /** Synlig klinisk anteckning (område-data, t.ex. käkkirurgi/oralmedicin/
+   * bettfysiologi `kliniskAnteckning`). Renderas i läsflödet. */
+  kliniskAnteckning?: string;
+  /** Synlig varningssignal (område-data). Renderas i läsflödet. */
+  varningssignal?: string;
 
   /** Kvar i typen för bakåtkompatibilitet men renderas EJ i designen —
    * ersatt av `infografik`. Inget data tappas (fältet får finnas i
@@ -251,7 +274,7 @@ function Stack({
       aria-labelledby={labelledBy}
       className="scen-stack"
       style={{
-        background: "var(--surface, #FCF9F8)",
+        background: "var(--card-surface, var(--surface, #FCF9F8))",
         borderRadius: 28,
         padding: 28,
         marginBottom: 18,
@@ -655,7 +678,7 @@ function JournalPaper({
         className="font-mono"
         style={{
           position: "relative",
-          background: "#ffffff",
+          background: "var(--bg-card-solid, #ffffff)",
           backgroundImage:
             "repeating-linear-gradient(0deg, transparent 0 29px, rgba(9,27,20,0.06) 29px 30px)",
           color: "var(--text-primary, #201A18)",
@@ -681,7 +704,7 @@ function JournalPaper({
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             fontWeight: 800,
-            background: "var(--surface, #FCF9F8)",
+            background: "var(--card-surface, var(--surface, #FCF9F8))",
             color: "var(--text-primary, #201A18)",
             border: "1px solid var(--border-medium, #E2DDD9)",
             borderRadius: 8,
@@ -773,6 +796,11 @@ export default function ScenarioPage({
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
+  const navSlugs = scenario.nav.map((n) => n.slug);
+  const currentNavIndex = scenario.nav.findIndex(
+    (n) => n.id === scenario.id || n.slug === scenario.id,
+  );
+
   return (
     <div
       className="scenario-page block lg:grid lg:grid-cols-[280px_minmax(0,1fr)_300px]"
@@ -781,9 +809,23 @@ export default function ScenarioPage({
         minHeight: "calc(100vh - 76px)",
       }}
     >
+      {/* Tangentbordsnav: J nästa · K föregående · C kopiera journal */}
+      <ScenarioHotkeys
+        currentIndex={currentNavIndex < 0 ? 0 : currentNavIndex}
+        totalScenarios={scenario.nav.length}
+        scenarioSlugs={navSlugs}
+        basePath={scenario.areaHref}
+        scenarioId={scenario.id}
+        onCopyJournal={
+          scenario.journal && scenario.journal.length > 0
+            ? () => copyJournal(scenario.journal![0].text, 0)
+            : undefined
+        }
+      />
+
       {/* ── VÄNSTER: timeline-rail ─────────────────────────────── */}
       <aside
-        className="hidden lg:block sticky top-[76px] self-start max-h-[calc(100vh-76px)] overflow-y-auto no-scrollbar"
+        className="hidden lg:block sticky top-[76px] self-start max-h-[calc(100vh-76px)] overflow-y-auto rail-scroll"
         aria-label={`Scenariolista — ${scenario.areaLabel}`}
         style={{
           borderRight: "1px solid var(--border-medium, #E2DDD9)",
@@ -1199,11 +1241,11 @@ export default function ScenarioPage({
                 <div
                   key={i}
                   style={{
-                    background: "var(--surface, #FCF9F8)",
+                    background: "var(--card-surface, var(--surface, #FCF9F8))",
                     borderRadius: 22,
                     padding: 18,
                     border: "1px solid var(--border-medium, #E2DDD9)",
-                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                    boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                     transition: "transform 240ms, box-shadow 240ms",
                   }}
                 >
@@ -1259,13 +1301,13 @@ export default function ScenarioPage({
                       <div
                         key={i}
                         style={{
-                          background: "var(--surface, #FCF9F8)",
+                          background: "var(--card-surface, var(--surface, #FCF9F8))",
                           border: "1px solid var(--border-medium, #E2DDD9)",
                           borderRadius: 22,
                           padding: 18,
                           position: "relative",
                           overflow: "hidden",
-                          boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                          boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                         }}
                       >
                         <span
@@ -1345,6 +1387,24 @@ export default function ScenarioPage({
                   </div>
                 </>
               )}
+
+            {scenario.anamnes.varning && (
+              <div
+                style={{
+                  marginTop: 8,
+                  background: "rgba(224,123,57,0.10)",
+                  border: "1px solid rgba(224,123,57,0.35)",
+                  borderRadius: 18,
+                  padding: 14,
+                  fontSize: 15,
+                  lineHeight: 1.55,
+                  color: "#9A3412",
+                  fontWeight: 600,
+                }}
+              >
+                {scenario.anamnes.varning}
+              </div>
+            )}
           </Stack>
         )}
 
@@ -1376,11 +1436,11 @@ export default function ScenarioPage({
                 scenario.status.inspektion.length > 0 && (
                   <div
                     style={{
-                      background: "var(--surface, #FCF9F8)",
+                      background: "var(--card-surface, var(--surface, #FCF9F8))",
                       border: "1px solid var(--border-medium, #E2DDD9)",
                       borderRadius: 22,
                       padding: 16,
-                      boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                      boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                     }}
                   >
                     <SubLabel color="var(--secondary, #CC5833)">Inspektion</SubLabel>
@@ -1390,11 +1450,11 @@ export default function ScenarioPage({
               {scenario.status.palpation && (
                 <div
                   style={{
-                    background: "var(--surface, #FCF9F8)",
+                    background: "var(--card-surface, var(--surface, #FCF9F8))",
                     border: "1px solid var(--border-medium, #E2DDD9)",
                     borderRadius: 22,
                     padding: 16,
-                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                    boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                   }}
                 >
                   <SubLabel color="var(--secondary, #CC5833)">Palpation</SubLabel>
@@ -1418,52 +1478,77 @@ export default function ScenarioPage({
               {scenario.status.perkussion && (
                 <div
                   style={{
-                    background: "var(--surface, #FCF9F8)",
+                    background: "var(--card-surface, var(--surface, #FCF9F8))",
                     border: "1px solid var(--border-medium, #E2DDD9)",
                     borderRadius: 22,
                     padding: 16,
-                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                    boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                   }}
                 >
                   <SubLabel color="var(--secondary, #CC5833)">Perkussion</SubLabel>
-                  <p
-                    style={{
-                      fontSize: 16.5,
-                      lineHeight: 1.55,
-                      color: "var(--text-primary, #201A18)",
-                      fontWeight: 550,
-                      margin: 0,
-                    }}
-                  >
-                    {scenario.status.perkussion}
-                  </p>
+                  {Array.isArray(scenario.status.perkussion) ? (
+                    <Bullets items={scenario.status.perkussion} accent />
+                  ) : (
+                    <p
+                      style={{
+                        fontSize: 16.5,
+                        lineHeight: 1.55,
+                        color: "var(--text-primary, #201A18)",
+                        fontWeight: 550,
+                        margin: 0,
+                      }}
+                    >
+                      {scenario.status.perkussion}
+                    </p>
+                  )}
                 </div>
               )}
               {scenario.status.sensibilitet && (
                 <div
                   style={{
-                    background: "var(--surface, #FCF9F8)",
+                    background: "var(--card-surface, var(--surface, #FCF9F8))",
                     border: "1px solid var(--border-medium, #E2DDD9)",
                     borderRadius: 22,
                     padding: 16,
-                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                    boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                   }}
                 >
                   <SubLabel color="var(--secondary, #CC5833)">Sensibilitet</SubLabel>
-                  <p
-                    style={{
-                      fontSize: 16.5,
-                      lineHeight: 1.55,
-                      color: "var(--text-primary, #201A18)",
-                      fontWeight: 550,
-                      margin: 0,
-                    }}
-                  >
-                    {scenario.status.sensibilitet}
-                  </p>
+                  {Array.isArray(scenario.status.sensibilitet) ? (
+                    <Bullets items={scenario.status.sensibilitet} accent />
+                  ) : (
+                    <p
+                      style={{
+                        fontSize: 16.5,
+                        lineHeight: 1.55,
+                        color: "var(--text-primary, #201A18)",
+                        fontWeight: 550,
+                        margin: 0,
+                      }}
+                    >
+                      {scenario.status.sensibilitet}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
+
+            {scenario.status.kliniskaFynd &&
+              scenario.status.kliniskaFynd.length > 0 && (
+                <div
+                  style={{
+                    marginTop: 14,
+                    background: "var(--card-surface, var(--surface, #FCF9F8))",
+                    border: "1px solid var(--border-medium, #E2DDD9)",
+                    borderRadius: 22,
+                    padding: 16,
+                    boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
+                  }}
+                >
+                  <SubLabel color="var(--secondary, #CC5833)">Kliniska fynd</SubLabel>
+                  <Bullets items={scenario.status.kliniskaFynd} accent />
+                </div>
+              )}
 
             {scenario.status.bpe && (
               <div
@@ -1582,7 +1667,7 @@ export default function ScenarioPage({
                     id="bpe-karta-inline"
                     style={{
                       marginTop: 16,
-                      background: "var(--surface, #FCF9F8)",
+                      background: "var(--card-surface, var(--surface, #FCF9F8))",
                       border: "1px solid var(--border-medium, #E2DDD9)",
                       borderRadius: 22,
                       padding: 16,
@@ -1616,22 +1701,36 @@ export default function ScenarioPage({
             {scenario.diagnostik.kriterier && (
               <div style={{ marginBottom: 18 }}>
                 <SubLabel color="var(--secondary, #CC5833)">Kriterier / Indikation</SubLabel>
-                <p
-                  style={{
-                    fontSize: 16.5,
-                    lineHeight: 1.65,
-                    color: "var(--text-primary, #201A18)",
-                    background: "var(--surface, #FCF9F8)",
-                    border: "1px solid var(--border-medium, #E2DDD9)",
-                    borderRadius: 22,
-                    padding: 16,
-                    margin: 0,
-                    fontWeight: 550,
-                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
-                  }}
-                >
-                  {scenario.diagnostik.kriterier}
-                </p>
+                {Array.isArray(scenario.diagnostik.kriterier) ? (
+                  <div
+                    style={{
+                      background: "var(--card-surface, var(--surface, #FCF9F8))",
+                      border: "1px solid var(--border-medium, #E2DDD9)",
+                      borderRadius: 22,
+                      padding: 16,
+                      boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
+                    }}
+                  >
+                    <Bullets items={scenario.diagnostik.kriterier} accent />
+                  </div>
+                ) : (
+                  <p
+                    style={{
+                      fontSize: 16.5,
+                      lineHeight: 1.65,
+                      color: "var(--text-primary, #201A18)",
+                      background: "var(--card-surface, var(--surface, #FCF9F8))",
+                      border: "1px solid var(--border-medium, #E2DDD9)",
+                      borderRadius: 22,
+                      padding: 16,
+                      margin: 0,
+                      fontWeight: 550,
+                      boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
+                    }}
+                  >
+                    {scenario.diagnostik.kriterier}
+                  </p>
+                )}
               </div>
             )}
             {scenario.diagnostik.rtg && scenario.diagnostik.rtg.length > 0 && (
@@ -1649,7 +1748,7 @@ export default function ScenarioPage({
                   border: "1px solid rgba(14,59,82,0.30)",
                   borderRadius: 22,
                   padding: 16,
-                  boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                  boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                 }}
               >
                 <SubLabel color="var(--primary, #0E3B52)">Klassifikation</SubLabel>
@@ -1676,7 +1775,7 @@ export default function ScenarioPage({
                     border: "1px solid rgba(193,18,31,0.30)",
                     borderRadius: 22,
                     padding: 16,
-                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                    boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                   }}
                 >
                   <SubLabel color="var(--status-danger, #C1121F)">
@@ -1745,7 +1844,10 @@ export default function ScenarioPage({
                       key={i}
                       style={{
                         position: "relative",
-                        background: "var(--surface, #FCF9F8)",
+                        background:
+                          i === 0
+                            ? "linear-gradient(180deg, rgba(204,88,51,0.07) 0%, rgba(204,88,51,0.025) 100%), var(--card-surface, var(--surface, #FCF9F8))"
+                            : "var(--card-surface, var(--surface, #FCF9F8))",
                         border:
                           i === 0
                             ? "2px solid rgba(204,88,51,0.50)"
@@ -1777,7 +1879,7 @@ export default function ScenarioPage({
                             fontWeight: 700,
                           }}
                         >
-                          {String(i + 1).padStart(2, "0")}
+                          {alt.alt || String(i + 1).padStart(2, "0")}
                         </span>
                         <h3
                           className="font-display"
@@ -1825,6 +1927,14 @@ export default function ScenarioPage({
                           <strong style={{ color: "var(--secondary, #CC5833)", fontSize: 13.5, textTransform: "uppercase", letterSpacing: "0.08em", marginRight: 8, fontWeight: 800 }}>Indikation</strong>
                           <span>{alt.indikation}</span>
                         </p>
+                      )}
+                      {alt.material && alt.material.length > 0 && (
+                        <div style={{ margin: "0 0 14px 0" }}>
+                          <p style={{ margin: "0 0 6px 0" }}>
+                            <strong style={{ color: "var(--secondary, #CC5833)", fontSize: 13.5, textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 800 }}>Material</strong>
+                          </p>
+                          <Bullets items={alt.material} accent />
+                        </div>
                       )}
                       {alt.metod && alt.metod.length > 0 && (
                         <ol
@@ -1900,6 +2010,22 @@ export default function ScenarioPage({
                   ))}
                 </div>
               )}
+            {scenario.behandling.checklista &&
+              scenario.behandling.checklista.length > 0 && (
+                <div
+                  style={{
+                    marginTop: 16,
+                    background: "var(--card-surface, var(--surface, #FCF9F8))",
+                    border: "1px solid var(--border-medium, #E2DDD9)",
+                    borderRadius: 26,
+                    padding: 20,
+                    boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
+                  }}
+                >
+                  <SubLabel color="var(--secondary, #CC5833)">Checklista</SubLabel>
+                  <Bullets items={scenario.behandling.checklista} accent />
+                </div>
+              )}
             {scenario.behandling.antibiotika && (
               <div
                 style={{
@@ -1909,7 +2035,7 @@ export default function ScenarioPage({
                   border: "1px solid rgba(14,59,82,0.30)",
                   borderRadius: 26,
                   padding: 20,
-                  boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                  boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                 }}
               >
                 <SubLabel color="var(--primary, #0E3B52)">Antibiotika / Farmakologi</SubLabel>
@@ -1936,7 +2062,7 @@ export default function ScenarioPage({
                   border: "1px solid rgba(45,106,79,0.30)",
                   borderRadius: 26,
                   padding: 20,
-                  boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
+                  boxShadow: "var(--card-shadow, 0 2px 8px -4px rgba(9,27,20,0.04))",
                 }}
               >
                 <SubLabel color="var(--status-ok, #2D6A4F)">Lokalbehandling</SubLabel>
@@ -1953,6 +2079,68 @@ export default function ScenarioPage({
                 </p>
               </div>
             )}
+          </Stack>
+        )}
+
+        {scenario.varningssignal && (
+          <Stack id="s-varning" accent labelledBy="h-varning">
+            <Mono color="var(--secondary)">Varningssignal</Mono>
+            <h2
+              id="h-varning"
+              className="font-display ed-italic"
+              style={{
+                margin: "10px 0 12px 0",
+                fontSize: 20,
+                color: "var(--text-primary)",
+                letterSpacing: "-0.015em",
+              }}
+            >
+              Varningssignal
+            </h2>
+            <div
+              style={{
+                background: "rgba(224,123,57,0.10)",
+                border: "1px solid rgba(224,123,57,0.35)",
+                borderRadius: 18,
+                padding: 16,
+                fontSize: 16,
+                lineHeight: 1.6,
+                color: "#9A3412",
+                fontWeight: 600,
+              }}
+            >
+              {scenario.varningssignal}
+            </div>
+          </Stack>
+        )}
+
+        {scenario.kliniskAnteckning && (
+          <Stack id="s-klinisk-anteckning" accent labelledBy="h-klinisk-anteckning">
+            <Mono color="var(--secondary)">Klinisk anteckning</Mono>
+            <h2
+              id="h-klinisk-anteckning"
+              className="font-display ed-italic"
+              style={{
+                margin: "10px 0 12px 0",
+                fontSize: 20,
+                color: "var(--text-primary)",
+                letterSpacing: "-0.015em",
+              }}
+            >
+              Klinisk anteckning
+            </h2>
+            <p
+              style={{
+                fontSize: 16,
+                lineHeight: 1.65,
+                color: "var(--text-primary, #201A18)",
+                fontWeight: 550,
+                whiteSpace: "pre-line",
+                margin: 0,
+              }}
+            >
+              {scenario.kliniskAnteckning}
+            </p>
           </Stack>
         )}
 
@@ -1984,7 +2172,11 @@ export default function ScenarioPage({
         ))}
 
         {/* Uppföljning + Differentialdiagnoser */}
-        {(scenario.uppfoljning?.text ||
+        {((scenario.uppfoljning &&
+          (scenario.uppfoljning.text ||
+            (scenario.uppfoljning.tidpunkt?.length ?? 0) > 0 ||
+            (scenario.uppfoljning.lyckadKriteria?.length ?? 0) > 0 ||
+            (scenario.uppfoljning.omvardering?.length ?? 0) > 0)) ||
           (scenario.diffDiagnoser && scenario.diffDiagnoser.length > 0)) && (
           <div
             style={{
@@ -1994,7 +2186,11 @@ export default function ScenarioPage({
               marginBottom: 18,
             }}
           >
-            {scenario.uppfoljning?.text && (
+            {scenario.uppfoljning &&
+              (scenario.uppfoljning.text ||
+                (scenario.uppfoljning.tidpunkt?.length ?? 0) > 0 ||
+                (scenario.uppfoljning.lyckadKriteria?.length ?? 0) > 0 ||
+                (scenario.uppfoljning.omvardering?.length ?? 0) > 0) && (
               <Stack>
                 <Mono color="var(--secondary)">06 · Uppföljning</Mono>
                 <h2
@@ -2008,18 +2204,44 @@ export default function ScenarioPage({
                 >
                   Uppföljning
                 </h2>
-                <p
-                  style={{
-                    fontSize: 16,
-                    lineHeight: 1.6,
-                    color: "var(--text-primary, #201A18)",
-                    fontWeight: 550,
-                    whiteSpace: "pre-line",
-                    margin: 0,
-                  }}
-                >
-                  {scenario.uppfoljning.text}
-                </p>
+                {scenario.uppfoljning.text &&
+                  (Array.isArray(scenario.uppfoljning.text) ? (
+                    <Bullets items={scenario.uppfoljning.text} accent />
+                  ) : (
+                    <p
+                      style={{
+                        fontSize: 16,
+                        lineHeight: 1.6,
+                        color: "var(--text-primary, #201A18)",
+                        fontWeight: 550,
+                        whiteSpace: "pre-line",
+                        margin: 0,
+                      }}
+                    >
+                      {scenario.uppfoljning.text}
+                    </p>
+                  ))}
+                {scenario.uppfoljning.tidpunkt &&
+                  scenario.uppfoljning.tidpunkt.length > 0 && (
+                    <div style={{ marginTop: 12 }}>
+                      <SubLabel color="var(--secondary, #CC5833)">Tidpunkt</SubLabel>
+                      <Bullets items={scenario.uppfoljning.tidpunkt} accent />
+                    </div>
+                  )}
+                {scenario.uppfoljning.lyckadKriteria &&
+                  scenario.uppfoljning.lyckadKriteria.length > 0 && (
+                    <div style={{ marginTop: 12 }}>
+                      <SubLabel color="var(--secondary, #CC5833)">Lyckat resultat</SubLabel>
+                      <Bullets items={scenario.uppfoljning.lyckadKriteria} accent />
+                    </div>
+                  )}
+                {scenario.uppfoljning.omvardering &&
+                  scenario.uppfoljning.omvardering.length > 0 && (
+                    <div style={{ marginTop: 12 }}>
+                      <SubLabel color="var(--secondary, #CC5833)">Kräver omvärdering</SubLabel>
+                      <Bullets items={scenario.uppfoljning.omvardering} accent />
+                    </div>
+                  )}
               </Stack>
             )}
             {scenario.diffDiagnoser && scenario.diffDiagnoser.length > 0 && (
@@ -2077,7 +2299,7 @@ export default function ScenarioPage({
                               fontSize: 12,
                               fontWeight: 700,
                               color: "var(--text-secondary, #544F4C)",
-                              background: "var(--surface, #FCF9F8)",
+                              background: "var(--card-surface, var(--surface, #FCF9F8))",
                               border: "1px solid var(--border-medium, #E2DDD9)",
                               padding: "2px 8px",
                               borderRadius: 4,
@@ -2100,6 +2322,44 @@ export default function ScenarioPage({
                         >
                           <strong style={{ color: "var(--secondary, #CC5833)", fontWeight: 700 }}>Skillnad: </strong>
                           {d.skillnad}
+                        </p>
+                      )}
+                      {d.skillnader && d.skillnader.length > 0 && (
+                        <ul
+                          role="list"
+                          style={{ listStyle: "none", padding: 0, margin: "6px 0 0 0", display: "grid", gap: 4 }}
+                        >
+                          {d.skillnader.map((sk, j) => (
+                            <li
+                              key={j}
+                              style={{
+                                fontSize: 14.5,
+                                color: "var(--text-secondary, #544F4C)",
+                                fontWeight: 550,
+                                lineHeight: 1.5,
+                                display: "grid",
+                                gridTemplateColumns: "auto 1fr",
+                                gap: 8,
+                              }}
+                            >
+                              <span aria-hidden style={{ color: "var(--secondary, #CC5833)" }}>·</span>
+                              <span>{sk}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {d.behandling && (
+                        <p
+                          style={{
+                            fontSize: 14.5,
+                            color: "var(--text-secondary, #544F4C)",
+                            fontWeight: 550,
+                            margin: "6px 0 0 0",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          <strong style={{ color: "var(--secondary, #CC5833)", fontWeight: 700 }}>Behandling: </strong>
+                          {d.behandling}
                         </p>
                       )}
                     </li>
@@ -2128,13 +2388,30 @@ export default function ScenarioPage({
               Journalmallar
             </h2>
             {scenario.journal.map((mall, i) => (
-              <JournalPaper
-                key={i}
-                mall={mall}
-                index={i}
-                onCopy={copyJournal}
-                copied={copiedIndex === i}
-              />
+              <div key={i}>
+                <JournalPaper
+                  mall={mall}
+                  index={i}
+                  onCopy={copyJournal}
+                  copied={copiedIndex === i}
+                />
+                {mall.tlvKoder && (
+                  <p
+                    className="font-mono"
+                    style={{
+                      margin: "-6px 0 18px 0",
+                      fontSize: 13.5,
+                      fontWeight: 700,
+                      color: "var(--text-secondary, #544F4C)",
+                    }}
+                  >
+                    Debiteringskoder (TLV):{" "}
+                    <span style={{ color: "var(--text-primary, #201A18)" }}>
+                      {mall.tlvKoder}
+                    </span>
+                  </p>
+                )}
+              </div>
             ))}
           </Stack>
         )}
@@ -2158,7 +2435,7 @@ export default function ScenarioPage({
 
       {/* ── HÖGER: kontextuella verktyg ────────────────────────── */}
       <aside
-        className="flex flex-col lg:sticky lg:top-[76px] lg:self-start lg:max-h-[calc(100vh-76px)] overflow-y-auto no-scrollbar"
+        className="flex flex-col lg:sticky lg:top-[76px] lg:self-start lg:max-h-[calc(100vh-76px)] overflow-y-auto rail-scroll"
         aria-label="Kliniska verktyg och kontext"
         style={{
           padding: "32px 22px 32px 18px",
@@ -2173,7 +2450,7 @@ export default function ScenarioPage({
         {scenario.verktyg && scenario.verktyg.length > 0 && (
           <div
             style={{
-              background: "var(--surface, #FCF9F8)",
+              background: "var(--card-surface, var(--surface, #FCF9F8))",
               borderRadius: 28,
               border: "1px solid var(--border-medium, #E2DDD9)",
               padding: 18,
@@ -2219,7 +2496,7 @@ export default function ScenarioPage({
         {scenario.diffDiagnoser && scenario.diffDiagnoser.length > 0 && (
           <div
             style={{
-              background: "var(--surface, #FCF9F8)",
+              background: "var(--card-surface, var(--surface, #FCF9F8))",
               borderRadius: 28,
               border: "1px solid var(--border-medium, #E2DDD9)",
               padding: 18,
@@ -2240,7 +2517,7 @@ export default function ScenarioPage({
                     alignItems: "center",
                     padding: "10px 14px",
                     borderRadius: 22,
-                    background: "#ffffff",
+                    background: "var(--bg-card-solid, #ffffff)",
                     border: "1px solid var(--border-medium, #E2DDD9)",
                     fontSize: 14.5,
                     fontWeight: 700,
