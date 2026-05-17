@@ -138,9 +138,9 @@ export function LakemedelSearch() {
       </div>
       
       {/* Results Header */}
-      <div className="flex items-center justify-between text-xs font-mono text-ink/50 uppercase tracking-widest2">
-        <span>Kliniska riktlinjer</span>
-        <span className="bg-neutral/70 px-3 py-1.5 rounded-ds-lg font-extrabold">
+      <div className="flex items-center justify-between text-xs font-mono uppercase tracking-widest2">
+        <span className="font-black" style={{ color: '#0d4a65' }}>Kliniska riktlinjer</span>
+        <span className="bg-neutral/70 text-ink/50 px-3 py-1.5 rounded-ds-lg font-extrabold">
           {filteredData.length} {filteredData.length === 1 ? 'grupp' : 'grupper'} hittade
         </span>
       </div>
