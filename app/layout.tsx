@@ -114,10 +114,7 @@ export default function RootLayout({
         </QueryProvider>
 
         {/* PSL-fotnot hanteras per-sida i (public) och (dashboard) layouts */}
-{/* impeccable-live-start */}
-<script src="http://localhost:8400/live.js"></script>
-{/* impeccable-live-end */}
-</body>
+      </body>
     </html>
   );
 }
