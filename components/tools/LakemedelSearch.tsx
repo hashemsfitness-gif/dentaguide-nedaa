@@ -93,19 +93,19 @@ export function LakemedelSearch() {
       <div className="bg-surface/50 backdrop-blur-sm border border-border-light rounded-ds-2xl p-6 md:p-7 shadow-ds-sm space-y-5">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-ink/40" />
+            <Search className="h-5 w-5" style={{ color: '#0d4a65' }} />
           </div>
           <input 
             type="text"
             placeholder="Sök läkemedel, indikation eller substans..." 
-            className="w-full pl-11 pr-4 py-3.5 text-base rounded-ds-xl border border-border-light focus:border-secondary/40 focus:ring-2 focus:ring-secondary/10 bg-surface text-ink font-semibold placeholder-ink/30 outline-none transition-all shadow-none"
+            className="w-full pl-11 pr-4 py-3.5 text-base rounded-ds-xl border border-[#0d4a65]/30 focus:border-[#0d4a65] focus:ring-2 focus:ring-[#0d4a65]/10 bg-surface text-ink font-semibold placeholder-ink/30 outline-none transition-all shadow-none"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-ink/40 hover:text-secondary transition-colors"
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-ink/40 hover:text-[#0d4a65] transition-colors"
             >
               Rensa
             </button>
