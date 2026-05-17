@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
 import { 
@@ -201,12 +201,15 @@ function OptBtn({ value, current, onClick, children, fullWidth = false }: {
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
       aria-pressed={isSelected}
-      className={`p-3 rounded-ds-xl border text-left transition-all text-sm font-semibold shadow-none focus:outline-none focus:ring-2 focus:ring-secondary/20 relative overflow-hidden ${
+      className={`p-3 rounded-ds-xl border-2 text-left transition-all text-sm font-bold shadow-ds-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 relative overflow-hidden ${
         isSelected
-          ? "border-secondary/40 bg-secondary/[0.08] text-secondary font-bold"
-          : "border-border-light bg-surface text-ink/70 hover:border-border-medium hover:text-ink hover:bg-neutral/10 focus:border-border-medium"
+          ? "border-secondary bg-secondary/[0.07] text-secondary ring-1 ring-secondary font-extrabold shadow-accent/5"
+          : "border-border-light bg-surface text-ink/70 hover:border-border-medium hover:text-ink hover:shadow-ds-md focus:border-border-medium"
       } ${fullWidth ? "w-full" : ""}`}
     >
+      {isSelected && (
+        <span className="absolute left-0 top-0 bottom-0 w-1 bg-secondary rounded-r-md pointer-events-none" />
+      )}
       <div className="flex items-center justify-between">
         <span className="leading-tight">{children}</span>
         {isSelected && <CheckCircle2 size={14} className="shrink-0 ml-2 text-secondary" aria-hidden="true" />}
@@ -226,8 +229,8 @@ function ToggleRow({ checked, onChange, label, sub }: {
       role="checkbox"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`flex items-center gap-3 p-3 rounded-ds-xl border cursor-pointer transition-all w-full text-left shadow-none focus:outline-none focus:ring-2 focus:ring-secondary/20 ${
-        checked ? "border-secondary/40 bg-secondary/[0.06]" : "border-border-light bg-surface hover:border-border-medium focus:border-border-medium"
+      className={`flex items-center gap-3 p-3 rounded-ds-xl border-2 cursor-pointer transition-all w-full text-left shadow-ds-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 ${
+        checked ? "border-secondary bg-secondary/5" : "border-border-light bg-surface hover:border-border-medium focus:border-border-medium"
       }`}
     >
       <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
@@ -248,23 +251,11 @@ function ToggleRow({ checked, onChange, label, sub }: {
 function Card({ num, title, desc, children }: {
   num: number; title: string; desc: string; children: React.ReactNode;
 }) {
-  const getStepColor = (n: number) => {
-    switch(n) {
-      case 1: return "bg-cyan-500/10 text-cyan-600 border border-cyan-500/20";
-      case 2: return "bg-indigo-500/10 text-indigo-600 border border-indigo-500/20";
-      case 3: return "bg-purple-500/10 text-purple-600 border border-purple-500/20";
-      case 4: return "bg-rose-500/10 text-rose-600 border border-rose-500/20";
-      case 5: return "bg-orange-500/10 text-orange-600 border border-orange-500/20";
-      case 6: return "bg-amber-500/10 text-amber-600 border border-amber-500/20";
-      default: return "bg-secondary text-white";
-    }
-  };
-
   return (
     <div className="bg-surface border border-border-light rounded-ds-2xl p-8 shadow-ds-sm hover:shadow-ds-md transition-all flex flex-col h-full group">
       <div className="mb-6 pb-4 border-b border-neutral/10">
         <div className="flex items-center gap-3 mb-2">
-          <span className={`text-xs font-mono font-bold w-7 h-7 rounded-full flex items-center justify-center ${getStepColor(num)} shadow-none`}>
+          <span className="text-xs font-mono font-bold w-7 h-7 rounded-full bg-secondary text-white flex items-center justify-center shadow-accent/20 shadow-lg">
             {num}
           </span>
           <h2 className="text-xl font-display italic text-primary font-bold tracking-tight group-hover:text-secondary transition-colors">{title}</h2>
@@ -333,20 +324,6 @@ export default function ParodKlassificerare() {
   const [complexity, setComplexity] = useState<ComplexityData>(EMPTY_COMPLEXITY);
   const [gradeData, setGradeData]   = useState<GradeData>(EMPTY_GRADE);
   const [extentData, setExtentData] = useState<ExtentData>(EMPTY_EXTENT);
-  const [showOnboard, setShowOnboard] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem('dg_onboard_parod') !== 'done') {
-      setShowOnboard(true);
-    }
-  }, []);
-
-  const dismissOnboard = () => {
-    setShowOnboard(false);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('dg_onboard_parod', 'done');
-    }
-  };
 
   const { stage, reasons: stageReasons } = calcStage(severity, complexity);
   const { grade, reasons: gradeReasons } = calcGrade(gradeData, patient, severity, extentData);
@@ -456,35 +433,7 @@ Ansvarig tandläkare: _______________`;
   })();
 
   return (
-    <div className="space-y-6">
-      <AnimatePresence>
-        {showOnboard && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="p-6 rounded-ds-2xl bg-secondary/[0.04] border border-secondary/20 flex gap-4 items-start relative overflow-hidden"
-          >
-            <div className="p-3 bg-secondary/10 rounded-ds-xl text-secondary shrink-0">
-              <FileText size={22} />
-            </div>
-            <div className="flex-1 pr-6">
-              <h4 className="text-sm font-bold text-primary mb-1">Välkommen till Parodontit-Klassificeraren</h4>
-              <p className="text-xs text-ink/70 leading-relaxed font-medium">
-                Detta verktyg hjälper dig att klassificera parodontit enligt de senaste globala riktlinjerna (EFP/AAP 2018). Genomför stegen 1 till 6 genom att klicka i patientens värden. Systemet räknar automatiskt ut slutgiltigt Stadie (I-IV), Grad (A-C), utbredning samt föreslaget stödbehandlingsintervall och genererar en färdig journaltext redo att kopieras.
-              </p>
-              <button 
-                onClick={dismissOnboard} 
-                className="mt-3 text-xs font-bold text-secondary hover:text-primary transition-colors bg-secondary/10 px-4 py-2 rounded-ds-xl"
-              >
-                Kom igång
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="flex flex-col lg:flex-row lg:items-start gap-8">
+    <div className="flex flex-col lg:flex-row lg:items-start gap-8">
       <section className="flex-1 min-w-0 grid grid-cols-1 xl:grid-cols-2 gap-8 content-start">
         <Card num={1} title="Inklusionsscreening" desc="Båda kriterier krävs. Minst 2 icke-angränsande tänder. Visdomständer exkluderas.">
           <div>
@@ -580,39 +529,11 @@ Ansvarig tandläkare: _______________`;
           <div className="grid grid-cols-2 gap-4">
             <div>
               <FieldLabel>BoP %</FieldLabel>
-              <input 
-                type="number" 
-                placeholder="t.ex. 45" 
-                value={extentData.bop} 
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "") {
-                    setExtentData({ ...extentData, bop: "" });
-                  } else {
-                    const parsed = parseInt(val, 10);
-                    setExtentData({ ...extentData, bop: isNaN(parsed) ? "" : Math.max(0, Math.min(100, parsed)) });
-                  }
-                }} 
-                className="w-full p-3 rounded-ds-xl border border-border-light focus:border-secondary/40 focus:ring-2 focus:ring-secondary/10 bg-surface text-sm font-bold outline-none transition-all shadow-none" 
-              />
+              <input type="number" placeholder="t.ex. 45" value={extentData.bop} onChange={(e) => setExtentData({ ...extentData, bop: e.target.value === "" ? "" : Math.max(0, Math.min(100, Number(e.target.value))) })} className="w-full p-3 rounded-ds-xl border-2 border-border-light focus:border-secondary focus:ring-1 focus:ring-secondary bg-surface text-sm font-bold outline-none transition-all" />
             </div>
             <div>
               <FieldLabel>Plack %</FieldLabel>
-              <input 
-                type="number" 
-                placeholder="t.ex. 35" 
-                value={extentData.plaque} 
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "") {
-                    setExtentData({ ...extentData, plaque: "" });
-                  } else {
-                    const parsed = parseInt(val, 10);
-                    setExtentData({ ...extentData, plaque: isNaN(parsed) ? "" : Math.max(0, Math.min(100, parsed)) });
-                  }
-                }} 
-                className="w-full p-3 rounded-ds-xl border border-border-light focus:border-secondary/40 focus:ring-2 focus:ring-secondary/10 bg-surface text-sm font-bold outline-none transition-all shadow-none" 
-              />
+              <input type="number" placeholder="t.ex. 35" value={extentData.plaque} onChange={(e) => setExtentData({ ...extentData, plaque: e.target.value === "" ? "" : Math.max(0, Math.min(100, Number(e.target.value))) })} className="w-full p-3 rounded-ds-xl border-2 border-border-light focus:border-secondary focus:ring-1 focus:ring-secondary bg-surface text-sm font-bold outline-none transition-all" />
             </div>
           </div>
           {grade && (
@@ -647,41 +568,11 @@ Ansvarig tandläkare: _______________`;
           <div className="grid grid-cols-2 gap-4">
             <div>
               <FieldLabel htmlFor="paro-age">Ålder</FieldLabel>
-              <input 
-                id="paro-age" 
-                type="number" 
-                placeholder="t.ex. 45" 
-                value={patient.age} 
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "") {
-                    setPatient({ ...patient, age: "" });
-                  } else {
-                    const parsed = parseInt(val, 10);
-                    setPatient({ ...patient, age: isNaN(parsed) ? "" : Math.max(1, Math.min(125, parsed)) });
-                  }
-                }} 
-                className="w-full p-3 rounded-ds-xl border border-border-light focus:border-secondary/40 focus:ring-2 focus:ring-secondary/10 bg-surface text-sm font-bold outline-none transition-all shadow-none" 
-              />
+              <input id="paro-age" type="number" placeholder="t.ex. 45" value={patient.age} onChange={(e) => setPatient({ ...patient, age: e.target.value === "" ? "" : Math.max(1, Math.min(125, Number(e.target.value))) })} className="w-full p-3 rounded-ds-xl border-2 border-border-light focus:border-secondary focus:ring-1 focus:ring-secondary bg-surface text-sm font-bold outline-none transition-all" />
             </div>
             <div>
               <FieldLabel htmlFor="paro-bone-pct" hint="Värsta site, %">Benförlust %</FieldLabel>
-              <input 
-                id="paro-bone-pct" 
-                type="number" 
-                placeholder="t.ex. 30" 
-                value={severity.bonePct} 
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val === "") {
-                    setSeverity({ ...severity, bonePct: "" });
-                  } else {
-                    const parsed = parseInt(val, 10);
-                    setSeverity({ ...severity, bonePct: isNaN(parsed) ? "" : Math.max(0, Math.min(100, parsed)) });
-                  }
-                }} 
-                className="w-full p-3 rounded-ds-xl border border-border-light focus:border-secondary/40 focus:ring-2 focus:ring-secondary/10 bg-surface text-sm font-bold outline-none transition-all shadow-none" 
-              />
+              <input id="paro-bone-pct" type="number" placeholder="t.ex. 30" value={severity.bonePct} onChange={(e) => setSeverity({ ...severity, bonePct: e.target.value === "" ? "" : Math.max(0, Math.min(100, Number(e.target.value))) })} className="w-full p-3 rounded-ds-xl border-2 border-border-light focus:border-secondary focus:ring-1 focus:ring-secondary bg-surface text-sm font-bold outline-none transition-all" />
             </div>
           </div>
           {ratioBlock}
@@ -846,6 +737,5 @@ Ansvarig tandläkare: _______________`;
         )}
       </AnimatePresence>
     </div>
-  </div>
-);
+  );
 }
