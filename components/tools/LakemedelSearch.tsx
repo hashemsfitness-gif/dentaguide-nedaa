@@ -122,9 +122,9 @@ export function LakemedelSearch() {
                 whileHover={{ scale: 1.02, y: -1 }}
                 whileTap={{ scale: 0.98 }}
                 className={cn(
-                  "px-5 py-2.5 rounded-full text-sm transition-all border focus:outline-none focus:ring-2 focus:ring-secondary/20 flex items-center gap-1.5",
+                  "px-5 py-2.5 rounded-full text-sm transition-all border focus:outline-none focus:ring-2 focus:ring-[#0d4a65]/20 flex items-center gap-1.5",
                   isSelected 
-                    ? "bg-secondary text-white border-secondary shadow-md shadow-secondary/20 font-bold" 
+                    ? "bg-[#0d4a65] text-white border-[#0d4a65] shadow-md shadow-[#0d4a65]/20 font-bold" 
                     : "bg-surface text-ink/70 border-border-light hover:bg-neutral/40 hover:border-border-medium hover:text-ink font-semibold"
                 )}
                 onClick={() => setActiveCat(cat.id)}
