@@ -47,10 +47,16 @@ export function LakemedelSearch() {
 
         // Perform clean normalized search with defensive sanitization
         const matchQuery = 
-          (d.name && d.name.toLowerCase().includes(searchLow)) || 
-          (d.examples && d.examples.toLowerCase().includes(searchLow)) ||
-          (d.indikation && d.indikation.toLowerCase().includes(searchLow)) ||
-          (d.tags && Array.isArray(d.tags) && d.tags.some(t => t && t.toLowerCase().includes(searchLow)));
+          (d.name && typeof d.name === 'string' && d.name.toLowerCase().includes(searchLow)) || 
+          (d.examples && typeof d.examples === 'string' && d.examples.toLowerCase().includes(searchLow)) ||
+          (d.indikation && typeof d.indikation === 'string' && d.indikation.toLowerCase().includes(searchLow)) ||
+          (d.tags && Array.isArray(d.tags) && d.tags.some(t => t && typeof t === 'string' && t.toLowerCase().includes(searchLow))) ||
+          (d.summary && Array.isArray(d.summary) && d.summary.some(s => s && typeof s === 'string' && s.toLowerCase().includes(searchLow))) ||
+          (d.behandlingar && Array.isArray(d.behandlingar) && d.behandlingar.some(b => b && (
+            (b.label && typeof b.label === 'string' && b.label.toLowerCase().includes(searchLow)) || 
+            (b.text && typeof b.text === 'string' && b.text.toLowerCase().includes(searchLow))
+          ))) ||
+          (d.viktigt && Array.isArray(d.viktigt) && d.viktigt.some(v => v && v.text && typeof v.text === 'string' && v.text.toLowerCase().includes(searchLow)));
         
         return matchCat && matchQuery;
       });
@@ -135,6 +141,12 @@ export function LakemedelSearch() {
             );
           })}
         </div>
+        
+        {/* Helper Tip */}
+        <p className="text-[11px] text-ink/40 font-mono tracking-wide mt-3 flex items-center gap-1.5 border-t border-border-light/40 pt-3">
+          <Info size={12} className="text-secondary shrink-0" />
+          <span>Tips: Sök på t.ex. &quot;Warfarin&quot;, &quot;extraktion&quot;, &quot;osteonekros&quot; eller klicka på en kategori ovan.</span>
+        </p>
       </div>
       
       {/* Results Header */}
@@ -178,7 +190,7 @@ export function LakemedelSearch() {
   );
 }
 
-function DrugCard({ drug, isExpanded, onToggle }: { drug: DrugData, isExpanded: boolean, onToggle: () => void }) {
+const DrugCard = React.memo(function DrugCard({ drug, isExpanded, onToggle }: { drug: DrugData, isExpanded: boolean, onToggle: () => void }) {
   
   const getRiskStyles = (risk: string) => {
     if (risk.includes('HÖG')) {
@@ -356,4 +368,4 @@ function DrugCard({ drug, isExpanded, onToggle }: { drug: DrugData, isExpanded: 
       </AnimatePresence>
     </motion.div>
   );
-}
+});
