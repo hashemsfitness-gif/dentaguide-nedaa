@@ -61,7 +61,12 @@ export function LakemedelSearch() {
   }, [query, activeCat]);
 
   return (
-    <div className="space-y-6">
+    <motion.div 
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+      className="space-y-6"
+    >
       <AnimatePresence>
         {showOnboard && (
           <motion.div 
@@ -174,7 +179,7 @@ export function LakemedelSearch() {
           </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -212,11 +217,24 @@ function DrugCard({ drug, isExpanded, onToggle }: { drug: DrugData, isExpanded: 
   return (
     <motion.div 
       layout="position"
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -15 }}
+      whileHover={{ 
+        y: -4,
+        boxShadow: "0 12px 30px -10px rgba(13, 74, 101, 0.15)",
+        borderColor: "rgba(13, 74, 101, 0.3)"
+      }}
+      transition={{ 
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      }}
       className={cn(
-        "rounded-ds-2xl border transition-all duration-300 bg-surface relative overflow-hidden",
+        "rounded-ds-2xl border bg-surface relative overflow-hidden transition-colors duration-300",
         isExpanded 
-          ? "shadow-ds-md border-secondary/25" 
-          : "border-border-light hover:border-secondary/15 shadow-ds-sm"
+          ? "border-[#0d4a65]/40 shadow-ds-md" 
+          : "border-border-light shadow-ds-sm"
       )}
     >
       {/* Interactive header block */}
