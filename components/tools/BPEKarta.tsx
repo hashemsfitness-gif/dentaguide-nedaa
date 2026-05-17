@@ -23,27 +23,51 @@ const SEXTANTS: SextantDef[] = [
 
 const SCORES: Array<BPEScore> = [0, 1, 2, 3, 4, "X"];
 
-function getScoreColor(score: BPEScore): string {
+function getScoreStyle(score: BPEScore): React.CSSProperties {
   switch (score) {
-    case 0: return "bg-green-500 text-white";
-    case 1: return "bg-green-400 text-white";
-    case 2: return "bg-yellow-400 text-gray-900";
-    case 3: return "bg-orange-400 text-white";
-    case 4: return "bg-red-500 text-white";
-    case "X": return "bg-gray-400 text-white";
-    default: return "bg-gray-200 text-gray-500";
-  }
-}
-
-function getScoreBorder(score: BPEScore): string {
-  switch (score) {
-    case 0: return "border-green-500";
-    case 1: return "border-green-400";
-    case 2: return "border-yellow-400";
-    case 3: return "border-orange-400";
-    case 4: return "border-red-500";
-    case "X": return "border-gray-400";
-    default: return "border-gray-300";
+    case 0:
+      return {
+        background: "rgba(45,106,79,0.1)",
+        color: "#2D6A4F",
+        borderColor: "rgba(45,106,79,0.3)",
+      };
+    case 1:
+      return {
+        background: "rgba(45,106,79,0.15)",
+        color: "#2D6A4F",
+        borderColor: "rgba(45,106,79,0.5)",
+      };
+    case 2:
+      return {
+        background: "rgba(224,123,57,0.12)",
+        color: "#CC5833",
+        borderColor: "rgba(224,123,57,0.4)",
+      };
+    case 3:
+      return {
+        background: "rgba(224,123,57,0.2)",
+        color: "#CC5833",
+        borderColor: "#CC5833",
+      };
+    case 4:
+      return {
+        background: "rgba(193,18,31,0.12)",
+        color: "#C1121F",
+        borderColor: "#C1121F",
+        borderStyle: "dashed",
+      };
+    case "X":
+      return {
+        background: "var(--bg-main, #F7F2EE)",
+        color: "var(--text-muted, #7A7572)",
+        borderColor: "var(--border-light, #EFEAE6)",
+      };
+    default:
+      return {
+        background: "var(--surface, #FCF9F8)",
+        color: "var(--text-muted, #7A7572)",
+        borderColor: "var(--border-light, #EFEAE6)",
+      };
   }
 }
 
@@ -66,11 +90,11 @@ function getInterpretation(scores: Record<string, BPEScore>): {
   const values = Object.values(scores).filter((s) => s !== null && s !== "X") as number[];
   const max = values.length > 0 ? Math.max(...values) : -1;
 
-  if (max === 4) return { text: "Specialistremiss indicerat — ficka >5.5mm", color: "text-red-600" };
-  if (max === 3) return { text: "Komplex behandling — SRP + re-evaluering", color: "text-orange-600" };
-  if (max === 2) return { text: "Basal parodontalbehandling — tandstenssanering", color: "text-yellow-700" };
-  if (max <= 1) return { text: "Basal munhygieninstruktion", color: "text-green-700" };
-  return { text: "Fyll i alla sextanter för tolkning", color: "text-gray-500" };
+  if (max === 4) return { text: "Specialistremiss indicerat — ficka >5.5mm", color: "var(--status-danger, #C1121F)" };
+  if (max === 3) return { text: "Komplex behandling — SRP + re-evaluering", color: "var(--status-warning, #E07B39)" };
+  if (max === 2) return { text: "Basal parodontalbehandling — tandstenssanering", color: "#B45309" };
+  if (max <= 1) return { text: "Basal munhygieninstruktion", color: "var(--status-ok, #2D6A4F)" };
+  return { text: "Fyll i alla sextanter för tolkning", color: "var(--text-muted, #7A7572)" };
 }
 
 export default function BPEKarta() {
@@ -110,17 +134,33 @@ export default function BPEKarta() {
   const renderSextant = (s: SextantDef) => {
     const score = scores[s.id];
     const isActive = activeSelector === s.id;
+    const scoreStyle = getScoreStyle(score);
+
     return (
-      <div key={s.id} className="relative flex flex-col items-center gap-1">
+      <div key={s.id} className="relative flex flex-col items-center gap-1 w-full">
         <button
           onClick={() => setActiveSelector(isActive ? null : s.id)}
           aria-label={`${s.label} — ${s.teeth} — BPE ${score ?? "ej angiven"}`}
-          className={`
-            w-full aspect-square rounded-xl border-2 flex items-center justify-center
-            font-mono font-bold text-xl transition-all duration-200
-            ${score !== null ? getScoreColor(score) + " " + getScoreBorder(score) : "bg-gray-100 border-gray-300 text-gray-400"}
-            ${isActive ? "ring-2 ring-offset-1 ring-[#CC5833]" : "hover:scale-105"}
-          `}
+          style={{
+            width: "100%",
+            aspectRatio: "1",
+            borderRadius: 12,
+            borderWidth: 2,
+            borderStyle: scoreStyle.borderStyle || "solid",
+            borderColor: scoreStyle.borderColor,
+            background: scoreStyle.background,
+            color: scoreStyle.color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "var(--font-mono, monospace)",
+            fontWeight: 700,
+            fontSize: 20,
+            transition: "all 200ms cubic-bezier(.16,1,.3,1)",
+            boxShadow: isActive ? "0 0 0 2px var(--bg-main), 0 0 0 4px var(--secondary)" : "none",
+            cursor: "pointer",
+          }}
+          className="hover:scale-105"
         >
           {score !== null ? String(score) : "?"}
         </button>
@@ -129,21 +169,39 @@ export default function BPEKarta() {
         </span>
 
         {isActive && (
-          <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 z-20 bg-white border border-gray-200 rounded-xl shadow-xl p-2 min-w-[120px]">
+          <div
+            className="absolute top-full mt-1.5 left-1/2 -translate-x-1/2 z-20 rounded-xl p-2 min-w-[130px] animate-in fade-in duration-200 slide-in-from-top-1"
+            style={{
+              background: "var(--surface, #FCF9F8)",
+              border: "1px solid var(--border-light, #EFEAE6)",
+              boxShadow: "0 10px 25px -5px rgba(9,27,20,0.15), 0 8px 16px -6px rgba(9,27,20,0.1)",
+            }}
+          >
             <div className="grid grid-cols-3 gap-1.5">
-              {SCORES.map((sc) => (
-                <button
-                  key={String(sc)}
-                  onClick={() => setScore(s.id, sc)}
-                  className={`
-                    rounded-lg py-1.5 text-sm font-bold transition-all
-                    ${getScoreColor(sc)}
-                    hover:scale-105 active:scale-95
-                  `}
-                >
-                  {String(sc)}
-                </button>
-              ))}
+              {SCORES.map((sc) => {
+                const scStyle = getScoreStyle(sc);
+                return (
+                  <button
+                    key={String(sc)}
+                    onClick={() => setScore(s.id, sc)}
+                    style={{
+                      borderRadius: 8,
+                      padding: "6px 0",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      fontFamily: "var(--font-mono, monospace)",
+                      border: `1px solid ${scStyle.borderColor || "transparent"}`,
+                      background: scStyle.background,
+                      color: scStyle.color,
+                      cursor: "pointer",
+                      transition: "transform 150ms, scale 150ms",
+                    }}
+                    className="hover:scale-105 active:scale-95"
+                  >
+                    {String(sc)}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -178,12 +236,47 @@ export default function BPEKarta() {
 
       <div className="space-y-1.5">
         <div className="flex gap-1.5 flex-wrap">
-          {[0, 1, 2, 3, 4].map((n) => (
-            <span key={n} className={`inline-flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded-full ${getScoreColor(n as BPEScore)}`}>
-              {n}
-            </span>
-          ))}
-          <span className={`inline-flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded-full ${getScoreColor("X")}`}>X</span>
+          {[0, 1, 2, 3, 4].map((n) => {
+            const style = getScoreStyle(n as BPEScore);
+            return (
+              <span
+                key={n}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  fontSize: 9,
+                  fontFamily: "var(--font-mono, monospace)",
+                  padding: "2px 6px",
+                  borderRadius: 99,
+                  background: style.background,
+                  color: style.color,
+                  border: `1px solid ${style.borderColor || "transparent"}`,
+                }}
+              >
+                {n}
+              </span>
+            );
+          })}
+          {(() => {
+            const styleX = getScoreStyle("X");
+            return (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  fontSize: 9,
+                  fontFamily: "var(--font-mono, monospace)",
+                  padding: "2px 6px",
+                  borderRadius: 99,
+                  background: styleX.background,
+                  color: styleX.color,
+                  border: `1px solid ${styleX.borderColor || "transparent"}`,
+                }}
+              >
+                X
+              </span>
+            );
+          })()}
         </div>
         <p className={`text-xs font-medium ${interpretation.color} leading-tight`}>
           {interpretation.text}

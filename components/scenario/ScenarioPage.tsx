@@ -72,7 +72,7 @@ export type NormalizedScenario = {
 
   status?: {
     inspektion?: string[];
-    palpation?: string;
+    palpation?: string | string[];
     perkussion?: string;
     sensibilitet?: string;
     bpe?: { description: string; normalt: string; patologiskt: string };
@@ -119,18 +119,24 @@ export type NormalizedScenario = {
 
   /** Höger-railens kliniska verktyg (område-/scenariospecifika). */
   verktyg?: Array<{ label: string; href: string; tone?: "primary" | "blue" }>;
+
+  /** Valfria anpassade sektioner i läsflödet (mittenkolumnen) */
+  customSections?: Array<{
+    id: string;
+    num?: string;
+    label: string;
+    title: string;
+    icon?: ReactNode;
+    content: ReactNode;
+  }>;
+
+  /** Valfri anpassad sidebar-widget (högerkolumnen) */
+  customSidebar?: ReactNode;
 };
 
 /* ── Sektioner i läsflödet (mono-eyebrow, ingen dekor-emoji) ───── */
 
-const TABS = [
-  { id: "s-snabb", num: "00", label: "Översikt" },
-  { id: "s-anamnes", num: "01", label: "Anamnes" },
-  { id: "s-status", num: "02", label: "Status" },
-  { id: "s-diagnos", num: "03", label: "Diagnostik" },
-  { id: "s-behandling", num: "04", label: "Behandling" },
-  { id: "s-journal", num: "05", label: "Journal" },
-] as const;
+
 
 /* ── Små återanvändbara delar ─────────────────────────────────── */
 
@@ -147,11 +153,11 @@ function Mono({
     <span
       className="font-mono"
       style={{
-        fontSize: size,
-        letterSpacing: "0.22em",
+        fontSize: Math.max(size, 13),
+        letterSpacing: "0.2em",
         textTransform: "uppercase",
-        fontWeight: 700,
-        color: color || "var(--text-muted)",
+        fontWeight: 800,
+        color: color || "var(--text-secondary, #544F4C)",
       }}
     >
       {children}
@@ -170,12 +176,12 @@ function SubLabel({
     <p
       className="font-mono"
       style={{
-        fontSize: 10,
-        letterSpacing: "0.2em",
+        fontSize: 14.5,
+        letterSpacing: "0.15em",
         textTransform: "uppercase",
-        fontWeight: 700,
-        color: color || "var(--text-muted)",
-        margin: "0 0 8px 0",
+        fontWeight: 800,
+        color: color || "#A84429",
+        margin: "0 0 10px 0",
       }}
     >
       {children}
@@ -194,7 +200,7 @@ function Bullets({
     <ul
       className="grid"
       role="list"
-      style={{ listStyle: "none", padding: 0, margin: 0, gap: 8 }}
+      style={{ listStyle: "none", padding: 0, margin: 0, gap: 10 }}
     >
       {items.map((s, i) => (
         <li
@@ -203,21 +209,21 @@ function Bullets({
             display: "grid",
             gridTemplateColumns: "auto 1fr",
             gap: 12,
-            fontSize: 14.5,
-            lineHeight: 1.55,
-            color: "var(--text-secondary)",
-            fontWeight: 500,
+            fontSize: 17,
+            lineHeight: 1.65,
+            color: "var(--text-primary, #201A18)",
+            fontWeight: 550,
           }}
         >
           <span
             aria-hidden
             style={{
-              marginTop: 9,
+              marginTop: 10,
               width: 6,
               height: 6,
               borderRadius: "50%",
-              background: accent ? "var(--secondary)" : "var(--border-medium)",
-              boxShadow: accent ? "0 0 0 3px rgba(204,88,51,0.10)" : "none",
+              background: accent ? "var(--secondary, #CC5833)" : "#A84429",
+              boxShadow: "0 0 0 3px rgba(204,88,51,0.15)",
               flexShrink: 0,
             }}
           />
@@ -245,7 +251,7 @@ function Stack({
       aria-labelledby={labelledBy}
       className="scen-stack"
       style={{
-        background: "var(--bg-card-solid, #fff)",
+        background: "var(--surface, #FCF9F8)",
         borderRadius: 28,
         padding: 28,
         marginBottom: 18,
@@ -287,10 +293,10 @@ function RedFlagsRail({ flags }: { flags: ScenarioRedFlag[] }) {
       aria-label="Röda flaggor — kliniska varningar"
       style={{
         background: "linear-gradient(135deg, #FFF8F8 0%, #FFF1F1 100%)",
-        border: "1px solid #FEE2E2",
+        border: "2px solid rgba(220, 38, 38, 0.40)",
         borderRadius: 22,
-        padding: 14,
-        boxShadow: "0 4px 12px -6px rgba(153,27,27,0.10)",
+        padding: 16,
+        boxShadow: "0 4px 12px -6px rgba(153,27,27,0.15)",
       }}
     >
       <div
@@ -298,12 +304,12 @@ function RedFlagsRail({ flags }: { flags: ScenarioRedFlag[] }) {
           display: "flex",
           alignItems: "center",
           gap: 8,
-          marginBottom: 10,
+          marginBottom: 12,
         }}
       >
         <svg
-          width="14"
-          height="14"
+          width="16"
+          height="16"
           viewBox="0 0 24 24"
           fill="none"
           aria-hidden
@@ -312,7 +318,7 @@ function RedFlagsRail({ flags }: { flags: ScenarioRedFlag[] }) {
           <path
             d="M12 9v4m0 4h.01M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0Z"
             stroke="currentColor"
-            strokeWidth="1.8"
+            strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
@@ -320,10 +326,10 @@ function RedFlagsRail({ flags }: { flags: ScenarioRedFlag[] }) {
         <span
           className="font-mono"
           style={{
-            fontSize: 10,
-            letterSpacing: "0.22em",
+            fontSize: 12.5,
+            letterSpacing: "0.15em",
             textTransform: "uppercase",
-            fontWeight: 700,
+            fontWeight: 800,
             color: "#991B1B",
           }}
         >
@@ -337,7 +343,7 @@ function RedFlagsRail({ flags }: { flags: ScenarioRedFlag[] }) {
           padding: 0,
           margin: 0,
           display: "grid",
-          gap: 8,
+          gap: 10,
         }}
       >
         {flags.map((f) => (
@@ -346,40 +352,41 @@ function RedFlagsRail({ flags }: { flags: ScenarioRedFlag[] }) {
             style={{
               display: "grid",
               gridTemplateColumns: "auto 1fr",
-              gap: 8,
+              gap: 10,
             }}
           >
             <span
               aria-hidden
               style={{
-                width: 6,
-                height: 6,
+                width: 8,
+                height: 8,
                 borderRadius: "50%",
                 marginTop: 6,
                 background:
                   f.severity === "critical"
-                    ? "var(--status-danger)"
-                    : "var(--status-warning)",
+                    ? "var(--status-danger, #C1121F)"
+                    : "var(--status-warning, #E07B39)",
               }}
             />
             <div>
               <p
                 style={{
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  color: "var(--text-primary)",
+                  fontSize: 15,
+                  fontWeight: 800,
+                  color: "#991B1B",
                   margin: 0,
-                  lineHeight: 1.3,
+                  lineHeight: 1.35,
                 }}
               >
                 {f.title}
               </p>
               <p
                 style={{
-                  fontSize: 11,
-                  color: "var(--text-secondary)",
+                  fontSize: 13.5,
+                  fontWeight: 600,
+                  color: "var(--text-primary, #201A18)",
                   margin: 0,
-                  lineHeight: 1.4,
+                  lineHeight: 1.45,
                 }}
               >
                 {f.description}
@@ -391,13 +398,14 @@ function RedFlagsRail({ flags }: { flags: ScenarioRedFlag[] }) {
       <p
         className="font-mono"
         style={{
-          marginTop: 10,
-          paddingTop: 10,
-          borderTop: "1px solid #FEE2E2",
-          fontSize: 9,
-          letterSpacing: "0.18em",
+          marginTop: 12,
+          paddingTop: 12,
+          borderTop: "1px solid rgba(220, 38, 38, 0.20)",
+          fontSize: 12,
+          letterSpacing: "0.1em",
           textTransform: "uppercase",
-          color: "var(--text-muted)",
+          color: "#991B1B",
+          fontWeight: 800,
           fontStyle: "normal",
         }}
       >
@@ -419,8 +427,8 @@ function InfografikCard({ infografik }: { infografik: ScenarioInfografik }) {
         role="figure"
         aria-label={infografik.alt}
         style={{
-          background: "#fff",
-          border: "1px solid var(--border-light)",
+          background: "var(--bg-card-solid, #fff)",
+          border: "1px solid var(--border-medium, #E2DDD9)",
           borderRadius: 32,
           overflow: "hidden",
           boxShadow:
@@ -431,7 +439,7 @@ function InfografikCard({ infografik }: { infografik: ScenarioInfografik }) {
       >
         <div
           style={{
-            padding: "14px 16px 10px 16px",
+            padding: "16px 18px 12px 18px",
             display: "flex",
             alignItems: "flex-start",
             justifyContent: "space-between",
@@ -442,11 +450,11 @@ function InfografikCard({ infografik }: { infografik: ScenarioInfografik }) {
             <p
               className="font-mono"
               style={{
-                fontSize: 9.5,
-                letterSpacing: "0.22em",
+                fontSize: 12.5,
+                letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                fontWeight: 700,
-                color: "var(--secondary)",
+                fontWeight: 800,
+                color: "var(--secondary, #CC5833)",
                 margin: "0 0 6px 0",
               }}
             >
@@ -455,10 +463,10 @@ function InfografikCard({ infografik }: { infografik: ScenarioInfografik }) {
             <p
               className="font-display"
               style={{
-                fontWeight: 600,
-                fontSize: 14,
-                lineHeight: 1.3,
-                color: "var(--text-primary)",
+                fontWeight: 750,
+                fontSize: 16.5,
+                lineHeight: 1.35,
+                color: "var(--text-primary, #201A18)",
                 margin: 0,
               }}
             >
@@ -475,9 +483,9 @@ function InfografikCard({ infografik }: { infografik: ScenarioInfografik }) {
             padding: 0,
             margin: 0,
             border: "none",
-            borderTop: "1px solid var(--border-light)",
+            borderTop: "1px solid var(--border-medium, #E2DDD9)",
             cursor: "zoom-in",
-            background: "#fff",
+            background: "var(--bg-card-solid, #fff)",
             position: "relative",
           }}
         >
@@ -587,7 +595,7 @@ function InfografikLightbox({
           maxWidth: "min(900px, 95vw)",
           maxHeight: "95vh",
           overflow: "auto",
-          background: "#fff",
+          background: "var(--bg-card-solid, #fff)",
           borderRadius: 18,
           boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
           cursor: "auto",
@@ -642,21 +650,22 @@ function JournalPaper({
 }) {
   return (
     <div style={{ marginBottom: 18 }}>
-      <SubLabel>{mall.titel}</SubLabel>
+      <SubLabel color="var(--secondary, #CC5833)">{mall.titel}</SubLabel>
       <div
         className="font-mono"
         style={{
           position: "relative",
           background: "#ffffff",
           backgroundImage:
-            "repeating-linear-gradient(0deg, transparent 0 27px, rgba(9,27,20,0.05) 27px 28px)",
-          color: "var(--text-primary)",
-          fontSize: 12,
-          lineHeight: "28px",
+            "repeating-linear-gradient(0deg, transparent 0 29px, rgba(9,27,20,0.06) 29px 30px)",
+          color: "var(--text-primary, #201A18)",
+          fontSize: 15,
+          fontWeight: 600,
+          lineHeight: "30px",
           borderRadius: 22,
-          padding: "22px 22px 22px 28px",
+          padding: "26px 26px 26px 32px",
           whiteSpace: "pre-wrap",
-          border: "1px solid var(--border-light)",
+          border: "1px solid var(--border-medium, #E2DDD9)",
           boxShadow: "0 10px 30px -15px rgba(9,27,20,0.12)",
         }}
       >
@@ -666,17 +675,19 @@ function JournalPaper({
           className="font-mono"
           style={{
             position: "absolute",
-            top: 12,
-            right: 12,
-            fontSize: 10,
-            letterSpacing: "0.18em",
+            top: 14,
+            right: 14,
+            fontSize: 12,
+            letterSpacing: "0.12em",
             textTransform: "uppercase",
-            background: "rgba(0,0,0,0.04)",
-            color: "var(--text-primary)",
-            border: "1px solid var(--border-light)",
-            borderRadius: 6,
-            padding: "5px 10px",
+            fontWeight: 800,
+            background: "var(--surface, #FCF9F8)",
+            color: "var(--text-primary, #201A18)",
+            border: "1px solid var(--border-medium, #E2DDD9)",
+            borderRadius: 8,
+            padding: "6px 14px",
             cursor: "pointer",
+            boxShadow: "0 2px 6px -3px rgba(9,27,20,0.08)",
           }}
         >
           {copied ? "Kopierad" : "Kopiera"}
@@ -699,6 +710,21 @@ export default function ScenarioPage({
   const [expandBPE, setExpandBPE] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  const activeTabs = [
+    { id: "s-snabb", num: "00", label: "Översikt", show: !!scenario.snabbOversikt && scenario.snabbOversikt.length > 0 },
+    { id: "s-anamnes", num: "01", label: "Anamnes", show: !!scenario.anamnes },
+    { id: "s-status", num: "02", label: "Status", show: !!scenario.status },
+    { id: "s-diagnos", num: "03", label: "Diagnostik", show: !!scenario.diagnostik },
+    { id: "s-behandling", num: "04", label: "Behandling", show: !!scenario.behandling },
+    ...(scenario.customSections?.map((cs, idx) => ({
+      id: cs.id,
+      num: cs.num || `0${6 + idx}`,
+      label: cs.label,
+      show: true,
+    })) || []),
+    { id: "s-journal", num: "05", label: "Journal", show: !!scenario.journal && scenario.journal.length > 0 },
+  ].filter((t) => t.show);
+
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
@@ -711,7 +737,7 @@ export default function ScenarioPage({
       },
       { rootMargin: "-20% 0px -60% 0px" },
     );
-    TABS.forEach(({ id }) => {
+    activeTabs.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observerRef.current?.observe(el);
     });
@@ -749,12 +775,10 @@ export default function ScenarioPage({
 
   return (
     <div
-      className="scenario-page"
+      className="scenario-page block lg:grid lg:grid-cols-[280px_minmax(0,1fr)_300px]"
       style={{
         background: "linear-gradient(180deg, var(--bg-main) 0%, #FCF9F8 100%)",
         minHeight: "calc(100vh - 76px)",
-        display: "grid",
-        gridTemplateColumns: "260px minmax(0,1fr) 280px",
       }}
     >
       {/* ── VÄNSTER: timeline-rail ─────────────────────────────── */}
@@ -762,7 +786,7 @@ export default function ScenarioPage({
         className="hidden lg:block sticky top-[76px] self-start max-h-[calc(100vh-76px)] overflow-y-auto no-scrollbar"
         aria-label={`Scenariolista — ${scenario.areaLabel}`}
         style={{
-          borderRight: "1px solid var(--border-light)",
+          borderRight: "1px solid var(--border-medium, #E2DDD9)",
           padding: "32px 0",
           position: "sticky",
         }}
@@ -771,21 +795,22 @@ export default function ScenarioPage({
           <p
             className="font-mono"
             style={{
-              fontSize: 10,
-              letterSpacing: "0.22em",
+              fontSize: 12.5,
+              letterSpacing: "0.15em",
               textTransform: "uppercase",
-              color: "var(--text-muted)",
-              fontWeight: 700,
+              color: "var(--secondary, #CC5833)",
+              fontWeight: 800,
               marginBottom: 4,
             }}
           >
             {scenario.areaLabel}
           </p>
           <h2
-            className="font-display ed-italic"
+            className="font-display"
             style={{
-              fontSize: 20,
-              color: "var(--text-primary)",
+              fontSize: 23,
+              fontWeight: 800,
+              color: "var(--text-primary, #201A18)",
               letterSpacing: "-0.015em",
               margin: 0,
             }}
@@ -799,16 +824,16 @@ export default function ScenarioPage({
             aria-hidden
             style={{
               position: "absolute",
-              left: 30,
+              left: 29,
               top: 6,
               bottom: 6,
-              width: 1,
-              background: "var(--border-light)",
+              width: 2,
+              background: "var(--border-medium, #E2DDD9)",
             }}
           />
           <nav
             aria-label={`${scenario.areaLabel}-scenarier`}
-            style={{ display: "grid", gap: 4, padding: "4px 16px" }}
+            style={{ display: "grid", gap: 6, padding: "4px 16px" }}
           >
             {scenario.nav.map((s) => {
               const isActive = s.id === scenario.id || s.slug === scenario.id;
@@ -825,11 +850,13 @@ export default function ScenarioPage({
                     borderRadius: 22,
                     textDecoration: "none",
                     background: isActive
-                      ? "linear-gradient(135deg, rgba(204,88,51,0.10) 0%, rgba(204,88,51,0.04) 100%)"
+                      ? "linear-gradient(135deg, rgba(204,88,51,0.12) 0%, rgba(204,88,51,0.06) 100%)"
                       : "transparent",
-                    border: `1px solid ${isActive ? "rgba(204,88,51,0.35)" : "transparent"}`,
+                    border: isActive
+                      ? "2px solid rgba(204,88,51,0.50)"
+                      : "1px solid transparent",
                     boxShadow: isActive
-                      ? "0 2px 8px -3px rgba(204,88,51,0.18)"
+                      ? "0 4px 12px -3px rgba(204,88,51,0.22)"
                       : "none",
                     transition:
                       "background 220ms, border-color 220ms, box-shadow 220ms, transform 220ms",
@@ -843,11 +870,11 @@ export default function ScenarioPage({
                       width: 14,
                       height: 14,
                       borderRadius: "50%",
-                      background: isActive ? "var(--secondary)" : "#fff",
-                      border: `2px solid ${isActive ? "var(--secondary)" : "var(--border-medium)"}`,
+                      background: isActive ? "var(--secondary, #CC5833)" : "var(--bg-card-solid, #fff)",
+                      border: `2px solid ${isActive ? "var(--secondary, #CC5833)" : "var(--border-medium, #E2DDD9)"}`,
                       marginTop: 4,
                       marginLeft: 7,
-                      boxShadow: isActive ? "0 0 0 4px rgba(204,88,51,0.12)" : "none",
+                      boxShadow: isActive ? "0 0 0 4px rgba(204,88,51,0.15)" : "none",
                       transition: "box-shadow 220ms, background 220ms",
                     }}
                   />
@@ -856,11 +883,11 @@ export default function ScenarioPage({
                       className="font-mono"
                       style={{
                         display: "block",
-                        fontSize: 9.5,
-                        letterSpacing: "0.2em",
+                        fontSize: 12,
+                        letterSpacing: "0.15em",
                         textTransform: "uppercase",
-                        fontWeight: 700,
-                        color: isActive ? "var(--secondary)" : "var(--text-muted)",
+                        fontWeight: 800,
+                        color: isActive ? "var(--secondary, #CC5833)" : "var(--text-secondary, #544F4C)",
                         marginBottom: 2,
                       }}
                     >
@@ -869,25 +896,25 @@ export default function ScenarioPage({
                     <span
                       style={{
                         display: "block",
-                        fontSize: 13.5,
+                        fontSize: 15.5,
                         fontWeight: 700,
-                        lineHeight: 1.25,
-                        color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
-                        marginBottom: 3,
+                        lineHeight: 1.3,
+                        color: "var(--text-primary, #201A18)",
+                        marginBottom: 4,
                       }}
                     >
                       {s.title}
                     </span>
                     <span
-                      className="ed-italic"
                       style={{
                         display: "block",
-                        fontSize: 11.5,
-                        color: "var(--text-muted)",
-                        lineHeight: 1.35,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "var(--text-secondary, #544F4C)",
+                        lineHeight: 1.4,
                       }}
                     >
-                      &ldquo;{s.quote}&rdquo;
+                      {s.quote}
                     </span>
                   </span>
                 </Link>
@@ -911,18 +938,20 @@ export default function ScenarioPage({
             href={scenario.areaHref}
             className="font-mono transition-colors hover:opacity-70"
             style={{
-              fontSize: 10,
-              letterSpacing: "0.22em",
+              fontSize: 12.5,
+              letterSpacing: "0.15em",
               textTransform: "uppercase",
-              fontWeight: 700,
-              color: "var(--text-muted)",
+              fontWeight: 800,
+              color: "var(--text-secondary, #544F4C)",
               textDecoration: "none",
             }}
           >
             {scenario.areaLabel}
           </Link>
-          <Mono>/</Mono>
-          <Mono color="var(--text-secondary)">{scenario.title}</Mono>
+          <span style={{ color: "var(--secondary, #CC5833)", fontWeight: 800 }}>/</span>
+          <span className="font-mono" style={{ fontSize: 12.5, fontWeight: 800, color: "var(--secondary, #CC5833)" }}>
+            {scenario.title}
+          </span>
         </nav>
 
         {/* HEADER — soft hero */}
@@ -930,11 +959,11 @@ export default function ScenarioPage({
           style={{
             position: "relative",
             background:
-              "linear-gradient(135deg, #fff 0%, #FCF9F8 100%)",
-            border: "1px solid var(--border-light)",
+              "linear-gradient(135deg, var(--surface, #FCF9F8) 0%, rgba(245,239,234,0.5) 100%)",
+            border: "2px solid var(--border-medium, #E2DDD9)",
             borderRadius: 34,
-            padding: 36,
-            marginBottom: 18,
+            padding: 38,
+            marginBottom: 20,
             overflow: "hidden",
             boxShadow: "0 1px 0 #fff, 0 12px 32px -16px rgba(9,27,20,0.12)",
           }}
@@ -971,7 +1000,7 @@ export default function ScenarioPage({
                 display: "flex",
                 flexWrap: "wrap",
                 alignItems: "center",
-                gap: 10,
+                gap: 12,
                 marginBottom: 18,
               }}
             >
@@ -982,33 +1011,37 @@ export default function ScenarioPage({
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: 32,
-                    height: 32,
+                    width: 36,
+                    height: 36,
                     borderRadius: 10,
-                    color: "var(--secondary)",
-                    background: "rgba(204,88,51,0.10)",
-                    border: "1px solid rgba(204,88,51,0.20)",
+                    color: "var(--secondary, #CC5833)",
+                    background: "rgba(204,88,51,0.12)",
+                    border: "1px solid rgba(204,88,51,0.30)",
                   }}
                 >
                   {scenario.areaIcon}
                 </span>
               )}
-              <Mono color="var(--secondary)">{scenario.areaLabel}</Mono>
-              <Mono>·</Mono>
-              <Mono color="var(--text-secondary)">{scenario.id}</Mono>
+              <span className="font-mono" style={{ fontSize: 12.5, fontWeight: 800, color: "var(--secondary, #CC5833)" }}>
+                {scenario.areaLabel}
+              </span>
+              <span className="font-mono" style={{ fontSize: 14, fontWeight: 800, color: "var(--secondary, #CC5833)" }}>·</span>
+              <span className="font-mono" style={{ fontSize: 12.5, fontWeight: 800, color: "var(--text-secondary, #544F4C)" }}>
+                {scenario.id}
+              </span>
               {scenario.isAcute && (
                 <span
                   className="font-mono"
                   style={{
-                    fontSize: 10,
-                    letterSpacing: "0.22em",
+                    fontSize: 12,
+                    letterSpacing: "0.15em",
                     textTransform: "uppercase",
-                    fontWeight: 700,
-                    color: "var(--status-danger)",
-                    background: "rgba(193,18,31,0.10)",
-                    border: "1px solid rgba(193,18,31,0.30)",
+                    fontWeight: 800,
+                    color: "var(--status-danger, #C1121F)",
+                    background: "rgba(193,18,31,0.12)",
+                    border: "1px solid rgba(193,18,31,0.40)",
                     borderRadius: 999,
-                    padding: "3px 10px",
+                    padding: "4px 12px",
                   }}
                 >
                   Akut
@@ -1016,35 +1049,36 @@ export default function ScenarioPage({
               )}
             </div>
             <h1
-              className="font-display ed-italic"
+              className="font-display"
               style={{
                 letterSpacing: "-0.022em",
-                fontSize: "clamp(32px, 4.2vw, 46px)",
-                lineHeight: 1.02,
-                color: "var(--text-primary)",
+                fontSize: "clamp(36px, 4.5vw, 50px)",
+                lineHeight: 1.1,
+                fontWeight: 850,
+                color: "var(--text-primary, #201A18)",
                 margin: 0,
-                maxWidth: "85%",
+                maxWidth: "90%",
               }}
             >
               {scenario.title}
             </h1>
             {scenario.patientUtsaga && (
               <p
-                className="ed-italic"
                 style={{
                   marginTop: 18,
-                  maxWidth: 640,
-                  fontWeight: 400,
-                  fontSize: 18,
+                  maxWidth: 680,
+                  fontWeight: 600,
+                  fontSize: 20,
                   lineHeight: 1.5,
-                  color: "var(--text-secondary)",
+                  color: "var(--text-primary, #201A18)",
                 }}
               >
                 <span
                   aria-hidden
                   style={{
-                    color: "var(--secondary)",
-                    fontSize: 24,
+                    color: "var(--secondary, #CC5833)",
+                    fontSize: 28,
+                    fontWeight: 800,
                     marginRight: 4,
                     verticalAlign: "-3px",
                   }}
@@ -1055,8 +1089,9 @@ export default function ScenarioPage({
                 <span
                   aria-hidden
                   style={{
-                    color: "var(--secondary)",
-                    fontSize: 24,
+                    color: "var(--secondary, #CC5833)",
+                    fontSize: 28,
+                    fontWeight: 800,
                     marginLeft: 4,
                     verticalAlign: "-3px",
                   }}
@@ -1070,13 +1105,14 @@ export default function ScenarioPage({
                 className="font-mono"
                 style={{
                   marginTop: 22,
-                  paddingTop: 14,
-                  borderTop: "1px solid var(--border-light)",
-                  fontSize: 11.5,
-                  color: "var(--text-secondary)",
+                  paddingTop: 16,
+                  borderTop: "1px solid var(--border-medium, #E2DDD9)",
+                  fontSize: 14,
+                  fontWeight: 800,
+                  color: "var(--text-primary, #201A18)",
                 }}
               >
-                <Mono>ICD-10-SE</Mono>
+                <span style={{ color: "var(--secondary, #CC5833)" }}>ICD-10-SE:</span>
                 <span style={{ marginLeft: 8 }}>{scenario.icdCode}</span>
               </p>
             )}
@@ -1089,18 +1125,19 @@ export default function ScenarioPage({
           aria-label="Scenariosektioner"
           className="sticky top-[76px] z-[5]"
           style={{
-            display: "inline-flex",
+            display: "flex",
             flexWrap: "nowrap",
-            gap: 3,
-            background: "#fff",
-            padding: 4,
+            width: "100%",
+            gap: 6,
+            background: "var(--bg-main, #F7F2EE)",
+            padding: 6,
             borderRadius: 999,
-            border: "1px solid var(--border-light)",
-            boxShadow: "0 2px 8px -4px rgba(9,27,20,0.06)",
-            marginBottom: 18,
+            border: "1px solid var(--border-medium, #E2DDD9)",
+            boxShadow: "0 4px 12px -4px rgba(9,27,20,0.08)",
+            marginBottom: 24,
           }}
         >
-          {TABS.map(({ id, label }) => {
+          {activeTabs.map(({ id, label }) => {
             const on = activeTab === id;
             return (
               <button
@@ -1110,15 +1147,17 @@ export default function ScenarioPage({
                 aria-controls={id}
                 onClick={() => scrollTo(id)}
                 style={{
-                  padding: "6px 11px",
+                  flex: 1,
+                  textAlign: "center",
+                  padding: "10px 16px",
                   borderRadius: 999,
-                  fontSize: 11.5,
-                  fontWeight: 600,
+                  fontSize: 15,
+                  fontWeight: 750,
                   letterSpacing: "0.01em",
-                  color: on ? "#fff" : "var(--text-secondary)",
-                  background: on ? "var(--secondary)" : "transparent",
+                  color: on ? "#fff" : "var(--text-secondary, #544F4C)",
+                  background: on ? "var(--secondary, #CC5833)" : "transparent",
                   boxShadow: on
-                    ? "0 4px 10px -3px rgba(204,88,51,0.45)"
+                    ? "0 4px 12px -3px rgba(204,88,51,0.45)"
                     : "none",
                   border: "none",
                   cursor: "pointer",
@@ -1156,25 +1195,26 @@ export default function ScenarioPage({
                 gap: 14,
               }}
             >
-              {scenario.snabbOversikt.map((item, i) => (
+               {scenario.snabbOversikt.map((item, i) => (
                 <div
                   key={i}
                   style={{
-                    background: "#FCF9F8",
+                    background: "var(--surface, #FCF9F8)",
                     borderRadius: 22,
-                    padding: 16,
-                    border: "1px solid var(--border-light)",
+                    padding: 18,
+                    border: "1px solid var(--border-medium, #E2DDD9)",
+                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                     transition: "transform 240ms, box-shadow 240ms",
                   }}
                 >
-                  <SubLabel color="var(--secondary)">{item.label}</SubLabel>
+                  <SubLabel color="var(--secondary, #CC5833)">{item.label}</SubLabel>
                   <p
                     style={{
                       margin: 0,
-                      fontSize: 14,
+                      fontSize: 16.5,
                       lineHeight: 1.55,
-                      color: "var(--text-secondary)",
-                      fontWeight: 500,
+                      color: "var(--text-primary, #201A18)",
+                      fontWeight: 600,
                     }}
                   >
                     {item.value}
@@ -1219,12 +1259,13 @@ export default function ScenarioPage({
                       <div
                         key={i}
                         style={{
-                          background: "#FCF9F8",
-                          border: "1px solid var(--border-light)",
+                          background: "var(--surface, #FCF9F8)",
+                          border: "1px solid var(--border-medium, #E2DDD9)",
                           borderRadius: 22,
-                          padding: 16,
+                          padding: 18,
                           position: "relative",
                           overflow: "hidden",
+                          boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                         }}
                       >
                         <span
@@ -1233,34 +1274,34 @@ export default function ScenarioPage({
                             position: "absolute",
                             top: 0,
                             left: 0,
-                            width: 24,
-                            height: 1,
-                            background: "var(--secondary)",
-                            opacity: 0.5,
+                            width: 32,
+                            height: 2,
+                            background: "var(--secondary, #CC5833)",
+                            opacity: 0.8,
                           }}
                         />
                         <p
                           style={{
                             fontWeight: 700,
-                            fontSize: 14,
-                            color: "var(--text-primary)",
-                            margin: "0 0 4px 0",
-                            lineHeight: 1.35,
+                            fontSize: 17,
+                            color: "var(--text-primary, #201A18)",
+                            margin: "0 0 6px 0",
+                            lineHeight: 1.4,
                           }}
                         >
                           {q.fraga}
                         </p>
                         {q.forvantatSvar && (
                           <p
-                            className="ed-italic"
                             style={{
-                              fontSize: 12.5,
-                              color: "var(--text-muted)",
-                              margin: 0,
-                              lineHeight: 1.4,
+                              fontSize: 15,
+                              color: "var(--text-secondary, #544F4C)",
+                              margin: "8px 0 0 0",
+                              lineHeight: 1.5,
                             }}
                           >
-                            Riktmärke: {q.forvantatSvar}
+                            <strong style={{ color: "var(--secondary, #CC5833)", fontWeight: 700 }}>Riktmärke: </strong>
+                            {q.forvantatSvar}
                           </p>
                         )}
                       </div>
@@ -1288,13 +1329,13 @@ export default function ScenarioPage({
                       <span
                         key={i}
                         style={{
-                          fontSize: 12,
-                          fontWeight: 600,
-                          padding: "6px 14px",
+                          fontSize: 14,
+                          fontWeight: 700,
+                          padding: "6px 16px",
                           borderRadius: 999,
-                          color: "var(--status-warning)",
-                          background: "rgba(224,123,57,0.10)",
-                          border: "1px solid rgba(224,123,57,0.25)",
+                          color: "#9A3412",
+                          background: "rgba(224,123,57,0.12)",
+                          border: "1px solid rgba(224,123,57,0.35)",
                           boxShadow: "0 2px 6px -2px rgba(224,123,57,0.20)",
                         }}
                       >
@@ -1335,53 +1376,62 @@ export default function ScenarioPage({
                 scenario.status.inspektion.length > 0 && (
                   <div
                     style={{
-                      background: "#FCF9F8",
-                      border: "1px solid var(--border-light)",
+                      background: "var(--surface, #FCF9F8)",
+                      border: "1px solid var(--border-medium, #E2DDD9)",
                       borderRadius: 22,
                       padding: 16,
+                      boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                     }}
                   >
-                    <SubLabel color="var(--secondary)">Inspektion</SubLabel>
+                    <SubLabel color="var(--secondary, #CC5833)">Inspektion</SubLabel>
                     <Bullets items={scenario.status.inspektion} accent />
                   </div>
                 )}
               {scenario.status.palpation && (
                 <div
                   style={{
-                    background: "#FCF9F8",
-                    border: "1px solid var(--border-light)",
+                    background: "var(--surface, #FCF9F8)",
+                    border: "1px solid var(--border-medium, #E2DDD9)",
                     borderRadius: 22,
                     padding: 16,
+                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                   }}
                 >
-                  <SubLabel color="var(--secondary)">Palpation</SubLabel>
-                  <p
-                    style={{
-                      fontSize: 13.5,
-                      lineHeight: 1.55,
-                      color: "var(--text-secondary)",
-                      margin: 0,
-                    }}
-                  >
-                    {scenario.status.palpation}
-                  </p>
+                  <SubLabel color="var(--secondary, #CC5833)">Palpation</SubLabel>
+                  {Array.isArray(scenario.status.palpation) ? (
+                    <Bullets items={scenario.status.palpation} accent />
+                  ) : (
+                    <p
+                      style={{
+                        fontSize: 16.5,
+                        lineHeight: 1.55,
+                        color: "var(--text-primary, #201A18)",
+                        fontWeight: 550,
+                        margin: 0,
+                      }}
+                    >
+                      {scenario.status.palpation}
+                    </p>
+                  )}
                 </div>
               )}
               {scenario.status.perkussion && (
                 <div
                   style={{
-                    background: "#FCF9F8",
-                    border: "1px solid var(--border-light)",
+                    background: "var(--surface, #FCF9F8)",
+                    border: "1px solid var(--border-medium, #E2DDD9)",
                     borderRadius: 22,
                     padding: 16,
+                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                   }}
                 >
-                  <SubLabel color="var(--secondary)">Perkussion</SubLabel>
+                  <SubLabel color="var(--secondary, #CC5833)">Perkussion</SubLabel>
                   <p
                     style={{
-                      fontSize: 13.5,
+                      fontSize: 16.5,
                       lineHeight: 1.55,
-                      color: "var(--text-secondary)",
+                      color: "var(--text-primary, #201A18)",
+                      fontWeight: 550,
                       margin: 0,
                     }}
                   >
@@ -1392,18 +1442,20 @@ export default function ScenarioPage({
               {scenario.status.sensibilitet && (
                 <div
                   style={{
-                    background: "#FCF9F8",
-                    border: "1px solid var(--border-light)",
+                    background: "var(--surface, #FCF9F8)",
+                    border: "1px solid var(--border-medium, #E2DDD9)",
                     borderRadius: 22,
                     padding: 16,
+                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                   }}
                 >
-                  <SubLabel color="var(--secondary)">Sensibilitet</SubLabel>
+                  <SubLabel color="var(--secondary, #CC5833)">Sensibilitet</SubLabel>
                   <p
                     style={{
-                      fontSize: 13.5,
+                      fontSize: 16.5,
                       lineHeight: 1.55,
-                      color: "var(--text-secondary)",
+                      color: "var(--text-primary, #201A18)",
+                      fontWeight: 550,
                       margin: 0,
                     }}
                   >
@@ -1419,9 +1471,9 @@ export default function ScenarioPage({
                   marginTop: 14,
                   background:
                     "linear-gradient(135deg, rgba(204,88,51,0.04) 0%, rgba(204,88,51,0.02) 100%)",
-                  border: "1px solid rgba(204,88,51,0.20)",
+                  border: "1px solid rgba(204,88,51,0.35)",
                   borderRadius: 26,
-                  padding: 18,
+                  padding: 20,
                 }}
               >
                 <div
@@ -1429,14 +1481,14 @@ export default function ScenarioPage({
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginBottom: 10,
+                    marginBottom: 12,
                   }}
                 >
                   <span
                     style={{
-                      fontWeight: 700,
-                      fontSize: 14,
-                      color: "var(--text-primary)",
+                      fontWeight: 800,
+                      fontSize: 16,
+                      color: "var(--text-primary, #201A18)",
                     }}
                   >
                     BPE-screening
@@ -1448,8 +1500,9 @@ export default function ScenarioPage({
                       style={{
                         background: "transparent",
                         border: "none",
-                        color: "var(--secondary)",
-                        fontSize: 12,
+                        color: "var(--secondary, #CC5833)",
+                        fontSize: 13,
+                        fontWeight: 700,
                         cursor: "pointer",
                       }}
                       aria-expanded={expandBPE}
@@ -1461,10 +1514,11 @@ export default function ScenarioPage({
                 </div>
                 <p
                   style={{
-                    fontSize: 12.5,
-                    color: "var(--text-secondary)",
-                    margin: "0 0 12px 0",
-                    lineHeight: 1.5,
+                    fontSize: 16,
+                    color: "var(--text-primary, #201A18)",
+                    fontWeight: 550,
+                    margin: "0 0 14px 0",
+                    lineHeight: 1.55,
                   }}
                 >
                   {scenario.status.bpe.description}
@@ -1473,26 +1527,27 @@ export default function ScenarioPage({
                   style={{
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr",
-                    gap: 10,
+                    gap: 12,
                   }}
                 >
                   <div
                     style={{
                       background: "rgba(45,106,79,0.06)",
-                      border: "1px solid rgba(45,106,79,0.18)",
+                      border: "1px solid rgba(45,106,79,0.30)",
                       borderRadius: 22,
-                      padding: 14,
+                      padding: 16,
                     }}
                   >
-                    <Mono color="var(--status-ok)" size={9}>
+                    <Mono color="var(--status-ok, #2D6A4F)" size={11}>
                       Normalt
                     </Mono>
                     <p
                       style={{
-                        margin: "6px 0 0 0",
-                        fontSize: 12.5,
-                        color: "var(--text-secondary)",
-                        lineHeight: 1.45,
+                        margin: "8px 0 0 0",
+                        fontSize: 15.5,
+                        color: "var(--text-primary, #201A18)",
+                        fontWeight: 550,
+                        lineHeight: 1.5,
                       }}
                     >
                       {scenario.status.bpe.normalt}
@@ -1501,20 +1556,21 @@ export default function ScenarioPage({
                   <div
                     style={{
                       background: "rgba(193,18,31,0.05)",
-                      border: "1px solid rgba(193,18,31,0.18)",
+                      border: "1px solid rgba(193,18,31,0.30)",
                       borderRadius: 22,
-                      padding: 14,
+                      padding: 16,
                     }}
                   >
-                    <Mono color="var(--status-danger)" size={9}>
+                    <Mono color="var(--status-danger, #C1121F)" size={11}>
                       Patologiskt
                     </Mono>
                     <p
                       style={{
-                        margin: "6px 0 0 0",
-                        fontSize: 12.5,
-                        color: "var(--text-secondary)",
-                        lineHeight: 1.45,
+                        margin: "8px 0 0 0",
+                        fontSize: 15.5,
+                        color: "var(--text-primary, #201A18)",
+                        fontWeight: 550,
+                        lineHeight: 1.5,
                       }}
                     >
                       {scenario.status.bpe.patologiskt}
@@ -1526,8 +1582,8 @@ export default function ScenarioPage({
                     id="bpe-karta-inline"
                     style={{
                       marginTop: 16,
-                      background: "var(--bg-card-solid, #fff)",
-                      border: "1px solid var(--border-light)",
+                      background: "var(--surface, #FCF9F8)",
+                      border: "1px solid var(--border-medium, #E2DDD9)",
                       borderRadius: 22,
                       padding: 16,
                     }}
@@ -1558,18 +1614,20 @@ export default function ScenarioPage({
               Diagnostik
             </h2>
             {scenario.diagnostik.kriterier && (
-              <div style={{ marginBottom: 16 }}>
-                <SubLabel color="var(--secondary)">Kriterier / Indikation</SubLabel>
+              <div style={{ marginBottom: 18 }}>
+                <SubLabel color="var(--secondary, #CC5833)">Kriterier / Indikation</SubLabel>
                 <p
                   style={{
-                    fontSize: 14,
-                    lineHeight: 1.6,
-                    color: "var(--text-secondary)",
-                    background: "#FCF9F8",
-                    border: "1px solid var(--border-light)",
+                    fontSize: 16.5,
+                    lineHeight: 1.65,
+                    color: "var(--text-primary, #201A18)",
+                    background: "var(--surface, #FCF9F8)",
+                    border: "1px solid var(--border-medium, #E2DDD9)",
                     borderRadius: 22,
-                    padding: 14,
+                    padding: 16,
                     margin: 0,
+                    fontWeight: 550,
+                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                   }}
                 >
                   {scenario.diagnostik.kriterier}
@@ -1577,28 +1635,30 @@ export default function ScenarioPage({
               </div>
             )}
             {scenario.diagnostik.rtg && scenario.diagnostik.rtg.length > 0 && (
-              <div style={{ marginBottom: 16 }}>
-                <SubLabel color="var(--secondary)">Radiologiska fynd</SubLabel>
+              <div style={{ marginBottom: 18 }}>
+                <SubLabel color="var(--secondary, #CC5833)">Radiologiska fynd</SubLabel>
                 <Bullets items={scenario.diagnostik.rtg} accent />
               </div>
             )}
             {scenario.diagnostik.klassifikation && (
               <div
                 style={{
-                  marginBottom: 16,
+                  marginBottom: 18,
                   background:
                     "linear-gradient(135deg, rgba(14,59,82,0.06) 0%, rgba(14,59,82,0.03) 100%)",
-                  border: "1px solid rgba(14,59,82,0.15)",
+                  border: "1px solid rgba(14,59,82,0.30)",
                   borderRadius: 22,
-                  padding: 14,
+                  padding: 16,
+                  boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                 }}
               >
-                <SubLabel color="var(--primary)">Klassifikation</SubLabel>
+                <SubLabel color="var(--primary, #0E3B52)">Klassifikation</SubLabel>
                 <p
                   style={{
-                    fontSize: 13,
+                    fontSize: 16,
                     lineHeight: 1.6,
-                    color: "var(--text-secondary)",
+                    color: "var(--text-primary, #201A18)",
+                    fontWeight: 550,
                     whiteSpace: "pre-line",
                     margin: 0,
                   }}
@@ -1613,12 +1673,13 @@ export default function ScenarioPage({
                   style={{
                     background:
                       "linear-gradient(135deg, rgba(193,18,31,0.05) 0%, rgba(193,18,31,0.02) 100%)",
-                    border: "1px solid rgba(193,18,31,0.15)",
+                    border: "1px solid rgba(193,18,31,0.30)",
                     borderRadius: 22,
-                    padding: 14,
+                    padding: 16,
+                    boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                   }}
                 >
-                  <SubLabel color="var(--status-danger)">
+                  <SubLabel color="var(--status-danger, #C1121F)">
                     Uteslutningskriterier / Differentiering
                   </SubLabel>
                   <Bullets items={scenario.diagnostik.uteslut} />
@@ -1650,18 +1711,19 @@ export default function ScenarioPage({
                   marginBottom: 18,
                   background:
                     "linear-gradient(135deg, rgba(224,123,57,0.12) 0%, rgba(224,123,57,0.06) 100%)",
-                  border: "1px solid rgba(224,123,57,0.30)",
+                  border: "1px solid rgba(224,123,57,0.40)",
                   borderRadius: 22,
-                  padding: 16,
+                  padding: 18,
+                  boxShadow: "0 2px 8px -4px rgba(224,123,57,0.10)",
                 }}
               >
-                <SubLabel color="var(--status-warning)">Klinisk varning</SubLabel>
+                <SubLabel color="var(--status-warning, #E07B39)">Klinisk varning</SubLabel>
                 <p
                   style={{
-                    fontSize: 14,
-                    fontWeight: 500,
+                    fontSize: 16.5,
+                    fontWeight: 600,
                     lineHeight: 1.55,
-                    color: "var(--text-primary)",
+                    color: "var(--text-primary, #201A18)",
                     margin: 0,
                   }}
                 >
@@ -1683,16 +1745,16 @@ export default function ScenarioPage({
                       key={i}
                       style={{
                         position: "relative",
-                        background: "#fff",
+                        background: "var(--surface, #FCF9F8)",
                         border:
                           i === 0
-                            ? "1px solid rgba(204,88,51,0.35)"
-                            : "1px solid var(--border-light)",
+                            ? "2px solid rgba(204,88,51,0.50)"
+                            : "1px solid var(--border-medium, #E2DDD9)",
                         borderRadius: 28,
-                        padding: 20,
+                        padding: 22,
                         boxShadow:
                           i === 0
-                            ? "0 8px 24px -12px rgba(204,88,51,0.20), 0 2px 6px -3px rgba(9,27,20,0.05)"
+                            ? "0 8px 24px -12px rgba(204,88,51,0.25), 0 2px 6px -3px rgba(9,27,20,0.06)"
                             : "0 4px 12px -8px rgba(9,27,20,0.08), 0 1px 3px -1px rgba(9,27,20,0.04)",
                         transition:
                           "transform 280ms cubic-bezier(.16,1,.3,1), box-shadow 280ms",
@@ -1703,15 +1765,16 @@ export default function ScenarioPage({
                           display: "flex",
                           alignItems: "baseline",
                           gap: 12,
-                          marginBottom: 10,
+                          marginBottom: 12,
                         }}
                       >
                         <span
                           className="font-display ed-italic"
                           style={{
-                            fontSize: 26,
-                            color: "var(--secondary)",
+                            fontSize: 28,
+                            color: "var(--secondary, #CC5833)",
                             lineHeight: 1,
+                            fontWeight: 700,
                           }}
                         >
                           {String(i + 1).padStart(2, "0")}
@@ -1719,11 +1782,11 @@ export default function ScenarioPage({
                         <h3
                           className="font-display"
                           style={{
-                            fontWeight: 600,
-                            fontSize: 16,
-                            color: "var(--text-primary)",
+                            fontWeight: 700,
+                            fontSize: 18,
+                            color: "var(--text-primary, #201A18)",
                             margin: 0,
-                            lineHeight: 1.3,
+                            lineHeight: 1.35,
                             flex: 1,
                           }}
                         >
@@ -1735,15 +1798,15 @@ export default function ScenarioPage({
                           className="font-mono"
                           style={{
                             display: "inline-block",
-                            fontSize: 9,
-                            letterSpacing: "0.22em",
+                            fontSize: 12.5,
+                            letterSpacing: "0.15em",
                             textTransform: "uppercase",
-                            fontWeight: 700,
-                            color: "var(--status-warning)",
+                            fontWeight: 800,
+                            color: "#9A3412",
                             background: "rgba(224,123,57,0.12)",
                             borderRadius: 999,
-                            padding: "3px 10px",
-                            marginBottom: 10,
+                            padding: "4px 12px",
+                            marginBottom: 12,
                           }}
                         >
                           Specialistindikation
@@ -1752,14 +1815,15 @@ export default function ScenarioPage({
                       {alt.indikation && (
                         <p
                           style={{
-                            fontSize: 12.5,
-                            color: "var(--text-muted)",
-                            margin: "0 0 12px 0",
-                            lineHeight: 1.5,
+                            fontSize: 15.5,
+                            color: "var(--text-primary, #201A18)",
+                            fontWeight: 550,
+                            margin: "0 0 14px 0",
+                            lineHeight: 1.55,
                           }}
                         >
-                          <Mono size={9}>Indikation</Mono>
-                          <span style={{ marginLeft: 6 }}>{alt.indikation}</span>
+                          <strong style={{ color: "var(--secondary, #CC5833)", fontSize: 13.5, textTransform: "uppercase", letterSpacing: "0.08em", marginRight: 8, fontWeight: 800 }}>Indikation</strong>
+                          <span>{alt.indikation}</span>
                         </p>
                       )}
                       {alt.metod && alt.metod.length > 0 && (
@@ -1768,9 +1832,9 @@ export default function ScenarioPage({
                           style={{
                             listStyle: "none",
                             padding: 0,
-                            margin: "0 0 12px 0",
+                            margin: "0 0 14px 0",
                             display: "grid",
-                            gap: 8,
+                            gap: 10,
                           }}
                         >
                           {alt.metod.map((m, j) => (
@@ -1779,24 +1843,25 @@ export default function ScenarioPage({
                               style={{
                                 display: "grid",
                                 gridTemplateColumns: "auto 1fr",
-                                gap: 10,
-                                fontSize: 13.5,
-                                lineHeight: 1.5,
-                                color: "var(--text-secondary)",
+                                gap: 12,
+                                fontSize: 16,
+                                lineHeight: 1.55,
+                                color: "var(--text-primary, #201A18)",
+                                fontWeight: 550,
                               }}
                             >
                               <span
                                 style={{
-                                  width: 20,
-                                  height: 20,
+                                  width: 22,
+                                  height: 22,
                                   borderRadius: "50%",
-                                  background: "rgba(204,88,51,0.10)",
-                                  color: "var(--secondary)",
+                                  background: "rgba(204,88,51,0.15)",
+                                  color: "var(--secondary, #CC5833)",
                                   display: "inline-flex",
                                   alignItems: "center",
                                   justifyContent: "center",
-                                  fontSize: 11,
-                                  fontWeight: 700,
+                                  fontSize: 12,
+                                  fontWeight: 800,
                                   flexShrink: 0,
                                   marginTop: 1,
                                 }}
@@ -1813,18 +1878,19 @@ export default function ScenarioPage({
                           className="font-mono"
                           style={{
                             paddingTop: 12,
-                            marginTop: 6,
-                            borderTop: "1px solid var(--border-light)",
+                            marginTop: 8,
+                            borderTop: "1px solid var(--border-medium, #E2DDD9)",
                             display: "flex",
                             gap: 14,
                             flexWrap: "wrap",
-                            fontSize: 11,
-                            color: "var(--text-muted)",
+                            fontSize: 13.5,
+                            color: "var(--text-secondary, #544F4C)",
+                            fontWeight: 700,
                           }}
                         >
                           {alt.tid && <span>Tid: {alt.tid}</span>}
                           {alt.koder && (
-                            <span style={{ color: "var(--text-secondary)" }}>
+                            <span style={{ color: "var(--text-primary, #201A18)" }}>
                               Koder: {alt.koder}
                             </span>
                           )}
@@ -1837,20 +1903,22 @@ export default function ScenarioPage({
             {scenario.behandling.antibiotika && (
               <div
                 style={{
-                  marginTop: 14,
+                  marginTop: 16,
                   background:
                     "linear-gradient(135deg, rgba(14,59,82,0.06) 0%, rgba(14,59,82,0.03) 100%)",
-                  border: "1px solid rgba(14,59,82,0.15)",
+                  border: "1px solid rgba(14,59,82,0.30)",
                   borderRadius: 26,
-                  padding: 18,
+                  padding: 20,
+                  boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                 }}
               >
-                <SubLabel color="var(--primary)">Antibiotika / Farmakologi</SubLabel>
+                <SubLabel color="var(--primary, #0E3B52)">Antibiotika / Farmakologi</SubLabel>
                 <p
                   style={{
-                    fontSize: 13.5,
-                    lineHeight: 1.55,
-                    color: "var(--text-secondary)",
+                    fontSize: 16,
+                    lineHeight: 1.6,
+                    color: "var(--text-primary, #201A18)",
+                    fontWeight: 550,
                     whiteSpace: "pre-line",
                     margin: 0,
                   }}
@@ -1862,20 +1930,22 @@ export default function ScenarioPage({
             {scenario.behandling.lokalbehandling && (
               <div
                 style={{
-                  marginTop: 14,
+                  marginTop: 16,
                   background:
                     "linear-gradient(135deg, rgba(45,106,79,0.08) 0%, rgba(45,106,79,0.03) 100%)",
-                  border: "1px solid rgba(45,106,79,0.18)",
+                  border: "1px solid rgba(45,106,79,0.30)",
                   borderRadius: 26,
-                  padding: 16,
+                  padding: 20,
+                  boxShadow: "0 2px 8px -4px rgba(9,27,20,0.04)",
                 }}
               >
-                <SubLabel color="var(--status-ok)">Lokalbehandling</SubLabel>
+                <SubLabel color="var(--status-ok, #2D6A4F)">Lokalbehandling</SubLabel>
                 <p
                   style={{
-                    fontSize: 13.5,
-                    lineHeight: 1.55,
-                    color: "var(--text-secondary)",
+                    fontSize: 16,
+                    lineHeight: 1.6,
+                    color: "var(--text-primary, #201A18)",
+                    fontWeight: 550,
                     margin: 0,
                   }}
                 >
@@ -1885,6 +1955,33 @@ export default function ScenarioPage({
             )}
           </Stack>
         )}
+
+        {/* Custom Sections */}
+        {scenario.customSections?.map((cs) => (
+          <Stack key={cs.id} id={cs.id} accent labelledBy={`h-${cs.id}`}>
+            <Mono color="var(--secondary)">
+              {cs.num || "05"} · {cs.label}
+            </Mono>
+            <h2
+              id={`h-${cs.id}`}
+              className="font-display ed-italic"
+              style={{
+                margin: "10px 0 18px 0",
+                fontSize: 24,
+                lineHeight: 1.15,
+                color: "var(--text-primary)",
+                letterSpacing: "-0.015em",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              {cs.icon && <span aria-hidden style={{ display: "inline-flex" }}>{cs.icon}</span>}
+              {cs.title}
+            </h2>
+            {cs.content}
+          </Stack>
+        ))}
 
         {/* Uppföljning + Differentialdiagnoser */}
         {(scenario.uppfoljning?.text ||
@@ -1913,9 +2010,10 @@ export default function ScenarioPage({
                 </h2>
                 <p
                   style={{
-                    fontSize: 13.5,
+                    fontSize: 16,
                     lineHeight: 1.6,
-                    color: "var(--text-secondary)",
+                    color: "var(--text-primary, #201A18)",
+                    fontWeight: 550,
                     whiteSpace: "pre-line",
                     margin: 0,
                   }}
@@ -1946,11 +2044,11 @@ export default function ScenarioPage({
                     <li
                       key={i}
                       style={{
-                        paddingBottom: 10,
-                        marginBottom: 10,
+                        paddingBottom: 12,
+                        marginBottom: 12,
                         borderBottom:
                           i < arr.length - 1
-                            ? "1px solid var(--border-light)"
+                            ? "1px solid var(--border-medium, #E2DDD9)"
                             : "none",
                       }}
                     >
@@ -1960,14 +2058,14 @@ export default function ScenarioPage({
                           justifyContent: "space-between",
                           alignItems: "baseline",
                           gap: 8,
-                          marginBottom: 2,
+                          marginBottom: 4,
                         }}
                       >
                         <span
                           style={{
                             fontWeight: 700,
-                            fontSize: 13.5,
-                            color: "var(--text-primary)",
+                            fontSize: 16.5,
+                            color: "var(--text-primary, #201A18)",
                           }}
                         >
                           {d.namn}
@@ -1976,10 +2074,12 @@ export default function ScenarioPage({
                           <span
                             className="font-mono"
                             style={{
-                              fontSize: 10,
-                              color: "var(--text-muted)",
-                              background: "#FCF9F8",
-                              padding: "2px 6px",
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: "var(--text-secondary, #544F4C)",
+                              background: "var(--surface, #FCF9F8)",
+                              border: "1px solid var(--border-medium, #E2DDD9)",
+                              padding: "2px 8px",
                               borderRadius: 4,
                               flexShrink: 0,
                             }}
@@ -1991,13 +2091,15 @@ export default function ScenarioPage({
                       {d.skillnad && (
                         <p
                           style={{
-                            fontSize: 12,
-                            color: "var(--text-muted)",
-                            margin: 0,
-                            lineHeight: 1.45,
+                            fontSize: 14.5,
+                            color: "var(--text-secondary, #544F4C)",
+                            fontWeight: 550,
+                            margin: "6px 0 0 0",
+                            lineHeight: 1.5,
                           }}
                         >
-                          Skillnad: {d.skillnad}
+                          <strong style={{ color: "var(--secondary, #CC5833)", fontWeight: 700 }}>Skillnad: </strong>
+                          {d.skillnad}
                         </p>
                       )}
                     </li>
@@ -2056,25 +2158,30 @@ export default function ScenarioPage({
 
       {/* ── HÖGER: kontextuella verktyg ────────────────────────── */}
       <aside
-        className="hidden lg:flex flex-col sticky top-[76px] self-start max-h-[calc(100vh-76px)] overflow-y-auto no-scrollbar"
+        className="flex flex-col lg:sticky lg:top-[76px] lg:self-start lg:max-h-[calc(100vh-76px)] overflow-y-auto no-scrollbar"
         aria-label="Kliniska verktyg och kontext"
         style={{
           padding: "32px 22px 32px 18px",
           gap: 22,
         }}
       >
+        {scenario.customSidebar}
+
+        {/* INFOGRAFIK — högst upp i höger-railen så den syns direkt utan scroll */}
+        {scenario.infografik && <InfografikCard infografik={scenario.infografik} />}
+
         {scenario.verktyg && scenario.verktyg.length > 0 && (
           <div
             style={{
-              background: "#fff",
+              background: "var(--surface, #FCF9F8)",
               borderRadius: 28,
-              border: "1px solid var(--border-light)",
-              padding: 16,
+              border: "1px solid var(--border-medium, #E2DDD9)",
+              padding: 18,
               boxShadow: "0 1px 0 #fff, 0 4px 12px -6px rgba(9,27,20,0.06)",
             }}
           >
-            <Mono>Kliniska verktyg</Mono>
-            <div style={{ display: "grid", gap: 8, marginTop: 10 }}>
+            <Mono color="var(--secondary, #CC5833)">Kliniska verktyg</Mono>
+            <div style={{ display: "grid", gap: 8, marginTop: 12 }}>
               {scenario.verktyg.map((v) => (
                 <Link
                   key={v.label}
@@ -2084,12 +2191,12 @@ export default function ScenarioPage({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    background: "var(--primary)",
+                    background: "var(--primary, #0E3B52)",
                     color: "#fff",
                     borderRadius: 26,
-                    padding: "10px 14px",
-                    fontSize: 12.5,
-                    fontWeight: 700,
+                    padding: "12px 16px",
+                    fontSize: 15.5,
+                    fontWeight: 800,
                     textDecoration: "none",
                     boxShadow:
                       "0 4px 12px -6px rgba(14,59,82,0.40), inset 0 1px 0 rgba(255,255,255,0.10)",
@@ -2112,15 +2219,15 @@ export default function ScenarioPage({
         {scenario.diffDiagnoser && scenario.diffDiagnoser.length > 0 && (
           <div
             style={{
-              background: "#fff",
+              background: "var(--surface, #FCF9F8)",
               borderRadius: 28,
-              border: "1px solid var(--border-light)",
-              padding: 16,
+              border: "1px solid var(--border-medium, #E2DDD9)",
+              padding: 18,
               boxShadow: "0 1px 0 #fff, 0 4px 12px -6px rgba(9,27,20,0.06)",
             }}
           >
-            <Mono>Differentialdiagnoser</Mono>
-            <div style={{ display: "grid", gap: 6, marginTop: 10 }}>
+            <Mono color="var(--secondary, #CC5833)">Differentialdiagnoser</Mono>
+            <div style={{ display: "grid", gap: 8, marginTop: 12 }}>
               {scenario.diffDiagnoser.map((d) => (
                 <button
                   key={d.namn}
@@ -2131,13 +2238,13 @@ export default function ScenarioPage({
                     gridTemplateColumns: "auto 1fr",
                     gap: 10,
                     alignItems: "center",
-                    padding: "8px 12px",
+                    padding: "10px 14px",
                     borderRadius: 22,
-                    background: "#FCF9F8",
-                    border: "1px solid var(--border-light)",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "var(--text-primary)",
+                    background: "#ffffff",
+                    border: "1px solid var(--border-medium, #E2DDD9)",
+                    fontSize: 14.5,
+                    fontWeight: 700,
+                    color: "var(--text-primary, #201A18)",
                     textAlign: "left",
                     cursor: "pointer",
                     transition: "transform 220ms, background 220ms",
@@ -2147,11 +2254,11 @@ export default function ScenarioPage({
                   <span
                     aria-hidden
                     style={{
-                      width: 6,
-                      height: 6,
+                      width: 8,
+                      height: 8,
                       borderRadius: "50%",
-                      background: "var(--secondary)",
-                      opacity: 0.6,
+                      background: "var(--secondary, #CC5833)",
+                      opacity: 1,
                     }}
                   />
                   <span
@@ -2168,9 +2275,6 @@ export default function ScenarioPage({
             </div>
           </div>
         )}
-
-        {/* INFOGRAFIK — ersätter "Kliniska anteckningar" */}
-        {scenario.infografik && <InfografikCard infografik={scenario.infografik} />}
 
         {/* RÖDA FLAGGOR — alltid synliga, compact i höger-rail */}
         {scenario.redFlags && scenario.redFlags.length > 0 && (

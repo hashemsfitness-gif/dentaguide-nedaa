@@ -36,7 +36,7 @@ export interface ParodScenarioData {
 
   status: {
     inspektion: string[];
-    palpation?: string;
+    palpation?: string | string[];
     perkussion?: string;
     sensibilitet?: string;
     bpe?: {
@@ -91,7 +91,7 @@ export const parodontoloiScenarier: Record<string, ParodScenarioData> = {
     patientUtsaga: "Det blöder när jag borstar och tandköttet ömmar",
     isAcute: false,
     category: "Parodontologi",
-    showBPE: true,
+    showBPE: false,
 
     snabbOversikt: [
       {
@@ -99,42 +99,43 @@ export const parodontoloiScenarier: Record<string, ParodScenarioData> = {
         text: "Blödning vid tandborstning eller spontant, ömt/svullet tandkött, dålig andedräkt, eventuellt rörliga tänder. Smärtan är ofta molande eller ”kliande”.",
       },
       {
-        label: "ICD-10-koder (JUSTERAT)",
-        text: "K05.0 (Akut gingivit), K05.1 (Kronisk gingivit), K05.3 (Kronisk parodontit). OBS: ICD-10 och EFP/AAP-systemet är två separata klassifikationssystem — blanda dem ej.",
-      },
-      {
-        label: "Klinisk klassifikation",
-        text: "EFP/AAP 2018: Parodontit Stadium I–IV, Grad A–C.",
+        label: "Diagnos ICD-10 (JUSTERAT)",
+        text: "K05.0 (akut gingivit), K05.1 (kronisk gingivit) eller K05.3 (kronisk parodontit). OBS: K05.2 = perikoronit (separat subkod). Använd K05.3 för parodontit.",
       },
       {
         label: "Prevalens",
-        text: "Gingivit förekommer hos majoriteten av befolkningen. Parodontit drabbar ca 40 % av vuxna, varav ca 10 % har grav parodontit.",
+        text: "Gingivit drabbar ca 90 % av befolkningen vid bristande hygien. Parodontit drabbar ca 40 % av vuxna över 40 år; ca 10 % utvecklar grav parodontit.",
       },
     ],
 
     anamnes: {
       obligatoriska: [
         {
-          q: "Blöder det vid tandborstning eller spontant?",
-          a: "Vid borstning: tyder på klassisk plackinducerad inflammation. Spontant/vid beröring: tyder på kraftigare inflammation, nekros eller systempåverkan.",
+          q: "När blöder det? Vid borstning eller spontant?",
+          a: "Spontan blödning indikerar grav gingivit eller ANUG.",
         },
         {
-          q: "Känns tänderna lösa eller har de flyttat på sig?",
-          a: "Ja: stark indikator för parodontit (stödjevävnadsförlust).",
+          q: "Upplever du att tänderna känns lösa eller har flyttat på sig?",
+          a: "Tyder på parodontal benförlust (parodontit).",
         },
         {
-          q: "Var gör det ont?",
-          a: "Diffust/kliande/ömt: vanligt vid gingivit/kronisk parodontit. Intensiv smärta: tänk på parodontal abscess eller nekrotiserande gingivit (NG).",
+          q: "Röker eller snusar du?",
+          a: "Nikotin döljer blödning (vasokonstriktion) — maskerar inflammation [JUSTERAT].",
+        },
+        {
+          q: "Har du diabetes eller andra systemsjukdomar?",
+          a: "Diabetes ökar risken för parodontit ×3 och försämrar läkning.",
+        },
+        {
+          q: "Har du nära släktingar med tandlossning?",
+          a: "Ärftlig predisposition (särskilt aggressiv/snabb form).",
         },
       ],
       kompletterande: [
-        "Senaste tandstenssanering / parodontala behandling?",
-        "Munhygienrutiner — approximal rengöring (mellanrumsborste/tandtråd)?",
+        "Muntorrhet (ökar plackackumulering)",
+        "Stress / immunhämmande mediciner",
       ],
-      riskfaktorer: [
-        "Rökning (döljer blödning pga vasokonstriktion, ökar risk för parodontit, sämre läkningsprognos — Grad C-faktor)",
-        "Diabetes (ökar risk för parodontit och abscesser — bidirektionellt samband, Grad C-modifierare)",
-      ],
+      riskfaktorer: ["Rökning", "Diabetes mellitus", "Dålig munhygien"],
     },
 
     status: {
@@ -143,8 +144,12 @@ export const parodontoloiScenarier: Record<string, ParodScenarioData> = {
         "Plack/tandsten: supragingival biofilm bekräftar bakteriell etiologi.",
         "Pus: indikerar abscess eller aktiv parodontit vid tryck på gingivan.",
       ],
-      palpation:
-        "Parodontalundersökning (avgörande): BoP (Bleeding on Probing) är viktigaste tecknet på pågående inflammation. Frånvaro av BoP är ett starkt tecken på parodontal stabilitet — men utesluter inte sjukdom hos rökare (falsk-negativt pga vasokonstriktion) [JUSTERAT]. PPD (fickdjup): ≤3 mm normalt/gingivit, ≥4 mm patologiskt om BoP finns. CAL (fästenivå): sondering förbi emaljcementgränsen (ECG) — primärt mått för parodontal destruktion enligt EFP/AAP 2018.",
+      palpation: [
+        "Parodontalundersökning (avgörande): BoP (Bleeding on Probing) är viktigaste tecknet på pågående inflammation.",
+        "BoP hos rökare: Frånvaro av BoP är ett starkt tecken på parodontal stabilitet — men utesluter inte sjukdom hos rökare (falsk-negativt pga vasokonstriktion) [JUSTERAT].",
+        "PPD (fickdjup): ≤3 mm normalt/gingivit, ≥4 mm patologiskt om BoP finns.",
+        "CAL (fästenivå): sondering förbi emaljcementgränsen (ECG) — primärt mått för parodontal destruktion enligt EFP/AAP 2018.",
+      ],
     },
 
     diagnostik: {
@@ -239,7 +244,7 @@ Plan: Återbesök för läkningkontroll 2 veckor.`,
       "Nationella riktlinjer (Socialstyrelsen): förbättrad munhygien vid parodontit Prio 3, mekanisk infektionsbehandling Prio 3, stödbehandling Prio 3. Systemisk antibiotika vid parodontit stadium I–IV: Prio 10 (lägst — ej ”Icke-göra”) [JUSTERAT]. ”Icke-göra” är en separat kategori och ska ej sammanblandas med Prio 10. ICD-10 och EFP/AAP 2018 är två separata klassifikationssystem. Debiteringskoder (TLV — verifiera mot kusp.tlv.se): 101/111 basundersökning, 114 fullständig parodontal undersökning, 201 rådgivande samtal (gingivit), 341/342 behandling av parodontal sjukdom.",
 
     infografik: {
-      src: "/infografik%20bilder/infografik%20parodontala%20sjukdomar/infografik%20parodontit.png",
+      src: "/infografik bilder/infografik parodontala sjukdomar/infografik parodontit.jpg",
       alt: "Infografik: gingivit och kronisk parodontit — patogenes, klassifikation (EFP/AAP 2018) och behandlingssteg.",
       title: "Gingivit & parodontit",
       caption: "EFP/AAP 2018 — Stadium I–IV × Grad A–C, kausal terapi i steg.",
@@ -424,7 +429,7 @@ Info: Sköljning Klorhexidin. Extraktion 38 planeras i kallt skede. Analgetika r
       "ICD-10: K05.22 = akut perikoronit. Det finns INGEN separat ICD-10-kod för ”kronisk perikoronit” — K05.3 (kronisk parodontit) ska ej användas för perikoronit [JUSTERAT]. PcV 1,6 g × 3 i 5–7 dagar; Pc-allergi Klindamycin 600 mg × 3 i 5–7 dagar (VGR — verifiera regionalt) [JUSTERAT]. Mät gapförmåga i mm. Trismus <20 mm = akut remiss käkkirurg. Debiteringskoder (TLV — verifiera mot kusp.tlv.se): 3043 tillståndskod perikoronit, 103 akut undersökning, 301 sjukdomsbehandling mindre, 401 tandextraktion (antagonist), 121 röntgen.",
 
     infografik: {
-      src: "/infografik%20bilder/infografik%20parodontala%20sjukdomar/Infografik%20perikoronit.png",
+      src: "/infografik bilder/infografik parodontala sjukdomar/Infografik perikoronit.png",
       alt: "Infografik: perikoronit — operculuminflammation kring delvis erupterad visdomstand, varningstecken och handläggning.",
       title: "Perikoronit",
       caption: "Operculum 38/48 — spolning först, trismus <20mm = remiss akut.",
@@ -472,7 +477,7 @@ Info: Sköljning Klorhexidin. Extraktion 38 planeras i kallt skede. Analgetika r
       "Det bultar i tandköttet, tanden känns lös/hög och det smakar illa",
     isAcute: true,
     category: "Parodontologi",
-    showBPE: true,
+    showBPE: false,
 
     snabbOversikt: [
       {
@@ -627,7 +632,7 @@ Info: Rekommenderar Alvedon/Ibuprofen. Återbesök för uppföljning om 1 vecka.
       "ICD-10: K05.20 utan fistelgång / K05.21 med fistelgång. K05.22 = perikoronit (separat subkod) — vanligt kodningsfel, använd ej för abscess [JUSTERAT]. Sensibilitetstest är avgörande för att skilja från apikal abscess (endo). Antibiotika är TILLÄGG till dränage, aldrig substitut. Debiteringskoder (TLV — verifiera mot kusp.tlv.se): 103 akut undersökning, 301 sjukdomsbehandling (dränage via ficka, spolning), 404 incision av abscess (om kirurgiskt snitt krävs).",
 
     infografik: {
-      src: "/infografik%20bilder/infografik%20parodontala%20sjukdomar/infografik%20parodontit.png",
+      src: "/infografik bilder/infografik parodontala sjukdomar/infografik parodontit.png",
       alt: "Infografik: parodontal abscess — lokaliserad pusansamling, differentiering mot apikal abscess och dränage.",
       title: "Parodontal abscess",
       caption: "Vital tand + lateral ficka → dränage. Negativ vitalitet → endo.",
@@ -804,7 +809,7 @@ Plan: Återbesök om 3 dagar för kontroll. Rökstopp rekommenderas starkt.`,
       "ANUG/NG förstahandsantibiotika = Metronidazol 400 mg × 3 i 5–7 dagar (bäst anaerob täckning); PcV har sämre täckning vid NG och är ej förstahandsval [JUSTERAT]. Alkohol kontraindicerat under + 48 h efter Metronidazol; aldrig gravid trimester 1 utan läkarordination (FASS). Aciklovir/Valaciklovir vid herpes: immunosuppression, eller svår primär infektion hos vuxna <72 h — via läkare [JUSTERAT]. Engagemang av fast slemhinna skiljer herpes från afte. Debiteringskoder (TLV — verifiera mot kusp.tlv.se): 103 kompletterande/akut undersökning, 301 sjukdomsbehandling mindre (rengöring/debridering), 311/312 information/instruktion.",
 
     infografik: {
-      src: "/infografik%20bilder/infografik%20parodontala%20sjukdomar/infografik%20ANUG.png",
+      src: "/infografik bilder/infografik parodontala sjukdomar/infografik ANUG.png",
       alt: "Infografik: ANUG — papillnekros, pseudomembran och fetor; differentiering mot herpes.",
       title: "ANUG / Herpes",
       caption: "NG: utstansade papiller + fetor. Herpes: blåsor, fast slemhinna.",
@@ -981,7 +986,7 @@ Plan: Återbesök 2 veckor.`,
       "Diagnostisk tröskel: benförlust >2 mm jämfört med referensbild = periimplantit (EFP/AAP 2017-konsensus) [JUSTERAT]. Sondera med plastsond (ej metall). Rörligt implantat = förlorad osseointegrering, kan ej räddas — explanteras. Cementöverskott är vanlig orsak till akut mukosit efter installation. Verifiera torque mot tillverkarens IFU; anteckna fabrikat + installationsår. Debiteringskoder (TLV — verifiera mot kusp.tlv.se): 103 akut undersökning, 301 sjukdomsbehandling mindre, 341/342 behandling av periimplantit, 429 kirurgiskt avlägsnande av implantat (om mobilt — verifiera kod).",
 
     infografik: {
-      src: "/infografik%20bilder/infografik%20parodontala%20sjukdomar/infografik%20periimplantit.png",
+      src: "/infografik bilder/infografik parodontala sjukdomar/infografik periimplantit.png",
       alt: "Infografik: periimplantit vs mukosit — benförlust runt implantat och behandlingsstege.",
       title: "Periimplantit",
       caption: "Mukosit (reversibel) → periimplantit (>2 mm benförlust).",
@@ -1165,6 +1170,13 @@ Ordination: Klorhexidin 0,2 % 10ml x 2 i 5 dagar. Information om läkning 48h.`,
 
     kliniskaAnteckningar:
       "Oftast klinisk diagnos. Organiska främmande kroppar (popcorn, trä, tråd) syns INTE på röntgen — radiologi främst vid radiopaka fragment/fyllningsöverskott. Uteslut endodontiskt ursprung vid tveksamhet (sensibilitet/perkussion). Källor: Socialstyrelsen NR Tandvård 2022, ICD-10-SE, Internetodontologi.",
+
+    infografik: {
+      src: "/infografik bilder/infografik parodontala sjukdomar/infografik främmandekropp i gingivan.png",
+      alt: "Infografik: gingivit orsakad av främmande kropp (matfiber, popcornskal) i gingivalfickan — diagnostik och handläggning.",
+      title: "Främmande kropp i gingivan",
+      caption: "Organiskt material syns ej på rtg. Läker ~48 h efter borttagning.",
+    },
 
     redFlags: [
       {
