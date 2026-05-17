@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
-import { Search, ChevronDown, ChevronUp, AlertTriangle, Info, CheckCircle2, XCircle } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Search, ChevronDown, ChevronUp, AlertTriangle, Info, CheckCircle2, XCircle, Activity, BookOpen } from 'lucide-react';
 import { lakemedelData, DrugData } from '@/lib/lakemedelData';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as Sentry from '@sentry/nextjs';
 
 const CATEGORIES = [
@@ -22,17 +23,34 @@ export function LakemedelSearch() {
   const [query, setQuery] = useState('');
   const [activeCat, setActiveCat] = useState('alla');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [showOnboard, setShowOnboard] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('dg_onboard_lakemedel') !== 'done') {
+      setShowOnboard(true);
+    }
+  }, []);
+
+  const dismissOnboard = () => {
+    setShowOnboard(false);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('dg_onboard_lakemedel', 'done');
+    }
+  };
 
   const filteredData = useMemo(() => {
     try {
+      const searchLow = query.trim().toLowerCase();
       return lakemedelData.filter(d => {
         const matchCat = activeCat === 'alla' || d.cat === activeCat;
-        const searchLow = query.toLowerCase();
-        const matchQuery = !query || 
-          d.name.toLowerCase().includes(searchLow) || 
-          d.examples.toLowerCase().includes(searchLow) ||
-          d.indikation.toLowerCase().includes(searchLow) ||
-          d.tags.some(t => t.toLowerCase().includes(searchLow));
+        if (!searchLow) return matchCat;
+
+        // Perform clean normalized search with defensive sanitization
+        const matchQuery = 
+          (d.name && d.name.toLowerCase().includes(searchLow)) || 
+          (d.examples && d.examples.toLowerCase().includes(searchLow)) ||
+          (d.indikation && d.indikation.toLowerCase().includes(searchLow)) ||
+          (d.tags && Array.isArray(d.tags) && d.tags.some(t => t && t.toLowerCase().includes(searchLow)));
         
         return matchCat && matchQuery;
       });
@@ -44,54 +62,116 @@ export function LakemedelSearch() {
 
   return (
     <div className="space-y-6">
-      {/* Search & Filter */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
+      <AnimatePresence>
+        {showOnboard && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="p-6 md:p-7 rounded-ds-2xl bg-secondary/[0.04] border border-secondary/20 flex gap-5 items-start relative overflow-hidden shadow-none"
+          >
+            <div className="p-3 bg-secondary/10 rounded-ds-xl text-secondary shrink-0">
+              <BookOpen size={20} />
+            </div>
+            <div className="flex-1 pr-6">
+              <h4 className="text-base font-bold text-ink mb-2">Välkommen till Läkemedelsguiden</h4>
+              <p className="text-sm text-ink/70 leading-relaxed font-medium max-w-[72ch]">
+                Sök efter substans, preparat eller indikation för att se kliniska riktlinjer vid tandvård. Filtrera efter kategori för snabbare överblick. Kom ihåg att alltid verifiera patientens fullständiga hälsostatus innan ingrepp påbörjas.
+              </p>
+              <button 
+                onClick={dismissOnboard} 
+                className="mt-4 text-xs font-black uppercase tracking-wider text-secondary bg-secondary/10 hover:bg-secondary/15 transition-all px-4 py-2.5 rounded-ds-xl"
+              >
+                Kom igång
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Search & Filter Container */}
+      <div className="bg-surface/50 backdrop-blur-sm border border-border-light rounded-ds-2xl p-6 md:p-7 shadow-ds-sm space-y-5">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-ink/40" />
+          </div>
           <input 
+            type="text"
             placeholder="Sök läkemedel, indikation eller substans..." 
-            className="w-full pl-10 pr-4 py-3 text-lg rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0E3B52] focus:border-transparent transition-all shadow-sm"
+            className="w-full pl-11 pr-4 py-3.5 text-base rounded-ds-xl border border-border-light focus:border-secondary/40 focus:ring-2 focus:ring-secondary/10 bg-surface text-ink font-semibold placeholder-ink/30 outline-none transition-all shadow-none"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-ink/40 hover:text-secondary transition-colors"
+            >
+              Rensa
+            </button>
+          )}
+        </div>
+
+        {/* Category Pills */}
+        <div className="flex flex-wrap gap-2 pt-1.5">
+          {CATEGORIES.map(cat => {
+            const isSelected = activeCat === cat.id;
+            return (
+              <motion.button
+                key={cat.id}
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                className={cn(
+                  "px-5 py-2.5 rounded-full text-sm transition-all border focus:outline-none focus:ring-2 focus:ring-secondary/20 flex items-center gap-1.5",
+                  isSelected 
+                    ? "bg-secondary text-white border-secondary shadow-md shadow-secondary/20 font-bold" 
+                    : "bg-surface text-ink/70 border-border-light hover:bg-neutral/40 hover:border-border-medium hover:text-ink font-semibold"
+                )}
+                onClick={() => setActiveCat(cat.id)}
+              >
+                {cat.label}
+                {isSelected && <span className="font-sans leading-none">&rarr;</span>}
+              </motion.button>
+            );
+          })}
         </div>
       </div>
       
-      <div className="flex flex-wrap gap-2">
-        {CATEGORIES.map(cat => (
-          <button
-            key={cat.id}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium transition-colors border",
-              activeCat === cat.id 
-                ? "bg-[#0E3B52] text-white border-[#0E3B52] shadow-sm" 
-                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
-            )}
-            onClick={() => setActiveCat(cat.id)}
-          >
-            {cat.label}
-          </button>
-        ))}
+      {/* Results Header */}
+      <div className="flex items-center justify-between text-xs font-mono text-ink/50 uppercase tracking-widest2">
+        <span>Kliniska riktlinjer</span>
+        <span className="bg-neutral/70 px-3 py-1.5 rounded-ds-lg font-extrabold">
+          {filteredData.length} {filteredData.length === 1 ? 'grupp' : 'grupper'} hittade
+        </span>
       </div>
 
-      <div className="text-sm font-medium text-slate-500">
-        Visar {filteredData.length} läkemedelsgrupper
-      </div>
-
-      {/* Results */}
+      {/* Results List */}
       <div className="space-y-4">
-        {filteredData.map(drug => (
-          <DrugCard 
-            key={drug.id} 
-            drug={drug} 
-            isExpanded={expandedId === drug.id}
-            onToggle={() => setExpandedId(expandedId === drug.id ? null : drug.id)}
-          />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {filteredData.map(drug => (
+            <DrugCard 
+              key={drug.id} 
+              drug={drug} 
+              isExpanded={expandedId === drug.id}
+              onToggle={() => setExpandedId(expandedId === drug.id ? null : drug.id)}
+            />
+          ))}
+        </AnimatePresence>
+
         {filteredData.length === 0 && (
-          <div className="text-center p-12 border-2 border-dashed rounded-xl border-slate-200 bg-slate-50">
-            <p className="text-lg text-slate-500 font-medium">Inga läkemedel hittades som matchar din sökning.</p>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-16 px-6 border-2 border-dashed rounded-ds-2xl border-border-light bg-surface/50"
+          >
+            <div className="p-4 bg-secondary/5 rounded-full w-fit mx-auto mb-4 border border-secondary/10">
+              <AlertTriangle className="h-6 w-6 text-secondary" />
+            </div>
+            <h3 className="text-base font-bold text-ink mb-1">Inga läkemedel hittades</h3>
+            <p className="text-xs text-ink/40 max-w-sm mx-auto font-medium">
+              Försök söka efter en annan substans, handelsnamn eller indikation (t.ex. &quot;INR&quot; eller &quot;Eliquis&quot;).
+            </p>
+          </motion.div>
         )}
       </div>
     </div>
@@ -99,141 +179,181 @@ export function LakemedelSearch() {
 }
 
 function DrugCard({ drug, isExpanded, onToggle }: { drug: DrugData, isExpanded: boolean, onToggle: () => void }) {
-  const getRiskColor = (risk: string) => {
-    if (risk.includes('HÖG')) return 'bg-[#C1121F] text-white border-red-700';
-    if (risk.includes('MEDEL')) return 'bg-[#E07B39] text-white border-orange-600';
-    return 'bg-[#2D6A4F] text-white border-emerald-700';
+  
+  const getRiskStyles = (risk: string) => {
+    if (risk.includes('HÖG')) {
+      return 'bg-red-500/10 text-red-600 border border-red-500/20';
+    }
+    if (risk.includes('MEDEL')) {
+      return 'bg-amber-500/10 text-amber-600 border border-amber-500/20';
+    }
+    return 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20';
   };
 
   const getBehandlingIcon = (typ: string) => {
     switch(typ) {
-      case 'ok': return <CheckCircle2 className="w-5 h-5 text-[#2D6A4F]" />;
-      case 'caution': return <AlertTriangle className="w-5 h-5 text-[#E07B39]" />;
-      case 'avoid': return <XCircle className="w-5 h-5 text-[#C1121F]" />;
-      default: return <Info className="w-5 h-5 text-slate-500" />;
+      case 'ok': return <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />;
+      case 'caution': return <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />;
+      case 'avoid': return <XCircle className="w-5 h-5 text-red-500 shrink-0" />;
+      default: return <Info className="w-5 h-5 text-ink/40 shrink-0" />;
     }
   };
 
   const getRowColor = (typ: string) => {
     switch(typ) {
-      case 'red': return 'bg-red-50 border-l-4 border-[#C1121F] text-red-900';
-      case 'yellow': return 'bg-orange-50 border-l-4 border-[#E07B39] text-orange-900';
-      case 'green': return 'bg-emerald-50 border-l-4 border-[#2D6A4F] text-emerald-900';
-      case 'blue': return 'bg-blue-50 border-l-4 border-blue-500 text-blue-900';
-      default: return 'bg-slate-50 border-l-4 border-slate-300';
+      case 'red': return 'bg-red-500/[0.04] border border-red-500/10 text-red-950 font-semibold';
+      case 'yellow': return 'bg-amber-500/[0.04] border border-amber-500/10 text-amber-950 font-semibold';
+      case 'green': return 'bg-emerald-500/[0.04] border border-emerald-500/10 text-emerald-950 font-semibold';
+      case 'blue': return 'bg-blue-500/[0.04] border border-blue-500/10 text-blue-950 font-semibold';
+      default: return 'bg-neutral/40 border border-border-light text-ink/80';
     }
   };
 
   return (
-    <div className={cn(
-      "rounded-xl border transition-all duration-200 bg-white",
-      isExpanded ? "shadow-md ring-1 ring-slate-200 border-slate-300" : "border-slate-200 hover:border-[#0E3B52]/30 shadow-sm"
-    )}>
+    <motion.div 
+      layout="position"
+      className={cn(
+        "rounded-ds-2xl border transition-all duration-300 bg-surface relative overflow-hidden",
+        isExpanded 
+          ? "shadow-ds-md border-secondary/25" 
+          : "border-border-light hover:border-secondary/15 shadow-ds-sm"
+      )}
+    >
+      {/* Interactive header block */}
       <div 
-        className="p-5 cursor-pointer flex items-start justify-between hover:bg-slate-50/50 rounded-xl"
+        className="p-6 md:p-7 cursor-pointer flex items-start justify-between hover:bg-neutral/20 transition-all"
         onClick={onToggle}
       >
         <div className="flex-1 pr-4">
-          <div className="flex items-center gap-3 mb-2 flex-wrap">
-            <h3 className="text-xl font-bold text-[#0E3B52]">{drug.name}</h3>
-            <span className={cn("text-xs font-bold px-2.5 py-1 rounded-md border", getRiskColor(drug.risk))}>
-              Risk: {drug.risk}
+          <div className="flex items-center gap-3.5 mb-3 flex-wrap">
+            <h3 className="text-xl md:text-2xl font-display font-black tracking-tight text-primary leading-none">{drug.name}</h3>
+            <span className={cn("text-[11px] font-mono px-3 py-1 rounded-ds-md leading-relaxed tracking-wider font-extrabold border shadow-none", getRiskStyles(drug.risk))}>
+              RISK: {drug.risk}
             </span>
           </div>
-          <p className="text-sm text-slate-600 mb-3 font-medium">{drug.examples}</p>
-          <div className="flex flex-wrap gap-2">
+          <p className="text-sm font-sans tracking-wide text-ink/80 leading-relaxed mb-3.5"><span className="font-mono text-xs uppercase font-extrabold text-ink/40 mr-2">Handelsnamn:</span>{drug.examples}</p>
+          
+          {/* Action highlights - Stacked Premium Guidelines */}
+          <div className="flex flex-col gap-2 mt-4 max-w-[540px]">
             {drug.summary.map((s, i) => (
               <span key={i} className={cn(
-                "text-xs px-2.5 py-1 rounded-md font-semibold flex items-center gap-1 border",
-                s.includes('❌') ? "bg-red-50 text-red-700 border-red-200" : 
-                s.includes('⚠️') ? "bg-orange-50 text-orange-700 border-orange-200" : 
-                "bg-emerald-50 text-emerald-700 border-emerald-200"
+                "text-xs font-mono font-black uppercase tracking-wider px-3.5 py-1.5 bg-secondary/[0.06] text-secondary border border-secondary/20 rounded-ds-pill flex items-center text-left shadow-none"
               )}>
                 {s}
               </span>
             ))}
           </div>
         </div>
-        <button className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors">
-          {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </button>
+        <motion.div 
+          animate={{ rotate: isExpanded ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+          className="p-2 rounded-full hover:bg-neutral/50 text-ink/40 transition-colors shrink-0 mt-0.5"
+        >
+          <ChevronDown className="w-5 h-5" />
+        </motion.div>
       </div>
 
-      {isExpanded && (
-        <div className="px-5 pb-5 pt-4 border-t border-slate-100 bg-slate-50/50 rounded-b-xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Vänster kolumn */}
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#0E3B52]"></span> Behandling & Åtgärder
-                </h4>
-                <div className="space-y-3">
-                  {drug.behandlingar.map((b, i) => (
-                    <div key={i} className="flex gap-3 items-start bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
-                      <div className="mt-0.5">{getBehandlingIcon(b.typ)}</div>
-                      <div>
-                        <strong className="block text-sm text-slate-900 mb-1">{b.label}</strong>
-                        <p className="text-sm text-slate-600 leading-relaxed">{b.text}</p>
+      {/* Expanded panel with Framer Motion height transition */}
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="px-6 pb-6 pt-5 md:px-8 md:pb-8 md:pt-6 border-t border-border-light/70 bg-neutral/10 rounded-b-ds-2xl">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* Vänster kolumn */}
+                <div className="space-y-7">
+                  <div>
+                    <h4 className="text-xs font-mono font-black uppercase tracking-[0.18em] text-secondary mb-3.5 flex items-center gap-1.5">
+                      <Activity size={12} /> Behandling &amp; Åtgärder
+                    </h4>
+                    <div className="space-y-3.5">
+                      {drug.behandlingar.map((b, i) => (
+                        <div key={i} className="flex gap-3.5 items-start bg-surface p-5 rounded-ds-xl border border-border-light/70 shadow-none hover:shadow-ds-sm hover:border-secondary/25 hover:-translate-y-0.5 transition-all duration-300">
+                          <div className="mt-0.5 shrink-0">{getBehandlingIcon(b.typ)}</div>
+                          <div>
+                            <strong className="block text-sm font-bold text-ink mb-1">{b.label}</strong>
+                            <p className="text-sm text-ink leading-relaxed font-medium max-w-[65ch]">{b.text}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {drug.interaktioner.length > 0 && (
+                    <div>
+                      <h4 className="text-xs font-mono font-black uppercase tracking-[0.18em] text-red-500 mb-3.5 flex items-center gap-1.5">
+                        <AlertTriangle size={12} /> Kliniska Interaktioner
+                      </h4>
+                      <div className="space-y-3">
+                        {drug.interaktioner.map((ia, i) => (
+                          <div 
+                            key={i} 
+                            className={cn(
+                              "bg-surface p-5 rounded-ds-xl border shadow-none",
+                              ia.klass === 'D' ? "border-red-500/20 bg-red-500/[0.01]" : "border-amber-500/20 bg-amber-500/[0.01]"
+                            )}
+                          >
+                            <div className="flex items-center gap-2.5 mb-2">
+                              <span className={cn(
+                                "text-[10px] font-mono font-black px-2 py-0.5 rounded-ds-md",
+                                ia.klass === 'D' ? "bg-red-500 text-surface" : "bg-amber-500 text-surface"
+                              )}>
+                                KLASS {ia.klass}
+                              </span>
+                              <strong className="text-sm font-bold text-ink">{ia.lm}</strong>
+                            </div>
+                            <p className="text-sm text-ink leading-relaxed font-medium max-w-[65ch]">{ia.text}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
+                  )}
                 </div>
-              </div>
 
-              {drug.interaktioner.length > 0 && (
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#C1121F]"></span> Kliniska Interaktioner
-                  </h4>
-                  <div className="space-y-2">
-                    {drug.interaktioner.map((ia, i) => (
-                      <div key={i} className="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <span className={cn(
-                            "text-xs font-bold px-2 py-0.5 rounded",
-                            ia.klass === 'D' ? "bg-[#C1121F] text-white" : "bg-[#E07B39] text-white"
-                          )}>
-                            Klass {ia.klass}
-                          </span>
-                          <strong className="text-sm text-slate-900">{ia.lm}</strong>
+                {/* Höger kolumn */}
+                <div className="space-y-7">
+                  <div>
+                    <h4 className="text-xs font-mono font-black uppercase tracking-[0.18em] text-amber-600 mb-3.5 flex items-center gap-1.5">
+                      <Info size={12} /> Viktigt att veta
+                    </h4>
+                    <div className="space-y-2.5">
+                      {drug.viktigt.map((v, i) => (
+                        <div key={i} className={cn("px-5 py-4 rounded-ds-xl text-sm leading-relaxed shadow-none border max-w-[65ch]", getRowColor(v.typ))}>
+                          {v.text}
                         </div>
-                        <p className="text-sm text-slate-600 mt-1">{ia.text}</p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-mono font-black uppercase tracking-[0.18em] text-ink/70 mb-2 flex items-center gap-1.5">
+                      <BookOpen size={12} /> Indikation
+                    </h4>
+                    <p className="text-sm text-ink bg-surface p-5 rounded-ds-xl border border-border-light/70 shadow-none leading-relaxed font-medium max-w-[65ch]">
+                      {drug.indikation}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-mono font-black uppercase tracking-[0.18em] text-ink/65 mb-2">Källa</h4>
+                    <div className="text-xs text-ink/80 font-mono leading-relaxed bg-surface p-5 rounded-ds-xl border border-border-light/70 shadow-none break-words">
+                      <span className="text-[10px] uppercase font-bold text-ink/40 block mb-1">Referens &amp; Källa:</span>
+                      {drug.kalla}
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
 
-            {/* Höger kolumn */}
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E07B39]"></span> Viktigt att veta
-                </h4>
-                <div className="space-y-2">
-                  {drug.viktigt.map((v, i) => (
-                    <div key={i} className={cn("p-3.5 rounded-r-lg text-sm font-medium shadow-sm", getRowColor(v.typ))}>
-                      {v.text}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Indikation</h4>
-                <p className="text-sm text-slate-700 bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">{drug.indikation}</p>
-              </div>
-
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Källa</h4>
-                <p className="text-xs text-slate-500 font-mono bg-slate-200/50 p-2.5 rounded-lg border border-slate-200">{drug.kalla}</p>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
